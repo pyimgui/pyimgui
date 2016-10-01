@@ -43,7 +43,7 @@ setup(
     author=u'Michał Jaworski',
     author_email='swistakm@gmail.com',
 
-    description="Python binding to gorilla-audio library",
+    description="Cython-based Python bindings for dear imgui",
     long_description=read_md(README),
     url="https://github.com/swistakm/pyimgui",
 
