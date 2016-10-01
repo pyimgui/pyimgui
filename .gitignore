@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Cython related
+cython_debug/
+
 # Distribution / packaging
 .Python
 env/
