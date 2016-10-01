@@ -29,7 +29,8 @@ using:
 
     git submodule update --init --recursive --remote
 
-To build locally and install inside of your local environment just use standard 
-setuptools command:
+Then setup your environment, build extension and install it locally in the
+*development* mode:
 
+    pip install -r doc/requirements-dev.txt
     python setup.py develop
