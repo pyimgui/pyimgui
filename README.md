@@ -12,14 +12,15 @@ binding in incoming few months. Any help would be appreciated.
 
 **dear imgui** looks very interesting. I wanted to give it a try becasue I was
 looking for simple GUI solution for my little Python-based game engine (to be
-opensources soon!). Offical **dear imgui** Wiki states that there is some
-Python binding available ([cyimgui](https://github.com/chromy/cyimgui)) but it
-quickly turned out that it is incomplete and isn't even barely usable.
+opensourced soon!). Offical **dear imgui** Wiki used to say that there is some
+other Python binding available ([cyimgui](https://github.com/chromy/cyimgui)) 
+but it quickly turned out that it far from completion and isn't even barely 
+usable.
 
-In fact, my initial experimental work on this project based on the cyimgui code
-base. After only three days of developlment my code had almost nothing in common
-with the **cyimgui**. This fact and vanity made me start my own project instead
-of forking **cyimgui**.
+In fact, my initial experimental work on this project was based on the cyimgui 
+code base. After only three days of developlment my code had almost nothing in 
+common with the **cyimgui**. This fact and vanity made me start my own project 
+instead of forking the **cyimgui**.
 
 
 # development tips
