@@ -26,6 +26,17 @@ cdef cimgui.ImVec2 _cast_tuple_ImVec2(pair):  # noqa
     return vec
 
 
+cdef cimgui.ImVec4 _cast_tuple_ImVec4(quadruple):  # noqa
+    cdef cimgui.ImVec4 vec
+
+    if len(quadruple) != 4:
+        raise ValueError("quadruple param must be length of 4")
+
+    vec.x, vec.y, vec.z, vec.w = quadruple
+
+    return vec
+
+
 cdef _cast_ImVec4_tuple(cimgui.ImVec4 vec):  # noqa
     # todo: consider using namedtuple
     return vec.x, vec.y, vec.w, vec.z
@@ -34,23 +45,25 @@ cdef _cast_ImVec4_tuple(cimgui.ImVec4 vec):  # noqa
 cdef class _DrawCmd(object):
     cdef cimgui.ImDrawCmd* _ptr
 
+    # todo: consider using fast instantiation here
+    #       see: http://cython.readthedocs.io/en/latest/src/userguide/extension_types.html#fast-instantiation
     @staticmethod
     cdef from_ptr(cimgui.ImDrawCmd* ptr):
         instance = _DrawCmd()
         instance._ptr = ptr
         return instance
 
-    property texture_id:
-        def __get__(self):
-            return <uintptr_t>self._ptr.TextureId
+    @property
+    def texture_id(self):
+        return <uintptr_t>self._ptr.TextureId
 
-    property clip_rect:
-        def __get__(self):
-            return _cast_ImVec4_tuple(self._ptr.ClipRect)
+    @property
+    def clip_rect(self):
+        return _cast_ImVec4_tuple(self._ptr.ClipRect)
 
-    property elem_count:
-        def __get__(self):
-            return self._ptr.ElemCount
+    @property
+    def elem_count(self):
+        return self._ptr.ElemCount
 
 
 cdef class _DrawList(object):
@@ -62,38 +75,58 @@ cdef class _DrawList(object):
         instance._ptr = ptr
         return instance
 
-    property cmd_buffer_size:
-        def __get__(self):
-            return self._ptr.CmdBuffer.Size
+    @property
+    def cmd_buffer_size(self):
+        return self._ptr.CmdBuffer.Size
 
-    property cmd_buffer_data:
-        def __get__(self):
-            return <uintptr_t>self._ptr.CmdBuffer.Data
+    @property
+    def cmd_buffer_data(self):
+        return <uintptr_t>self._ptr.CmdBuffer.Data
 
-    property vtx_buffer_size:
-        def __get__(self):
-            return self._ptr.VtxBuffer.Size
+    @property
+    def vtx_buffer_size(self):
+        return self._ptr.VtxBuffer.Size
 
-    property vtx_buffer_data:
-        def __get__(self):
-            return <uintptr_t>self._ptr.VtxBuffer.Data
+    @property
+    def vtx_buffer_data(self):
+        return <uintptr_t>self._ptr.VtxBuffer.Data
 
-    property idx_buffer_size:
-        def __get__(self):
-            return self._ptr.IdxBuffer.Size
+    @property
+    def idx_buffer_size(self):
+        return self._ptr.IdxBuffer.Size
 
-    property idx_buffer_data:
-        def __get__(self):
-            return <uintptr_t>self._ptr.IdxBuffer.Data
+    @property
+    def idx_buffer_data(self):
+        return <uintptr_t>self._ptr.IdxBuffer.Data
 
-    property commands:
-        def __get__(self):
-            return [
-                # todo: consider operator overloading in pxd file
-                _DrawCmd.from_ptr(&self._ptr.CmdBuffer.Data[idx])
-                # perd: short-wiring instead of using property
-                for idx in xrange(self._ptr.CmdBuffer.Size)
-            ]
+    @property
+    def commands(self):
+        return [
+            # todo: consider operator overloading in pxd file
+            _DrawCmd.from_ptr(&self._ptr.CmdBuffer.Data[idx])
+            # perd: short-wiring instead of using property
+            for idx in xrange(self._ptr.CmdBuffer.Size)
+        ]
+
+
+cdef class GuiStyle(object):
+    cdef cimgui.ImGuiStyle ref
+
+    @property
+    def alpha(self):
+        return self.ref.Alpha
+
+    @alpha.setter
+    def alpha(self, float value):
+        self.ref.Alpha = value
+
+    @property
+    def window_padding(self):
+        return _cast_ImVec2_tuple(self.ref.WindowPadding)
+
+    @window_padding.setter
+    def window_padding(self, value):
+        self.ref.WindowPadding = _cast_tuple_ImVec2(value)
 
 
 cdef class _DrawData(object):
@@ -123,33 +156,33 @@ cdef class _DrawData(object):
         self._require_pointer()
         self._ptr.ScaleClipRects(_cast_tuple_ImVec2((width, height)))
 
-    property valid:
-        def __get__(self):
-            self._require_pointer()
-            return self._ptr.Valid
+    @property
+    def valid(self):
+        self._require_pointer()
+        return self._ptr.Valid
 
-    property cmd_count:
-        def __get__(self):
-            self._require_pointer()
-            return self._ptr.CmdListsCount
+    @property
+    def cmd_count(self):
+        self._require_pointer()
+        return self._ptr.CmdListsCount
 
-    property total_vtx_count:
-        def __get__(self):
-            self._require_pointer()
-            return self._ptr.TotalVtxCount
+    @property
+    def total_vtx_count(self):
+        self._require_pointer()
+        return self._ptr.TotalVtxCount
 
-    property total_idx_count:
-        def __get__(self):
-            self._require_pointer()
-            return self._ptr.TotalIdxCount
+    @property
+    def total_idx_count(self):
+        self._require_pointer()
+        return self._ptr.TotalIdxCount
 
-    property commands_lists:
-        def __get__(self):
-            return [
-                _DrawList.from_ptr(self._ptr.CmdLists[idx])
-                # perd: short-wiring instead of using property
-                for idx in xrange(self._ptr.CmdListsCount)
-            ]
+    @property
+    def commands_lists(self):
+        return [
+            _DrawList.from_ptr(self._ptr.CmdLists[idx])
+            # perd: short-wiring instead of using property
+            for idx in xrange(self._ptr.CmdListsCount)
+        ]
 
 
 cdef class _FontAtlas(object):
@@ -196,14 +229,14 @@ cdef class _FontAtlas(object):
         self._ptr.GetTexDataAsRGBA32(&pixels, &width, &height)
 
         return width, height, bytes(pixels[:width*height*4])
+    
+    @property
+    def tex_id(self):
+        return <uintptr_t>self._ptr.TexID
 
-
-    property tex_id:
-        def __get__(self):
-            return <uintptr_t>self._ptr.TexID
-
-        def __set__(self, int value):
-            self._ptr.TexID = <void *> value
+    @tex_id.setter
+    def tex_id(self, int value):
+        self._ptr.TexID = <void *> value
 
 
 cdef class _IO(object):
@@ -214,65 +247,73 @@ cdef class _IO(object):
     def __init__(self):
         self._io_cref = &cimgui.GetIO()
         self._fonts = _FontAtlas.from_ptr(self._io_cref.Fonts)
+        self._render_callback = None
 
-    property display_size:
-        def __get__(self):
-            return _cast_ImVec2_tuple(self._io_cref.DisplaySize)
+    @property
+    def display_size(self):
+        return _cast_ImVec2_tuple(self._io_cref.DisplaySize)
 
-        def __set__(self, value):
-            self._io_cref.DisplaySize = _cast_tuple_ImVec2(value)
+    @display_size.setter
+    def display_size(self, value):
+        self._io_cref.DisplaySize = _cast_tuple_ImVec2(value)
 
-    property render_callback:
-        def __get__(self):
-            return self._render_callback
+    @property
+    def render_callback(self):
+        return self._render_callback
 
-        def __set__(self, object fn):
-            self._render_callback = fn
-            self._io_cref.RenderDrawListsFn = self._io_render_callback
+    @render_callback.setter
+    def render_callback(self, object fn):
+        self._render_callback = fn
+        self._io_cref.RenderDrawListsFn = self._io_render_callback
 
-    property delta_time:
-        def __get__(self):
-            return self._io_cref.DeltaTime
+    @property
+    def delta_time(self):
+        return self._io_cref.DeltaTime
 
-        def __set__(self, float time):
-            self._io_cref.DeltaTime = time
+    @delta_time.setter
+    def delta_time(self, float time):
+        self._io_cref.DeltaTime = time
 
-    property fonts:
-        def __get__(self):
-            return self._fonts
+    @property
+    def fonts(self):
+        return self._fonts
 
-    property display_fb_scale:
-        def __get__(self):
-            return _cast_ImVec2_tuple(self._io_cref.DisplayFramebufferScale)
+    @property
+    def display_fb_scale(self):
+        return _cast_ImVec2_tuple(self._io_cref.DisplayFramebufferScale)
 
-        def __set__(self, value):
-            self._io_cref.DisplayFramebufferScale = _cast_tuple_ImVec2(value)
+    @display_fb_scale.setter
+    def display_fb_scale(self, value):
+        self._io_cref.DisplayFramebufferScale = _cast_tuple_ImVec2(value)
 
-    property mouse_pos:
-        def __get__(self):
-            return _cast_ImVec2_tuple(self._io_cref.MousePos)
+    @property
+    def mouse_pos(self):
+        return _cast_ImVec2_tuple(self._io_cref.MousePos)
 
-        def __set__(self, value):
-            self._io_cref.MousePos = _cast_tuple_ImVec2(value)
+    @mouse_pos.setter
+    def mouse_pos(self, value):
+        self._io_cref.MousePos = _cast_tuple_ImVec2(value)
 
-    property mouse_down:
-        def __get__(self):
-            cdef cvarray mouse_down = cvarray(
-                shape=(5,),
-                format='b',
-                itemsize=sizeof(bool),
-                allocate_buffer=False
-            )
-            mouse_down.data = <char*>self._io_cref.MouseDown
-            return mouse_down
+    @property
+    def mouse_down(self):
+        # todo: consider adding setter despite the fact that it can be
+        # todo: modified in place
+        cdef cvarray mouse_down = cvarray(
+            shape=(5,),
+            format='b',
+            itemsize=sizeof(bool),
+            allocate_buffer=False
+        )
+        mouse_down.data = <char*>self._io_cref.MouseDown
+        return mouse_down
 
-    property mouse_wheel:
-        def __get__(self):
-            return self._io_cref.MouseWheel
+    @property
+    def mouse_wheel(self):
+        return self._io_cref.MouseWheel
 
-        def __set__(self, float value):
-            self._io_cref.MouseWheel = value
-
+    @mouse_wheel.setter
+    def mouse_wheel(self, float value):
+        self._io_cref.MouseWheel = value
 
     @staticmethod
     cdef void _io_render_callback(cimgui.ImDrawData* data) except *:
@@ -283,24 +324,19 @@ cdef class _IO(object):
 
 
 _io = None
-# H section: Main
 def get_io():
-    #IMGUI_API ImGuiIO&      GetIO();
     global _io
 
     if not _io:
-        # imgui_io = cimgui.GetIO()
         _io = _IO()
 
     return _io
 
 def get_style():
-    #IMGUI_API ImGuiStyle&   GetStyle();
     raise NotImplementedError
 
 
 def get_draw_data():
-    #IMGUI_API ImDrawData*   GetDrawData();
     raise NotImplementedError
 
 
@@ -320,45 +356,40 @@ def show_user_guide():
     cimgui.ShowUserGuide()
 
 
-def show_style_editor(style=None):
-    # IMGUI_API void          ShowStyleEditor(ImGuiStyle* ref = NULL);
-    # // style editor block. you can pass in a reference ImGuiStyle structure
-    # to compare to, revert to and save to (else it uses the default style)
-    raise NotImplementedError
+def show_style_editor(GuiStyle style=None):
+    if style:
+        cimgui.ShowStyleEditor(&style.ref)
+    else:
+        cimgui.ShowStyleEditor()
 
 
-def show_test_window(open_callback=None):
-    # IMGUI_API void          ShowTestWindow(bool* p_open = NULL);
-    # // test window demonstrating ImGui features
-    cdef cimgui.bool p_open
+def show_test_window(closable=False):
+    cdef cimgui.bool opened
 
-    cimgui.ShowTestWindow(&p_open)
-
-    if open_callback:
-        open_callback(p_open)
-
-
-def show_metrics_window(open_callback=None):
-    # IMGUI_API void          ShowMetricsWindow(bool* p_open = NULL);
-    # // metrics window for debugging ImGui
-    cdef cimgui.bool p_open
-
-    cimgui.ShowTestWindow(&p_open)
-
-    if open_callback:
-        open_callback(p_open)
+    if closable:
+        # todo: consider using special collapsed state object that will
+        # todo: wrap everything here instead of changing return type
+        return cimgui.ShowTestWindow(&opened), opened
+    else:
+        return cimgui.ShowTestWindow()
 
 
-def begin(char* name, open_callback=None):
-    # IMGUI_API bool          Begin(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0);
-    cdef cimgui.bool p_open
+def show_metrics_window(closable=False):
+    cdef cimgui.bool opened
 
-    non_collapsed = cimgui.Begin(name, &p_open, 0)
+    if closable:
+        return cimgui.ShowMetricsWindow(&opened), opened
+    else:
+        return cimgui.ShowMetricsWindow()
 
-    if open_callback:
-        open_callback(p_open)
 
-    return non_collapsed
+cpdef begin(char* name, closable=False):
+    cdef cimgui.bool opened
+
+    if closable:
+        return cimgui.Begin(name, &opened), opened
+    else:
+        return cimgui.Begin(name)
 
 
 def get_draw_data():
@@ -385,8 +416,11 @@ def end_child():
 def text(char* text):
     cimgui.Text(text)
 
+def text_colored(char* text, float r, float g, float b, float a=1.):
+    cimgui.TextColored(_cast_tuple_ImVec4((r, g, b, a)), text)
 
 # additional helpers
+# todo: move to separate extension module (extra?)
 def vertex_buffer_vertex_pos_offset():
     return <uintptr_t><size_t>&(<cimgui.ImDrawVert*>NULL).pos
 

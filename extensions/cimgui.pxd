@@ -126,10 +126,6 @@ cdef extern from "imgui.h":
         T*         Data
 
 
-    ctypedef struct ImGuiStyle:
-        pass
-
-
     ctypedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd)
 
 
@@ -182,8 +178,9 @@ cdef extern from "imgui.h":
     ctypedef struct ImGuiStorage:
         pass
 
-    ctypedef struct ImGuiStyle:
-        pass
+    cdef cppclass ImGuiStyle:
+        float       Alpha
+        ImVec2      WindowPadding
 
 
 cdef extern from "imgui.h" namespace "ImGui":
@@ -202,8 +199,11 @@ cdef extern from "imgui.h" namespace "ImGui":
     void           ShowUserGuide()
 
     void           ShowStyleEditor(ImGuiStyle* ref)
+    void           ShowStyleEditor()
+
     void           ShowTestWindow(bool* opened)
     void           ShowTestWindow()
+
     void           ShowMetricsWindow(bool* opened)
     void           ShowMetricsWindow()
 
@@ -212,9 +212,12 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool           Begin(const char* name, bool* p_open)
     bool           Begin(const char* name)
 
-    bool           Begin(const char* name, bool* p_open, const ImVec2& size_on_first_use, float bg_alpha, ImGuiWindowFlags flags)
-    bool           Begin(const char* name, bool* p_open, const ImVec2& size_on_first_use, float bg_alpha)
-    bool           Begin(const char* name, bool* p_open, const ImVec2& size_on_first_use)
+    # note: following API was deprecated
+    # bool           Begin(const char* name, bool* p_open, const ImVec2& size_on_first_use, float bg_alpha, ImGuiWindowFlags flags)
+    # bool           Begin(const char* name, bool* p_open, const ImVec2& size_on_first_use, float bg_alpha)
+    # bool           Begin(const char* name, bool* p_open, const ImVec2& size_on_first_use)
+
+    void           End()
 
     # defaults: const ImVec2& size = ImVec2(0,0), bool border = false, ImGuiWindowFlags extra_flags)
     bool           BeginChild(const char* str_id, const ImVec2& size, bool border, ImGuiWindowFlags extra_flags)
@@ -237,4 +240,5 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool           IsWindowCollapsed()
 
     ## Widgets
-    void Text(const char* text)
+    void          Text(const char* text)
+    void          TextColored(const ImVec4& col, const char* fmt)
