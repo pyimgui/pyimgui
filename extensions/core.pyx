@@ -364,6 +364,7 @@ def show_style_editor(GuiStyle style=None):
 
 
 def show_test_window(closable=False):
+    # note: on win initialization seems to be important
     cdef cimgui.bool opened
 
     if closable:
@@ -375,6 +376,7 @@ def show_test_window(closable=False):
 
 
 def show_metrics_window(closable=False):
+    # note: on win initialization seems to be important
     cdef cimgui.bool opened
 
     if closable:
@@ -384,7 +386,8 @@ def show_metrics_window(closable=False):
 
 
 cpdef begin(char* name, closable=False):
-    cdef cimgui.bool opened
+    # note: on win initialization seems to be important
+    cdef cimgui.bool opened = True
 
     if closable:
         return cimgui.Begin(name, &opened), opened
