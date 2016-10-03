@@ -330,14 +330,24 @@ def main():
 
     imp_create_device_objects()
 
+    opened = True
+    style = imgui.GuiStyle()
+
     while not glfw.window_should_close(window):
         glfw.poll_events()
         imp_glfw_new_frame(window)
 
-        # imgui.show_user_guide()
+        imgui.show_user_guide()
         imgui.show_test_window()
-        imgui.begin_child(123)
-        imgui.end_child()
+
+        if opened:
+            expanded, opened = imgui.begin("fooo", True)
+            imgui.text("Bar")
+            imgui.text_colored("Eggs", 0.2, 1., 0.)
+            imgui.end()
+
+        imgui.show_metrics_window()
+        imgui.show_style_editor(style)
 
         width, height = glfw.get_framebuffer_size(window)
 
