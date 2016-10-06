@@ -6,7 +6,7 @@ Notes: `✓` marks API element as already mapped in core bindings.
 """
 from libcpp cimport bool
 
-from enums cimport ImGuiKey_
+from enums cimport ImGuiKey_, ImGuiCol_
 
 
 cdef extern from "imgui.h":
@@ -211,7 +211,7 @@ cdef extern from "imgui.h":
 
         # note: originally Colors[ImGuiCol_COUNT]
         # todo: find a way to access enum var here
-        ImVec4*     Colors[]
+        ImVec4*     Colors
 
 
 cdef extern from "imgui.h" namespace "ImGui":
