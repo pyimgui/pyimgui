@@ -330,6 +330,12 @@ def main():
 
     imp_create_device_objects()
 
+    def scroll_callback(window, x_offset, y_offset):
+        io.mouse_wheel = y_offset
+
+    glfw.set_scroll_callback(window, scroll_callback)
+
+
     opened = True
     style = imgui.GuiStyle()
 
