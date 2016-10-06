@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
 # distutils: language = c++
 # distutils: include_dirs = imgui-cpp
-
+"""
+Notes: `✓` marks API element as already mapped in core bindings.
+"""
 from libcpp cimport bool
 
 from enums cimport ImGuiKey_
@@ -39,27 +42,27 @@ cdef extern from "imgui.h":
     ctypedef struct ImGuiIO:
         # ====
         # source-note: Settings (fill once)
-        ImVec2        DisplaySize
-        float         DeltaTime
-        float         IniSavingRate
-        const char*   IniFilename
-        const char*   LogFilename
-        float         MouseDoubleClickTime
-        float         MouseDoubleClickMaxDist
-        float         MouseDragThreshold
+        ImVec2        DisplaySize              # ✓
+        float         DeltaTime                # ✓
+        float         IniSavingRate            # ✓
+        const char*   IniFilename              # ✓
+        const char*   LogFilename              # ✓
+        float         MouseDoubleClickTime     # ✓
+        float         MouseDoubleClickMaxDist  # ✓
+        float         MouseDragThreshold       # ✓
         # note: originally KeyMap[ImGuiKey_COUNT]
         # todo: find a way to access enum var here
         int*          KeyMap
-        float         KeyRepeatDelay
-        float         KeyRepeatRate
+        float         KeyRepeatDelay           # ✓
+        float         KeyRepeatRate            # ✓
         void*         UserData
 
-        ImFontAtlas*  Fonts
-        float         FontGlobalScale
-        bool          FontAllowUserScaling
-        ImVec2        DisplayFramebufferScale
-        ImVec2        DisplayVisibleMin
-        ImVec2        DisplayVisibleMax
+        ImFontAtlas*  Fonts                    # ✓
+        float         FontGlobalScale          # ✓
+        bool          FontAllowUserScaling     # ✓
+        ImVec2        DisplayFramebufferScale  # ✓
+        ImVec2        DisplayVisibleMin        # ✓
+        ImVec2        DisplayVisibleMax        # ✓
 
         # ====
         # source-note: User Functions
@@ -77,13 +80,13 @@ cdef extern from "imgui.h":
         # ====
         # source-note: Input - Fill before calling NewFrame()
 
-        ImVec2      MousePos
-        bool        MouseDown[5]
-        float       MouseWheel
-        bool        MouseDrawCursor
-        bool        KeyCtrl
-        bool        KeyShift
-        bool        KeyAlt
+        ImVec2      MousePos                   # ✓
+        bool        MouseDown[5]               # ✓
+        float       MouseWheel                 # ✓
+        bool        MouseDrawCursor            # ✓
+        bool        KeyCtrl                    # ✓
+        bool        KeyShift                   # ✓
+        bool        KeyAlt                     # ✓
         bool        KeysDown[512]
         ImWchar     InputCharacters[16+1]
 
@@ -94,14 +97,14 @@ cdef extern from "imgui.h":
         # source-note: Output - Retrieve after calling NewFrame(), you can use
         #              them to discard inputs or hide them from the rest of
         #              your application
-        bool        WantCaptureMouse
-        bool        WantCaptureKeyboard
-        bool        WantTextInput
-        float       Framerate
-        int         MetricsAllocs
-        int         MetricsRenderVertices
-        int         MetricsRenderIndices
-        int         MetricsActiveWindows
+        bool        WantCaptureMouse           # ✓
+        bool        WantCaptureKeyboard        # ✓
+        bool        WantTextInput              # ✓
+        float       Framerate                  # ✓
+        int         MetricsAllocs              # ✓
+        int         MetricsRenderVertices      # ✓
+        int         MetricsRenderIndices       # ✓
+        int         MetricsActiveWindows       # ✓
 
         # ====
         # source-note: [Internal] ImGui will maintain those fields for you
@@ -130,11 +133,11 @@ cdef extern from "imgui.h":
 
 
     ctypedef struct ImDrawCmd:
-        unsigned int ElemCount
-        ImVec4       ClipRect
-        ImTextureID  TextureId
+        unsigned int   ElemCount               # ✓
+        ImVec4         ClipRect                # ✓
+        ImTextureID    TextureId               # ✓
         ImDrawCallback UserCallback
-        void*        UserCallbackData
+        void*          UserCallbackData
 
 
     ctypedef unsigned short ImDrawIdx
@@ -147,20 +150,21 @@ cdef extern from "imgui.h":
 
 
     ctypedef struct ImDrawList:
-        ImVector[ImDrawCmd]  CmdBuffer
-        ImVector[ImDrawIdx]  IdxBuffer
-        ImVector[ImDrawVert] VtxBuffer
-
+        # we mapp only buffer vectors since everything else is internal
+        # and right now we dont want to suport it.
+        ImVector[ImDrawCmd]  CmdBuffer         # ✓
+        ImVector[ImDrawIdx]  IdxBuffer         # ✓
+        ImVector[ImDrawVert] VtxBuffer         # ✓
 
 
     ctypedef struct ImDrawData:
-        bool            Valid
-        ImDrawList**    CmdLists
-        int             CmdListsCount
-        int             TotalVtxCount
-        int             TotalIdxCount
-        void            DeIndexAllBuffers()
-        void            ScaleClipRects(const ImVec2& sc)
+        bool            Valid                          # ✓
+        ImDrawList**    CmdLists                       # ✓
+        int             CmdListsCount                  # ✓
+        int             TotalVtxCount                  # ✓
+        int             TotalIdxCount                  # ✓
+        void            DeIndexAllBuffers()            # ✓
+        void            ScaleClipRects(const ImVec2&)  # ✓
 
     ctypedef struct ImFontConfig:
         pass
@@ -169,11 +173,11 @@ cdef extern from "imgui.h":
         pass
 
     ctypedef struct ImFontAtlas:
-        void*   TexID
+        void*   TexID                                                         # ✓
 
-        ImFont* AddFontDefault(const ImFontConfig* font_cfg = NULL)
-        void    GetTexDataAsAlpha8(unsigned char** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel = NULL)
-        void    GetTexDataAsRGBA32(unsigned char** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel = NULL)
+        ImFont* AddFontDefault(const ImFontConfig* = NULL)                    # ✓
+        void    GetTexDataAsAlpha8(unsigned char**, int*, int*, int* = NULL)  # ✓
+        void    GetTexDataAsRGBA32(unsigned char**, int*, int*, int* = NULL)  # ✓
 
     ctypedef struct ImGuiStorage:
         pass
@@ -186,58 +190,58 @@ cdef extern from "imgui.h":
 cdef extern from "imgui.h" namespace "ImGui":
 
     # Main
-    ImGuiIO&       GetIO()
+    ImGuiIO&       GetIO()                      # ✓
     ImGuiStyle&    GetStyle()
     ImDrawData*    GetDrawData()
-    void           NewFrame()
+    void           NewFrame()                   # ✓
 
     # note: Render runs callbacks that may be arbitrary Python code
     #       so we need to propagate exceptions from them
-    void           Render() except *
+    void           Render() except *            # ✓
 
-    void           Shutdown()
-    void           ShowUserGuide()
+    void           Shutdown()                   # ✓
+    void           ShowUserGuide()              # ✓
 
-    void           ShowStyleEditor(ImGuiStyle* ref)
-    void           ShowStyleEditor()
+    void           ShowStyleEditor(ImGuiStyle*) # ✓
+    void           ShowStyleEditor()            # ✓
 
-    void           ShowTestWindow(bool* opened)
-    void           ShowTestWindow()
+    void           ShowTestWindow(bool*)        # ✓
+    void           ShowTestWindow()             # ✓
 
-    void           ShowMetricsWindow(bool* opened)
-    void           ShowMetricsWindow()
+    void           ShowMetricsWindow(bool*)     # ✓
+    void           ShowMetricsWindow()          # ✓
 
     # Window
-    bool           Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
-    bool           Begin(const char* name, bool* p_open)
-    bool           Begin(const char* name)
+    bool           Begin(const char*, bool*, ImGuiWindowFlags) # ✓
+    bool           Begin(const char*, bool*)                   # ✓
+    bool           Begin(const char*)                          # ✓
 
     # note: following API was deprecated
-    # bool           Begin(const char* name, bool* p_open, const ImVec2& size_on_first_use, float bg_alpha, ImGuiWindowFlags flags)
-    # bool           Begin(const char* name, bool* p_open, const ImVec2& size_on_first_use, float bg_alpha)
-    # bool           Begin(const char* name, bool* p_open, const ImVec2& size_on_first_use)
+    # bool           Begin(const char*, bool*, const ImVec2&, float, ImGuiWindowFlags)
+    # bool           Begin(const char*, bool*, const ImVec2&, float)
+    # bool           Begin(const char*, bool*, const ImVec2&)
 
-    void           End()
+    void           End()                       # ✓
 
     # defaults: const ImVec2& size = ImVec2(0,0), bool border = false, ImGuiWindowFlags extra_flags)
-    bool           BeginChild(const char* str_id, const ImVec2& size, bool border, ImGuiWindowFlags extra_flags)
-    bool           BeginChild(const char* str_id, const ImVec2& size, bool border)
-    bool           BeginChild(const char* str_id, const ImVec2& size)
-    bool           BeginChild(const char* str_id)
+    bool           BeginChild(const char*, const ImVec2&, bool, ImGuiWindowFlags)  # ✓
+    bool           BeginChild(const char*, const ImVec2&, bool)                    # ✓
+    bool           BeginChild(const char*, const ImVec2&)                          # ✓
+    bool           BeginChild(const char*)                                         # ✓
 
-    bool           BeginChild(ImGuiID id, const ImVec2& size, bool border, ImGuiWindowFlags extra_flags)
-    bool           BeginChild(ImGuiID id, const ImVec2& size, bool border)
-    bool           BeginChild(ImGuiID id, const ImVec2& size)
-    bool           BeginChild(ImGuiID id)
+    bool           BeginChild(ImGuiID, const ImVec2&, bool, ImGuiWindowFlags)      # ✓
+    bool           BeginChild(ImGuiID, const ImVec2&, bool)                        # ✓
+    bool           BeginChild(ImGuiID, const ImVec2&)                              # ✓
+    bool           BeginChild(ImGuiID)                                             # ✓
 
-    void           EndChild()
+    void           EndChild()                                                      # ✓
 
-    void           SetWindowFontScale(float scale)
-    ImVec2         GetWindowPos()
-    ImVec2         GetWindowSize()
-    float          GetWindowWidth()
-    float          GetWindowHeight()
-    bool           IsWindowCollapsed()
+    void           SetWindowFontScale(float)   # ✓
+    ImVec2         GetWindowPos()              # ✓
+    ImVec2         GetWindowSize()             # ✓
+    float          GetWindowWidth()            # ✓
+    float          GetWindowHeight()           # ✓
+    bool           IsWindowCollapsed()         # ✓
 
     ## Widgets
     void          Text(const char* text)

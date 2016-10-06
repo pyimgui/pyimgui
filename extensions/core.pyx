@@ -180,7 +180,7 @@ cdef class _DrawData(object):
     def commands_lists(self):
         return [
             _DrawList.from_ptr(self._ptr.CmdLists[idx])
-            # perd: short-wiring instead of using property
+            # perf: short-wiring instead of using property
             for idx in xrange(self._ptr.CmdListsCount)
         ]
 
@@ -218,7 +218,8 @@ cdef class _FontAtlas(object):
         cdef unsigned char* pixels
 
         self._ptr.GetTexDataAsAlpha8(&pixels, &width, &height)
-        return width, height, pixels
+
+        return width, height, bytes(pixels[:width*height])
 
     def get_tex_data_as_rgba32(self):
         self._require_pointer()
@@ -231,31 +232,120 @@ cdef class _FontAtlas(object):
         return width, height, bytes(pixels[:width*height*4])
     
     @property
-    def tex_id(self):
+    def texture_id(self):
+        """
+        Note: difference in mapping (maps actual TexID and not TextureID)
+        :return:
+        """
         return <uintptr_t>self._ptr.TexID
 
-    @tex_id.setter
-    def tex_id(self, int value):
+    @texture_id.setter
+    def texture_id(self, int value):
         self._ptr.TexID = <void *> value
 
 
 cdef class _IO(object):
-    cdef cimgui.ImGuiIO* _io_cref
+    cdef cimgui.ImGuiIO* _ptr
     cdef object _render_callback
     cdef object _fonts
 
     def __init__(self):
-        self._io_cref = &cimgui.GetIO()
-        self._fonts = _FontAtlas.from_ptr(self._io_cref.Fonts)
+        self._ptr = &cimgui.GetIO()
+        self._fonts = _FontAtlas.from_ptr(self._ptr.Fonts)
         self._render_callback = None
 
+    # ... maping of input properties ...
     @property
     def display_size(self):
-        return _cast_ImVec2_tuple(self._io_cref.DisplaySize)
+        return _cast_ImVec2_tuple(self._ptr.DisplaySize)
 
     @display_size.setter
     def display_size(self, value):
-        self._io_cref.DisplaySize = _cast_tuple_ImVec2(value)
+        self._ptr.DisplaySize = _cast_tuple_ImVec2(value)
+
+    @property
+    def delta_time(self):
+        return self._ptr.DeltaTime
+
+    @delta_time.setter
+    def delta_time(self, float time):
+        self._ptr.DeltaTime = time
+
+    @property
+    def ini_saving_rate(self):
+        return self._ptr.IniSavingRate
+
+    @ini_saving_rate.setter
+    def ini_saving_rate(self, float value):
+        self._ptr.IniSavingRate = value
+
+    @property
+    def log_file_name(self):
+        return self._ptr.LogFilename
+
+    @log_file_name.setter
+    def log_file_name(self, char* value):
+        self._ptr.LogFilename = value
+
+    @property
+    def mouse_double_click_time(self):
+        return self._ptr.MouseDoubleClickTime
+
+    @mouse_double_click_time.setter
+    def mouse_double_click_time(self, float value):
+        self._ptr.MouseDoubleClickTime = value
+
+    @property
+    def mouse_double_click_max_distance(self):
+        return self._ptr.MouseDoubleClickMaxDist
+
+    @mouse_double_click_max_distance.setter
+    def mouse_double_click_max_distance(self, float value):
+        self._ptr.MouseDoubleClickMaxDist = value
+
+    @property
+    def mouse_drag_threshold(self):
+        return self._ptr.MouseDragThreshold
+
+    @mouse_drag_threshold.setter
+    def mouse_drag_threshold(self, float value):
+        self._ptr.MouseDragThreshold = value
+
+    @property
+    def key_repeat_delay(self):
+        return self._ptr.KeyRepeatDelay
+
+    @key_repeat_delay.setter
+    def key_repeat_delay(self, float value):
+        self._ptr.KeyRepeatDelay = value
+
+    @property
+    def key_repeat_rate(self):
+        return self._ptr.KeyRepeatRate
+
+    @key_repeat_rate.setter
+    def key_repeat_rate(self, float value):
+        self._ptr.KeyRepeatRate = value
+
+    @property
+    def fonts(self):
+        return self._fonts
+
+    @property
+    def font_global_scale(self):
+        return self._ptr.FontGlobalScale
+
+    @font_global_scale.setter
+    def font_global_scale(self, float value):
+        self._ptr.FontGlobalScale = value
+
+    @property
+    def font_allow_user_scaling(self):
+        return self._ptr.FontAllowUserScaling
+
+    @font_allow_user_scaling.setter
+    def font_allow_user_scaling(self, cimgui.bool value):
+        self._ptr.FontAllowUserScaling = value
 
     @property
     def render_callback(self):
@@ -264,35 +354,39 @@ cdef class _IO(object):
     @render_callback.setter
     def render_callback(self, object fn):
         self._render_callback = fn
-        self._io_cref.RenderDrawListsFn = self._io_render_callback
-
-    @property
-    def delta_time(self):
-        return self._io_cref.DeltaTime
-
-    @delta_time.setter
-    def delta_time(self, float time):
-        self._io_cref.DeltaTime = time
-
-    @property
-    def fonts(self):
-        return self._fonts
+        self._ptr.RenderDrawListsFn = self._io_render_callback
 
     @property
     def display_fb_scale(self):
-        return _cast_ImVec2_tuple(self._io_cref.DisplayFramebufferScale)
+        return _cast_ImVec2_tuple(self._ptr.DisplayFramebufferScale)
 
     @display_fb_scale.setter
     def display_fb_scale(self, value):
-        self._io_cref.DisplayFramebufferScale = _cast_tuple_ImVec2(value)
+        self._ptr.DisplayFramebufferScale = _cast_tuple_ImVec2(value)
+
+    @property
+    def display_visible_min(self):
+        return _cast_ImVec2_tuple(self._ptr.DisplayVisibleMin)
+
+    @display_visible_min.setter
+    def display_visible_min(self,  value):
+        self._ptr.DisplayVisibleMin = _cast_tuple_ImVec2(value)
+
+    @property
+    def display_visible_max(self):
+        return _cast_ImVec2_tuple(self._ptr.DisplayVisibleMax)
+
+    @display_visible_max.setter
+    def display_visible_max(self,  value):
+        self._ptr.DisplayVisibleMax = _cast_tuple_ImVec2(value)
 
     @property
     def mouse_pos(self):
-        return _cast_ImVec2_tuple(self._io_cref.MousePos)
+        return _cast_ImVec2_tuple(self._ptr.MousePos)
 
     @mouse_pos.setter
     def mouse_pos(self, value):
-        self._io_cref.MousePos = _cast_tuple_ImVec2(value)
+        self._ptr.MousePos = _cast_tuple_ImVec2(value)
 
     @property
     def mouse_down(self):
@@ -304,16 +398,77 @@ cdef class _IO(object):
             itemsize=sizeof(bool),
             allocate_buffer=False
         )
-        mouse_down.data = <char*>self._io_cref.MouseDown
+        mouse_down.data = <char*>self._ptr.MouseDown
         return mouse_down
 
     @property
     def mouse_wheel(self):
-        return self._io_cref.MouseWheel
+        return self._ptr.MouseWheel
 
     @mouse_wheel.setter
     def mouse_wheel(self, float value):
-        self._io_cref.MouseWheel = value
+        self._ptr.MouseWheel = value
+
+    @property
+    def mouse_draw_cursor(self):
+        return self._ptr.MouseDrawCursor
+
+    @mouse_draw_cursor.setter
+    def mouse_draw_cursor(self, cimgui.bool value):
+        self._ptr.MouseDrawCursor = value
+
+    @property
+    def key_ctrl(self):
+        return self._ptr.KeyCtrl
+
+    @key_ctrl.setter
+    def key_ctrl(self, cimgui.bool value):
+        self._ptr.KeyCtrl = value
+
+    @property
+    def key_shift(self):
+        return self._ptr.KeyShift
+
+    @key_shift.setter
+    def key_shift(self, cimgui.bool value):
+        self._ptr.KeyShift = value
+
+    @property
+    def key_alt(self):
+        return self._ptr.KeyAlt
+
+    @key_alt.setter
+    def key_alt(self, cimgui.bool value):
+        self._ptr.KeyAlt = value
+
+    # ... mapping of output properties ...
+    @property
+    def want_capture_mouse(self):
+        return self._ptr.WantCaptureMouse
+
+    @property
+    def want_capture_keyboard(self):
+        return self._ptr.WantCaptureKeyboard
+
+    @property
+    def want_text_input(self):
+        return self._ptr.WantTextInput
+
+    @property
+    def framerate(self):
+        return self._ptr.Framerate
+
+    @property
+    def metrics_allocs(self):
+        return self._ptr.MetricsAllocs
+
+    @property
+    def metrics_render_vertices(self):
+        return self._ptr.MetricsRenderVertices
+
+    @property
+    def metrics_active_windows(self):
+        return self._ptr.MetricsActiveWindows
 
     @staticmethod
     cdef void _io_render_callback(cimgui.ImDrawData* data) except *:
@@ -416,11 +571,37 @@ def end_child():
     cimgui.EndChild()
 
 
+def set_window_font_scale(float scale):
+    cimgui.SetWindowFontScale(scale)
+
+
+def get_windown_position():
+    return _cast_ImVec2_tuple(cimgui.GetWindowPos())
+
+
+def get_window_size():
+    return _cast_ImVec2_tuple(cimgui.GetWindowSize())
+
+
+def get_window_width():
+    return cimgui.GetWindowWidth()
+
+
+def get_window_height():
+    return cimgui.GetWindowHeight()
+
+
+def is_window_collapsed():
+    return cimgui.IsWindowCollapsed()
+
+
 def text(char* text):
     cimgui.Text(text)
 
+
 def text_colored(char* text, float r, float g, float b, float a=1.):
     cimgui.TextColored(_cast_tuple_ImVec4((r, g, b, a)), text)
+
 
 # additional helpers
 # todo: move to separate extension module (extra?)

@@ -170,7 +170,7 @@ def imp_create_font_texture():
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
     gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, width, height, 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, pixels)
 
-    io.fonts.tex_id = g_FontTexture
+    io.fonts.texture_id = g_FontTexture
     gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
 
 
