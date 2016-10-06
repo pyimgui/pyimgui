@@ -183,8 +183,35 @@ cdef extern from "imgui.h":
         pass
 
     cdef cppclass ImGuiStyle:
+        float       Alpha                      # ✓
+        ImVec2      WindowPadding              # ✓
         float       Alpha
         ImVec2      WindowPadding
+        ImVec2      WindowMinSize
+        float       WindowRounding
+        ImVec2      WindowTitleAlign
+        float       ChildWindowRounding
+        ImVec2      FramePadding
+        float       FrameRounding
+        ImVec2      ItemSpacing
+        ImVec2      ItemInnerSpacing
+        ImVec2      TouchExtraPadding
+        float       IndentSpacing
+        float       ColumnsMinSpacing
+        float       ScrollbarSize
+        float       ScrollbarRounding
+        float       GrabMinSize
+        float       GrabRounding
+        ImVec2      ButtonTextAlign
+        ImVec2      DisplayWindowPadding
+        ImVec2      DisplaySafeAreaPadding
+        bool        AntiAliasedLines
+        bool        AntiAliasedShapes
+        float       CurveTessellationTol
+
+        # note: originally Colors[ImGuiCol_COUNT]
+        # todo: find a way to access enum var here
+        ImVec4*     Colors[]
 
 
 cdef extern from "imgui.h" namespace "ImGui":
@@ -244,5 +271,5 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool           IsWindowCollapsed()         # ✓
 
     ## Widgets
-    void          Text(const char* text)
-    void          TextColored(const ImVec4& col, const char* fmt)
+    void          Text(const char*)                        # ✓
+    void          TextColored(const ImVec4&, const char*)  # ✓
