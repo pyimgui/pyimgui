@@ -128,6 +128,174 @@ cdef class GuiStyle(object):
     def window_padding(self, value):
         self.ref.WindowPadding = _cast_tuple_ImVec2(value)
 
+    @property
+    def window_min_size(self):
+        return _cast_ImVec2_tuple(self.ref.WindowMinSize)
+
+    @window_min_size.setter
+    def window_min_size(self, value):
+        self.ref.WindowMinSize = _cast_tuple_ImVec2(value)
+
+    @property
+    def window_rounding(self):
+        return self.ref.WindowRounding
+
+    @window_rounding.setter
+    def window_rounding(self, float value):
+        self.ref.WindowRounding = value
+
+    @property
+    def window_title_align(self):
+        return _cast_ImVec2_tuple(self.ref.WindowTitleAlign)
+
+    @window_title_align.setter
+    def window_title_align(self, value):
+        self.ref.WindowTitleAlign = _cast_tuple_ImVec2(value)
+
+    @property
+    def child_window_rounding(self):
+        return self.ref.ChildWindowRounding
+
+    @child_window_rounding.setter
+    def child_window_rounding(self, float value):
+        self.ref.ChildWindowRounding = value
+
+    @property
+    def frame_padding(self):
+        return _cast_ImVec2_tuple(self.ref.FramePadding)
+
+    @frame_padding.setter
+    def frame_padding(self, value):
+        self.ref.FramePadding = _cast_tuple_ImVec2(value)
+
+    @property
+    def frame_rounding(self):
+        return self.ref.FrameRounding
+
+    @frame_rounding.setter
+    def frame_rounding(self, float value):
+        self.ref.FrameRounding = value
+
+    @property
+    def item_spacing(self):
+        return _cast_ImVec2_tuple(self.ref.ItemSpacing)
+
+    @item_spacing.setter
+    def item_spacing(self, value):
+        self.ref.ItemSpacing = _cast_tuple_ImVec2(value)
+
+    @property
+    def item_inner_spacing(self):
+        return _cast_ImVec2_tuple(self.ref.ItemInnerSpacing)
+
+    @item_inner_spacing.setter
+    def item_inner_spacing(self, value):
+        self.ref.ItemInnerSpacing = _cast_tuple_ImVec2(value)
+
+    @property
+    def touch_extra_padding(self):
+        return _cast_ImVec2_tuple(self.ref.TouchExtraPadding)
+
+    @touch_extra_padding.setter
+    def touch_extra_padding(self, value):
+        self.ref.TouchExtraPadding = _cast_tuple_ImVec2(value)
+
+    @property
+    def indent_spacing(self):
+        return self.ref.IndentSpacing
+
+    @indent_spacing.setter
+    def indent_spacing(self, float value):
+        self.ref.IndentSpacing = value
+
+    @property
+    def columns_min_spacing(self):
+        return self.ref.ColumnsMinSpacing
+
+    @columns_min_spacing.setter
+    def columns_min_spacing(self, float value):
+        self.ref.ColumnsMinSpacing = value
+
+    @property
+    def scrollbar_size(self):
+        return self.ref.ScrollbarSize
+
+    @scrollbar_size.setter
+    def scrollbar_size(self, float value):
+        self.ref.ScrollbarSize = value
+
+    @property
+    def scrollbar_rounding(self):
+        return self.ref.ScrollbarRounding
+
+    @scrollbar_rounding.setter
+    def scrollbar_rounding(self, float value):
+        self.ref.ScrollbarRounding = value
+
+    @property
+    def grab_min_size(self):
+        return self.ref.GrabMinSize
+
+    @grab_min_size.setter
+    def grab_min_size(self, float value):
+        self.ref.GrabMinSize = value
+
+    @property
+    def grab_rounding(self):
+        return self.ref.GrabRounding
+
+    @grab_rounding.setter
+    def grab_rounding(self, float value):
+        self.ref.GrabRounding = value
+
+    @property
+    def button_text_align(self):
+        return _cast_ImVec2_tuple(self.ref.ButtonTextAlign)
+
+    @button_text_align.setter
+    def button_text_align(self, value):
+        self.ref.ButtonTextAlign = _cast_tuple_ImVec2(value)
+
+    @property
+    def display_window_padding(self):
+        return _cast_ImVec2_tuple(self.ref.DisplayWindowPadding)
+
+    @display_window_padding.setter
+    def display_window_padding(self, value):
+        self.ref.DisplayWindowPadding = _cast_tuple_ImVec2(value)
+
+    @property
+    def display_safe_area_padding(self):
+        return _cast_ImVec2_tuple(self.ref.DisplaySafeAreaPadding)
+
+    @display_safe_area_padding.setter
+    def display_safe_area_padding(self, value):
+        self.ref.DisplaySafeAreaPadding = _cast_tuple_ImVec2(value)
+
+    @property
+    def anti_aliased_lines(self):
+        return self.ref.AntiAliasedLines
+
+    @anti_aliased_lines.setter
+    def anti_aliased_lines(self, cimgui.bool value):
+        self.ref.AntiAliasedLines = value
+
+    @property
+    def anti_aliased_shapes(self):
+        return self.ref.AntiAliasedShapes
+
+    @anti_aliased_shapes.setter
+    def anti_aliased_shapes(self, cimgui.bool value):
+        self.ref.AntiAliasedShapes = value
+
+    @property
+    def curve_tessellation_tolerance(self):
+        return self.ref.CurveTessellationTol
+
+    @curve_tessellation_tolerance.setter
+    def curve_tessellation_tolerance(self, float value):
+        self.ref.CurveTessellationTol = value
+
 
 cdef class _DrawData(object):
     cdef cimgui.ImDrawData* _ptr
@@ -146,7 +314,6 @@ cdef class _DrawData(object):
         instance = _DrawData()
         instance._ptr = ptr
         return instance
-
 
     def deindex_all_buffers(self):
         self._require_pointer()

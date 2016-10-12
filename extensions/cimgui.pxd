@@ -185,29 +185,27 @@ cdef extern from "imgui.h":
     cdef cppclass ImGuiStyle:
         float       Alpha                      # ✓
         ImVec2      WindowPadding              # ✓
-        float       Alpha
-        ImVec2      WindowPadding
-        ImVec2      WindowMinSize
-        float       WindowRounding
-        ImVec2      WindowTitleAlign
-        float       ChildWindowRounding
-        ImVec2      FramePadding
-        float       FrameRounding
-        ImVec2      ItemSpacing
-        ImVec2      ItemInnerSpacing
-        ImVec2      TouchExtraPadding
-        float       IndentSpacing
-        float       ColumnsMinSpacing
-        float       ScrollbarSize
-        float       ScrollbarRounding
-        float       GrabMinSize
-        float       GrabRounding
-        ImVec2      ButtonTextAlign
-        ImVec2      DisplayWindowPadding
-        ImVec2      DisplaySafeAreaPadding
-        bool        AntiAliasedLines
-        bool        AntiAliasedShapes
-        float       CurveTessellationTol
+        ImVec2      WindowMinSize              # ✓
+        float       WindowRounding             # ✓
+        ImVec2      WindowTitleAlign           # ✓
+        float       ChildWindowRounding        # ✓
+        ImVec2      FramePadding               # ✓
+        float       FrameRounding              # ✓
+        ImVec2      ItemSpacing                # ✓
+        ImVec2      ItemInnerSpacing           # ✓
+        ImVec2      TouchExtraPadding          # ✓
+        float       IndentSpacing              # ✓
+        float       ColumnsMinSpacing          # ✓
+        float       ScrollbarSize              # ✓
+        float       ScrollbarRounding          # ✓
+        float       GrabMinSize                # ✓
+        float       GrabRounding               # ✓
+        ImVec2      ButtonTextAlign            # ✓
+        ImVec2      DisplayWindowPadding       # ✓
+        ImVec2      DisplaySafeAreaPadding     # ✓
+        bool        AntiAliasedLines           # ✓
+        bool        AntiAliasedShapes          # ✓
+        float       CurveTessellationTol       # ✓
 
         # note: originally Colors[ImGuiCol_COUNT]
         # todo: find a way to access enum var here
