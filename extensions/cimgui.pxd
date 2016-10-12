@@ -268,6 +268,28 @@ cdef extern from "imgui.h" namespace "ImGui":
     float          GetWindowHeight()           # ✓
     bool           IsWindowCollapsed()         # ✓
 
-    ## Widgets
+    # Widgets
     void          Text(const char*)                        # ✓
     void          TextColored(const ImVec4&, const char*)  # ✓
+
+
+
+    # Parameters stacks (shared)
+    void          PushFont(ImFont*)
+    void          PopFont();
+
+    void          PushStyleColor(ImGuiCol, const ImVec4&)
+    void          PopStyleColor(int)
+
+    void          PushStyleVar(ImGuiStyleVar, float) except *         # ✓
+    void          PushStyleVar(ImGuiStyleVar, const ImVec2&) except * # ✓
+
+    void          PopStyleVar(int) except *                           # ✓
+
+    ImFont*       GetFont()
+    float         GetFontSize()
+
+    ImVec2        GetFontTexUvWhitePixel()
+
+    ImU32         GetColorU32(ImGuiCol, float)
+    ImU32         GetColorU32(const ImVec4& col)

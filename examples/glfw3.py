@@ -60,9 +60,6 @@ def imp_glfw_new_frame(window):
 def imp_create_device_objects():
     io = imgui.get_io()
 
-    # import ipdb; ipdb.set_trace()
-    # print(io.mouse_down); exit()
-
     global g_ShaderHandle
     global g_VertHandle
     global g_FragHandle
@@ -335,7 +332,6 @@ def main():
 
     glfw.set_scroll_callback(window, scroll_callback)
 
-
     opened = True
     style = imgui.GuiStyle()
 
@@ -352,7 +348,9 @@ def main():
             imgui.text_colored("Eggs", 0.2, 1., 0.)
             imgui.end()
 
-        imgui.show_metrics_window()
+        with imgui.styled(imgui.STYLE_ALPHA, 0.4):
+            imgui.show_metrics_window()
+
         imgui.show_style_editor(style)
 
         width, height = glfw.get_framebuffer_size(window)

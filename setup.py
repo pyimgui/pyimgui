@@ -48,7 +48,10 @@ setup(
     url="https://github.com/swistakm/pyimgui",
 
     ext_modules=cythonize([
-        Extension("imgui.core", ["extensions/core.pyx"]),
+        Extension(
+            "imgui.core", ["extensions/core.pyx"],
+            extra_compile_args=['-includepyimconfig.h', '-Iextensions']
+        ),
     ], gdb_debug=True),
     setup_requires=['cython'],
 

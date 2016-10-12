@@ -67,3 +67,19 @@ cdef extern from "imgui.h":
         ImGuiCol_TextSelectedBg
         ImGuiCol_ModalWindowDarkening  # Darken entire screen when a modal window is active
         ImGuiCol_COUNT
+
+    ctypedef enum ImGuiStyleVar_:
+        ImGuiStyleVar_Alpha               # float
+        ImGuiStyleVar_WindowPadding       # ImVec2
+        ImGuiStyleVar_WindowRounding      # float
+        ImGuiStyleVar_WindowMinSize       # ImVec2
+        ImGuiStyleVar_ChildWindowRounding # float
+        ImGuiStyleVar_FramePadding        # ImVec2
+        ImGuiStyleVar_FrameRounding       # float
+        ImGuiStyleVar_ItemSpacing         # ImVec2
+        ImGuiStyleVar_ItemInnerSpacing    # ImVec2
+        ImGuiStyleVar_IndentSpacing       # float
+        ImGuiStyleVar_GrabMinSize         # float
+        ImGuiStyleVar_ButtonTextAlign     # flags ImGuiAlign_*
+        ImGuiStyleVar_Count_
+

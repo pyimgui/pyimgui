@@ -4,18 +4,26 @@
 import cython
 from cython.view cimport array as cvarray
 
+from collections import namedtuple
+import warnings
+from contextlib import contextmanager
+from itertools import izip_longest
+
 from libc.stdint cimport uintptr_t
 from libcpp cimport bool
 
 cimport cimgui
+cimport enums
+
+Vec2 = namedtuple("Vec2", ['x', 'y'])
+Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
 
 
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
-    # todo: consider using namedtuple
-    return vec.x, vec.y
+    return Vec2(vec.x, vec.y)
 
 
-cdef cimgui.ImVec2 _cast_tuple_ImVec2(pair):  # noqa
+cdef cimgui.ImVec2 _cast_tuple_ImVec2(pair) except *:  # noqa
     cdef cimgui.ImVec2 vec
 
     if len(pair) != 2:
@@ -38,8 +46,7 @@ cdef cimgui.ImVec4 _cast_tuple_ImVec4(quadruple):  # noqa
 
 
 cdef _cast_ImVec4_tuple(cimgui.ImVec4 vec):  # noqa
-    # todo: consider using namedtuple
-    return vec.x, vec.y, vec.w, vec.z
+    return Vec4(vec.x, vec.y, vec.w, vec.z)
 
 
 cdef class _DrawCmd(object):
@@ -770,8 +777,72 @@ def text_colored(char* text, float r, float g, float b, float a=1.):
     cimgui.TextColored(_cast_tuple_ImVec4((r, g, b, a)), text)
 
 
+cpdef push_style_var(cimgui.ImGuiStyleVar variable, value, force=False):
+    # todo: add documentation warning about possibility of segmentation
+    # todo: fault if not used with care; recommend context manager
+    if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
+        warnings.warn("Unknown style variable: {}".format(variable))
+        return False
+
+    try:
+        if isinstance(value, (tuple, list)):
+            cimgui.PushStyleVar(variable, _cast_tuple_ImVec2(value))
+        else:
+            cimgui.PushStyleVar(variable, float(value))
+    except ValueError:
+        raise ValueError(
+            "Style value must be float or two-elements list/tuple"
+        )
+    else:
+        return True
+
+
+cpdef pop_style_var(unsigned int count=1):
+    # todo: add documentation warning about possibility of segmentation
+    # todo: fault if not used with care; recommend context manager
+    cimgui.PopStyleVar(count)
+
+
 # additional helpers
 # todo: move to separate extension module (extra?)
+
+
+@contextmanager
+def styled(cimgui.ImGuiStyleVar variable, value):
+    # note: we treat bool value as integer to guess if we are required to pop
+    #       anything because IMGUI may simply skip pushing
+    count = push_style_var(variable, value)
+    yield
+    pop_style_var(count)
+
+
+@contextmanager
+def istyled(*variables_and_values):
+    count = 0
+    iterator = iter(variables_and_values)
+
+    try:
+        # note: this is a trick that allows us convert flat list to pairs
+        for var, val in izip_longest(iterator, iterator, fillvalue=None):
+            # note: since we group into pairs it is impossible to have
+            #       var equal to None
+            if val is not None:
+                count += push_style_var(var, val)
+            else:
+                raise ValueError(
+                    "Unsufficient style info: {} variable lacks a value"
+                    "".format(var)
+                )
+    except:
+        raise
+    else:
+        yield
+
+    finally:
+        # perf: short wiring despite we have a wrapper for this
+        cimgui.PopStyleVar(count)
+
+
 def vertex_buffer_vertex_pos_offset():
     return <uintptr_t><size_t>&(<cimgui.ImDrawVert*>NULL).pos
 
@@ -787,3 +858,16 @@ def vertex_buffer_vertex_size():
 def index_buffer_index_size():
     return sizeof(cimgui.ImDrawIdx)
 
+
+STYLE_ALPHA = enums.ImGuiStyleVar_Alpha # float
+STYLE_WINDOW_PADDING = enums.ImGuiStyleVar_WindowPadding  # Vec2
+STYLE_WINDOW_ROUNDING = enums.ImGuiStyleVar_WindowRounding  # float
+STYLE_WINDOW_MIN_SIZE = enums.ImGuiStyleVar_WindowMinSize  # Vec2
+STYLE_CHILD_WINDOW_ROUNDING = enums.ImGuiStyleVar_ChildWindowRounding # float
+STYLE_FRAME_PADDING = enums.ImGuiStyleVar_FramePadding # Vec2
+STYLE_FRAME_ROUNDING = enums.ImGuiStyleVar_FrameRounding # float
+STYLE_ITEM_SPACING = enums.ImGuiStyleVar_ItemSpacing # Vec2
+STYLE_ITEM_INNER_SPACING = enums.ImGuiStyleVar_ItemInnerSpacing # Vec2
+STYLE_INDENT_SPACING = enums.ImGuiStyleVar_IndentSpacing # float
+STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
+STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
