@@ -1,5 +1,5 @@
 # distutils: language = c++
-# distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp
+# distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp config-cpp/py_imconfig.cpp
 # distutils: include_dirs = imgui-cpp
 import cython
 from cython.view cimport array as cvarray
@@ -645,7 +645,7 @@ cdef class _IO(object):
         return self._ptr.MetricsActiveWindows
 
     @staticmethod
-    cdef void _io_render_callback(cimgui.ImDrawData* data) except *:
+    cdef void _io_render_callback(cimgui.ImDrawData* data) except +:
         io = get_io()
 
         if io.render_callback:
@@ -877,8 +877,8 @@ STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign
 # === Python/C++ cross API for error handling ===
 from cpython.exc cimport PyErr_NewException
 
-cdef public _ImGuiException "ImGuiException" = PyErr_NewException(
-    "imgui.core.ImGuiException", Exception, {}
+cdef public _ImGuiError "ImGuiError" = PyErr_NewException(
+    "imgui.core.ImGuiError", Exception, {}
 )
 
-ImGuiException = _ImGuiException # make visible to Python
+ImGuiError = _ImGuiError # make visible to Python

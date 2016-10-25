@@ -51,7 +51,7 @@ setup(
         Extension(
             "imgui.core", ["extensions/core.pyx"],
             extra_compile_args=[
-                '-includepyimconfig.h',
+                '-includeconfig-cpp/py_imconfig.h',
                 '-Iextensions',
                 '-DPYIMGUI_CUSTOM_EXCEPTION',
             ]

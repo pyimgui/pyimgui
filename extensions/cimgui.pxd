@@ -66,15 +66,15 @@ cdef extern from "imgui.h":
 
         # ====
         # source-note: User Functions
-        # note: callbacks may wrap arbitrary Python code
-        #       so we need to propagate exceptions from them
-        void        (*RenderDrawListsFn)(ImDrawData* data) except *
-        const char* (*GetClipboardTextFn)() except *
-        void        (*SetClipboardTextFn)(const char* text) except *
+        # note: callbacks may wrap arbitrary Python code so we need to
+        #       propagate exceptions from them (as well as C++ exceptions)
+        void        (*RenderDrawListsFn)(ImDrawData* data) except +
+        const char* (*GetClipboardTextFn)() except +
+        void        (*SetClipboardTextFn)(const char* text) except +
 
         void*       (*MemAllocFn)(size_t sz)
         void        (*MemFreeFn)(void* ptr)
-        void        (*ImeSetInputScreenPosFn)(int x, int y) except *
+        void        (*ImeSetInputScreenPosFn)(int x, int y) except +
         void*       ImeWindowHandle
 
         # ====
@@ -222,7 +222,7 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # note: Render runs callbacks that may be arbitrary Python code
     #       so we need to propagate exceptions from them
-    void           Render() except *            # ✓
+    void           Render() except +            # ✓
 
     void           Shutdown()                   # ✓
     void           ShowUserGuide()              # ✓
@@ -281,10 +281,10 @@ cdef extern from "imgui.h" namespace "ImGui":
     void          PushStyleColor(ImGuiCol, const ImVec4&)
     void          PopStyleColor(int)
 
-    void          PushStyleVar(ImGuiStyleVar, float) except *         # ✓
-    void          PushStyleVar(ImGuiStyleVar, const ImVec2&) except * # ✓
+    void          PushStyleVar(ImGuiStyleVar, float) except +         # ✓
+    void          PushStyleVar(ImGuiStyleVar, const ImVec2&) except + # ✓
 
-    void          PopStyleVar(int) except *                           # ✓
+    void          PopStyleVar(int) except +                           # ✓
 
     ImFont*       GetFont()
     float         GetFontSize()

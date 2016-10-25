@@ -14,9 +14,6 @@ extern "C" {
 #include <Python.h>
 }
 
-#include "core.h"
-
-
 // few macros to make IM_ASSERT cleaner
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
@@ -28,9 +25,7 @@ extern "C" {
 //       possible segmentation faults when using functions that
 //       does not return error values. Especially when pushing/poping
 //       style stack variables.
+#define IM_ASSERT(EX) (void)((EX) || (__py_assert ("ImGui assertion error (" #EX ") at " AT),0))
 
-#ifndef PYIMGUI_CUSTOM_EXCEPTION
-#define IM_ASSERT(EX) (void)((EX) || (PyErr_SetString (PyExc_RuntimeError, "ImGui assertion error (" #EX ") at " AT),0))
-#else
-#define IM_ASSERT(EX) (void)((EX) || (PyErr_SetString (ImGuiException, "ImGui assertion error (" #EX ") at " AT),0))
-#endif
+
+void __py_assert(const char* msg);
