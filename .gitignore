@@ -3,12 +3,20 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# os-specific stuff
+.DS_Store
+
+# imgui runtime configuration
+imgui.ini
+
 # C extensions
 *.so
 
 # Cython related
 cython_debug/
 extensions/*.cpp
+extensions/*.h
+extensions/*.c
 
 # Distribution / packaging
 .Python
