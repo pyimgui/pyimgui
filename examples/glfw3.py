@@ -91,7 +91,7 @@ def imp_create_device_objects():
         {
             Frag_UV = UV;
             Frag_Color = Color;
-            gl_Position = ProjMtx * vec4(Position.xy,0,1);
+            gl_Position = ProjMtx * vec4(Position.xy, 0, 1);
         }
     """
 
@@ -103,7 +103,7 @@ def imp_create_device_objects():
         out vec4 Out_Color;
         void main()
         {
-            Out_Color = Frag_Color * texture( Texture, Frag_UV.st);
+            Out_Color = Frag_Color * texture(Texture, Frag_UV.st);
         }
     """
     g_ShaderHandle = gl.glCreateProgram()
