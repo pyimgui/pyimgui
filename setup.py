@@ -50,7 +50,11 @@ setup(
     ext_modules=cythonize([
         Extension(
             "imgui.core", ["extensions/core.pyx"],
-            extra_compile_args=['-includepyimconfig.h', '-Iextensions']
+            extra_compile_args=[
+                '-includepyimconfig.h',
+                '-Iextensions',
+                '-DPYIMGUI_CUSTOM_EXCEPTION',
+            ]
         ),
     ], gdb_debug=True),
     setup_requires=['cython'],

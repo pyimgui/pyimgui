@@ -871,3 +871,14 @@ STYLE_ITEM_INNER_SPACING = enums.ImGuiStyleVar_ItemInnerSpacing # Vec2
 STYLE_INDENT_SPACING = enums.ImGuiStyleVar_IndentSpacing # float
 STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
 STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
+
+
+
+# === Python/C++ cross API for error handling ===
+from cpython.exc cimport PyErr_NewException
+
+cdef public _ImGuiException "ImGuiException" = PyErr_NewException(
+    "imgui.core.ImGuiException", Exception, {}
+)
+
+ImGuiException = _ImGuiException # make visible to Python
