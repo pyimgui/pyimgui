@@ -1,0 +1,41 @@
+os: osx
+
+language: generic
+
+env:
+  #global:
+  #  - secure: "adjTXQD1TKE8RnD8HkvemCKRTrO1TabHjqqin/R86Dewx9rbBm/XlV12ElxiW+B+3p9AsUdmxFj3i1WidDG4iuKFULFgKZk9x/d+4IDCChzpGNXYKxgh+lVtmGwVdX056XP/luiS2WmG6HCjMYMybNc39A1KjLM2ISydmrhANqPgmomTiztcOPXLsdC3f6xlWz+XOQDOCC2br4SnN4S3H6L8j9W5XnjiCJi/i3qVdxUuNSh/32WGxyR1N7p71Vo/ZYJF4hf4hjf/A9IRHytPl9nG6l+of0IZ1hQ83yLX65q4gdbgdrUNCUWF92xUGd2VRbAx2NwP9PLayWN/+IEdRz7WJcszq2cc3lO1xQrtWrVg08/vyJvBgaVA6EmGKiKWCKWGv5PorKU0TtQzqCRu82L7ZT77n4pGrG1CYv+NjQf7SdM2OFpqdcKPAnBVWY8+mfe9IxiNFM0dGzuRA8+RL9XgJWawFs/iaRkIZH1U/WiGS0Tl2xQf7nmDZ0KxNzVEOcnoBq3rZp+BXhksh00JkVjSC69hnLjdVBsnFmHUEgB4ofaT9ICEgC3auYB93/gSRyTIHqbh9irANboRyDplxobrbowRuY9ZOt6S2j5Fe3MXhgB1BjZvvuJbgS9ohQX7FR+VxZSasyfeGaTiFpPw6eiORG+NLzGkehsk9apbdto="
+
+  matrix:
+    - PY_VERSION=2.7
+    - PY_VERSION=3.3.6
+    - PY_VERSION=3.4.4
+    - PY_VERSION=3.5.1
+
+before_install:
+  # note: there is cython issue when python2.7 is installed using pyenv
+  - if [[ "$PY_VERSION" != "2.7" ]]; then brew update; fi
+  - if [[ "$PY_VERSION" != "2.7" ]]; then brew outdated pyenv || brew upgrade pyenv; fi
+  - if [[ "$PY_VERSION" != "2.7" ]]; then pyenv install $PY_VERSION; fi
+  - if [[ "$PY_VERSION" != "2.7" ]]; then pyenv local $PY_VERSION; fi
+  - if [[ "$PY_VERSION" != "2.7" ]]; then eval "$(pyenv init -)"; fi
+  # note: but it is required to run everything in virtualenv
+  - if [[ "$PY_VERSION" == "2.7" ]]; then virtualenv build-env; fi
+  - if [[ "$PY_VERSION" == "2.7" ]]; then source build-env/bin/activate; fi
+
+install:
+  # simply for logging
+  - python --version
+  # python requirements needed to create distribution
+  - python -m pip install wheel
+  - python -m pip install cython
+  - python -m pip install dropbox
+  # get latest version of all submodules (gorilla audio)
+  - git submodule update --init --recursive
+
+script:
+  - python --version
+  - pip freeze
+  - python setup.py build
+  - python setup.py bdist_wheel
+  # - python dropbox_upload.py
