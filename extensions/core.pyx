@@ -15,9 +15,12 @@ from libcpp cimport bool
 cimport cimgui
 cimport enums
 
+
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
 
+# todo: find a way to cimport this directly from imgui.h
+DEF TARGET_IMGUI_VERSION = (1, 49)
 
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
     return Vec2(vec.x, vec.y)
@@ -151,13 +154,16 @@ cdef class GuiStyle(object):
     def window_rounding(self, float value):
         self.ref.WindowRounding = value
 
-    @property
-    def window_title_align(self):
-        return _cast_ImVec2_tuple(self.ref.WindowTitleAlign)
+    IF TARGET_IMGUI_VERSION > (1, 49):
+        # note: not available as Vec2 in 1.49
+        # todo: add support for old input type
+        @property
+        def window_title_align(self):
+            return _cast_ImVec2_tuple(self.ref.WindowTitleAlign)
 
-    @window_title_align.setter
-    def window_title_align(self, value):
-        self.ref.WindowTitleAlign = _cast_tuple_ImVec2(value)
+        @window_title_align.setter
+        def window_title_align(self, value):
+            self.ref.WindowTitleAlign = _cast_tuple_ImVec2(value)
 
     @property
     def child_window_rounding(self):
@@ -255,13 +261,16 @@ cdef class GuiStyle(object):
     def grab_rounding(self, float value):
         self.ref.GrabRounding = value
 
-    @property
-    def button_text_align(self):
-        return _cast_ImVec2_tuple(self.ref.ButtonTextAlign)
+    IF TARGET_IMGUI_VERSION > (1, 49):
+        # note: not available as Vec2 in 1.49
+        # todo: add support for old input type
+        @property
+        def button_text_align(self):
+            return _cast_ImVec2_tuple(self.ref.ButtonTextAlign)
 
-    @button_text_align.setter
-    def button_text_align(self, value):
-        self.ref.ButtonTextAlign = _cast_tuple_ImVec2(value)
+        @button_text_align.setter
+        def button_text_align(self, value):
+            self.ref.ButtonTextAlign = _cast_tuple_ImVec2(value)
 
     @property
     def display_window_padding(self):
@@ -815,9 +824,11 @@ def text_colored(char* text, float r, float g, float b, float a=1.):
 cpdef push_style_var(cimgui.ImGuiStyleVar variable, value, force=False):
     # todo: add documentation warning about possibility of segmentation
     # todo: fault if not used with care; recommend context manager
-    if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
-        warnings.warn("Unknown style variable: {}".format(variable))
-        return False
+    IF TARGET_IMGUI_VERSION > (1, 49):
+        # note: this check is not available on imgui<=1.49
+        if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
+            warnings.warn("Unknown style variable: {}".format(variable))
+            return False
 
     try:
         if isinstance(value, (tuple, list)):
@@ -905,7 +916,8 @@ STYLE_ITEM_SPACING = enums.ImGuiStyleVar_ItemSpacing # Vec2
 STYLE_ITEM_INNER_SPACING = enums.ImGuiStyleVar_ItemInnerSpacing # Vec2
 STYLE_INDENT_SPACING = enums.ImGuiStyleVar_IndentSpacing # float
 STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
-STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
+IF TARGET_IMGUI_VERSION > (1, 49):
+    STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
 
 KEY_TAB = enums.ImGuiKey_Tab                 # for tabbing through fields
 KEY_LEFT_ARROW = enums.ImGuiKey_LeftArrow    # for text edit
