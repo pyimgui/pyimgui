@@ -5,8 +5,40 @@ import imgui
 import ctypes
 
 
-def keyboard_callback(*args, **kwargs):
-    pass
+def keyboard_callback(window, key, scancode, action, mods):
+    io = imgui.get_io()
+
+    if action == glfw.PRESS:
+        io.keys_down[key] = True
+    elif action == glfw.RELEASE:
+        io.keys_down[key] = False
+
+    io.key_ctrl = (
+        io.keys_down[glfw.KEY_LEFT_CONTROL] or
+        io.keys_down[glfw.KEY_RIGHT_CONTROL]
+    )
+
+    io.key_alt = (
+        io.keys_down[glfw.KEY_LEFT_ALT] or
+        io.keys_down[glfw.KEY_RIGHT_ALT]
+    )
+
+    io.key_shift = (
+        io.keys_down[glfw.KEY_LEFT_SHIFT] or
+        io.keys_down[glfw.KEY_RIGHT_SHIFT]
+    )
+
+    io.key_super = (
+        io.keys_down[glfw.KEY_LEFT_SUPER] or
+        io.keys_down[glfw.KEY_RIGHT_SUPER]
+    )
+
+
+def char_callback(window, char):
+    io = imgui.get_io()
+
+    if 0 < char < 0x10000:
+        io.add_input_character(char)
 
 
 def mouse_callback(*args, **kwargs):
@@ -55,6 +87,32 @@ def imp_glfw_new_frame(window):
         io.mouse_down[i] = glfw.get_mouse_button(window, i)
 
     imgui.new_frame()
+
+
+def imp_glfw_init():
+    io = imgui.get_io()
+
+    key_map = io.key_map
+
+    key_map[imgui.KEY_TAB] = glfw.KEY_TAB
+    key_map[imgui.KEY_LEFT_ARROW] = glfw.KEY_LEFT
+    key_map[imgui.KEY_RIGHT_ARROW] = glfw.KEY_RIGHT
+    key_map[imgui.KEY_UP_ARROW] = glfw.KEY_UP
+    key_map[imgui.KEY_DOWN_ARROW] = glfw.KEY_DOWN
+    key_map[imgui.KEY_PAGE_UP] = glfw.KEY_PAGE_UP
+    key_map[imgui.KEY_PAGE_DOWN] = glfw.KEY_PAGE_DOWN
+    key_map[imgui.KEY_HOME] = glfw.KEY_HOME
+    key_map[imgui.KEY_END] = glfw.KEY_END
+    key_map[imgui.KEY_DELETE] = glfw.KEY_DELETE
+    key_map[imgui.KEY_BACKSPACE] = glfw.KEY_BACKSPACE
+    key_map[imgui.KEY_ENTER] = glfw.KEY_ENTER
+    key_map[imgui.KEY_ESCAPE] = glfw.KEY_ESCAPE
+    key_map[imgui.KEY_A] = glfw.KEY_A
+    key_map[imgui.KEY_C] = glfw.KEY_C
+    key_map[imgui.KEY_V] = glfw.KEY_V
+    key_map[imgui.KEY_X] = glfw.KEY_X
+    key_map[imgui.KEY_Y] = glfw.KEY_Y
+    key_map[imgui.KEY_Z] = glfw.KEY_Z
 
 
 def imp_create_device_objects():
@@ -315,6 +373,7 @@ def main():
     glfw.set_key_callback(window, keyboard_callback)
     glfw.set_cursor_pos_callback(window, mouse_callback)
     glfw.set_window_size_callback(window, resize_callback)
+    glfw.set_char_callback(window, char_callback)
 
     # IMGUI io initialization
     io = imgui.get_io()
@@ -326,6 +385,7 @@ def main():
     io.fonts.add_font_default()
 
     imp_create_device_objects()
+    imp_glfw_init()
 
     def scroll_callback(window, x_offset, y_offset):
         io.mouse_wheel = y_offset
@@ -348,7 +408,7 @@ def main():
             imgui.text_colored("Eggs", 0.2, 1., 0.)
             imgui.end()
 
-        with imgui.styled(imgui.STYLE_ALPHA, 0.4):
+        with imgui.styled(imgui.STYLE_ALPHA, 1):
             imgui.show_metrics_window()
 
         imgui.show_style_editor(style)

@@ -87,11 +87,13 @@ cdef extern from "imgui.h":
         bool        KeyCtrl                    # ✓
         bool        KeyShift                   # ✓
         bool        KeyAlt                     # ✓
-        bool        KeysDown[512]
+        bool        KeySuper                   # ✓
+        bool        KeysDown[512]              # ✓
         ImWchar     InputCharacters[16+1]
 
-        void        AddInputCharacter(ImWchar c)
+        void        AddInputCharacter(ImWchar c)                    # ✓
         void        AddInputCharactersUTF8(const char* utf8_chars)
+        void        ClearInputCharacters()
 
         # ====
         # source-note: Output - Retrieve after calling NewFrame(), you can use

@@ -486,6 +486,17 @@ cdef class _IO(object):
         self._ptr.MouseDragThreshold = value
 
     @property
+    def key_map(self):
+        cdef cvarray key_map = cvarray(
+            shape=(enums.ImGuiKey_COUNT,),
+            format='i',
+            itemsize=sizeof(int),
+            allocate_buffer=False
+        )
+        key_map.data = <char*>self._ptr.KeyMap
+        return key_map
+
+    @property
     def key_repeat_delay(self):
         return self._ptr.KeyRepeatDelay
 
@@ -614,6 +625,30 @@ cdef class _IO(object):
     @key_alt.setter
     def key_alt(self, cimgui.bool value):
         self._ptr.KeyAlt = value
+
+    @property
+    def key_super(self):
+        return self._ptr.KeySuper
+
+    @key_super.setter
+    def key_super(self, cimgui.bool value):
+        self._ptr.KeySuper = value
+
+    @property
+    def keys_down(self):
+        # todo: consider adding setter despite the fact that it can be
+        # todo: modified in place
+        cdef cvarray keys_down = cvarray(
+            shape=(512,),
+            format='b',
+            itemsize=sizeof(bool),
+            allocate_buffer=False
+        )
+        keys_down.data = <char*>self._ptr.KeysDown
+        return keys_down
+
+    def add_input_character(self, cimgui.ImWchar c):
+        self._ptr.AddInputCharacter(c)
 
     # ... mapping of output properties ...
     @property
@@ -872,7 +907,25 @@ STYLE_INDENT_SPACING = enums.ImGuiStyleVar_IndentSpacing # float
 STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
 STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
 
-
+KEY_TAB = enums.ImGuiKey_Tab                 # for tabbing through fields
+KEY_LEFT_ARROW = enums.ImGuiKey_LeftArrow    # for text edit
+KEY_RIGHT_ARROW = enums.ImGuiKey_RightArrow  # for text edit
+KEY_UP_ARROW = enums.ImGuiKey_UpArrow      # for text edit
+KEY_DOWN_ARROW = enums.ImGuiKey_DownArrow    # for text edit
+KEY_PAGE_UP = enums.ImGuiKey_PageUp
+KEY_PAGE_DOWN = enums.ImGuiKey_PageDown
+KEY_HOME = enums.ImGuiKey_Home               # for text edit
+KEY_END = enums.ImGuiKey_End                 # for text edit
+KEY_DELETE = enums.ImGuiKey_Delete           # for text edit
+KEY_BACKSPACE = enums.ImGuiKey_Backspace     # for text edit
+KEY_ENTER = enums.ImGuiKey_Enter             # for text edit
+KEY_ESCAPE = enums.ImGuiKey_Escape           # for text edit
+KEY_A = enums.ImGuiKey_A                     # for text edit CTRL+A: select all
+KEY_C = enums.ImGuiKey_C                     # for text edit CTRL+C: copy
+KEY_V = enums.ImGuiKey_V                     # for text edit CTRL+V: paste
+KEY_X = enums.ImGuiKey_X                     # for text edit CTRL+X: cut
+KEY_Y = enums.ImGuiKey_Y                     # for text edit CTRL+Y: redo
+KEY_Z = enums.ImGuiKey_Z                     # for text edit CTRL+Z: undo
 
 # === Python/C++ cross API for error handling ===
 from cpython.exc cimport PyErr_NewException
