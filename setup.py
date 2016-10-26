@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# from __future__ import unicode_literals
+import os
+import sys
 
 from setuptools import setup, Extension
 from Cython.Build import cythonize
-import os
 
 
 try:
@@ -35,6 +35,20 @@ VERSION = get_version(eval(version_line.split('=')[-1]))
 README = os.path.join(os.path.dirname(__file__), 'README.md')
 
 
+if sys.platform in ('cygwin', 'win32'):  # windows
+    # note: `/FI` means forced include in VC++/VC
+    # note: may be obsoleted in future if ImGui gets patched
+    os_specific_flags = ['/FIpy_imconfig.h']
+    # placeholder for future
+    os_specific_macros = []
+else:  # OS X and Linux
+    # note: `-include` means forced include in GCC/clang
+    # note: may be obsoleted in future if ImGui gets patched
+    # placeholder for future
+    os_specific_flags = ['-includeconfig-cpp/py_imconfig.h']
+    os_specific_macros = []
+
+
 setup(
     name='imgui',
     version=VERSION,
@@ -50,11 +64,12 @@ setup(
     ext_modules=cythonize([
         Extension(
             "imgui.core", ["extensions/core.pyx"],
-            extra_compile_args=[
-                '-includeconfig-cpp/py_imconfig.h',
-                '-Iextensions',
-                '-DPYIMGUI_CUSTOM_EXCEPTION',
-            ]
+            extra_compile_args=os_specific_flags,
+            # note: for raising custom exceptions directly in ImGui code
+            define_macros=[
+                ('PYIMGUI_CUSTOM_EXCEPTION', None)
+            ] + os_specific_macros,
+            include_dirs=['extensions', 'config-cpp'],
         ),
     ], gdb_debug=True),
     setup_requires=['cython'],

@@ -20,6 +20,12 @@ extern "C" {
 #define TOWRAP(x) "(" STRINGIFY(x) ")"
 #define AT __FILE__ ":" TOSTRING(__LINE__)
 
+#if defined(_MSC_VER) &&_MSC_VER <= 1500
+// lousy workaround for missing stdint.h in Visual C++ for Python
+typedef unsigned __int64     uint64_t;
+typedef signed __int64       int64_t;
+#endif
+
 // Redefine IM_ASSERT to raise Python specific exceptions
 // note: enabling asserts as Python exceptions guards us from
 //       possible segmentation faults when using functions that
