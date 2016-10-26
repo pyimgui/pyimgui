@@ -269,14 +269,83 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool           IsWindowCollapsed()         # ✓
 
     # Widgets
+    # Widgets: text
     void          Text(const char*)                        # ✓
     void          TextColored(const ImVec4&, const char*)  # ✓
-
-
+    void          TextDisabled(const char*)
+    void          TextWrapped(const char*)
+    void          TextUnformatted(const char*)
+    void          LabelText(const char*, const char*)
+    void          Bullet()
+    void          BulletText(const char*)
+    # Widgets: buttons
+    bool          Button(const char*, const ImVec2& size)
+    bool          Button(const char*)
+    bool          SmallButton(const char*)
+    bool          InvisibleButton(const char* str_id, const ImVec2& size)
+    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0,  const ImVec2& uv1, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
+    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0,  const ImVec2& uv1, int frame_padding, const ImVec4& bg_col)
+    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0,  const ImVec2& uv1, int frame_padding)
+    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0,  const ImVec2& uv1)
+    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0)
+    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size)
+    bool          ColorButton(const ImVec4& col, bool small_height, bool outline_border)
+    bool          ColorButton(const ImVec4& col, bool small_height)
+    bool          ColorButton(const ImVec4& col)
+    # Widgets: images
+    void          Image(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
+    void          Image(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col)
+    void          Image(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1)
+    void          Image(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0)
+    void          Image(ImTextureID user_texture_id, const ImVec2& size)
+    # Widgets: checkboxes etc.
+    bool          Checkbox(const char* label, bool* v)
+    bool          CheckboxFlags(const char* label, unsigned int* flags, unsigned int flags_value)
+    bool          RadioButton(const char* label, bool active)
+    bool          RadioButton(const char* label, int* v, int v_button)
+    # Widgets: combos
+    bool          Combo(const char* label, int* current_item, const char** items, int items_count, int height_in_items)
+    bool          Combo(const char* label, int* current_item, const char** items, int items_count)
+    bool          Combo(const char* label, int* current_item, const char* items_separated_by_zeros, int height_in_items)
+    bool          Combo(const char* label, int* current_item, const char* items_separated_by_zeros)
+    bool          Combo(const char* label, int* current_item, bool (*items_getter)(void* data, int idx, const char** out_text), void* data, int items_count, int height_in_items)
+    bool          Combo(const char* label, int* current_item, bool (*items_getter)(void* data, int idx, const char** out_text), void* data, int items_count)
+    # Widgets: color-edits
+    bool          ColorEdit3(const char* label, float col[3])
+    bool          ColorEdit4(const char* label, float col[4], bool show_alpha)
+    bool          ColorEdit4(const char* label, float col[4])
+    #void          ColorEditMode(ImGuiColorEditMode mode)  # note: obsoleted
+    # Widgets: plots
+    void          PlotLines(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int stride)
+    void          PlotLines(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size)
+    void          PlotLines(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max)
+    void          PlotLines(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min)
+    void          PlotLines(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text)
+    void          PlotLines(const char* label, const float* values, int values_count)
+    void          PlotLines(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size)
+    void          PlotLines(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max)
+    void          PlotLines(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min)
+    void          PlotLines(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset)
+    void          PlotLines(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count)
+    void          PlotHistogram(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int stride)
+    void          PlotHistogram(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size)
+    void          PlotHistogram(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max)
+    void          PlotHistogram(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min)
+    void          PlotHistogram(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text)
+    void          PlotHistogram(const char* label, const float* values, int values_count, int values_offset)
+    void          PlotHistogram(const char* label, const float* values, int values_count)
+    void          PlotHistogram(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size)
+    void          PlotHistogram(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max)
+    void          PlotHistogram(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min)
+    void          PlotHistogram(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset)
+    void          PlotHistogram(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count)
+    void          ProgressBar(float fraction, const ImVec2& size_arg, const char* overlay)
+    void          ProgressBar(float fraction, const ImVec2& size_arg)
+    void          ProgressBar(float fraction)
 
     # Parameters stacks (shared)
     void          PushFont(ImFont*)
-    void          PopFont();
+    void          PopFont()
 
     void          PushStyleColor(ImGuiCol, const ImVec4&)
     void          PopStyleColor(int)
