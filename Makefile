@@ -7,5 +7,5 @@ build:
 	python setup.py develop
 
 rebuild: clean build
-	echo 'Done!'
+	@echo 'Done!'
 
