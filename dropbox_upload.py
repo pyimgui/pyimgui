@@ -28,6 +28,6 @@ for root, dirs, files in os.walk('dist'):
         with open(local_path, 'rb') as f:
             print("uploading %s" % local_path)
             dbx.files_upload(
-                f, dropbox_path,
+                f.read(), dropbox_path,
                 dropbox.files.WriteMode('overwrite')
             )
