@@ -3,8 +3,8 @@ os: osx
 language: generic
 
 env:
-  #global:
-  #  - secure: "adjTXQD1TKE8RnD8HkvemCKRTrO1TabHjqqin/R86Dewx9rbBm/XlV12ElxiW+B+3p9AsUdmxFj3i1WidDG4iuKFULFgKZk9x/d+4IDCChzpGNXYKxgh+lVtmGwVdX056XP/luiS2WmG6HCjMYMybNc39A1KjLM2ISydmrhANqPgmomTiztcOPXLsdC3f6xlWz+XOQDOCC2br4SnN4S3H6L8j9W5XnjiCJi/i3qVdxUuNSh/32WGxyR1N7p71Vo/ZYJF4hf4hjf/A9IRHytPl9nG6l+of0IZ1hQ83yLX65q4gdbgdrUNCUWF92xUGd2VRbAx2NwP9PLayWN/+IEdRz7WJcszq2cc3lO1xQrtWrVg08/vyJvBgaVA6EmGKiKWCKWGv5PorKU0TtQzqCRu82L7ZT77n4pGrG1CYv+NjQf7SdM2OFpqdcKPAnBVWY8+mfe9IxiNFM0dGzuRA8+RL9XgJWawFs/iaRkIZH1U/WiGS0Tl2xQf7nmDZ0KxNzVEOcnoBq3rZp+BXhksh00JkVjSC69hnLjdVBsnFmHUEgB4ofaT9ICEgC3auYB93/gSRyTIHqbh9irANboRyDplxobrbowRuY9ZOt6S2j5Fe3MXhgB1BjZvvuJbgS9ohQX7FR+VxZSasyfeGaTiFpPw6eiORG+NLzGkehsk9apbdto="
+  global:
+     - secure: BOq8PDn3iGRFfvj44kxooFvi73CdGTLWparh/hZgPZOtVpaxPgmBRdowCy8CM+Sw3UHzVx4bJtpoAVlC8HKsCHzm5RzJCPlZbLel6tFSLRpQ/P0pclbi7RJVX354xUq69hckX1NMLCzD4rrh2+nhIxN/CMW/EgaZX94+99/UUrSkyN2SnJ78+zrYRZZxtC/v1m8Q00jdS0raXYzGAh9SQuSnTf2C6nH9/oXykXmElUYGI52LoqmU3OIIWQNKNWH6vhlukuih3H5nycPm2dys8l8UxIji66pqmnyZRXsVq/5xqEYbxo493GPQQPQ2k4Zec4SOXaZ34ert4KSpK36MLSKJ59dou8+JK/yUwKeJQlHzpD5Qzwt+Je/oU3RREPzhYLc7U1QnxiNlLa4YgcCfwurFGrWmFRLe+TM2Ck6FuWi0LltGDNggFgox4I73v7odU5330qsh6Jz9aSsOsS8tc9V64jZdxiI8gK/azz0k4GI9EYpzpziFZEt3HrthVKXHrssonevUtRK8a+9Df/3cV9+KedAQarzkv7t4W61c1oA1XZHh45xUpE4x5T4mBIg+Pa+lPw748BQrLJ8zc5ZJj1g9jRGUTRlngQEy0MoWiyODzSc2VqDcLSsKbADeI73xxgq+Fxl9Dih6cKedpxpoFlxPuAD1PgvwwxitPjrnnS8=
 
   matrix:
     - PY_VERSION=2.7
@@ -38,4 +38,4 @@ script:
   - pip freeze
   - python setup.py build
   - python setup.py bdist_wheel
-  # - python dropbox_upload.py
+  - python dropbox_upload.py
