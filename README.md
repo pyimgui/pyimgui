@@ -1,3 +1,8 @@
+| Windows build | Mac OS X build |
+| ------------- | -------------- |
+| [![Build status](https://ci.appveyor.com/api/projects/status/s7pud6on7dww89iv?svg=true)](https://ci.appveyor.com/project/swistakm/pyimgui) | [![Build Status](https://travis-ci.org/swistakm/pyimgui.svg?branch=master)](https://travis-ci.org/swistakm/pyimgui)
+
+
 # pyimgui,
 
 **pyimgui** is a Cython-based binding for impressive 
