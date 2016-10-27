@@ -14,9 +14,9 @@ try:
 
 except ImportError:
     convert = None
-    print(
-        "warning: pypandoc module not found, could not convert Markdown to RST"
-    )
+    # note: this warning is only for package registration step
+    if 'register' in sys.argv:
+        print("warning: pypandoc not found, could not convert Markdown to RST")
 
     def read_md(f):
         return open(f, 'r').read()  # noqa

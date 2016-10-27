@@ -1,6 +1,5 @@
 environment:
   global:
-    DISTRIBUTIONS: "bdist_wheel"
     DROPBOX_TOKEN:
       secure: UO64ZwJpnDQe5c7xArS14TLnqUi7TR76tJLpZVxo5lV8GJXEkDBEOjFsmaEVFQ/rvqCmMkECYE3RNWhFO/DE0o3Vh/6FCOiO2ZAQsKkOIGk=
 
@@ -69,10 +68,10 @@ install:
 build: off
 
 build_script:
-  # build our sdist and wheel distribution
-  - "build.cmd %PYTHON%/python setup.py build"
-  - "build.cmd %PYTHON%/python setup.py %DISTRIBUTIONS%"
-  - "%PYTHON%\\python.exe dropbox_upload.py"
+  - "ci\\appveyor_build.cmd %PYTHON%/python.exe -m pip wheel . -w dist"
+
+on_success:
+  - "%PYTHON%\\python.exe ci\\dropbox_upload.py"
 
 artifacts:
   - path: dist\*
