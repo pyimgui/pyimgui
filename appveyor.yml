@@ -1,0 +1,71 @@
+environment:
+  global:
+    DISTRIBUTIONS: "bdist_wheel"
+    DROPBOX_TOKEN:
+      secure: UO64ZwJpnDQe5c7xArS14TLnqUi7TR76tJLpZVxo5lV8GJXEkDBEOjFsmaEVFQ/rvqCmMkECYE3RNWhFO/DE0o3Vh/6FCOiO2ZAQsKkOIGk=
+
+  matrix:
+    - PYTHON: "C:\\Python27"
+      PYTHON_ARCH: 32
+      MSVC_VERSION: "Visual Studio 10"
+
+    - PYTHON: "C:\\Python33"
+      PYTHON_ARCH: 32
+      MSVC_VERSION: "Visual Studio 10"
+
+    - PYTHON: "C:\\Python34"
+      PYTHON_ARCH: 32
+      MSVC_VERSION: "Visual Studio 10"
+
+    - PYTHON: "C:\\Python35"
+      PYTHON_ARCH: 32
+      MSVC_VERSION: "Visual Studio 14"
+
+    # x64 builds
+    - PYTHON: "C:\\Python27-x64"
+      PYTHON_ARCH: 64
+      MSVC_VERSION: "Visual Studio 10 Win64"
+
+    - PYTHON: "C:\\Python33-x64"
+      PYTHON_ARCH: 64
+      MSVC_VERSION: "Visual Studio 10 Win64"
+      DISTUTILS_USE_SDK: "1"
+
+    - PYTHON: "C:\\Python34-x64"
+      PYTHON_ARCH: 64
+      MSVC_VERSION: "Visual Studio 10 Win64"
+      DISTUTILS_USE_SDK: "1"
+
+    - PYTHON: "C:\\Python35-x64"
+      PYTHON_ARCH: 64
+      MSVC_VERSION: "Visual Studio 14 Win64"
+
+init:
+  - "ECHO %PYTHON% %PYTHON_ARCH% %MSVC_VERSION%"
+  - "%PYTHON%\\python.exe --version"
+
+install:
+  - set
+  # python requirements needed to create distribution
+  - "%PYTHON%\\python.exe -m pip install wheel"
+
+  # try to fix cython install, see:
+  # * https://matthew-brett.github.io/pydagogue/python_msvc.html
+  # * https://blog.ionelmc.ro/2014/12/21/compiling-python-extensions-on-windows/
+  - echo "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64 > "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64/vcvars64.bat"
+
+  - "%PYTHON%\\python.exe -m pip install cython"
+  - "%PYTHON%\\python.exe -m pip install dropbox"
+  # get latest version of all submodules (gorilla audio)
+  - "git submodule update --init --recursive"
+
+build: off
+
+build_script:
+  # build our sdist and wheel distribution
+  - "build.cmd %PYTHON%/python setup.py build"
+  - "build.cmd %PYTHON%/python setup.py %DISTRIBUTIONS%"
+  - "%PYTHON%\\python.exe dropbox_upload.py"
+
+artifacts:
+  - path: dist\*
