@@ -54,6 +54,13 @@ install:
   # * https://blog.ionelmc.ro/2014/12/21/compiling-python-extensions-on-windows/
   - echo "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64 > "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64/vcvars64.bat"
 
+  # note: VS 2010 has stdint.h bundled so simply copy it. Cython should not
+  #       depend on it for py27 (works fine when compiling using C code)
+  #       but this works differently for C++ (maybe there is some other issue
+  #       with environment setup).
+  # try to do a dirty workaround for Cython with C++ for py27
+  - cp "c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdint.h" "C:\Users\appveyor\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include\stdint.h"
+
   - "%PYTHON%\\python.exe -m pip install cython"
   - "%PYTHON%\\python.exe -m pip install dropbox"
   # get latest version of all submodules (gorilla audio)
