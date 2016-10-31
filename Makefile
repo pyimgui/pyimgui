@@ -8,11 +8,11 @@ help:
 	@echo "  bootstrap  to bootstrap whole development environment"
 
 
-bootstrap: .bootstrapped
-	@echo "I'm making sure project is bootstrapped ..."
-
+# note: empty recipe as alias for .bootstrapped target
+bootstrap: .bootstrapped ;
 
 .bootstrapped:
+	@echo "Bootstrapping project environment ..."
 	git submodule update --init
 	pip install -r doc/requirements-dev.txt
 	@touch .bootstrapped
@@ -20,7 +20,7 @@ bootstrap: .bootstrapped
 
 .PHONY: clean
 clean:
-	rm -f extensions/*.cpp extensions/*.c extensions/*.h imgui/*.so
+	rm -f imgui/*.cpp imgui/*.c imgui/*.h imgui/*.so
 
 
 .PHONY: build
