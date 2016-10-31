@@ -22,6 +22,7 @@ Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
 # todo: find a way to cimport this directly from imgui.h
 DEF TARGET_IMGUI_VERSION = (1, 49)
 
+
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
     return Vec2(vec.x, vec.y)
 
@@ -120,10 +121,19 @@ cdef class _DrawList(object):
 
 
 cdef class GuiStyle(object):
+    """
+    Container for ImGui style information
+
+    """
     cdef cimgui.ImGuiStyle ref
 
     @property
     def alpha(self):
+        """Global alpha blending parameter for windows
+
+        Returns:
+            float
+        """
         return self.ref.Alpha
 
     @alpha.setter
@@ -802,10 +812,20 @@ def get_window_size():
 
 
 def get_window_width():
+    """Get current window width.
+
+    Returns:
+        float: width of current window.
+    """
     return cimgui.GetWindowWidth()
 
 
 def get_window_height():
+    """Get current window height.
+
+    Returns:
+        float: height of current window.
+    """
     return cimgui.GetWindowHeight()
 
 
