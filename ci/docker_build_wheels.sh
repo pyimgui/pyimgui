@@ -15,6 +15,6 @@ done
 
 # Bundle external shared libraries into the wheels and fix platform tags
 echo -e "\n\nAuditing wheels:"
-for whl in dist-wip/*.whl; do
+for whl in /io/dist-wip/*.whl; do
     auditwheel repair $whl -w /io/dist/
 done
