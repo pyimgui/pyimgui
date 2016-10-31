@@ -61,8 +61,7 @@ install:
   - cp "c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdint.h" "C:\Users\appveyor\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include\stdint.h"
 
   - "%PYTHON%\\python.exe -m pip install cython"
-  - "%PYTHON%\\python.exe -m pip install dropbox"
-  # get latest version of all submodules (gorilla audio)
+  # get latest version of all submodules
   - "git submodule update --init --recursive"
 
 build: off
@@ -71,7 +70,9 @@ build_script:
   - "ci\\appveyor_build.cmd %PYTHON%/python.exe -m pip wheel . -w dist"
 
 on_success:
-  - "%PYTHON%\\python.exe ci\\dropbox_upload.py"
+  - if [%APPVEYOR_REPO_BRANCH%]==[master] (
+       python.exe -m pip install dropbox &&
+       python.exe ci/dropbox_upload.py)
 
 artifacts:
   - path: dist\*

@@ -31,7 +31,7 @@ matrix:
 
 
 before_install:
-  - ./ci/travis_before.sh
+  - source ci/travis_before.sh
 
   # note: there is cython issue when python2.7 is installed using pyenv
   # note: but it is required to run everything in virtualenv
@@ -48,7 +48,10 @@ script:
   - ./ci/travis_build.sh
 
 after_success:
+  # note: on certain environments there may be a problem with installing
+  #       dropbox without virtualenv
   - virtualenv dist-env
   - source dist-env/bin/activate
   - python -m pip install dropbox
-  - python ci/dropbox_upload.py
+  # note: we upload dists only on master commits
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then python dropbox_upload.py; fi
