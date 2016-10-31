@@ -63,13 +63,13 @@ setup(
 
     ext_modules=cythonize([
         Extension(
-            "imgui.core", ["extensions/core.pyx"],
+            "imgui.core", ["imgui/core.pyx"],
             extra_compile_args=os_specific_flags,
-            # note: for raising custom exceptions directly in ImGui code
             define_macros=[
+                # note: for raising custom exceptions directly in ImGui code
                 ('PYIMGUI_CUSTOM_EXCEPTION', None)
             ] + os_specific_macros,
-            include_dirs=['extensions', 'config-cpp'],
+            include_dirs=['imgui', 'config-cpp'],
         ),
     ], gdb_debug=True),
     setup_requires=['cython'],
