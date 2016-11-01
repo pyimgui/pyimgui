@@ -261,7 +261,53 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool           BeginChild(ImGuiID, const ImVec2&)                              # ✓
     bool           BeginChild(ImGuiID)                                             # ✓
 
-    void           EndChild()                                                      # ✓
+    void           EndChild()
+
+    ImVec2         GetContentRegionMax()
+    ImVec2         GetContentRegionAvail()
+    float          GetContentRegionAvailWidth()
+    ImVec2         GetWindowContentRegionMin()
+    ImVec2         GetWindowContentRegionMax()
+    float          GetWindowContentRegionWidth()
+    ImDrawList*    GetWindowDrawList()
+    ImVec2         GetWindowPos()                                             # ✓
+    ImVec2         GetWindowSize()                                            # ✓
+    float          GetWindowWidth()                                           # ✓
+    float          GetWindowHeight()                                          # ✓
+    bool           IsWindowCollapsed()
+    void           SetWindowFontScale(float scale)
+    void           SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond)
+    void           SetNextWindowPos(const ImVec2& pos)  # cond = 0            # ✓
+    void           SetNextWindowPosCenter(ImGuiSetCond cond)
+    void           SetNextWindowPosCenter()  # cond = 0                       # ✓
+    void           SetNextWindowSize(const ImVec2& size, ImGuiSetCond cond)
+    void           SetNextWindowSize(const ImVec2& size)  # cond = 0          # ✓
+    # void           SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeConstraintCallback custom_callback, void* custom_callback_data)
+    # void           SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeConstraintCallback custom_callback)  # custom_callback_data = NULL
+    void           SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max)  # custom callback = NULL, custom_callback_data = NULL
+    void           SetNextWindowContentSize(const ImVec2& size)
+    void           SetNextWindowContentWidth(float width)
+    void           SetNextWindowCollapsed(bool collapsed, ImGuiSetCond cond)
+    void           SetNextWindowCollapsed(bool collapsed)  # cond = 0
+
+    void           SetNextWindowFocus()
+    void           SetWindowPos(const ImVec2& pos, ImGuiSetCond cond)
+    void           SetWindowPos(const ImVec2& pos)  # cond = 0
+    void           SetWindowSize(const ImVec2& size, ImGuiSetCond cond)
+    void           SetWindowSize(const ImVec2& size)  # cond = 0
+    void           SetWindowCollapsed(bool collapsed, ImGuiSetCond cond)
+    void           SetWindowCollapsed(bool collapsed)  # cond = 0
+    void           SetWindowFocus()
+    void           SetWindowPos(const char* name, const ImVec2& pos, ImGuiSetCond cond)
+    void           SetWindowPos(const char* name, const ImVec2& pos)  # cond = 0
+    void           SetWindowSize(const char* name, const ImVec2& size, ImGuiSetCond cond)
+    void           SetWindowSize(const char* name, const ImVec2& size)  # cond = 0
+    void           SetWindowCollapsed(const char* name, bool collapsed, ImGuiSetCond cond)
+    void           SetWindowCollapsed(const char* name, bool collapsed)  # cond = 0
+    void           SetWindowFocus(const char* name)
+
+
+    # ✓
 
     void           SetWindowFontScale(float)   # ✓
     ImVec2         GetWindowPos()              # ✓
