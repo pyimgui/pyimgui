@@ -28,15 +28,64 @@ common with the **cyimgui**. This fact and vanity made me start my own project
 instead of forking the **cyimgui**.
 
 
+# project status
+
+pyimgui is working! It's not feature complete and only small subset of ImGui
+API is mapped right now. But you can run examples with ImGui test windows (see:
+`docs/examples/glfw3/`) and everything should work wihout any issues.
+
+Example integration with `glfw` supports all inputs and renders GUI as expected.
+
+Project has working build pipeline on Appveyor and Travis and builds 
+succesfully for all major operating systems with different architectures:
+
+* Windows (32bit & 64bit)
+* Linux (32bit & 64bit)
+* OS X (universal build)
+
+Right now I am ready to ship working built wheels for all these systems (even 
+for Linux using `manylinux1` wheels). Build pipeline also works on different
+Python versions:
+
+* py27
+* py33
+* py34
+* py35
+
+
+Project has also working Sphinx documentation with custom extension that
+is able to render GUI examples from docstring snippets. It uses offscreen
+rendering but we can just "freeze" resulting images and host them on RTD or 
+anywhere even right now.
+
+The only thing that is stopping me from publishing it on PyPI is lack of
+support for most of the ImGui core widgets. Anyway, the hardest parts are
+already done (like wiring C assert macros to custom Python exceptions, creating build 
+pipeline for Python wheels, or integrating with GLFW). Adding new functions, 
+widgets or integrations (e.g. Pygame, GLUT) should be simple from now.
+
+Unfortunately this is really toilsome work. A lot of copy-pasting and
+manual type-casting. It will take me weeks to provide minimal usable feature
+set if I have to work alone. This is why I encourage anyone (even unexperienced
+Python/Cython programmers) to contribute. It's not a rocket science and it
+will help me to release project officially sooner.
+
+In case of any issues with building/testing just ask me for help by creating
+GitHub issue. I have tried hard to make project building and bootstraping as 
+simple as possible (see development tips) but it still may not be perfect.
+
+
 # development tips
 
-After you checkout the repository don't forget to initialize all git submodules
-using:
+Make sure you have created and activated virtual environment using `virtualenv`
+or `python -m venv` (on newer Python releases). Then you can just run:
 
-    git submodule update --init --recursive --remote
+    make build
+    
+Following will bootstrap whole environment (pull git submodules, install 
+dev requirements etc.) and build the project. Make will automatically install
+pyimgui in "development" mode. Then you can run example in `doc/examples`
+to see if it is working.
 
-Then setup your environment, build extension and install it locally in the
-*development* mode:
-
-    pip install -r doc/requirements-dev.txt
-    python setup.py develop
+For testing string documentation you will need some additional requirements
+from `doc/requirements-docs.txt`.
