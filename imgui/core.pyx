@@ -834,8 +834,7 @@ def set_next_window_position(float x, float y):
 
     Call before :func:`begin()`.
 
-    Arguments:
-
+    Args:
         x (float): x window coordinate
         y (float): y window coordinate
 
@@ -848,12 +847,12 @@ def set_next_window_position(float x, float y):
         :height: 200
 
         imgui.set_next_window_size(20, 20)
-        set_next_window_position(20, 20)
+        imgui.set_next_window_position(20, 20)
         imgui.begin("1")
         imgui.end()
 
         imgui.set_next_window_size(20, 20)
-        set_next_window_position(130, 130)
+        imgui.set_next_window_position(130, 130)
         imgui.begin("2")
         imgui.end()
 
@@ -894,8 +893,7 @@ def set_next_window_size(float width, float height):
 
     .. todo:: implement ``cond`` argument
 
-    Arguments:
-
+    Args:
         width (float): window width. Value 0.0 enables autofit.
         height (float): window height. Value 0.0 enables autofit.
 

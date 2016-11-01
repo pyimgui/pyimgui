@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from inspect import cleandoc
 import os
-import re
 
 import glfw
 import OpenGL.GL as gl
@@ -18,6 +17,7 @@ def render_snippet(
     width=200,
     height=200,
     without_window=False,
+    auto_layout=False,
     output_dir='.',
 ):
     code = compile(source, '<str>', 'exec')
@@ -64,6 +64,10 @@ def render_snippet(
     gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_COLOR_ATTACHMENT0, gl.GL_TEXTURE_2D, texture, 0)
 
     imgui_ctx.new_frame()
+
+    if auto_layout:
+        imgui.set_next_window_size(width - 10, height - 10)
+        imgui.set_next_window_centered()
 
     if not without_window:
         imgui.set_next_window_size(width - 10, height - 10)

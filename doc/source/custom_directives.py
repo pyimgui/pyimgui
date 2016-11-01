@@ -61,6 +61,7 @@ class VisualDirective(Directive):
         'width': directives.positive_int,
         'height': directives.positive_int,
         'without_window': flag,
+        'auto_layout': flag,
     }
 
     def run(self):
@@ -70,11 +71,11 @@ class VisualDirective(Directive):
 
         # docutils document model is insane!
         head1 = nodes.paragraph()
-        head1.append(nodes.strong("Example:", "Example: "))
+        head1.append(nodes.inline("Example:", "Example: "))
 
         head2 = nodes.paragraph()
         head2.append(
-            nodes.section("foo", nodes.strong("Outputs:", "Outputs: "))
+            nodes.section("foo", nodes.inline("Outputs:", "Outputs: "))
         )
 
         directive_nodes = [
