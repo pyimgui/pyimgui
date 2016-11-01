@@ -32,6 +32,12 @@ if on_rtd:
 
     render_examples = False
 
+    # hack for lacking git-lfs support on rtd
+    from git_lfs import fetch
+    fetch(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
+
+
 render_examples = True
 
 

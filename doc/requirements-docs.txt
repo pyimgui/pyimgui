@@ -3,3 +3,4 @@ Sphinx
 sphinxcontrib-napoleon
 PyOpenGL
 pypandoc
+git-lfs
