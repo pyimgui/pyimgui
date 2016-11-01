@@ -30,6 +30,10 @@ if on_rtd:
     from convert_readme import convert_md
     convert_md()
 
+    render_examples = False
+
+render_examples = True
+
 
 def get_version(version_tuple):
     if not isinstance(version_tuple[-1], int):
