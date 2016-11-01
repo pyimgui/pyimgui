@@ -829,6 +829,93 @@ def get_window_height():
     return cimgui.GetWindowHeight()
 
 
+def set_next_window_position(float x, float y):
+    """Set next window position.
+
+    Call before :func:`begin()`.
+
+    Arguments:
+
+        x (float): x window coordinate
+        y (float): y window coordinate
+
+
+    .. todo:: implement ``cond`` argument
+
+    .. visual-example::
+        :title: window positioning
+        :without_window:
+        :height: 200
+
+        imgui.set_next_window_size(20, 20)
+        set_next_window_position(20, 20)
+        imgui.begin("1")
+        imgui.end()
+
+        imgui.set_next_window_size(20, 20)
+        set_next_window_position(130, 130)
+        imgui.begin("2")
+        imgui.end()
+
+
+    :wraps:`void SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond = 0)`
+
+    """
+    cimgui.SetNextWindowPos(_cast_tuple_ImVec2((x, y)))
+
+
+def set_next_window_centered():
+    """Set next window position to be centered on screen.
+
+    Call before :func:`begin()`.
+
+    .. todo:: implement ``cond`` argument.
+
+    .. visual-example::
+        :title: window centering
+        :without_window:
+        :height: 100
+
+        imgui.set_next_window_centered()
+        imgui.set_next_window_size(100, 50)
+        imgui.begin("centered")
+        imgui.end()
+
+
+    :wraps:`void SetNextWindowPosCenter(ImGuiSetCond cond = 0)`
+    """
+    cimgui.SetNextWindowPosCenter()
+
+
+def set_next_window_size(float width, float height):
+    """set next window size.
+
+    Call before :func:`begin()`.
+
+    .. todo:: implement ``cond`` argument
+
+    Arguments:
+
+        width (float): window width. Value 0.0 enables autofit.
+        height (float): window height. Value 0.0 enables autofit.
+
+
+    .. visual-example::
+        :title: window sizing
+        :without_window:
+        :height: 200
+
+        imgui.set_next_window_centered()
+        imgui.set_next_window_size(50, 180)
+        imgui.begin("high")
+        imgui.end()
+
+
+    :wraps:`void SetNextWindowSize(const ImVec2& size, ImGuiSetCond cond = 0))`
+    """
+    cimgui.SetNextWindowSize(_cast_tuple_ImVec2((width, height)))
+
+
 def is_window_collapsed():
     return cimgui.IsWindowCollapsed()
 
