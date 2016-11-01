@@ -1,5 +1,5 @@
 Cython
 Sphinx
 sphinxcontrib-napoleon
-OpenGL
+PyOpenGL
 pypandoc
