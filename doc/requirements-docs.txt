@@ -2,3 +2,4 @@ Cython
 Sphinx
 sphinxcontrib-napoleon
 OpenGL
+pypandoc
