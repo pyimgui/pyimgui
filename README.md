@@ -53,10 +53,12 @@ Python versions:
 * py35
 
 
-Project has also working Sphinx documentation with custom extension that
-is able to render GUI examples from docstring snippets. It uses offscreen
-rendering but we can just "freeze" resulting images and host them on RTD or 
-anywhere even right now.
+Project has has even working Sphinx documentation with custom extension that
+is able to offscreen render GUI examples from docstring snippets. It is already
+hosted on ReadTheDocs and images are provided with git-lfs. See for yourself: 
+[pyimgui.readthedocs.io](http://pyimgui.readthedocs.io/en/latest/index.html).
+
+
 
 The only thing that is stopping me from publishing it on PyPI is lack of
 support for most of the ImGui core widgets. Anyway, the hardest parts are
