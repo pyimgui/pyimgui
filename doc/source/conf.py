@@ -17,6 +17,10 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import sys
+
+
+sys.path.insert(0, os.path.dirname(__file__))
 
 
 # this is quite dirty approach but we're not working at NASA and nobody can die
@@ -54,6 +58,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
+    'custom_directives',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
