@@ -1,6 +1,7 @@
 # distutils: language = c++
 # distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp config-cpp/py_imconfig.cpp
 # distutils: include_dirs = imgui-cpp
+# cython: embedsignature=True
 import cython
 from cython.view cimport array as cvarray
 
@@ -15,12 +16,55 @@ from libcpp cimport bool
 cimport cimgui
 cimport enums
 
+# todo: find a way to cimport this directly from imgui.h
+DEF TARGET_IMGUI_VERSION = (1, 49)
+
+# ==== Condition enum redefines ====
+ALWAYS = enums.ImGuiSetCond_Always
+ONCE = enums.ImGuiSetCond_Once
+FIRST_USE_EVER = enums.ImGuiSetCond_FirstUseEver
+APPEARING = enums.ImGuiSetCond_Appearing
+
+# ==== Style var enum redefines ====
+STYLE_ALPHA = enums.ImGuiStyleVar_Alpha # float
+STYLE_WINDOW_PADDING = enums.ImGuiStyleVar_WindowPadding  # Vec2
+STYLE_WINDOW_ROUNDING = enums.ImGuiStyleVar_WindowRounding  # float
+STYLE_WINDOW_MIN_SIZE = enums.ImGuiStyleVar_WindowMinSize  # Vec2
+STYLE_CHILD_WINDOW_ROUNDING = enums.ImGuiStyleVar_ChildWindowRounding # float
+STYLE_FRAME_PADDING = enums.ImGuiStyleVar_FramePadding # Vec2
+STYLE_FRAME_ROUNDING = enums.ImGuiStyleVar_FrameRounding # float
+STYLE_ITEM_SPACING = enums.ImGuiStyleVar_ItemSpacing # Vec2
+STYLE_ITEM_INNER_SPACING = enums.ImGuiStyleVar_ItemInnerSpacing # Vec2
+STYLE_INDENT_SPACING = enums.ImGuiStyleVar_IndentSpacing # float
+STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
+IF TARGET_IMGUI_VERSION > (1, 49):
+    STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
+
+# ==== Key map enum redefines ====
+KEY_TAB = enums.ImGuiKey_Tab                 # for tabbing through fields
+KEY_LEFT_ARROW = enums.ImGuiKey_LeftArrow    # for text edit
+KEY_RIGHT_ARROW = enums.ImGuiKey_RightArrow  # for text edit
+KEY_UP_ARROW = enums.ImGuiKey_UpArrow      # for text edit
+KEY_DOWN_ARROW = enums.ImGuiKey_DownArrow    # for text edit
+KEY_PAGE_UP = enums.ImGuiKey_PageUp
+KEY_PAGE_DOWN = enums.ImGuiKey_PageDown
+KEY_HOME = enums.ImGuiKey_Home               # for text edit
+KEY_END = enums.ImGuiKey_End                 # for text edit
+KEY_DELETE = enums.ImGuiKey_Delete           # for text edit
+KEY_BACKSPACE = enums.ImGuiKey_Backspace     # for text edit
+KEY_ENTER = enums.ImGuiKey_Enter             # for text edit
+KEY_ESCAPE = enums.ImGuiKey_Escape           # for text edit
+KEY_A = enums.ImGuiKey_A                     # for text edit CTRL+A: select all
+KEY_C = enums.ImGuiKey_C                     # for text edit CTRL+C: copy
+KEY_V = enums.ImGuiKey_V                     # for text edit CTRL+V: paste
+KEY_X = enums.ImGuiKey_X                     # for text edit CTRL+X: cut
+KEY_Y = enums.ImGuiKey_Y                     # for text edit CTRL+Y: redo
+KEY_Z = enums.ImGuiKey_Z                     # for text edit CTRL+Z: undo
+
+
 
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
-
-# todo: find a way to cimport this directly from imgui.h
-DEF TARGET_IMGUI_VERSION = (1, 49)
 
 
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
@@ -736,10 +780,38 @@ def shutdown():
 
 
 def show_user_guide():
+    """Show ImGui user guide editor.
+
+    .. visual-example::
+        :width: 700
+        :height: 500
+        :without_window:
+        :auto_layout:
+
+        imgui.show_user_guide()
+
+
+    :wraps:`void ShowUserGuide();`
+    """
     cimgui.ShowUserGuide()
 
 
 def show_style_editor(GuiStyle style=None):
+    """Show ImGui style editor.
+
+    .. visual-example::
+        :width: 700
+        :height: 600
+        :without_window:
+        :auto_layout:
+
+        imgui.show_style_editor()
+
+    Args:
+        style (GuiStyle): style editor state container.
+
+    :wraps:`void ShowStyleEditor(ImGuiStyle* ref = NULL)`
+    """
     if style:
         cimgui.ShowStyleEditor(&style.ref)
     else:
@@ -747,20 +819,55 @@ def show_style_editor(GuiStyle style=None):
 
 
 def show_test_window(closable=False):
-    # note: on win initialization seems to be important
-    cdef cimgui.bool opened
+    """Show ImGui test window.
+
+    .. visual-example::
+        :width: 700
+        :height: 600
+        :without_window:
+        :auto_layout:
+
+        imgui.show_test_window()
+
+    Args:
+        closable (bool): define if window is closable.
+
+    Returns:
+        bool: if ``closable`` return state of close button otherwise None.
+
+    :wraps:`void ShowTestWindow(bool* p_open = NULL)`
+    """
+    cdef cimgui.bool opened = True
 
     if closable:
         # todo: consider using special collapsed state object that will
         # todo: wrap everything here instead of changing return type
-        return cimgui.ShowTestWindow(&opened), opened
+        cimgui.ShowTestWindow(&opened)
+        return opened
     else:
-        return cimgui.ShowTestWindow()
+        cimgui.ShowTestWindow()
 
 
 def show_metrics_window(closable=False):
-    # note: on win initialization seems to be important
-    cdef cimgui.bool opened
+    """Show ImGui metrics window.
+
+    .. visual-example::
+        :width: 700
+        :height: 600
+        :without_window:
+        :auto_layout:
+
+        imgui.show_metrics_window()
+
+    Args:
+        closable (bool): define if window is closable.
+
+    Returns:
+        bool: if ``closable`` return state of close button otherwise None.
+
+    :wraps:`void ShowMetricsWindow(bool* p_open = NULL)`
+    """
+    cdef cimgui.bool opened = True
 
     if closable:
         return cimgui.ShowMetricsWindow(&opened), opened
@@ -769,7 +876,6 @@ def show_metrics_window(closable=False):
 
 
 cpdef begin(char* name, closable=False):
-    # note: on win initialization seems to be important
     cdef cimgui.bool opened = True
 
     if closable:
@@ -829,7 +935,9 @@ def get_window_height():
     return cimgui.GetWindowHeight()
 
 
-def set_next_window_position(float x, float y):
+def set_next_window_position(
+    float x, float y, cimgui.ImGuiSetCond condition=ALWAYS
+):
     """Set next window position.
 
     Call before :func:`begin()`.
@@ -837,38 +945,35 @@ def set_next_window_position(float x, float y):
     Args:
         x (float): x window coordinate
         y (float): y window coordinate
-
-
-    .. todo:: implement ``cond`` argument
+        condition (:ref:`condition flag <condition-options>`): defines on which
+            condition value should be set. Defaults to :any:`imgui.ALWAYS`.
 
     .. visual-example::
         :title: window positioning
         :without_window:
-        :height: 200
+        :height: 50
 
         imgui.set_next_window_size(20, 20)
-        imgui.set_next_window_position(20, 20)
-        imgui.begin("1")
-        imgui.end()
 
-        imgui.set_next_window_size(20, 20)
-        imgui.set_next_window_position(130, 130)
-        imgui.begin("2")
-        imgui.end()
-
+        for index in range(5):
+            imgui.set_next_window_position(index * 40, 5)
+            imgui.begin(str(index))
+            imgui.end()
 
     :wraps:`void SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond = 0)`
 
     """
-    cimgui.SetNextWindowPos(_cast_tuple_ImVec2((x, y)))
+    cimgui.SetNextWindowPos(_cast_tuple_ImVec2((x, y)), condition)
 
 
-def set_next_window_centered():
+def set_next_window_centered(cimgui.ImGuiSetCond condition=ALWAYS):
     """Set next window position to be centered on screen.
 
     Call before :func:`begin()`.
 
-    .. todo:: implement ``cond`` argument.
+    Args:
+        condition (:ref:`condition flag <condition-options>`): defines on which
+            condition value should be set. Defaults to :any:`imgui.ALWAYS`.
 
     .. visual-example::
         :title: window centering
@@ -883,20 +988,21 @@ def set_next_window_centered():
 
     :wraps:`void SetNextWindowPosCenter(ImGuiSetCond cond = 0)`
     """
-    cimgui.SetNextWindowPosCenter()
+    cimgui.SetNextWindowPosCenter(condition)
 
 
-def set_next_window_size(float width, float height):
-    """set next window size.
+def set_next_window_size(
+    float width, float height, cimgui.ImGuiSetCond condition=ALWAYS
+):
+    """Set next window size.
 
     Call before :func:`begin()`.
-
-    .. todo:: implement ``cond`` argument
 
     Args:
         width (float): window width. Value 0.0 enables autofit.
         height (float): window height. Value 0.0 enables autofit.
-
+        condition (:ref:`condition flag <condition-options>`): defines on which
+            condition value should be set. Defaults to :any:`imgui.ALWAYS`.
 
     .. visual-example::
         :title: window sizing
@@ -904,31 +1010,104 @@ def set_next_window_size(float width, float height):
         :height: 200
 
         imgui.set_next_window_centered()
-        imgui.set_next_window_size(50, 180)
+        imgui.set_next_window_size(80, 180)
         imgui.begin("high")
         imgui.end()
 
 
-    :wraps:`void SetNextWindowSize(const ImVec2& size, ImGuiSetCond cond = 0))`
+    :wraps:`void SetNextWindowSize(const ImVec2& size, ImGuiSetCond cond = 0)`
     """
-    cimgui.SetNextWindowSize(_cast_tuple_ImVec2((width, height)))
+    cimgui.SetNextWindowSize(_cast_tuple_ImVec2((width, height)), condition)
 
 
 def is_window_collapsed():
+    """Check if current window is collapsed.
+
+    Returns:
+        bool: True if window is collapsed
+    """
     return cimgui.IsWindowCollapsed()
 
 
 def text(char* text):
+    """Add text to current widget context.
+
+    .. visual-example::
+        :title: simple text widget
+        :height: 80
+
+        imgui.text("Simple text")
+
+    Args:
+        text (str): text to display.
+
+    :wraps:`Text(const char* fmt, ...)`
+    """
     cimgui.Text(text)
 
 
 def text_colored(char* text, float r, float g, float b, float a=1.):
+    """Add colored text to current widget context.
+
+    It is a shortcut for:
+
+    .. code-block:: python
+
+        imgui.push_style_color(imgui.COLOR_TEXT, r, g, b, a)
+        imgui.text(text)
+        imgui.pop_style_color()
+
+
+    .. visual-example::
+        :title: colored text widget
+        :height: 80
+
+        imgui.text_colored("Colored text", 1, 0, 0)
+
+
+    Args:
+        text (str): text to display.
+        r (float): red color intensity.
+        g (float): green color intensity.
+        b (float): blue color instensity.
+        a (float): alpha color intensity.
+
+    :wraps:`TextColored(const ImVec4& col, const char* fmt, ...)`
+    """
+
     cimgui.TextColored(_cast_tuple_ImVec4((r, g, b, a)), text)
 
 
-cpdef push_style_var(cimgui.ImGuiStyleVar variable, value, force=False):
-    # todo: add documentation warning about possibility of segmentation
-    # todo: fault if not used with care; recommend context manager
+cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
+    """Push style variable on stack.
+
+    This function accepts both float and float two-tuples as ``value``
+    argument. ImGui core implementation will verify if passed value has
+    type compatibile with given style variable. If not, it will raise
+    exception.
+
+    Note: variables pushed on stacked need to be poped using
+    :func:`pop_style_var` until the end of current frame. This implementation
+    guards you from segfaults caused by redundant stack pops (raises
+    exception if this happens) but generally it is safer and easier to use
+    :func:`styled` or :func:`istyled` context manager.
+
+    .. visual-example::
+        :title: pushing style variables
+        :width: 400
+        :height: 50
+
+        imgui.push_style_var(imgui.STYLE_ALPHA, 0.2)
+        imgui.text("Alpha text")
+        imgui.pop_style_var(1)
+
+    Args:
+        variable: imgui style variable constant
+        value (float or two-tuple): style variable value
+
+
+    :wraps:`PushStyleVar(ImGuiStyleVar idx, float val)`
+    """
     IF TARGET_IMGUI_VERSION > (1, 49):
         # note: this check is not available on imgui<=1.49
         if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
@@ -1009,40 +1188,6 @@ def vertex_buffer_vertex_size():
 def index_buffer_index_size():
     return sizeof(cimgui.ImDrawIdx)
 
-
-STYLE_ALPHA = enums.ImGuiStyleVar_Alpha # float
-STYLE_WINDOW_PADDING = enums.ImGuiStyleVar_WindowPadding  # Vec2
-STYLE_WINDOW_ROUNDING = enums.ImGuiStyleVar_WindowRounding  # float
-STYLE_WINDOW_MIN_SIZE = enums.ImGuiStyleVar_WindowMinSize  # Vec2
-STYLE_CHILD_WINDOW_ROUNDING = enums.ImGuiStyleVar_ChildWindowRounding # float
-STYLE_FRAME_PADDING = enums.ImGuiStyleVar_FramePadding # Vec2
-STYLE_FRAME_ROUNDING = enums.ImGuiStyleVar_FrameRounding # float
-STYLE_ITEM_SPACING = enums.ImGuiStyleVar_ItemSpacing # Vec2
-STYLE_ITEM_INNER_SPACING = enums.ImGuiStyleVar_ItemInnerSpacing # Vec2
-STYLE_INDENT_SPACING = enums.ImGuiStyleVar_IndentSpacing # float
-STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
-IF TARGET_IMGUI_VERSION > (1, 49):
-    STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
-
-KEY_TAB = enums.ImGuiKey_Tab                 # for tabbing through fields
-KEY_LEFT_ARROW = enums.ImGuiKey_LeftArrow    # for text edit
-KEY_RIGHT_ARROW = enums.ImGuiKey_RightArrow  # for text edit
-KEY_UP_ARROW = enums.ImGuiKey_UpArrow      # for text edit
-KEY_DOWN_ARROW = enums.ImGuiKey_DownArrow    # for text edit
-KEY_PAGE_UP = enums.ImGuiKey_PageUp
-KEY_PAGE_DOWN = enums.ImGuiKey_PageDown
-KEY_HOME = enums.ImGuiKey_Home               # for text edit
-KEY_END = enums.ImGuiKey_End                 # for text edit
-KEY_DELETE = enums.ImGuiKey_Delete           # for text edit
-KEY_BACKSPACE = enums.ImGuiKey_Backspace     # for text edit
-KEY_ENTER = enums.ImGuiKey_Enter             # for text edit
-KEY_ESCAPE = enums.ImGuiKey_Escape           # for text edit
-KEY_A = enums.ImGuiKey_A                     # for text edit CTRL+A: select all
-KEY_C = enums.ImGuiKey_C                     # for text edit CTRL+C: copy
-KEY_V = enums.ImGuiKey_V                     # for text edit CTRL+V: paste
-KEY_X = enums.ImGuiKey_X                     # for text edit CTRL+X: cut
-KEY_Y = enums.ImGuiKey_Y                     # for text edit CTRL+Y: redo
-KEY_Z = enums.ImGuiKey_Z                     # for text edit CTRL+Z: undo
 
 # === Python/C++ cross API for error handling ===
 from cpython.exc cimport PyErr_NewException

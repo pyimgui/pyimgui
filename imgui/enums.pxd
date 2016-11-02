@@ -83,3 +83,8 @@ cdef extern from "imgui.h":
         ImGuiStyleVar_ButtonTextAlign     # flags ImGuiAlign_*
         ImGuiStyleVar_Count_
 
+    ctypedef enum ImGuiSetCond_:
+        ImGuiSetCond_Always               # Set the variable
+        ImGuiSetCond_Once                 # Only set the variable on the first call per runtime session
+        ImGuiSetCond_FirstUseEver         # Only set the variable if the window doesn't exist in the .ini file
+        ImGuiSetCond_Appearing            # Only set the variable if the window is appearing after being inactive (or the first time)
