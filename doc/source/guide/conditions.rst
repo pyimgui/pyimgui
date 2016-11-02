@@ -10,6 +10,6 @@ Available values for conditions are:
 
 * :py:data:`imgui.ALWAYS`
 * :py:data:`imgui.ONCE`
-* :py:data:`imgui.FIRS_USE_EVER`
+* :py:data:`imgui.FIRST_USE_EVER`
 * :py:data:`imgui.APPEARING`
 
