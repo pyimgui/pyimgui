@@ -35,10 +35,8 @@ if on_rtd:
     # hack for lacking git-lfs support on rtd
     from git_lfs import fetch
     fetch(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-
-
-
-render_examples = True
+else:
+    render_examples = True
 
 
 def get_version(version_tuple):
@@ -54,6 +52,9 @@ version_line = list(filter(lambda l: l.startswith('VERSION'), open(init)))[0]
 
 VERSION = get_version(eval(version_line.split('=')[-1]))
 
+# -- Autodoc configuration ------------------------------------------------
+
+autodoc_docstring_signature = True
 
 # -- General configuration ------------------------------------------------
 

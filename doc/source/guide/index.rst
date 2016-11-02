@@ -1,6 +1,13 @@
 usage guide
 ===========
 
+.. toctree::
+   :hidden:
+
+.. toctree::
+   :maxdepth: 5
+
+   conditions
 
 .. visual-example::
     :title: Guide - hello world!
