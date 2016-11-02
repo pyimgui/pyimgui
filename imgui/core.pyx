@@ -785,10 +785,11 @@ def show_user_guide():
     .. visual-example::
         :width: 700
         :height: 500
-        :without_window:
         :auto_layout:
 
+        imgui.begin("Example: user guide")
         imgui.show_user_guide()
+        imgui.end()
 
 
     :wraps:`void ShowUserGuide();`
@@ -800,12 +801,13 @@ def show_style_editor(GuiStyle style=None):
     """Show ImGui style editor.
 
     .. visual-example::
-        :width: 700
-        :height: 600
-        :without_window:
+        :width: 300
+        :height: 300
         :auto_layout:
 
+        imgui.begin("Example: my style editor")
         imgui.show_style_editor()
+        imgui.end()
 
     Args:
         style (GuiStyle): style editor state container.
@@ -824,7 +826,6 @@ def show_test_window(closable=False):
     .. visual-example::
         :width: 700
         :height: 600
-        :without_window:
         :auto_layout:
 
         imgui.show_test_window()
@@ -853,8 +854,7 @@ def show_metrics_window(closable=False):
 
     .. visual-example::
         :width: 700
-        :height: 600
-        :without_window:
+        :height: 200
         :auto_layout:
 
         imgui.show_metrics_window()
@@ -950,7 +950,6 @@ def set_next_window_position(
 
     .. visual-example::
         :title: window positioning
-        :without_window:
         :height: 50
 
         imgui.set_next_window_size(20, 20)
@@ -977,12 +976,12 @@ def set_next_window_centered(cimgui.ImGuiSetCond condition=ALWAYS):
 
     .. visual-example::
         :title: window centering
-        :without_window:
         :height: 100
+        :width: 600
 
+        imgui.set_next_window_size(200, 50)
         imgui.set_next_window_centered()
-        imgui.set_next_window_size(100, 50)
-        imgui.begin("centered")
+        imgui.begin("Example: centered")
         imgui.end()
 
 
@@ -1006,12 +1005,11 @@ def set_next_window_size(
 
     .. visual-example::
         :title: window sizing
-        :without_window:
         :height: 200
 
         imgui.set_next_window_centered()
         imgui.set_next_window_size(80, 180)
-        imgui.begin("high")
+        imgui.begin("High")
         imgui.end()
 
 
@@ -1035,8 +1033,11 @@ def text(char* text):
     .. visual-example::
         :title: simple text widget
         :height: 80
+        :auto_layout:
 
+        imgui.begin("Example: simple text")
         imgui.text("Simple text")
+        imgui.end()
 
     Args:
         text (str): text to display.
@@ -1060,10 +1061,12 @@ def text_colored(char* text, float r, float g, float b, float a=1.):
 
     .. visual-example::
         :title: colored text widget
-        :height: 80
+        :height: 100
+        :auto_layout:
 
+        imgui.begin("Example: colored text")
         imgui.text_colored("Colored text", 1, 0, 0)
-
+        imgui.end()
 
     Args:
         text (str): text to display.
@@ -1094,8 +1097,9 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
 
     .. visual-example::
         :title: pushing style variables
+        :auto_window:
         :width: 400
-        :height: 50
+        :height: 80
 
         imgui.push_style_var(imgui.STYLE_ALPHA, 0.2)
         imgui.text("Alpha text")
