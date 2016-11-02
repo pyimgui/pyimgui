@@ -16,7 +16,7 @@ def render_snippet(
     title="",
     width=200,
     height=200,
-    without_window=False,
+    auto_window=False,
     auto_layout=False,
     output_dir='.',
 ):
@@ -53,7 +53,7 @@ def render_snippet(
     # render target for framebuffer
     texture = gl.glGenTextures(1)
     gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
-    gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, width, height, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, None)
+    gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, width, height, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, None)
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
     gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
 
@@ -65,31 +65,34 @@ def render_snippet(
 
     imgui_ctx.new_frame()
 
-    if auto_layout:
-        imgui.set_next_window_size(width - 10, height - 10)
-        imgui.set_next_window_centered()
+    with imgui.styled(imgui.STYLE_ALPHA, 1):
+        imgui.core.set_next_window_size(0, 0)
 
-    if not without_window:
-        imgui.set_next_window_size(width - 10, height - 10)
-        imgui.set_next_window_centered()
-        imgui.begin("Example: %s" % title, True)
+        if auto_layout:
+            imgui.set_next_window_size(width - 10, height - 10)
+            imgui.set_next_window_centered()
 
-    exec(code, locals(), globals())
+        if auto_window:
+            imgui.set_next_window_size(width - 10, height - 10)
+            imgui.set_next_window_centered()
+            imgui.begin("Example: %s" % title)
 
-    if not without_window:
-        imgui.end()
+        exec(code, locals(), globals())
+
+        if auto_window:
+            imgui.end()
 
     gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, offscreen_fb)
 
-    gl.glClearColor(1, 1, 1, 1)
+    gl.glClearColor(1, 1, 1, 0)
     gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
     imgui.render()
 
     # retrieve pixels from framebuffer and write to file
-    pixels = gl.glReadPixels(0, 0, width, height, gl.GL_RGB, gl.GL_UNSIGNED_BYTE)
+    pixels = gl.glReadPixels(0, 0, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
 
-    image = Image.frombytes('RGB', (width, height), pixels)
+    image = Image.frombytes('RGBA', (width, height), pixels)
     # note: glReadPixels returns lines "bottom to top" but PIL reads bytes
     #       top to bottom
     image = image.transpose(Image.FLIP_TOP_BOTTOM)

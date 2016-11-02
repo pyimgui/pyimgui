@@ -12,7 +12,6 @@ usage guide
 .. visual-example::
     :title: Guide - hello world!
     :height: 80
-    :without_window:
     :auto_layout:
 
     imgui.begin("My first window!")
