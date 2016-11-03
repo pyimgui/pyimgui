@@ -261,7 +261,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool           BeginChild(ImGuiID, const ImVec2&)                              # ✓
     bool           BeginChild(ImGuiID)                                             # ✓
 
-    void           EndChild()
+    void           EndChild()                                                      # ✓
 
     ImVec2         GetContentRegionMax()
     ImVec2         GetContentRegionAvail()
@@ -306,9 +306,6 @@ cdef extern from "imgui.h" namespace "ImGui":
     void           SetWindowCollapsed(const char* name, bool collapsed)  # cond = 0
     void           SetWindowFocus(const char* name)
 
-
-    # ✓
-
     void           SetWindowFontScale(float)   # ✓
     ImVec2         GetWindowPos()              # ✓
     ImVec2         GetWindowSize()             # ✓
@@ -323,14 +320,14 @@ cdef extern from "imgui.h" namespace "ImGui":
     void          TextDisabled(const char*)
     void          TextWrapped(const char*)
     void          TextUnformatted(const char*)
-    void          LabelText(const char*, const char*)
-    void          Bullet()
-    void          BulletText(const char*)
+    void          LabelText(const char*, const char*)      # ✓
+    void          Bullet()                                 # ✓
+    void          BulletText(const char*)                  # ✓
     # Widgets: buttons
-    bool          Button(const char*, const ImVec2& size)
-    bool          Button(const char*)
-    bool          SmallButton(const char*)
-    bool          InvisibleButton(const char* str_id, const ImVec2& size)
+    bool          Button(const char*, const ImVec2& size)  # ✓
+    bool          Button(const char*)                      # ✓
+    bool          SmallButton(const char*)                 # ✓
+    bool          InvisibleButton(const char*, const ImVec2& size)  # ✓
     bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0,  const ImVec2& uv1, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
     bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0,  const ImVec2& uv1, int frame_padding, const ImVec4& bg_col)
     bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0,  const ImVec2& uv1, int frame_padding)

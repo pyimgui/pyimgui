@@ -768,14 +768,29 @@ def get_draw_data():
 
 
 def new_frame():
+    """Start a new frame.
+
+    After calling this you can submit any command from this point until
+    next :any:`new_frame()` or :any:`render()`.
+
+    :wraps:`void NewFrame()`
+    """
     cimgui.NewFrame()
 
 
 def render():
+    """Finalize frame, set rendering data, and run render callback (if set).
+
+    :wraps:`void Render()`
+    """
     cimgui.Render()
 
 
 def shutdown():
+    """Shutdown ImGui context.
+
+    :wraps:`Shutdown`
+    """
     cimgui.Shutdown()
 
 
@@ -876,6 +891,24 @@ def show_metrics_window(closable=False):
 
 
 cpdef begin(char* name, closable=False):
+    """Begin a window.
+
+    .. visual-example::
+        :auto_layout:
+
+        imgui.begin("Example: empty window")
+        imgui.end()
+
+    Args:
+        closable (bool): define if window is closable.
+
+
+    :returns: if window is not closable then ``expanded`` bool value
+        otherwise ``(expanded, opened)`` tuple of bools
+
+    :wraps:`Begin(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0)`
+    """
+    # todo: consider refactor for consistent return signature
     cdef cimgui.bool opened = True
 
     if closable:
@@ -889,6 +922,13 @@ def get_draw_data():
 
 
 def end():
+    """End a window.
+
+    This finishes appending to current window, and pops it off the window
+    stack. See: :any:`begin()`.
+
+    :wraps:`void End()`
+    """
     cimgui.End()
 
 
@@ -897,23 +937,97 @@ ctypedef fused child_id:
     cimgui.ImGuiID
 
 
-def begin_child(child_id name):
-    cimgui.BeginChild(name)
+def begin_child(child_id name, size=(0, 0), bool border=False):
+    """Begin a scrolling region.
 
+    .. visual-example::
+        :width: 200
+        :height: 200
+        :auto_layout:
+
+        imgui.begin("Example: child region")
+
+        imgui.begin_child("region", size=(150, -50), border=True)
+        imgui.text("inside region")
+        imgui.end_child()
+
+        imgui.text("outside region")
+        imgui.end()
+
+    Args:
+        name (str or int): child identifier
+        size (Vec2): Each axis allows to three modes:
+            * ``0.0`` - use remaining window size
+            * ``>0.0`` - fixed size
+            * ``<0.0`` - use remaining window size minus abs(size)
+        border (bool): True if should display border. Defaults to False.
+
+    Returns:
+        bool: True if region is visible
+
+    :wraps:`bool BeginChild(const char* str_id, const ImVec2& size = ImVec2(0,0), bool border = false, ImGuiWindowFlags extra_flags = 0)`
+    :wraps:`bool BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0,0), bool border = false, ImGuiWindowFlags extra_flags = 0)`
+    """
+    # todo: add support for extra flags
+    # note: we do not take advantage of C++ function overloading
+    #       in order to take adventage of Python keyword arguments
+    return cimgui.BeginChild(name, _cast_tuple_ImVec2(size), border)
 
 def end_child():
+    """End scrolling region.
+
+    :wraps:`void EndChild()`
+    """
     cimgui.EndChild()
 
 
 def set_window_font_scale(float scale):
+    """Adjust per-window font scale for current window.
+
+    Function should be called inside window context so after calling
+    :any:`begin()`.
+
+    Note: use ``get_io().font_global_scale`` if you want to scale all windows.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+
+        imgui.begin("Example: font scale")
+        imgui.set_window_font_scale(2.0)
+        imgui.text("Bigger font")
+        imgui.end()
+
+    Args:
+        scale (float): font scale
+
+    :wraps:`void SetWindowFontScale(float scale)`
+    """
     cimgui.SetWindowFontScale(scale)
 
 
 def get_windown_position():
+    """Get current window position.
+
+    It may be useful if you want to do your own drawing via the DrawList
+    api.
+
+    Returns:
+        Vec2: two-tuple of window coordinates in screen space.
+
+    :wraps:`ImVec2 GetWindowPos()`
+    """
     return _cast_ImVec2_tuple(cimgui.GetWindowPos())
 
 
 def get_window_size():
+    """Get current window size.
+
+    Returns:
+        Vec2: two-tuple of window dimensions.
+
+    :wraps:`ImVec2 GetWindowSize()`
+    """
     return _cast_ImVec2_tuple(cimgui.GetWindowSize())
 
 
@@ -922,6 +1036,8 @@ def get_window_width():
 
     Returns:
         float: width of current window.
+
+    :wraps:`float GetWindowWidth()`
     """
     return cimgui.GetWindowWidth()
 
@@ -931,6 +1047,8 @@ def get_window_height():
 
     Returns:
         float: height of current window.
+
+    :wraps:`float GetWindowHeight()`
     """
     return cimgui.GetWindowHeight()
 
@@ -1028,7 +1146,7 @@ def is_window_collapsed():
 
 
 def text(char* text):
-    """Add text to current widget context.
+    """Add text to current widget stack.
 
     .. visual-example::
         :title: simple text widget
@@ -1048,7 +1166,7 @@ def text(char* text):
 
 
 def text_colored(char* text, float r, float g, float b, float a=1.):
-    """Add colored text to current widget context.
+    """Add colored text to current widget stack.
 
     It is a shortcut for:
 
@@ -1081,6 +1199,149 @@ def text_colored(char* text, float r, float g, float b, float a=1.):
     cimgui.TextColored(_cast_tuple_ImVec4((r, g, b, a)), text)
 
 
+def label_text(char* label, char* text):
+    """Display text+label aligned the same way as value+label widgets.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 80
+        :width: 300
+
+        imgui.begin("Example: text with label")
+        imgui.label_text("my label", "my text")
+        imgui.end()
+
+    Args:
+        label (str): label to display.
+        text (str): text to display.
+
+    :wraps:`void LabelText(const char* label, const char* fmt, ...)`
+    """
+    cimgui.LabelText(label, text)
+
+
+def bullet():
+    """Display a small circle and keep the cursor on the same line.
+
+    .. advance cursor x position by GetTreeNodeToLabelSpacing(),
+       same distance that TreeNode() uses
+
+    .. visual-example::
+        :auto_layout:
+        :height: 80
+
+        imgui.begin("Example: bullets")
+
+        for i in range(10):
+            imgui.bullet()
+
+        imgui.end()
+
+    :wraps:`void Bullet()`
+    """
+    cimgui.Bullet()
+
+
+def bullet_text(char* text):
+    """Display bullet and text.
+
+    This is shortcut for:
+
+    .. code-block:: python
+
+        imgui.bullet()
+        imgui.text(text)
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+
+        imgui.begin("Example: bullet text")
+        imgui.bullet_text("Bullet 1")
+        imgui.bullet_text("Bullet 2")
+        imgui.bullet_text("Bullet 3")
+        imgui.end()
+
+    Args:
+        text (str): text to display.
+
+    :wraps:`void BulletText(const char* fmt, ...)`
+    """
+    cimgui.BulletText(text)
+
+
+def button(char* label, size=(0, 0)):
+    """Display button.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+
+        imgui.begin("Example: button")
+        imgui.button("Button 1")
+        imgui.button("Button 2")
+        imgui.end()
+
+    Args:
+        label (str): button label.
+        size (Vec2): button size.
+
+    Returns:
+        bool: True if clicked.
+
+    :wraps:`bool Button(const char* label, const ImVec2& size = ImVec2(0,0))`
+    """
+    return cimgui.Button(label, _cast_tuple_ImVec2(size))
+
+
+def small_button(char* label):
+    """Display small button (with 0 frame padding).
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+
+        imgui.begin("Example: button")
+        imgui.small_button("Button 1")
+        imgui.small_button("Button 2")
+        imgui.end()
+
+    Args:
+        label (str): button label.
+
+    Returns:
+        bool: True if clicked.
+
+    :wraps:`bool SmallButton(const char* label)`
+    """
+    return cimgui.SmallButton(label)
+
+
+def invisible_button(char* identifier, size):
+    """Create invisible button.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+
+        imgui.begin("Example: invisible button :)")
+        imgui.invisible_button("Button 1", (200, 200))
+        imgui.small_button("Button 2")
+        imgui.end()
+
+    Args:
+        identifier (str): Button identifier. Like label on :any:`button()`
+            but it is not displayed.
+        size (Vec2): button size.
+
+    Returns:
+        bool: True if button is clicked.
+
+    :wraps:`bool InvisibleButton(const char* str_id, const ImVec2& size)`
+    """
+    return cimgui.InvisibleButton(identifier, _cast_tuple_ImVec2(size))
+
+
 cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     """Push style variable on stack.
 
@@ -1089,16 +1350,16 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     type compatibile with given style variable. If not, it will raise
     exception.
 
-    Note: variables pushed on stacked need to be poped using
-    :func:`pop_style_var` until the end of current frame. This implementation
-    guards you from segfaults caused by redundant stack pops (raises
-    exception if this happens) but generally it is safer and easier to use
-    :func:`styled` or :func:`istyled` context manager.
+    **Note:** variables pushed on stack need to be poped using
+    :func:`pop_style_var()` until the end of current frame. This
+    implementation guards you from segfaults caused by redundant stack pops
+    (raises exception if this happens) but generally it is safer and easier to
+    use :func:`styled` or :func:`istyled` context managers.
 
     .. visual-example::
-        :title: pushing style variables
+        :title: style variables
         :auto_window:
-        :width: 400
+        :width: 200
         :height: 80
 
         imgui.push_style_var(imgui.STYLE_ALPHA, 0.2)
@@ -1132,14 +1393,23 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
 
 
 cpdef pop_style_var(unsigned int count=1):
-    # todo: add documentation warning about possibility of segmentation
-    # todo: fault if not used with care; recommend context manager
+    """Pop style variables from stack.
+
+    **Note:** This implementation guards you from segfaults caused by
+    redundant stack pops (raises exception if this happens) but generally
+    it is safer and easier to use :func:`styled` or :func:`istyled` context
+    managers. See: :any:`push_style_var()`.
+
+    Args:
+        count (int): number of variables to pop from style variable stack.
+
+    :wraps:`void PopStyleVar(int count = 1)`
+    """
     cimgui.PopStyleVar(count)
 
 
 # additional helpers
 # todo: move to separate extension module (extra?)
-
 
 @contextmanager
 def styled(cimgui.ImGuiStyleVar variable, value):
@@ -1152,6 +1422,7 @@ def styled(cimgui.ImGuiStyleVar variable, value):
 
 @contextmanager
 def istyled(*variables_and_values):
+    # todo: rename to nstyled?
     count = 0
     iterator = iter(variables_and_values)
 
