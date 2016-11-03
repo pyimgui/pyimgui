@@ -68,7 +68,6 @@ build: off
 
 build_script:
   - "ci\\appveyor_build.cmd %PYTHON%/python.exe -m pip wheel . -w dist"
-  - python.exe ci/completion.py imgui/cimgui.pxd dist/completion.svg
 
 on_success:
   - if [%APPVEYOR_REPO_BRANCH%]==[master] (

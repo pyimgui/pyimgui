@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
+from inspect import cleandoc
 import sys
 import re
+import fileinput
 
 try:
-    from urllib2 import urlopen, Request
     from urllib import quote
-    from urllib2 import HTTPError
 except ImportError:
     from urllib.parse import quote
-    from urllib.request import urlopen, Request
-    from urllib.error import HTTPError
-
 
 BASE_URL = 'https://img.shields.io/badge/completion-%s-blue.svg'
+BADGE_TEMPLATE = "[![completion](%s)]"
 ALL_RE = re.compile(r'(?!(^\s*$)|(^\s*#))')
 DONE_RE = re.compile(r'(?!(^\s*$)|(^\s*#)).*✓')
+BADGE_RE = re.compile(r'\[!\[completion\]\(.*\)\]\s*$')
 
 
 if __name__ == "__main__":
@@ -24,26 +23,41 @@ if __name__ == "__main__":
         pxd_file_name, out_file_name = sys.argv[1:]
     else:
         pxd_file_name, out_file_name = None, None
-        exit("Usage: python %s PXD_FILE [OUT_FILE]" % __file__)
+        exit(cleandoc(
+            """Usage: python %s PXD_FILE [README]
+
+            Estimate completion status and print result.
+
+            Note: if README argument is provided it will
+            try to update it with completion badge looking
+            for existing markdown badge markup.
+             """ % __file__
+        ))
 
     with open(pxd_file_name) as pyx_file:
         lines = pyx_file.readlines()
 
     all_count = len(list(filter(ALL_RE.match, lines)))
     done_count = len(list(filter(DONE_RE.match, lines)))
-    result = "%d %% (%s of %s)" % (
+    result = "%d%% (%s of %s)" % (
         float(done_count)/all_count * 100,
         done_count, all_count
     )
 
-    if out_file_name:
-        with open(out_file_name, 'w') as out_file:
-            request = Request(
-                BASE_URL % quote(result),
-                # note: Shields.io does not allow Python-urllib/* user agent
-                headers={"User-Agent": "Spoofed"}
-            )
-            response = urlopen(request)
-            out_file.write(response.read())
+    badge_url = BASE_URL % quote(result)
+    badge_md = BADGE_TEMPLATE % badge_url
 
-    print(result)
+    if out_file_name:
+        output = fileinput.input(files=(out_file_name,), inplace=True)
+        try:
+            for line in output:
+                if BADGE_RE.match(line):
+                    sys.stdout.write(badge_md + "\n")
+                else:
+                    sys.stdout.write(line)
+
+        finally:
+            fileinput.close()
+
+    print("Estimated: %s" % result)
+    print("Badge:     %s" % badge_md)

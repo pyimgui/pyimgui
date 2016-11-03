@@ -26,6 +26,7 @@ clean:
 .PHONY: build
 build: bootstrap
 	python setup.py develop
+	python ci/completion.py imgui/cimgui.pxd README.md
 
 
 .PHONY: rebuild
