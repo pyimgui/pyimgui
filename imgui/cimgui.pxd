@@ -251,12 +251,12 @@ cdef extern from "imgui.h" namespace "ImGui":
     void           End()                       # ✓
 
     # defaults: const ImVec2& size = ImVec2(0,0), bool border = false, ImGuiWindowFlags extra_flags)
-    bool           BeginChild(const char*, const ImVec2&, bool, ImGuiWindowFlags)  # ✓
+    bool           BeginChild(const char*, const ImVec2&, bool, ImGuiWindowFlags)
     bool           BeginChild(const char*, const ImVec2&, bool)                    # ✓
     bool           BeginChild(const char*, const ImVec2&)                          # ✓
     bool           BeginChild(const char*)                                         # ✓
 
-    bool           BeginChild(ImGuiID, const ImVec2&, bool, ImGuiWindowFlags)      # ✓
+    bool           BeginChild(ImGuiID, const ImVec2&, bool, ImGuiWindowFlags)
     bool           BeginChild(ImGuiID, const ImVec2&, bool)                        # ✓
     bool           BeginChild(ImGuiID, const ImVec2&)                              # ✓
     bool           BeginChild(ImGuiID)                                             # ✓
@@ -276,12 +276,9 @@ cdef extern from "imgui.h" namespace "ImGui":
     float          GetWindowHeight()                                          # ✓
     bool           IsWindowCollapsed()
     void           SetWindowFontScale(float scale)
-    void           SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond)
-    void           SetNextWindowPos(const ImVec2& pos)  # cond = 0            # ✓
-    void           SetNextWindowPosCenter(ImGuiSetCond cond)
-    void           SetNextWindowPosCenter()  # cond = 0                       # ✓
-    void           SetNextWindowSize(const ImVec2& size, ImGuiSetCond cond)
-    void           SetNextWindowSize(const ImVec2& size)  # cond = 0          # ✓
+    void           SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond)     # ✓ note: overrides ommited
+    void           SetNextWindowPosCenter(ImGuiSetCond cond)                  # ✓ note: overrides ommited
+    void           SetNextWindowSize(const ImVec2& size, ImGuiSetCond cond)   # ✓ note: overrides ommited
     # void           SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeConstraintCallback custom_callback, void* custom_callback_data)
     # void           SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeConstraintCallback custom_callback)  # custom_callback_data = NULL
     void           SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max)  # custom callback = NULL, custom_callback_data = NULL
@@ -324,25 +321,33 @@ cdef extern from "imgui.h" namespace "ImGui":
     void          Bullet()                                 # ✓
     void          BulletText(const char*)                  # ✓
     # Widgets: buttons
-    bool          Button(const char*, const ImVec2& size)  # ✓
-    bool          Button(const char*)                      # ✓
-    bool          SmallButton(const char*)                 # ✓
+    bool          Button(const char*, const ImVec2& size)           # ✓
+    bool          Button(const char*)                               # ✓
+    bool          SmallButton(const char*)                          # ✓
     bool          InvisibleButton(const char*, const ImVec2& size)  # ✓
-    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0,  const ImVec2& uv1, int frame_padding, const ImVec4& bg_col, const ImVec4& tint_col)
-    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0,  const ImVec2& uv1, int frame_padding, const ImVec4& bg_col)
-    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0,  const ImVec2& uv1, int frame_padding)
-    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0,  const ImVec2& uv1)
-    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0)
-    bool          ImageButton(ImTextureID user_texture_id, const ImVec2& size)
-    bool          ColorButton(const ImVec4& col, bool small_height, bool outline_border)
-    bool          ColorButton(const ImVec4& col, bool small_height)
-    bool          ColorButton(const ImVec4& col)
+    bool          ImageButton(                                      # ✓
+                      ImTextureID user_texture_id,                  # ✓
+                      const ImVec2& size,                           # ✓
+                      const ImVec2& uv0,                            # ✓ : (0, 0)
+                      const ImVec2& uv1,                            # ✓ : (1, 1)
+                      int frame_padding,                            # ✓ : 0
+                      const ImVec4& bg_col,                         # ✓ : (0, 0, 0, 0)
+                      const ImVec4& tint_col                        # ✓ : (1, 1, 1, 1)
+                  )                                                 # ✓ note: overrides ommited
+    bool          ColorButton(                                      # ✓
+                      const ImVec4& col,                            # ✓
+                      bool small_height,                            # ✓
+                      bool outline_border                           # ✓
+    )                                                               # ✓ note: overrides ommited
     # Widgets: images
-    void          Image(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col)
-    void          Image(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col)
-    void          Image(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1)
-    void          Image(ImTextureID user_texture_id, const ImVec2& size, const ImVec2& uv0)
-    void          Image(ImTextureID user_texture_id, const ImVec2& size)
+    void          Image(                                            # ✓
+                      ImTextureID user_texture_id,                  # ✓
+                      const ImVec2& size,                           # ✓
+                      const ImVec2& uv0,                            # ✓ : (0, 0)
+                      const ImVec2& uv1,                            # ✓ : (1, 1)
+                      const ImVec4& tint_col,                       # ✓ : (1, 1, 1, 1)
+                      const ImVec4& border_col                      # ✓ : (0, 0, 0, 0)
+                  )                                                 # ✓ note: overrides ommited
     # Widgets: checkboxes etc.
     bool          Checkbox(const char* label, bool* v)
     bool          CheckboxFlags(const char* label, unsigned int* flags, unsigned int flags_value)

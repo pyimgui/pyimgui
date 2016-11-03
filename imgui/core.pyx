@@ -2,6 +2,12 @@
 # distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp config-cpp/py_imconfig.cpp
 # distutils: include_dirs = imgui-cpp
 # cython: embedsignature=True
+"""
+.. todo:: add support for abritrary texture_id objects instead of ints-only
+.. todo:: consider inlining every occurence of ``_cast_args_ImVecX`` (profile)
+
+"""
+
 import cython
 from cython.view cimport array as cvarray
 
@@ -82,6 +88,14 @@ cdef cimgui.ImVec2 _cast_tuple_ImVec2(pair) except *:  # noqa
     return vec
 
 
+cdef cimgui.ImVec2 _cast_args_ImVec2(float x, float y) except *:  # noqa
+    cdef cimgui.ImVec2 vec
+
+    vec.x, vec.y = x, y
+
+    return vec
+
+
 cdef cimgui.ImVec4 _cast_tuple_ImVec4(quadruple):  # noqa
     cdef cimgui.ImVec4 vec
 
@@ -89,6 +103,14 @@ cdef cimgui.ImVec4 _cast_tuple_ImVec4(quadruple):  # noqa
         raise ValueError("quadruple param must be length of 4")
 
     vec.x, vec.y, vec.z, vec.w = quadruple
+
+    return vec
+
+
+cdef cimgui.ImVec4 _cast_args_ImVec4(float x, float y, float z, float w):  # noqa
+    cdef cimgui.ImVec4 vec
+
+    vec.x, vec.y, vec.z, vec.w = x, y, z, w
 
     return vec
 
@@ -391,7 +413,7 @@ cdef class _DrawData(object):
 
     def scale_clip_rects(self, width, height):
         self._require_pointer()
-        self._ptr.ScaleClipRects(_cast_tuple_ImVec2((width, height)))
+        self._ptr.ScaleClipRects(_cast_args_ImVec2(width, height))
 
     @property
     def valid(self):
@@ -773,7 +795,8 @@ def new_frame():
     After calling this you can submit any command from this point until
     next :any:`new_frame()` or :any:`render()`.
 
-    :wraps:`void NewFrame()`
+    .. wraps::
+        void NewFrame()
     """
     cimgui.NewFrame()
 
@@ -781,7 +804,8 @@ def new_frame():
 def render():
     """Finalize frame, set rendering data, and run render callback (if set).
 
-    :wraps:`void Render()`
+    .. wraps::
+        void Render()
     """
     cimgui.Render()
 
@@ -789,7 +813,8 @@ def render():
 def shutdown():
     """Shutdown ImGui context.
 
-    :wraps:`Shutdown`
+    .. wraps::
+        Shutdown
     """
     cimgui.Shutdown()
 
@@ -807,7 +832,8 @@ def show_user_guide():
         imgui.end()
 
 
-    :wraps:`void ShowUserGuide();`
+    .. wraps::
+        void ShowUserGuide()
     """
     cimgui.ShowUserGuide()
 
@@ -827,7 +853,8 @@ def show_style_editor(GuiStyle style=None):
     Args:
         style (GuiStyle): style editor state container.
 
-    :wraps:`void ShowStyleEditor(ImGuiStyle* ref = NULL)`
+    .. wraps::
+        void ShowStyleEditor(ImGuiStyle* ref = NULL)
     """
     if style:
         cimgui.ShowStyleEditor(&style.ref)
@@ -851,7 +878,8 @@ def show_test_window(closable=False):
     Returns:
         bool: if ``closable`` return state of close button otherwise None.
 
-    :wraps:`void ShowTestWindow(bool* p_open = NULL)`
+    .. wraps::
+        void ShowTestWindow(bool* p_open = NULL)
     """
     cdef cimgui.bool opened = True
 
@@ -880,7 +908,8 @@ def show_metrics_window(closable=False):
     Returns:
         bool: if ``closable`` return state of close button otherwise None.
 
-    :wraps:`void ShowMetricsWindow(bool* p_open = NULL)`
+    .. wraps::
+        void ShowMetricsWindow(bool* p_open = NULL)
     """
     cdef cimgui.bool opened = True
 
@@ -906,7 +935,12 @@ cpdef begin(char* name, closable=False):
     :returns: if window is not closable then ``expanded`` bool value
         otherwise ``(expanded, opened)`` tuple of bools
 
-    :wraps:`Begin(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0)`
+    .. wraps::
+        Begin(
+            const char* name,
+            bool* p_open = NULL,
+            ImGuiWindowFlags flags = 0
+        )
     """
     # todo: consider refactor for consistent return signature
     cdef cimgui.bool opened = True
@@ -927,7 +961,8 @@ def end():
     This finishes appending to current window, and pops it off the window
     stack. See: :any:`begin()`.
 
-    :wraps:`void End()`
+    .. wraps::
+        void End()
     """
     cimgui.End()
 
@@ -937,8 +972,15 @@ ctypedef fused child_id:
     cimgui.ImGuiID
 
 
-def begin_child(child_id name, size=(0, 0), bool border=False):
+def begin_child(
+    child_id name, float width=0, float height=0, bool border=False
+):
     """Begin a scrolling region.
+
+    **Note:** sizing of child region allows for three modes:
+    * ``0.0`` - use remaining window size
+    * ``>0.0`` - fixed size
+    * ``<0.0`` - use remaining window size minus abs(size)
 
     .. visual-example::
         :width: 200
@@ -947,7 +989,7 @@ def begin_child(child_id name, size=(0, 0), bool border=False):
 
         imgui.begin("Example: child region")
 
-        imgui.begin_child("region", size=(150, -50), border=True)
+        imgui.begin_child("region", 150, -50, border=True)
         imgui.text("inside region")
         imgui.end_child()
 
@@ -955,28 +997,39 @@ def begin_child(child_id name, size=(0, 0), bool border=False):
         imgui.end()
 
     Args:
-        name (str or int): child identifier
-        size (Vec2): Each axis allows to three modes:
-            * ``0.0`` - use remaining window size
-            * ``>0.0`` - fixed size
-            * ``<0.0`` - use remaining window size minus abs(size)
+        name (str or int): Child region identifier.
+        width (float): Region width. See note about sizing.
+        height (float): Region height. See note about sizing.
         border (bool): True if should display border. Defaults to False.
 
     Returns:
         bool: True if region is visible
 
-    :wraps:`bool BeginChild(const char* str_id, const ImVec2& size = ImVec2(0,0), bool border = false, ImGuiWindowFlags extra_flags = 0)`
-    :wraps:`bool BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0,0), bool border = false, ImGuiWindowFlags extra_flags = 0)`
+    .. wraps::
+        bool BeginChild(
+            const char* str_id,
+            const ImVec2& size = ImVec2(0,0),
+            bool border = false,
+            ImGuiWindowFlags extra_flags = 0
+        )
+
+        bool BeginChild(
+            ImGuiID id,
+            const ImVec2& size = ImVec2(0,0),
+            bool border = false,
+            ImGuiWindowFlags extra_flags = 0
+        )
     """
     # todo: add support for extra flags
     # note: we do not take advantage of C++ function overloading
     #       in order to take adventage of Python keyword arguments
-    return cimgui.BeginChild(name, _cast_tuple_ImVec2(size), border)
+    return cimgui.BeginChild(name, _cast_args_ImVec2(width, height), border)
 
 def end_child():
     """End scrolling region.
 
-    :wraps:`void EndChild()`
+    .. wraps::
+        void EndChild()
     """
     cimgui.EndChild()
 
@@ -1001,7 +1054,8 @@ def set_window_font_scale(float scale):
     Args:
         scale (float): font scale
 
-    :wraps:`void SetWindowFontScale(float scale)`
+    .. wraps::
+        void SetWindowFontScale(float scale)
     """
     cimgui.SetWindowFontScale(scale)
 
@@ -1015,7 +1069,8 @@ def get_windown_position():
     Returns:
         Vec2: two-tuple of window coordinates in screen space.
 
-    :wraps:`ImVec2 GetWindowPos()`
+    .. wraps::
+        ImVec2 GetWindowPos()
     """
     return _cast_ImVec2_tuple(cimgui.GetWindowPos())
 
@@ -1026,7 +1081,8 @@ def get_window_size():
     Returns:
         Vec2: two-tuple of window dimensions.
 
-    :wraps:`ImVec2 GetWindowSize()`
+    .. wraps::
+        ImVec2 GetWindowSize()
     """
     return _cast_ImVec2_tuple(cimgui.GetWindowSize())
 
@@ -1037,7 +1093,8 @@ def get_window_width():
     Returns:
         float: width of current window.
 
-    :wraps:`float GetWindowWidth()`
+    .. wraps::
+        float GetWindowWidth()
     """
     return cimgui.GetWindowWidth()
 
@@ -1048,7 +1105,8 @@ def get_window_height():
     Returns:
         float: height of current window.
 
-    :wraps:`float GetWindowHeight()`
+    .. wraps::
+        float GetWindowHeight()
     """
     return cimgui.GetWindowHeight()
 
@@ -1077,10 +1135,11 @@ def set_next_window_position(
             imgui.begin(str(index))
             imgui.end()
 
-    :wraps:`void SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond = 0)`
+    .. wraps::
+        void SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond = 0)
 
     """
-    cimgui.SetNextWindowPos(_cast_tuple_ImVec2((x, y)), condition)
+    cimgui.SetNextWindowPos(_cast_args_ImVec2(x, y), condition)
 
 
 def set_next_window_centered(cimgui.ImGuiSetCond condition=ALWAYS):
@@ -1103,7 +1162,8 @@ def set_next_window_centered(cimgui.ImGuiSetCond condition=ALWAYS):
         imgui.end()
 
 
-    :wraps:`void SetNextWindowPosCenter(ImGuiSetCond cond = 0)`
+    .. wraps::
+        void SetNextWindowPosCenter(ImGuiSetCond cond = 0)
     """
     cimgui.SetNextWindowPosCenter(condition)
 
@@ -1131,9 +1191,10 @@ def set_next_window_size(
         imgui.end()
 
 
-    :wraps:`void SetNextWindowSize(const ImVec2& size, ImGuiSetCond cond = 0)`
+    .. wraps::
+        void SetNextWindowSize(const ImVec2& size, ImGuiSetCond cond = 0)
     """
-    cimgui.SetNextWindowSize(_cast_tuple_ImVec2((width, height)), condition)
+    cimgui.SetNextWindowSize(_cast_args_ImVec2(width, height), condition)
 
 
 def is_window_collapsed():
@@ -1160,7 +1221,8 @@ def text(char* text):
     Args:
         text (str): text to display.
 
-    :wraps:`Text(const char* fmt, ...)`
+    .. wraps::
+        Text(const char* fmt, ...)
     """
     cimgui.Text(text)
 
@@ -1193,10 +1255,11 @@ def text_colored(char* text, float r, float g, float b, float a=1.):
         b (float): blue color instensity.
         a (float): alpha color intensity.
 
-    :wraps:`TextColored(const ImVec4& col, const char* fmt, ...)`
+    .. wraps::
+        TextColored(const ImVec4& col, const char* fmt, ...)
     """
 
-    cimgui.TextColored(_cast_tuple_ImVec4((r, g, b, a)), text)
+    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), text)
 
 
 def label_text(char* label, char* text):
@@ -1215,7 +1278,8 @@ def label_text(char* label, char* text):
         label (str): label to display.
         text (str): text to display.
 
-    :wraps:`void LabelText(const char* label, const char* fmt, ...)`
+    .. wraps::
+        void LabelText(const char* label, const char* fmt, ...)
     """
     cimgui.LabelText(label, text)
 
@@ -1237,7 +1301,8 @@ def bullet():
 
         imgui.end()
 
-    :wraps:`void Bullet()`
+    .. wraps::
+        void Bullet()
     """
     cimgui.Bullet()
 
@@ -1265,12 +1330,13 @@ def bullet_text(char* text):
     Args:
         text (str): text to display.
 
-    :wraps:`void BulletText(const char* fmt, ...)`
+    .. wraps::
+        void BulletText(const char* fmt, ...)
     """
     cimgui.BulletText(text)
 
 
-def button(char* label, size=(0, 0)):
+def button(char* label, width=0, height=0):
     """Display button.
 
     .. visual-example::
@@ -1284,14 +1350,16 @@ def button(char* label, size=(0, 0)):
 
     Args:
         label (str): button label.
-        size (Vec2): button size.
+        width (float): button width.
+        height (float): button height.
 
     Returns:
         bool: True if clicked.
 
-    :wraps:`bool Button(const char* label, const ImVec2& size = ImVec2(0,0))`
+    .. wraps::
+        bool Button(const char* label, const ImVec2& size = ImVec2(0,0))
     """
-    return cimgui.Button(label, _cast_tuple_ImVec2(size))
+    return cimgui.Button(label, _cast_args_ImVec2(width, height))
 
 
 def small_button(char* label):
@@ -1312,35 +1380,188 @@ def small_button(char* label):
     Returns:
         bool: True if clicked.
 
-    :wraps:`bool SmallButton(const char* label)`
+    .. wraps::
+        bool SmallButton(const char* label)
     """
     return cimgui.SmallButton(label)
 
 
-def invisible_button(char* identifier, size):
+def invisible_button(char* identifier, width, height):
     """Create invisible button.
 
     .. visual-example::
         :auto_layout:
         :height: 100
+        :width: 300
 
         imgui.begin("Example: invisible button :)")
-        imgui.invisible_button("Button 1", (200, 200))
+        imgui.invisible_button("Button 1", 200, 200)
         imgui.small_button("Button 2")
         imgui.end()
 
     Args:
         identifier (str): Button identifier. Like label on :any:`button()`
             but it is not displayed.
-        size (Vec2): button size.
+        width (float): button width.
+        height (float): button height.
 
     Returns:
         bool: True if button is clicked.
 
-    :wraps:`bool InvisibleButton(const char* str_id, const ImVec2& size)`
+    .. wraps::
+        bool InvisibleButton(const char* str_id, const ImVec2& size)
     """
-    return cimgui.InvisibleButton(identifier, _cast_tuple_ImVec2(size))
+    return cimgui.InvisibleButton(identifier, _cast_args_ImVec2(width, height))
 
+
+def color_button(
+        float r, float g, float b, a=1.,
+        cimgui.bool small_height=False,
+        cimgui.bool outline_border=True,
+):
+    """Display colored button.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 150
+
+        imgui.begin("Example: color button")
+        imgui.color_button(1, 0, 0, 1, True, True)
+        imgui.color_button(0, 1, 0, 1, True, False)
+        imgui.color_button(0, 0, 1, 1, False, True)
+        imgui.color_button(1, 0, 1, 1, False, False)
+        imgui.end()
+
+    Args:
+        r (float): red color intensity.
+        g (float): green color intensity.
+        b (float): blue color instensity.
+        a (float): alpha color intensity.
+        small_height (bool): Small height. Default to False
+        outline_border (bool): Diplay outline border. Defaults to True.
+
+    Returns:
+        bool: True if button is clicked.
+
+    .. wraps::
+        bool ColorButton(
+            const ImVec4& col,
+            bool small_height = false,
+            bool outline_border = true
+        )
+    """
+    return cimgui.ColorButton(
+        _cast_args_ImVec4(r, g, b, a), small_height, outline_border
+    )
+
+
+def image_button(
+    int texture_id,
+    float width,
+    float height,
+    tuple uv0=(0, 0),
+    tuple uv1=(1, 1),
+    tuple tint_color=(1, 1, 1, 1),
+    tuple border_color=(0, 0, 0, 0),
+    int frame_padding=-1,
+):
+    """Display image.
+
+    .. todo:: add example with some preconfigured image
+
+    Args:
+        texture_id (int): user data defining texture id. It is
+            implementation dependent. For OpenGL it is usually integer.
+        size (Vec2): image display size two-tuple.
+        uv0 (Vec2): UV coordinates for 1st corner (lower-left for OpenGL).
+            Defaults to ``(0, 0)``.
+        uv1 (Vec2): UV coordinates for 2nd corner (upper-right for OpenGL).
+            Defaults to ``(1, 1)``.
+        tint_color (Vec4): Image tint color. Defaults to white.
+        border_color (Vec4): Image border color. Defaults to transparent.
+        frame_padding (int): Frame padding (``0``: no padding, ``<0`` default
+            padding).
+
+    Returns:
+        bool: True if clicked.
+
+    .. wraps::
+        bool ImageButton(
+            ImTextureID user_texture_id,
+            const ImVec2& size,
+            const ImVec2& uv0 = ImVec2(0,0),
+            const ImVec2& uv1 = ImVec2(1,1),
+            int frame_padding = -1,
+            const ImVec4& bg_col = ImVec4(0,0,0,0),
+            const ImVec4& tint_col = ImVec4(1,1,1,1)
+        )
+    """
+    return cimgui.ImageButton(
+        <void*>texture_id,
+        _cast_args_ImVec2(width, height),  # todo: consider inlining
+        _cast_tuple_ImVec2(uv0),
+        _cast_tuple_ImVec2(uv1),
+        # note: slightly different order of params than in ImGui::Image()
+        frame_padding,
+        _cast_tuple_ImVec4(border_color),
+        _cast_tuple_ImVec4(tint_color),
+    )
+
+
+def image(
+    int texture_id,
+    float width,
+    float height,
+    tuple uv0=(0, 0),
+    tuple uv1=(1, 1),
+    tuple tint_color=(1, 1, 1, 1),
+    tuple border_color=(0, 0, 0, 0),
+):
+    """Display image.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 550
+        :height: 200
+
+        texture_id = imgui.get_io().fonts.texture_id
+
+        imgui.begin("Example: image display")
+        imgui.image(texture_id, 512, 64, border_color=(1, 0, 0, 1))
+        imgui.end()
+
+    Args:
+        texture_id (int): user data defining texture id. It is
+            implementation dependent. For OpenGL it is usually integer.
+        size (Vec2): image display size two-tuple.
+        uv0 (Vec2): UV coordinates for 1st corner (lower-left for OpenGL).
+            Defaults to ``(0, 0)``.
+        uv1 (Vec2): UV coordinates for 2nd corner (upper-right for OpenGL).
+            Defaults to ``(1, 1)``.
+        tint_color(Vec4): Image tint color. Defaults to white.
+        border_color(Vec4): Image border color. Defaults to transparent.
+
+    Returns:
+        bool: True if it is visible.
+
+    .. wraps::
+        Image(
+            ImTextureID user_texture_id,
+            const ImVec2& size,
+            const ImVec2& uv0 = ImVec2(0,0),
+            const ImVec2& uv1 = ImVec2(1,1),
+            const ImVec4& tint_col = ImVec4(1,1,1,1),
+            const ImVec4& border_col = ImVec4(0,0,0,0)
+        )
+    """
+    return cimgui.Image(
+        <void*>texture_id,
+        _cast_args_ImVec2(width, height),  # todo: consider inlining
+        _cast_tuple_ImVec2(uv0),
+        _cast_tuple_ImVec2(uv1),
+        _cast_tuple_ImVec4(tint_color),
+        _cast_tuple_ImVec4(border_color),
+    )
 
 cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     """Push style variable on stack.
@@ -1371,7 +1592,8 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
         value (float or two-tuple): style variable value
 
 
-    :wraps:`PushStyleVar(ImGuiStyleVar idx, float val)`
+    .. wraps::
+        PushStyleVar(ImGuiStyleVar idx, float val)
     """
     IF TARGET_IMGUI_VERSION > (1, 49):
         # note: this check is not available on imgui<=1.49
@@ -1403,7 +1625,8 @@ cpdef pop_style_var(unsigned int count=1):
     Args:
         count (int): number of variables to pop from style variable stack.
 
-    :wraps:`void PopStyleVar(int count = 1)`
+    .. wraps::
+        void PopStyleVar(int count = 1)
     """
     cimgui.PopStyleVar(count)
 
