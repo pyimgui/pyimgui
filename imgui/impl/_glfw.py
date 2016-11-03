@@ -168,6 +168,7 @@ class Impl(object):
         else:
             io.mouse_pos = -1, -1
 
+        # todo: py3k compat
         for i in xrange(3):
             io.mouse_down[i] = glfw.get_mouse_button(self.window, i)
 
