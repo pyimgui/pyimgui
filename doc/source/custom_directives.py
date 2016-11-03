@@ -32,25 +32,18 @@ def flag(argument):
         return True
 
 
-def wraps_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    """Mark something as wrapping given API element
+class WrapsDirective(Directive):
+    has_content = True
 
-    Returns 2 part tuple containing list of nodes to insert into the
-    document and a list of system messages.  Both are allowed to be
-    empty.
+    def run(self):
+        head = nodes.paragraph()
+        head.append(nodes.inline("Wraps API:", "Wraps API: "))
 
-    :param name: The role name used in the document.
-    :param rawtext: The entire markup snippet, with role.
-    :param text: The text marked with the role.
-    :param lineno: The line number where rawtext appears in the input.
-    :param inliner: The inliner instance that called us.
-    :param options: Directive options for customization.
-    :param content: The directive content for customization.
-    """
-    return [
-        nodes.strong(rawtext, "Wraps API: "),
-        nodes.literal(rawtext, text)
-    ], []
+        source = '\n'.join(self.content.data)
+        literal_node = nodes.literal_block(source, source)
+        literal_node['laguage'] = 'C++'
+
+        return [head, literal_node]
 
 
 class VisualDirective(Directive):
@@ -137,7 +130,7 @@ class VisualDirective(Directive):
 
 def setup(app):
     app.add_config_value('render_examples', False, 'html')
-
-    app.add_role('wraps', wraps_role)
+    app.add_directive('wraps', WrapsDirective)
     app.add_directive('visual-example', VisualDirective)
+
     return {'version': '0.1'}
