@@ -1,8 +1,9 @@
-| Windows build | Mac OS X build |
-| ------------- | -------------- |
-| [![Build status](https://ci.appveyor.com/api/projects/status/s7pud6on7dww89iv?svg=true)](https://ci.appveyor.com/project/swistakm/pyimgui) | [![Build Status](https://travis-ci.org/swistakm/pyimgui.svg?branch=master)](https://travis-ci.org/swistakm/pyimgui)
-
 [![completion](https://img.shields.io/badge/completion-46%25%20%28144%20of%20307%29-blue.svg)](https://github.com/swistakm/pyimgui)
+
+Builds:
+* [![Build status](https://ci.appveyor.com/api/projects/status/s7pud6on7dww89iv?svg=true)](https://ci.appveyor.com/project/swistakm/pyimgui) (Windows)
+* [![Build Status](https://travis-ci.org/swistakm/pyimgui.svg?branch=master)](https://travis-ci.org/swistakm/pyimgui) (OS X & Linux)
+
 
 # pyimgui,
 
