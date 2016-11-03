@@ -10,10 +10,10 @@ except ImportError:
     from urllib.parse import quote
 
 BASE_URL = 'https://img.shields.io/badge/completion-%s-blue.svg'
-BADGE_TEMPLATE = "[![completion](%s)]"
+BADGE_TEMPLATE = "[![completion](%s)](https://github.com/swistakm/pyimgui)"
 ALL_RE = re.compile(r'(?!(^\s*$)|(^\s*#))')
 DONE_RE = re.compile(r'(?!(^\s*$)|(^\s*#)).*✓')
-BADGE_RE = re.compile(r'\[!\[completion\]\(.*\)\]\s*$')
+BADGE_RE = re.compile(r'\[!\[completion\]\(.*\)\](\(.*\))?\s*$')
 
 
 if __name__ == "__main__":
