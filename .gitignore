@@ -36,6 +36,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+completion.svg
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -104,6 +105,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Pycharm project settings
+.idea/
 
 # Bootstrap marker
 .bootstrapped
