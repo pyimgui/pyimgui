@@ -36,3 +36,13 @@ rebuild: clean build
 .PHONY: livedoc
 livedoc: build
 	sphinx-autobuild doc/source/ doc/build/html
+
+
+.PHONY: completion
+completion:
+	@# This escaping is crazy. But it works.
+	$(eval $@_ALL_METHODS := grep imgui/cimgui.pxd -ve '\(^\s*\#\)\|\(^$$$$\)' | wc -l | tr -d ' ' )
+	$(eval $@_DONE_METHODS := grep imgui/cimgui.pxd -ve '\(^\s*\#\)\|\(^$$$$\)' | grep ✓ | wc -l | tr -d ' ' )
+
+	@echo Heuristic completion status: $$(${$@_DONE_METHODS}) / $$(${$@_ALL_METHODS})
+
