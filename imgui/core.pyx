@@ -3,7 +3,7 @@
 # distutils: include_dirs = imgui-cpp
 # cython: embedsignature=True
 """
-.. todo:: add support for abritrary texture_id objects instead of ints-only
+
 .. todo:: consider inlining every occurence of ``_cast_args_ImVecX`` (profile)
 
 """
@@ -132,7 +132,7 @@ cdef class _DrawCmd(object):
 
     @property
     def texture_id(self):
-        return <uintptr_t>self._ptr.TextureId
+        return <object>self._ptr.TextureId
 
     @property
     def clip_rect(self):
@@ -494,12 +494,15 @@ cdef class _FontAtlas(object):
     def texture_id(self):
         """
         Note: difference in mapping (maps actual TexID and not TextureID)
-        :return:
+
+        Note: texture ID type is implementation dependent. It is usually
+        integer (at least for OpenGL).
+
         """
-        return <uintptr_t>self._ptr.TexID
+        return <object>self._ptr.TexID
 
     @texture_id.setter
-    def texture_id(self, int value):
+    def texture_id(self, value):
         self._ptr.TexID = <void *> value
 
 
@@ -1456,7 +1459,7 @@ def color_button(
 
 
 def image_button(
-    int texture_id,
+    texture_id,
     float width,
     float height,
     tuple uv0=(0, 0),
@@ -1470,8 +1473,8 @@ def image_button(
     .. todo:: add example with some preconfigured image
 
     Args:
-        texture_id (int): user data defining texture id. It is
-            implementation dependent. For OpenGL it is usually integer.
+        texture_id (object): user data defining texture id. Argument type
+            is implementation dependent. For OpenGL it is usually an integer.
         size (Vec2): image display size two-tuple.
         uv0 (Vec2): UV coordinates for 1st corner (lower-left for OpenGL).
             Defaults to ``(0, 0)``.
@@ -1509,7 +1512,7 @@ def image_button(
 
 
 def image(
-    int texture_id,
+    texture_id,
     float width,
     float height,
     tuple uv0=(0, 0),
@@ -1531,8 +1534,8 @@ def image(
         imgui.end()
 
     Args:
-        texture_id (int): user data defining texture id. It is
-            implementation dependent. For OpenGL it is usually integer.
+        texture_id (object): user data defining texture id. Argument type
+            is implementation dependent. For OpenGL it is usually an integer.
         size (Vec2): image display size two-tuple.
         uv0 (Vec2): UV coordinates for 1st corner (lower-left for OpenGL).
             Defaults to ``(0, 0)``.
@@ -1541,11 +1544,8 @@ def image(
         tint_color(Vec4): Image tint color. Defaults to white.
         border_color(Vec4): Image border color. Defaults to transparent.
 
-    Returns:
-        bool: True if it is visible.
-
     .. wraps::
-        Image(
+        void Image(
             ImTextureID user_texture_id,
             const ImVec2& size,
             const ImVec2& uv0 = ImVec2(0,0),
@@ -1554,7 +1554,7 @@ def image(
             const ImVec4& border_col = ImVec4(0,0,0,0)
         )
     """
-    return cimgui.Image(
+    cimgui.Image(
         <void*>texture_id,
         _cast_args_ImVec2(width, height),  # todo: consider inlining
         _cast_tuple_ImVec2(uv0),
