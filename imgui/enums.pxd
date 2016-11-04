@@ -88,3 +88,22 @@ cdef extern from "imgui.h":
         ImGuiSetCond_Once                 # Only set the variable on the first call per runtime session
         ImGuiSetCond_FirstUseEver         # Only set the variable if the window doesn't exist in the .ini file
         ImGuiSetCond_Appearing            # Only set the variable if the window is appearing after being inactive (or the first time)
+
+    ctypedef enum ImGuiWindowFlags_:
+        ImGuiWindowFlags_NoTitleBar                 # Disable title-bar
+        ImGuiWindowFlags_NoResize                   # Disable user resizing with the lower-right grip
+        ImGuiWindowFlags_NoMove                     # Disable user moving the window
+        ImGuiWindowFlags_NoScrollbar                # Disable scrollbars (window can still scroll with mouse or programatically)
+        ImGuiWindowFlags_NoScrollWithMouse          # Disable user vertically scrolling with mouse wheel
+        ImGuiWindowFlags_NoCollapse                 # Disable user collapsing window by double-clicking on it
+        ImGuiWindowFlags_AlwaysAutoResize           # Resize every window to its content every frame
+        ImGuiWindowFlags_ShowBorders                # Show borders around windows and items
+        ImGuiWindowFlags_NoSavedSettings            # Never load/save settings in .ini file
+        ImGuiWindowFlags_NoInputs                   # Disable catching mouse or keyboard inputs
+        ImGuiWindowFlags_MenuBar                    # Has a menu-bar
+        ImGuiWindowFlags_HorizontalScrollbar        # Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.
+        ImGuiWindowFlags_NoFocusOnAppearing         # Disable taking focus when transitioning from hidden to visible state
+        ImGuiWindowFlags_NoBringToFrontOnFocus      # Disable bringing window to front when taking focus (e.g. clicking on it or programatically giving it focus)
+        ImGuiWindowFlags_AlwaysVerticalScrollbar    # Always show vertical scrollbar (even if ContentSize.y < Size.y)
+        ImGuiWindowFlags_AlwaysHorizontalScrollbar  # Always show horizontal scrollbar (even if ContentSize.x < Size.x)
+        ImGuiWindowFlags_AlwaysUseWindowPadding     # Ensure child windows without border uses style.WindowPadding (ignored by default for non-bordered child windows, because more convenient)

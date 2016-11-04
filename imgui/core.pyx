@@ -50,7 +50,7 @@ IF TARGET_IMGUI_VERSION > (1, 49):
 KEY_TAB = enums.ImGuiKey_Tab                 # for tabbing through fields
 KEY_LEFT_ARROW = enums.ImGuiKey_LeftArrow    # for text edit
 KEY_RIGHT_ARROW = enums.ImGuiKey_RightArrow  # for text edit
-KEY_UP_ARROW = enums.ImGuiKey_UpArrow      # for text edit
+KEY_UP_ARROW = enums.ImGuiKey_UpArrow        # for text edit
 KEY_DOWN_ARROW = enums.ImGuiKey_DownArrow    # for text edit
 KEY_PAGE_UP = enums.ImGuiKey_PageUp
 KEY_PAGE_DOWN = enums.ImGuiKey_PageDown
@@ -67,7 +67,24 @@ KEY_X = enums.ImGuiKey_X                     # for text edit CTRL+X: cut
 KEY_Y = enums.ImGuiKey_Y                     # for text edit CTRL+Y: redo
 KEY_Z = enums.ImGuiKey_Z                     # for text edit CTRL+Z: undo
 
-
+# ==== Window flags enum redefines ====
+WINDOW_NO_TITLE_BAR = enums.ImGuiWindowFlags_NoTitleBar
+WINDOW_NO_RESIZE = enums.ImGuiWindowFlags_NoResize
+WINDOW_NO_MOVE = enums.ImGuiWindowFlags_NoMove
+WINDOW_NO_SCROLLBAR = enums.ImGuiWindowFlags_NoScrollbar
+WINDOW_NO_SCROLL_WITH_MOUSE = enums.ImGuiWindowFlags_NoScrollWithMouse
+WINDOW_NO_COLLAPSE = enums.ImGuiWindowFlags_NoCollapse
+WINDOW_ALWAYS_AUTO_RESIZE = enums.ImGuiWindowFlags_AlwaysAutoResize
+WINDOW_SHOW_BORDERS = enums.ImGuiWindowFlags_ShowBorders
+WINDOW_NO_SAVED_SETTINGS = enums.ImGuiWindowFlags_NoSavedSettings
+WINDOW_NO_INPUTS = enums.ImGuiWindowFlags_NoInputs
+WINDOW_MENU_BAR = enums.ImGuiWindowFlags_MenuBar
+WINDOW_HORIZONTAL_SCROLLING_BAR = enums.ImGuiWindowFlags_HorizontalScrollbar
+WINDOW_NO_FOCUS_ON_APPEARING = enums.ImGuiWindowFlags_NoFocusOnAppearing
+WINDOW_NO_BRING_TO_FRONT_ON_FOCUS = enums.ImGuiWindowFlags_NoBringToFrontOnFocus
+WINDOW_ALWAYS_VERTICAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysVerticalScrollbar
+WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysHorizontalScrollbar
+WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
 
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
@@ -788,10 +805,6 @@ def get_style():
     raise NotImplementedError
 
 
-def get_draw_data():
-    raise NotImplementedError
-
-
 def new_frame():
     """Start a new frame.
 
@@ -922,7 +935,7 @@ def show_metrics_window(closable=False):
         return cimgui.ShowMetricsWindow()
 
 
-cpdef begin(char* name, closable=False):
+cpdef begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """Begin a window.
 
     .. visual-example::
@@ -933,7 +946,9 @@ cpdef begin(char* name, closable=False):
 
     Args:
         closable (bool): define if window is closable.
+        flags: window flags (see section about window flags)
 
+    .. todo:: add section about window flags
 
     :returns: if window is not closable then ``expanded`` bool value
         otherwise ``(expanded, opened)`` tuple of bools
@@ -949,12 +964,24 @@ cpdef begin(char* name, closable=False):
     cdef cimgui.bool opened = True
 
     if closable:
-        return cimgui.Begin(name, &opened), opened
+        return cimgui.Begin(name, &opened, flags), opened
     else:
         return cimgui.Begin(name)
 
 
 def get_draw_data():
+    """Get draw data.
+
+    Draw data value is same as passed to your ``io.render_callback()``
+    function. It is valid after :any:`render()` and until the next call
+    to :any:`next_frame()`
+
+    Returns:
+        _DrawData: draw data for all draw calls required to display gui
+
+    .. wraps::
+        ImDrawData* GetDrawData()
+    """
     return _DrawData.from_ptr(cimgui.GetDrawData())
 
 
@@ -976,7 +1003,8 @@ ctypedef fused child_id:
 
 
 def begin_child(
-    child_id name, float width=0, float height=0, bool border=False
+    child_id name, float width=0, float height=0, bool border=False,
+    cimgui.ImGuiWindowFlags flags=0
 ):
     """Begin a scrolling region.
 
@@ -1004,6 +1032,7 @@ def begin_child(
         width (float): Region width. See note about sizing.
         height (float): Region height. See note about sizing.
         border (bool): True if should display border. Defaults to False.
+        flags: Window flags (see section about window flags).
 
     Returns:
         bool: True if region is visible
@@ -1026,7 +1055,9 @@ def begin_child(
     # todo: add support for extra flags
     # note: we do not take advantage of C++ function overloading
     #       in order to take adventage of Python keyword arguments
-    return cimgui.BeginChild(name, _cast_args_ImVec2(width, height), border)
+    return cimgui.BeginChild(
+        name, _cast_args_ImVec2(width, height), border, flags
+    )
 
 def end_child():
     """End scrolling region.
@@ -1035,6 +1066,90 @@ def end_child():
         void EndChild()
     """
     cimgui.EndChild()
+
+
+def get_content_region_max():
+    """Get current content boundaries in window coordinates.
+
+    Typically window boundaries include scrolling, or current
+    column boundaries.
+
+    Returns:
+        Vec2: content boundaries two-tuple ``(width, height)``
+
+    .. wraps::
+        ImVec2 GetContentRegionMax()
+    """
+    return _cast_ImVec2_tuple(cimgui.GetContentRegionMax())
+
+
+def get_content_region_available():
+    """Get available content region.
+
+    It is shortcut for:
+
+    .. code-block: python
+        imgui.get_content_region_max() - imgui.get_cursor_position()
+
+    Returns:
+        Vec2: available content region size two-tuple ``(width, height)``
+
+    .. wraps::
+        ImVec2 GetContentRegionMax()
+    """
+    return _cast_ImVec2_tuple(cimgui.GetContentRegionAvail())
+
+
+def get_content_region_available_width():
+    """Get available content region width.
+
+    Returns:
+        float: available content region width.
+
+    .. wraps::
+        float GetContentRegionAvailWidth()
+    """
+    return cimgui.GetContentRegionAvailWidth()
+
+
+def get_window_content_region_min():
+    """Get minimal current window content boundaries in window coordinates.
+
+    It translates roughly to: ``(0, 0) - Scroll``
+
+    Returns:
+        Vec2: content boundaries two-tuple ``(width, height)``
+
+    .. wraps::
+        ImVec2 GetWindowContentRegionMin()
+    """
+    return _cast_ImVec2_tuple(cimgui.GetWindowContentRegionMin())
+
+
+def get_window_content_region_max():
+    """Get maximal current window content boundaries in window coordinates.
+
+    It translates roughly to: ``(0, 0) + Size - Scroll``
+
+    Returns:
+        Vec2: content boundaries two-tuple ``(width, height)``
+
+    .. wraps::
+        ImVec2 GetWindowContentRegionMin()
+    """
+    return _cast_ImVec2_tuple(cimgui.GetWindowContentRegionMax())
+
+
+def get_window_content_region_width():
+    """Get available current window content region width.
+
+    Returns:
+        float: available content region width.
+
+    .. wraps::
+        float GetWindowContentRegionWidth()
+    """
+    return cimgui.GetWindowContentRegionWidth()
 
 
 def set_window_font_scale(float scale):

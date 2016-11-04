@@ -242,66 +242,56 @@ cdef extern from "imgui.h":
         pass
 
 cdef extern from "imgui.h" namespace "ImGui":
-
+    # ====
     # Main
     ImGuiIO& GetIO()  # ✓
     ImGuiStyle& GetStyle()  # ✗
-    ImDrawData* GetDrawData()  # ✗
+    ImDrawData* GetDrawData()  # ✓
     void NewFrame()  # ✓
-
     # note: Render runs callbacks that may be arbitrary Python code
     #       so we need to propagate exceptions from them
     void Render() except +  # ✓
-
     void Shutdown()  # ✓
     void ShowUserGuide()  # ✓
-
     void ShowStyleEditor(ImGuiStyle*)  # ✓
     void ShowStyleEditor()  # ✓
-
     void ShowTestWindow(bool*)  # ✓
     void ShowTestWindow()  # ✓
-
     void ShowMetricsWindow(bool*)  # ✓
     void ShowMetricsWindow()  # ✓
 
+    # ====
     # Window
     bool Begin(const char*, bool*, ImGuiWindowFlags)  # ✓
     bool Begin(const char*, bool*)  # ✓
     bool Begin(const char*)  # ✓
-
     # note: following API was deprecated
     # bool Begin(const char*, bool*, const ImVec2&, float, ImGuiWindowFlags)  # ✗
     # bool Begin(const char*, bool*, const ImVec2&, float)  # ✗
     # bool Begin(const char*, bool*, const ImVec2&)  # ✗
-
     void End()  # ✓
-
-    bool BeginChild(const char*, const ImVec2&, bool, ImGuiWindowFlags)  # ✗
+    bool BeginChild(const char*, const ImVec2&, bool, ImGuiWindowFlags)  # ✓
     bool BeginChild(const char*, const ImVec2&, bool)  # ✓
     bool BeginChild(const char*, const ImVec2&)  # ✓
     bool BeginChild(const char*)  # ✓
-
-    bool BeginChild(ImGuiID, const ImVec2&, bool, ImGuiWindowFlags)  # ✗
+    bool BeginChild(ImGuiID, const ImVec2&, bool, ImGuiWindowFlags)  # ✓
     bool BeginChild(ImGuiID, const ImVec2&, bool)  # ✓
     bool BeginChild(ImGuiID, const ImVec2&)  # ✓
     bool BeginChild(ImGuiID)  # ✓
-
     void EndChild()  # ✓
-
-    ImVec2 GetContentRegionMax()  # ✗
-    ImVec2 GetContentRegionAvail()  # ✗
-    float GetContentRegionAvailWidth()  # ✗
-    ImVec2 GetWindowContentRegionMin()  # ✗
-    ImVec2 GetWindowContentRegionMax()  # ✗
-    float GetWindowContentRegionWidth()  # ✗
-    ImDrawList* GetWindowDrawList()  # ✗
+    ImVec2 GetContentRegionMax()  # ✓
+    ImVec2 GetContentRegionAvail()  # ✓
+    float GetContentRegionAvailWidth()  # ✓
+    ImVec2 GetWindowContentRegionMin()  # ✓
+    ImVec2 GetWindowContentRegionMax()  # ✓
+    float GetWindowContentRegionWidth()  # ✓
+    ImDrawList* GetWindowDrawList()  # ✓
     ImVec2 GetWindowPos()  # ✓
     ImVec2 GetWindowSize()  # ✓
     float GetWindowWidth()  # ✓
     float GetWindowHeight()  # ✓
-    bool IsWindowCollapsed()  # ✗
-    void SetWindowFontScale(float scale)  # ✗
+    bool IsWindowCollapsed()  # ✓
+    void SetWindowFontScale(float scale)  # ✓
 
     void SetNextWindowPos(  # ✓ note: overrides ommited
             const ImVec2& pos,
@@ -317,9 +307,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiSetCond cond
     )
-
-    # void SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeConstraintCallback custom_callback, void* custom_callback_data)  # ✗
-
+    void SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeConstraintCallback custom_callback, void* custom_callback_data)  # ✗
     void SetNextWindowContentSize(const ImVec2& size)  # ✗
     void SetNextWindowContentWidth(float width)  # ✗
     void SetNextWindowCollapsed(  # ✗
@@ -327,7 +315,6 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiSetCond cond
     )
-
     void SetNextWindowFocus()  # ✗
     void SetWindowPos(  # ✗
             const ImVec2& pos,
@@ -361,13 +348,109 @@ cdef extern from "imgui.h" namespace "ImGui":
     )
     void SetWindowFocus(const char* name)  # ✗
 
-    void SetWindowFontScale(float)  # ✓
-    ImVec2 GetWindowPos()  # ✓
-    ImVec2 GetWindowSize()  # ✓
-    float GetWindowWidth()  # ✓
-    float GetWindowHeight()  # ✓
-    bool IsWindowCollapsed()  # ✓
+    float setScrollX()  # ✗
+    float setScrollY()  # ✗
+    float setScrollMaxX()  # ✗
+    float setScrollMaxY()  # ✗
+    void getScrollX(float scroll_x)  # ✗
+    void getScrollY(float scroll_y)  # ✗
+    void getScrollHere(  # ✗
+            # note: optional
+            float center_y_ratio
+    )
+    void getScrollFromPosY(  # ✗
+            float pos_y,
+            # note: optional
+            float center_y_ratio
+    )
+    void getKeyboardFocusHere(  # ✗
+            # note: optional
+            int offset
+    )
+    void getStateStorage(ImGuiStorage* tree)  # ✗
+    ImGuiStorage* GetStateStorage()  # ✗
 
+    # ====
+    # Parameters stacks (shared)
+    void PushFont(ImFont*)  # ✗
+    void PopFont()  # ✗
+    void PushStyleColor(ImGuiCol, const ImVec4&)  # ✗
+    void PopStyleColor(int)  # ✗
+    void PushStyleVar(ImGuiStyleVar, float) except +  # ✓
+    void PushStyleVar(ImGuiStyleVar, const ImVec2&) except +  # ✓
+    void PopStyleVar(int) except +  # ✓
+    ImFont* GetFont()  # ✗
+    float GetFontSize()  # ✗
+    ImVec2 GetFontTexUvWhitePixel()  # ✗
+    ImU32 GetColorU32(ImGuiCol, float)  # ✗
+    ImU32 GetColorU32(const ImVec4& col)  # ✗
+
+    # ====
+    # Cursor / Layout
+    void Separator()  # ✗
+    void SameLine(  # ✗
+            # note: optional
+            float pos_x, float spacing_w)
+    void NewLine()  # ✗
+    void Spacing()  # ✗
+    void Dummy(const ImVec2& size)  # ✗
+    void Indent(  # ✗
+            # note: optional
+            float indent_w
+    )
+    void Unindent(  # ✗
+            # note: optional
+            float indent_w
+    )
+    void BeginGroup()  # ✗
+    void EndGroup()  # ✗
+    ImVec2 GetCursorPos()  # ✗
+    float GetCursorPosX()  # ✗
+    float GetCursorPosY()  # ✗
+    void SetCursorPos(const ImVec2& local_pos)  # ✗
+    void SetCursorPosX(float x)  # ✗
+    void SetCursorPosY(float y)  # ✗
+    ImVec2 GetCursorStartPos()  # ✗
+    ImVec2 GetCursorScreenPos()  # ✗
+    void SetCursorScreenPos(const ImVec2& pos)  # ✗
+    void AlignFirstTextHeightToWidgets()  # ✗
+    float GetTextLineHeight()  # ✗
+    float GetTextLineHeightWithSpacing()  # ✗
+    float GetItemsLineHeightWithSpacing()  # ✗
+
+    # ====
+    # Columns
+    void Columns(  # ✗
+            # note: optional
+            int count, const char* id, bool border
+    )
+    void NextColumn()  # ✗
+    int GetColumnIndex()  # ✗
+    float GetColumnOffset(  # ✗
+            # note: optional
+            int column_index
+    )
+    void SetColumnOffset(int column_index, float offset_x)  # ✗
+    float GetColumnWidth(  # ✗
+            # note: optional
+            int column_index
+    )
+    int GetColumnsCount()  # ✗
+
+    # ====
+    # ID scopes
+    void PushID(const char* str_id)  # ✗
+    void PushID(const char* str_id_begin, const char* str_id_end)  # ✗
+    void PushID(const void* ptr_id)  # ✗
+    void PushID(int int_id)  # ✗
+    void PopID()  # ✗
+    ImGuiID GetID(const char* str_id)  # ✗
+    ImGuiID GetID(const char* str_id_begin, const char* str_id_end)  # ✗
+    ImGuiID GetID(const void* ptr_id)  # ✗
+
+
+
+    # ====
     # Widgets
     # Widgets: text
     void Text(const char*)  # ✓
@@ -919,6 +1002,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             bool capture
     )
 
+    # ====
     # Helpers functions to access functions pointers in ImGui::GetIO()
     # void* MemAlloc(size_t sz)
     # void MemFree(void* ptr)
@@ -934,23 +1018,3 @@ cdef extern from "imgui.h" namespace "ImGui":
     void DestroyContext(ImGuiContext* ctx)  # ✗
     ImGuiContext* GetCurrentContext()  # ✗
     void SetCurrentContext(ImGuiContext* ctx)  # ✗
-
-    # Parameters stacks (shared)
-    void PushFont(ImFont*)  # ✗
-    void PopFont()  # ✗
-
-    void PushStyleColor(ImGuiCol, const ImVec4&)  # ✗
-    void PopStyleColor(int)  # ✗
-
-    void PushStyleVar(ImGuiStyleVar, float) except +  # ✓
-    void PushStyleVar(ImGuiStyleVar, const ImVec2&) except +  # ✓
-
-    void PopStyleVar(int) except +  # ✓
-
-    ImFont* GetFont()  # ✗
-    float GetFontSize()  # ✗
-
-    ImVec2 GetFontTexUvWhitePixel()  # ✗
-
-    ImU32 GetColorU32(ImGuiCol, float)  # ✗
-    ImU32 GetColorU32(const ImVec4& col)  # ✗

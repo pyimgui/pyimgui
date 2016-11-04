@@ -92,3 +92,40 @@ STYLE_GRAB_MIN_SIZE = core.STYLE_GRAB_MIN_SIZE
 if hasattr(core, 'STYLE_BUTTON_TEXT_ALIGN'):
     #: associated type: flags ImGuiAlign_*
     STYLE_BUTTON_TEXT_ALIGN = core.STYLE_BUTTON_TEXT_ALIGN
+
+#: Disable title-bar
+WINDOW_NO_TITLE_BAR = core.WINDOW_NO_TITLE_BAR
+#: Disable user resizing with the lower-right grip
+WINDOW_NO_RESIZE = core.WINDOW_NO_RESIZE
+#: Disable user moving the window
+WINDOW_NO_MOVE = core.WINDOW_NO_MOVE
+#: Disable scrollbars (window can still scroll with mouse or programatically)
+WINDOW_NO_SCROLLBAR = core.WINDOW_NO_SCROLLBAR
+#: Disable user vertically scrolling with mouse wheel
+WINDOW_NO_SCROLL_WITH_MOUSE = core.WINDOW_NO_SCROLL_WITH_MOUSE
+#: Disable user collapsing window by double-clicking on it
+WINDOW_NO_COLLAPSE = core.WINDOW_NO_COLLAPSE
+#: Resize every window to its content every frame
+WINDOW_ALWAYS_AUTO_RESIZE = core.WINDOW_ALWAYS_AUTO_RESIZE
+#: Show borders around windows and items
+WINDOW_SHOW_BORDERS = core.WINDOW_SHOW_BORDERS
+#: Never load/save settings in .ini file
+WINDOW_NO_SAVED_SETTINGS = core.WINDOW_NO_SAVED_SETTINGS
+#: Disable catching mouse or keyboard inputs
+WINDOW_NO_INPUTS = core.WINDOW_NO_INPUTS
+#: Has a menu-bar
+WINDOW_MENU_BAR = core.WINDOW_MENU_BAR
+#: Allow horizontal scrollbar to appear (off by default)
+WINDOW_HORIZONTAL_SCROLLING_BAR = core.WINDOW_HORIZONTAL_SCROLLING_BAR
+#: Disable taking focus when transitioning from hidden to visible state
+WINDOW_NO_FOCUS_ON_APPEARING = core.WINDOW_NO_FOCUS_ON_APPEARING
+#: Disable bringing window to front when taking focus (e.g. clicking on it or
+#: programatically giving it focus)
+WINDOW_NO_BRING_TO_FRONT_ON_FOCUS = core.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS
+#: Always show vertical scrollbar (even if ContentSize.y < Size.y)
+WINDOW_ALWAYS_VERTICAL_SCROLLBAR = core.WINDOW_ALWAYS_VERTICAL_SCROLLBAR
+#: Always show horizontal scrollbar (even if ContentSize.x < Size.x)
+WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = core.WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR
+#: Ensure child windows without border uses style.WindowPadding (ignored by
+#: default for non-bordered child windows, because more convenient)
+WINDOW_ALWAYS_USE_WINDOW_PADDING = core.WINDOW_ALWAYS_USE_WINDOW_PADDING
