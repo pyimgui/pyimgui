@@ -198,7 +198,8 @@ cdef class _DrawList(object):
         return [
             # todo: consider operator overloading in pxd file
             _DrawCmd.from_ptr(&self._ptr.CmdBuffer.Data[idx])
-            # perd: short-wiring instead of using property
+            # perf: short-wiring instead of using property
+            # note: add py3k compat
             for idx in xrange(self._ptr.CmdBuffer.Size)
         ]
 
@@ -892,7 +893,7 @@ def show_test_window(closable=False):
         closable (bool): define if window is closable.
 
     Returns:
-        bool: if ``closable`` return state of close button otherwise None.
+        bool: True if window is not closed (False trigerred by close button).
 
     .. wraps::
         void ShowTestWindow(bool* p_open = NULL)
@@ -900,12 +901,11 @@ def show_test_window(closable=False):
     cdef cimgui.bool opened = True
 
     if closable:
-        # todo: consider using special collapsed state object that will
-        # todo: wrap everything here instead of changing return type
         cimgui.ShowTestWindow(&opened)
-        return opened
     else:
         cimgui.ShowTestWindow()
+
+    return opened
 
 
 def show_metrics_window(closable=False):
@@ -922,7 +922,7 @@ def show_metrics_window(closable=False):
         closable (bool): define if window is closable.
 
     Returns:
-        bool: if ``closable`` return state of close button otherwise None.
+        bool: True if window is not closed (False trigerred by close button).
 
     .. wraps::
         void ShowMetricsWindow(bool* p_open = NULL)
@@ -930,9 +930,11 @@ def show_metrics_window(closable=False):
     cdef cimgui.bool opened = True
 
     if closable:
-        return cimgui.ShowMetricsWindow(&opened), opened
+        cimgui.ShowMetricsWindow(&opened)
     else:
-        return cimgui.ShowMetricsWindow()
+        cimgui.ShowMetricsWindow()
+
+    return opened
 
 
 cpdef begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
@@ -950,8 +952,11 @@ cpdef begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
 
     .. todo:: add section about window flags
 
-    :returns: if window is not closable then ``expanded`` bool value
-        otherwise ``(expanded, opened)`` tuple of bools
+    Returns:
+        tuple: ``(expanded, opened)`` tuple of bools. If window is collapsed
+        ``expanded==True``. The value of ``opened`` is always True for
+        non-closable and open windows but changes state to False on close
+        button click for closable windows.
 
     .. wraps::
         Begin(
@@ -966,7 +971,7 @@ cpdef begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
     if closable:
         return cimgui.Begin(name, &opened, flags), opened
     else:
-        return cimgui.Begin(name)
+        return cimgui.Begin(name), opened
 
 
 def get_draw_data():
@@ -1178,7 +1183,44 @@ def set_window_font_scale(float scale):
     cimgui.SetWindowFontScale(scale)
 
 
-def get_windown_position():
+def set_next_window_collapsed(
+    cimgui.bool collapsed, cimgui.ImGuiSetCond condition=ALWAYS
+):
+    """Set next window collapsed state.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 60
+        :width: 400
+
+        imgui.set_next_window_collapsed(True)
+        imgui.begin("Example: collapsed window")
+        imgui.end()
+
+
+    Args:
+        collapsed (bool) set to True if window has to be collapsed.
+        condition (:ref:`condition flag <condition-options>`): defines on
+            which condition value should be set. Defaults to
+            :any:`imgui.ALWAYS`.
+
+    .. wraps::
+         void SetNextWindowCollapsed(bool collapsed, ImGuiSetCond cond = 0)
+    :return:
+    """
+    cimgui.SetNextWindowCollapsed(collapsed, condition)
+
+
+def set_next_window_focus():
+    """Set next window to be focused (most front).
+
+    .. wraps::
+        void SetNextWindowFocus()
+    """
+    cimgui.SetNextWindowFocus()
+
+
+def get_window_position():
     """Get current window position.
 
     It may be useful if you want to do your own drawing via the DrawList
@@ -1745,6 +1787,231 @@ cpdef pop_style_var(unsigned int count=1):
     """
     cimgui.PopStyleVar(count)
 
+
+def separator():
+    """Add vertical line as a separator beween elements.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 300
+
+        imgui.begin("Example: separators")
+
+        imgui.text("Some text with bullets")
+        imgui.bullet_text("Bullet A")
+        imgui.bullet_text("Bullet A")
+
+        imgui.separator()
+
+        imgui.text("Another text with bullets")
+        imgui.bullet_text("Bullet A")
+        imgui.bullet_text("Bullet A")
+
+        imgui.end()
+
+    .. wraps::
+        void Separator();
+    """
+    cimgui.Separator()
+
+
+def same_line(float position=0.0, float spacing=-1.0):
+    """Call between widgets or groups to layout them horizontally.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 300
+
+        imgui.begin("Example: same line widgets")
+
+        imgui.text("same_line() with defaults:")
+        imgui.button("yes"); imgui.same_line()
+        imgui.button("no")
+
+        imgui.text("same_line() with fixed position:")
+        imgui.button("yes"); imgui.same_line(position=50)
+        imgui.button("no")
+
+        imgui.text("same_line() with spacing:")
+        imgui.button("yes"); imgui.same_line(spacing=50)
+        imgui.button("no")
+
+        imgui.end()
+
+    Args:
+        position (float): fixed horizontal position position.
+        spacing (float): spacing between elements.
+
+    .. wraps::
+        void SameLine(float pos_x = 0.0f, float spacing_w = -1.0f)
+    """
+    cimgui.SameLine(position, spacing)
+
+
+def new_line():
+    """Undo :any:`same_line()` call.
+
+    .. wraps::
+        void NewLine();
+    """
+    cimgui.NewLine()
+
+
+def spacing():
+    """Add vertical spacing beween elements.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 300
+
+        imgui.begin("Example: vertical spacing")
+
+        imgui.text("Some text with bullets:")
+        imgui.bullet_text("Bullet A")
+        imgui.bullet_text("Bullet A")
+
+        imgui.spacing(); imgui.spacing()
+
+        imgui.text("Another text with bullets:")
+        imgui.bullet_text("Bullet A")
+        imgui.bullet_text("Bullet A")
+
+        imgui.end()
+
+    .. wraps::
+        void Spacing();
+    """
+    cimgui.Spacing()
+
+
+def dummy(width, height):
+    """Add dummy element of given size.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 300
+
+        imgui.begin("Example: dummy elements")
+
+        imgui.text("Some text with bullets:")
+        imgui.bullet_text("Bullet A")
+        imgui.bullet_text("Bullet B")
+
+        imgui.dummy(0, 50)
+        imgui.bullet_text("Text after dummy")
+
+        imgui.end()
+
+    .. wraps::
+        void Dummy(const ImVec2& size)
+    """
+    cimgui.Dummy(_cast_args_ImVec2(width, height))
+
+
+def indent(float width=0.0):
+    """Move content to right by indent width.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 300
+
+        imgui.begin("Example: item indenting")
+
+        imgui.text("Some text with bullets:")
+
+        imgui.bullet_text("Bullet A")
+        imgui.indent()
+        imgui.bullet_text("Bullet B (first indented)")
+        imgui.bullet_text("Bullet C (indent continues)")
+        imgui.unindent()
+        imgui.bullet_text("Bullet D (indent cleared)")
+
+        imgui.end()
+
+    Args:
+        width (float): fixed width of indent. If less or equal 0 it defaults
+            to global indent spacing or value set using style value  stack
+             (see :any:`push_style_var`).
+
+    .. wraps::
+        void Indent(float indent_w = 0.0f)
+    """
+    cimgui.Indent(width)
+
+
+def unindent(float width=0.0):
+    """Move content to left by indent width.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 300
+
+        imgui.begin("Example: item unindenting")
+
+        imgui.text("Some text with bullets:")
+
+        imgui.bullet_text("Bullet A")
+        imgui.unindent(10)
+        imgui.bullet_text("Bullet B (first unindented)")
+        imgui.bullet_text("Bullet C (unindent continues)")
+        imgui.indent(10)
+        imgui.bullet_text("Bullet C (unindent cleared)")
+
+        imgui.end()
+
+    Args:
+        width (float): fixed width of indent. If less or equal 0 it defaults
+            to global indent spacing or value set using style value stack
+             (see :any:`push_style_var`).
+
+    .. wraps::
+        void Unindent(float indent_w = 0.0f)
+    """
+    cimgui.Unindent(width)
+
+
+def begin_group():
+    """Start item group and lock its horizontal starting position.
+
+    Captures group bounding box into one "item". Thanks to this you can use
+    :any:`is_item_hovered()` or layout primitives such as :any:`same_line()`
+    on whole group, etc.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 500
+
+        imgui.begin("Example: item groups")
+
+        imgui.begin_group()
+        imgui.text("First group (buttons):")
+        imgui.button("Button A")
+        imgui.button("Button B")
+        imgui.end_group()
+
+        imgui.same_line(spacing=50)
+
+        imgui.begin_group()
+        imgui.text("Second group (text and bullet texts):")
+        imgui.bullet_text("Bullet A")
+        imgui.bullet_text("Bullet B")
+        imgui.end_group()
+
+        imgui.end()
+
+    .. wraps::
+        void BeginGroup()
+    """
+    cimgui.BeginGroup()
+
+
+def end_group():
+    """End group (see: :any:`begin_group`).
+
+    .. wraps::
+        void EndGroup()
+    """
+    cimgui.EndGroup()
 
 # additional helpers
 # todo: move to separate extension module (extra?)

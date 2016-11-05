@@ -310,12 +310,12 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeConstraintCallback custom_callback, void* custom_callback_data)  # ✗
     void SetNextWindowContentSize(const ImVec2& size)  # ✗
     void SetNextWindowContentWidth(float width)  # ✗
-    void SetNextWindowCollapsed(  # ✗
+    void SetNextWindowCollapsed(  # ✓
             bool collapsed,
             # note: optional
             ImGuiSetCond cond
     )
-    void SetNextWindowFocus()  # ✗
+    void SetNextWindowFocus()  # ✓
     void SetWindowPos(  # ✗
             const ImVec2& pos,
             # note: optional
@@ -387,23 +387,23 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # ====
     # Cursor / Layout
-    void Separator()  # ✗
-    void SameLine(  # ✗
+    void Separator()  # ✓
+    void SameLine(  # ✓
             # note: optional
             float pos_x, float spacing_w)
-    void NewLine()  # ✗
-    void Spacing()  # ✗
-    void Dummy(const ImVec2& size)  # ✗
-    void Indent(  # ✗
+    void NewLine()  # ✓
+    void Spacing()  # ✓
+    void Dummy(const ImVec2& size)  # ✓
+    void Indent(  # ✓
             # note: optional
             float indent_w
     )
-    void Unindent(  # ✗
+    void Unindent(  # ✓
             # note: optional
             float indent_w
     )
-    void BeginGroup()  # ✗
-    void EndGroup()  # ✗
+    void BeginGroup()  # ✓
+    void EndGroup()  # ✓
     ImVec2 GetCursorPos()  # ✗
     float GetCursorPosX()  # ✗
     float GetCursorPosY()  # ✗
