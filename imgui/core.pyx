@@ -1720,6 +1720,107 @@ def image(
         _cast_tuple_ImVec4(border_color),
     )
 
+
+def checkbox(str label, cimgui.bool state):
+    """Display checkbox widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+
+        imgui.begin("Example: checkboxes")
+
+        c1_output = imgui.checkbox("Checkbox 1", True)
+        c2_output = imgui.checkbox("Checkbox 2", False)
+
+        imgui.text("Checkbox 1 return value: {}".format(c1_output))
+        imgui.text("Checkbox 2 return value: {}".format(c2_output))
+
+        imgui.end()
+
+    Args:
+        label (str): text label for checkbox widget.
+        state (bool): current (desired) state of the checkbox. If it has to
+            change, the new state will be returned as a second item of
+            the return value.
+
+    Returns:
+        tuple: a ``(clicked, state)`` two-tuple idicating click event and the
+        current state of the checkbox.
+
+    .. wraps::
+        bool Checkbox(const char* label, bool* v)
+    """
+    cdef cimgui.bool inout_state = state
+    return cimgui.Checkbox(label, &inout_state), inout_state
+
+
+def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
+    """Display checkbox widget that handle integer flags (bit fields).
+
+    It is useful for handling window/style flags or any kind of flags
+    implemented as integer bitfields.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 500
+
+        flags = imgui.WINDOW_NO_RESIZE | imgui.WINDOW_NO_MOVE
+
+        imgui.begin("Example: checkboxes for flags", flags=flags)
+
+        clicked, flags = imgui.checkbox_flags(
+            "No resize", flags, imgui.WINDOW_NO_RESIZE
+        )
+        clicked, flags = imgui.checkbox_flags(
+            "No move", flags, imgui.WINDOW_NO_MOVE
+        )
+        clicked, flags = imgui.checkbox_flags(
+            "No collapse", flags, imgui.WINDOW_NO_COLLAPSE
+        )
+        # note: it also allows to use multiple flags at once
+        clicked, flags = imgui.checkbox_flags(
+            "No resize & no move", flags,
+            imgui.WINDOW_NO_RESIZE | imgui.WINDOW_NO_MOVE
+        )
+        imgui.text("Current flags value: {0:b}".format(flags))
+        imgui.end()
+
+    Args:
+        label (str): text label for checkbox widget.
+        flags (int): current state of the flags associated with checkbox.
+            Actual state of checkbox (toggled/untoggled) is calculated from
+            this argument and ``flags_value`` argument. If it has to change,
+            the new state will be returned as a second item of the return
+            value.
+        flags_value (int): values of flags this widget can toggle. Represents
+            bitmask in flags bitfield. Allows multiple flags to be toggled
+            at once (specify using bit OR operator `|`, see example above).
+
+    Returns:
+        tuple: a ``(clicked, flags)`` two-tuple idicating click event and the
+        current state of the flags controlled with this checkbox.
+
+    .. wraps::
+        bool CheckboxFlags(const char* label, unsigned int* flags, unsigned int flags_value)
+    """
+    cdef unsigned int inout_flags = flags
+
+    return cimgui.CheckboxFlags(label, &inout_flags, flags_value), inout_flags
+
+
+def is_item_hovered():
+    """Check if the last item is hovered by mouse.
+
+    Returns:
+        bool: True if item is hovered by mouse, otherwise False.
+
+    .. wraps::
+        bool IsItemHovered()
+    """
+    return cimgui.is_item_hovered()
+
+
 cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     """Push style variable on stack.
 

@@ -488,10 +488,10 @@ cdef extern from "imgui.h" namespace "ImGui":
             const ImVec4& border_col
     )                           
     # Widgets: checkboxes etc.
-    bool Checkbox(const char* label, bool* v)  # ✗
-    bool CheckboxFlags(
+    bool Checkbox(const char* label, bool* v)  # ✓
+    bool CheckboxFlags(  # ✓
             const char* label, unsigned int* flags, unsigned int flags_value
-    )  # ✗
+    )
     bool RadioButton(const char* label, bool active)  # ✗
     bool RadioButton(const char* label, int* v, int v_button)  # ✗
     # Widgets: combos
@@ -903,7 +903,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void PopClipRect()  # ✗
 
     # Utilities
-    bool IsItemHovered()  # ✗
+    bool IsItemHovered()  # ✓
     bool IsItemHoveredRect()  # ✗
     bool IsItemActive()  # ✗
     bool IsItemClicked(  # ✗
