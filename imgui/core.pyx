@@ -979,7 +979,7 @@ def get_draw_data():
 
     Draw data value is same as passed to your ``io.render_callback()``
     function. It is valid after :any:`render()` and until the next call
-    to :any:`next_frame()`
+    to :any:`new_frame()`
 
     Returns:
         _DrawData: draw data for all draw calls required to display gui
@@ -1199,14 +1199,14 @@ def set_next_window_collapsed(
 
 
     Args:
-        collapsed (bool) set to True if window has to be collapsed.
+        collapsed (bool): set to True if window has to be collapsed.
         condition (:ref:`condition flag <condition-options>`): defines on
             which condition value should be set. Defaults to
             :any:`imgui.ALWAYS`.
 
     .. wraps::
          void SetNextWindowCollapsed(bool collapsed, ImGuiSetCond cond = 0)
-    :return:
+
     """
     cimgui.SetNextWindowCollapsed(collapsed, condition)
 
@@ -2032,7 +2032,7 @@ def indent(float width=0.0):
     Args:
         width (float): fixed width of indent. If less or equal 0 it defaults
             to global indent spacing or value set using style value  stack
-             (see :any:`push_style_var`).
+            (see :any:`push_style_var`).
 
     .. wraps::
         void Indent(float indent_w = 0.0f)
@@ -2063,7 +2063,7 @@ def unindent(float width=0.0):
     Args:
         width (float): fixed width of indent. If less or equal 0 it defaults
             to global indent spacing or value set using style value stack
-             (see :any:`push_style_var`).
+            (see :any:`push_style_var`).
 
     .. wraps::
         void Unindent(float indent_w = 0.0f)

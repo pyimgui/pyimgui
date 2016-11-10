@@ -557,8 +557,12 @@ cdef extern from "imgui.h" namespace "ImGui":
             const ImVec2& size_arg, const char* overlay
     )
 
-    # Widgets: Drags (tip: ctrl+click on a drag box to input with keyboard. manually input values aren't clamped, can go off-bounds)
-    # For all the Float2/Float3/Float4/Int2/Int3/Int4 versions of every functions, remember than a 'float v[3]' function argument is the same as 'float* v'. You can pass address of your first element out of a contiguous set, e.g. &myvector.x
+    # Widgets: Drags (tip: ctrl+click on a drag box to input with keyboard.
+    # manually input values aren't clamped, can go off-bounds)
+    # For all the Float2/Float3/Float4/Int2/Int3/Int4 versions of every
+    # functions, remember than a 'float v[3]' function argument is the same
+    # as 'float* v'. You can pass address of your first element out of a
+    # contiguous set, e.g. &myvector.x
     bool DragFloat(  # ✗
             const char* label, float* v,
             # note: optional
@@ -678,7 +682,8 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiInputTextFlags extra_flags
     )
 
-    # Widgets: Sliders (tip: ctrl+click on a slider to input with keyboard. manually input values aren't clamped, can go off-bounds)
+    # Widgets: Sliders (tip: ctrl+click on a slider to input with keyboard.
+    #  manually input values aren't clamped, can go off-bounds)
     bool SliderFloat(  # ✗
             const char* label, float* v, float v_min, float v_max,
             # note: optional
@@ -881,7 +886,9 @@ cdef extern from "imgui.h" namespace "ImGui":
     void EndPopup()  # ✗
     void CloseCurrentPopup()  # ✗
 
-    # Logging: all text output from interface is redirected to tty/file/clipboard. By default, tree nodes are automatically opened during logging.
+    # Logging: all text output from interface is redirected to
+    # tty/file/clipboard. By default, tree nodes are automatically opened
+    #  during logging.
     void LogToTTY(  # ✗
             # note: optional
             int max_depth
