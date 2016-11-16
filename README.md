@@ -1,4 +1,4 @@
-[![completion](https://img.shields.io/badge/completion-37%25%20%28148%20of%20390%29-blue.svg)](https://github.com/swistakm/pyimgui)
+[![completion](https://img.shields.io/badge/completion-38%25%20%28152%20of%20391%29-blue.svg)](https://github.com/swistakm/pyimgui)
 
 Builds:
 * [![Build status](https://ci.appveyor.com/api/projects/status/s7pud6on7dww89iv?svg=true)](https://ci.appveyor.com/project/swistakm/pyimgui) (Windows)

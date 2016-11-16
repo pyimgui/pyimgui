@@ -1812,6 +1812,75 @@ def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
     return cimgui.CheckboxFlags(label, &inout_flags, flags_value), inout_flags
 
 
+def radio_button(str label, cimgui.bool active):
+    """Display radio button widget
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+
+        radio_active = True
+
+        imgui.begin("Example: radio buttons")
+
+        if imgui.radio_button("Radio button", radio_active):
+            radio_active = not radio_active
+
+        imgui.end()
+
+    Args:
+        label (str): button label.
+        active (bool): state of the radio button.
+
+    Returns:
+        bool: True if clicked.
+
+    .. wraps::
+        bool RadioButton(const char* label, bool active)
+    """
+    return cimgui.RadioButton(label, active)
+
+
+def combo(str label, int current, list items, int height_in_items=-1):
+    """Display combo widget.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+
+        current = 2
+        imgui.begin("Example: combo widget")
+
+        clicked, current = imgui.combo(
+            "combo", current, ["first", "second", "third"]
+        )
+
+        imgui.end()
+
+    Args:
+        label (str): combo label.
+        current (int): index of selected item.
+        items (list): list of string labels for items.
+        height_in_items (int): height of dropdown in items. Defaults to -1
+            (autosized).
+
+    Returns:
+        tuple: a ``(changed, current)`` tuple indicating change of selection
+        and current index of selected item.
+
+    .. wraps::
+        bool Combo(const char* label, int* current_item, const char* items_separated_by_zeros, int height_in_items = -1)
+
+    """
+    cdef int inout_current = current
+
+    in_items = "\0".join(items)
+
+    return cimgui.Combo(
+        label, &inout_current, in_items, height_in_items
+    ), inout_current
+
+
 def is_item_hovered():
     """Check if the last item is hovered by mouse.
 

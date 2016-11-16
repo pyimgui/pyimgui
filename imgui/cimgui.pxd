@@ -492,10 +492,20 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool CheckboxFlags(  # ✓
             const char* label, unsigned int* flags, unsigned int flags_value
     )
-    bool RadioButton(const char* label, bool active)  # ✗
-    bool RadioButton(const char* label, int* v, int v_button)  # ✗
+    bool RadioButton(const char* label, bool active)  # ✓
+    # note: probably no reason to support it
+    bool RadioButton(const char* label, int* v, int v_button)  # ✓
+
     # Widgets: combos
-    bool Combo(  # ✗
+    bool Combo(  # ✓
+            const char* label, int* current_item,
+            const char* items_separated_by_zeros,
+            # note: optional
+            int height_in_items
+    )
+    # note: we only implemented the null-separated version that is fully
+    #       compatible with following. Probably no reason to support it
+    bool Combo(  # ✓
             const char* label, int* current_item,
             const char** items, int items_count,
             # note: optional
@@ -503,14 +513,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     )
     bool Combo(  # ✗
             const char* label, int* current_item,
-            const char* items_separated_by_zeros,
-            # note: optional
-            int height_in_items
-    )
-    bool Combo(  # ✗
-            const char* label, int* current_item,
-            bool (*items_getter)(void* data, int idx,
-            const char** out_text), void* data, int items_count,
+            bool (*items_getter)(void* data, int idx, const char** out_text),
+            void* data, int items_count,
             # note: optional
             int height_in_items
     )
