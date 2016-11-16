@@ -1384,7 +1384,8 @@ def text(char* text):
     .. wraps::
         Text(const char* fmt, ...)
     """
-    cimgui.Text(text)
+    # note: "%s" required for safety and to favor of Python string formating
+    cimgui.Text("%s", text)
 
 
 def text_colored(char* text, float r, float g, float b, float a=1.):
@@ -1418,8 +1419,8 @@ def text_colored(char* text, float r, float g, float b, float a=1.):
     .. wraps::
         TextColored(const ImVec4& col, const char* fmt, ...)
     """
-
-    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), text)
+    # note: "%s" required for safety and to favor of Python string formating
+    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", text)
 
 
 def label_text(char* label, char* text):
@@ -1441,7 +1442,8 @@ def label_text(char* label, char* text):
     .. wraps::
         void LabelText(const char* label, const char* fmt, ...)
     """
-    cimgui.LabelText(label, text)
+    # note: "%s" required for safety and to favor of Python string formating
+    cimgui.LabelText(label, "%s", text)
 
 
 def bullet():
@@ -1493,7 +1495,8 @@ def bullet_text(char* text):
     .. wraps::
         void BulletText(const char* fmt, ...)
     """
-    cimgui.BulletText(text)
+    # note: "%s" required for safety and to favor of Python string formating
+    cimgui.BulletText("%s", text)
 
 
 def button(char* label, width=0, height=0):
@@ -1911,7 +1914,7 @@ def separator():
         imgui.end()
 
     .. wraps::
-        void Separator();
+        void Separator()
     """
     cimgui.Separator()
 
@@ -1953,7 +1956,7 @@ def new_line():
     """Undo :any:`same_line()` call.
 
     .. wraps::
-        void NewLine();
+        void NewLine()
     """
     cimgui.NewLine()
 
@@ -1980,7 +1983,7 @@ def spacing():
         imgui.end()
 
     .. wraps::
-        void Spacing();
+        void Spacing()
     """
     cimgui.Spacing()
 

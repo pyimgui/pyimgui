@@ -453,14 +453,14 @@ cdef extern from "imgui.h" namespace "ImGui":
     # ====
     # Widgets
     # Widgets: text
-    void Text(const char*)  # ✓
-    void TextColored(const ImVec4&, const char*)  # ✓
-    void TextDisabled(const char*)  # ✗
-    void TextWrapped(const char*)  # ✗
+    void Text(const char*, ...)  # ✓
+    void TextColored(const ImVec4&, const char*, ...)  # ✓
+    void TextDisabled(const char*, ...)  # ✗
+    void TextWrapped(const char*, ...)  # ✗
     void TextUnformatted(const char*)  # ✗
-    void LabelText(const char*, const char*)  # ✓
+    void LabelText(const char*, const char*, ...)  # ✓
     void Bullet()  # ✓
-    void BulletText(const char*)  # ✓
+    void BulletText(const char*, ...)  # ✓
 
     # Widgets: buttons
     bool Button(const char*, const ImVec2& size)  # ✓
@@ -833,7 +833,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void ValueColor(const char* prefix, unsigned int v)  # ✗
 
     # Tooltips
-    void SetTooltip(const char* fmt)  # ✗
+    void SetTooltip(const char* fmt, ...)  # ✗
     # void SetTooltipV(const char* fmt, va_list args)  # ✗
     void BeginTooltip()  # ✗
     void EndTooltip()  # ✗
@@ -903,7 +903,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     )
     void LogFinish()  # ✗
     void LogButtons()  # ✗
-    void LogText(const char*)
+    void LogText(const char*, ...)  # ✗
 
     # Clipping
     void PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect)  # ✗
