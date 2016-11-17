@@ -71,7 +71,7 @@ if on_rtd:
     def setup(app):
         app.connect("autodoc-skip-member", skip)
 
-    sys.path.insert(0, PROJECT_ROOT_DIR)
+    sys.path.append(PROJECT_ROOT_DIR)
 
 else:
     render_examples = True
