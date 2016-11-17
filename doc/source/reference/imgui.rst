@@ -3,4 +3,5 @@ imgui package
 
 
 .. automodule:: imgui
-    :members:
+   :members:
+   :undoc-members:

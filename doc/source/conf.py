@@ -55,6 +55,20 @@ if on_rtd:
     from git_lfs import fetch
     fetch(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 else:
+    def skip(app, what, name, obj, skip, options):
+        if what == "module":
+            print(what, name, obj, skip, options)
+
+            # if 'members' in options:
+            #     import ipdb; ipdb.set_trace()
+            #
+            # exit()
+        return skip
+
+    def setup(app):
+        app.connect("autodoc-skip-member", skip)
+
+# else:
     render_examples = True
 
 
