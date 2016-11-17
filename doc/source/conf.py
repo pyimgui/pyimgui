@@ -54,7 +54,7 @@ if on_rtd:
     # hack for lacking git-lfs support on rtd
     from git_lfs import fetch
     fetch(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-else:
+
     def skip(app, what, name, obj, skip, options):
         if what == "module":
             print(what, name, obj, skip, options)
@@ -68,7 +68,7 @@ else:
     def setup(app):
         app.connect("autodoc-skip-member", skip)
 
-# else:
+else:
     render_examples = True
 
 
