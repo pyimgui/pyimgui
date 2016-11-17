@@ -263,12 +263,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     # ====
     # Window
     bool Begin(const char*, bool*, ImGuiWindowFlags)  # ✓
-    bool Begin(const char*, bool*)  # ✓
-    bool Begin(const char*)  # ✓
     # note: following API was deprecated
-    # bool Begin(const char*, bool*, const ImVec2&, float, ImGuiWindowFlags)  # ✗
-    # bool Begin(const char*, bool*, const ImVec2&, float)  # ✗
-    # bool Begin(const char*, bool*, const ImVec2&)  # ✗
+    # bool Begin(const char*, bool*, const ImVec2&, float, ImGuiWindowFlags)
     void End()  # ✓
     bool BeginChild(const char*, const ImVec2&, bool, ImGuiWindowFlags)  # ✓
     bool BeginChild(const char*, const ImVec2&, bool)  # ✓

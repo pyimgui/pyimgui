@@ -937,7 +937,7 @@ def show_metrics_window(closable=False):
     return opened
 
 
-cpdef begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
+def begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """Begin a window.
 
     .. visual-example::
@@ -948,9 +948,8 @@ cpdef begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
 
     Args:
         closable (bool): define if window is closable.
-        flags: window flags (see section about window flags)
-
-    .. todo:: add section about window flags
+        flags: Window flags. See:
+            :ref:`list of available flags <window-flag-options>`.
 
     Returns:
         tuple: ``(expanded, opened)`` tuple of bools. If window is collapsed
@@ -965,13 +964,9 @@ cpdef begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
             ImGuiWindowFlags flags = 0
         )
     """
-    # todo: consider refactor for consistent return signature
     cdef cimgui.bool opened = True
 
-    if closable:
-        return cimgui.Begin(name, &opened, flags), opened
-    else:
-        return cimgui.Begin(name), opened
+    return cimgui.Begin(name, &opened if closable else NULL, flags), opened
 
 
 def get_draw_data():
@@ -1037,7 +1032,8 @@ def begin_child(
         width (float): Region width. See note about sizing.
         height (float): Region height. See note about sizing.
         border (bool): True if should display border. Defaults to False.
-        flags: Window flags (see section about window flags).
+        flags: Window flags. See:
+            :ref:`list of available flags <window-flag-options>`.
 
     Returns:
         bool: True if region is visible
@@ -1057,7 +1053,6 @@ def begin_child(
             ImGuiWindowFlags extra_flags = 0
         )
     """
-    # todo: add support for extra flags
     # note: we do not take advantage of C++ function overloading
     #       in order to take adventage of Python keyword arguments
     return cimgui.BeginChild(

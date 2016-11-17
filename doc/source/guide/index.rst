@@ -8,6 +8,7 @@ usage guide
    :maxdepth: 5
 
    conditions
+   window-flags
 
 .. visual-example::
     :title: Guide - hello world!

@@ -1,4 +1,4 @@
-[![completion](https://img.shields.io/badge/completion-39%25%20%28154%20of%20391%29-blue.svg)](https://github.com/swistakm/pyimgui)
+[![completion](https://img.shields.io/badge/completion-39%25%20%28152%20of%20389%29-blue.svg)](https://github.com/swistakm/pyimgui)
 
 Builds:
 
@@ -6,7 +6,7 @@ Builds:
 * [![Build Status](https://travis-ci.org/swistakm/pyimgui.svg?branch=master)](https://travis-ci.org/swistakm/pyimgui) (OS X & Linux)
 
 
-# pyimgui,
+# pyimgui
 
 **pyimgui** is a Cython-based binding for impressive 
 [dear imgui](https://github.com/ocornut/imgui) C++ library - 
