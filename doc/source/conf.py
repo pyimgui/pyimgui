@@ -19,31 +19,11 @@
 import os
 import sys
 
-CONF_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT_DIR = os.path.dirname(os.path.dirname(CONF_DIR))
+DOC_SOURCES_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT_DIR = os.path.dirname(os.path.dirname(DOC_SOURCES_DIR))
 
-try:
-    import glfw
-
-except ImportError:
-    glfw = None
-
-if glfw is None:
-    try:
-        from unittest.mock import MagicMock
-    except ImportError:
-        from mock import MagicMock
-
-        class Mock(MagicMock):
-            @classmethod
-            def __getattr__(cls, name):
-                    return Mock()
-
-        MOCK_MODULES = ['glfw']
-        sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
-
-sys.path.insert(0, CONF_DIR)
-
+# insert
+sys.path.insert(0, DOC_SOURCES_DIR)
 
 # this is quite dirty approach but we're not working at NASA and nobody can die
 # because of that. Am I right?
@@ -57,21 +37,6 @@ if on_rtd:
     # hack for lacking git-lfs support on rtd
     from git_lfs import fetch
     fetch(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-
-    def skip(app, what, name, obj, skip, options):
-        if what == "module":
-            print(what, name, obj, skip, options)
-
-            # if 'members' in options:
-            #     import ipdb; ipdb.set_trace()
-            #
-            # exit()
-        return skip
-
-    def setup(app):
-        app.connect("autodoc-skip-member", skip)
-
-    sys.path.append(PROJECT_ROOT_DIR)
 
 else:
     render_examples = True
@@ -215,7 +180,7 @@ html_sidebars = {
 
 html_theme_options = {
     'github_user': 'swistakm',
-    'github_repo': 'imgui',
+    'github_repo': 'pyimgui',
     'github_button': True,
     'github_type': 'star',
     'sidebar_includehidden': True,
@@ -455,3 +420,7 @@ napoleon_use_admonition_for_references = False
 napoleon_use_ivar = False
 napoleon_use_param = False
 napoleon_use_rtype = False
+
+autodoc_member_order = 'bysource'
+# this is in order to support GlfwImpl documentation on RTD
+autodoc_mock_imports = ['glfw']
