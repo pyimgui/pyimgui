@@ -1205,7 +1205,9 @@ def set_next_window_collapsed(
             :any:`imgui.ALWAYS`.
 
     .. wraps::
-         void SetNextWindowCollapsed(bool collapsed, ImGuiSetCond cond = 0)
+         void SetNextWindowCollapsed(
+             bool collapsed, ImGuiSetCond cond = 0
+         )
 
     """
     cimgui.SetNextWindowCollapsed(collapsed, condition)
@@ -1352,7 +1354,9 @@ def set_next_window_size(
 
 
     .. wraps::
-        void SetNextWindowSize(const ImVec2& size, ImGuiSetCond cond = 0)
+        void SetNextWindowSize(
+            const ImVec2& size, ImGuiSetCond cond = 0
+        )
     """
     cimgui.SetNextWindowSize(_cast_args_ImVec2(width, height), condition)
 
@@ -1414,7 +1418,7 @@ def text_colored(char* text, float r, float g, float b, float a=1.):
         r (float): red color intensity.
         g (float): green color intensity.
         b (float): blue color instensity.
-        a (float): alpha color intensity.
+        a (float): alpha intensity.
 
     .. wraps::
         TextColored(const ImVec4& col, const char* fmt, ...)
@@ -1599,7 +1603,7 @@ def color_button(
         r (float): red color intensity.
         g (float): green color intensity.
         b (float): blue color instensity.
-        a (float): alpha color intensity.
+        a (float): alpha intensity.
         small_height (bool): Small height. Default to False
         outline_border (bool): Diplay outline border. Defaults to True.
 
@@ -1805,7 +1809,10 @@ def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
         current state of the flags controlled with this checkbox.
 
     .. wraps::
-        bool CheckboxFlags(const char* label, unsigned int* flags, unsigned int flags_value)
+        bool CheckboxFlags(
+            const char* label, unsigned int* flags,
+            unsigned int flags_value
+        )
     """
     cdef unsigned int inout_flags = flags
 
@@ -1869,7 +1876,11 @@ def combo(str label, int current, list items, int height_in_items=-1):
         and current index of selected item.
 
     .. wraps::
-        bool Combo(const char* label, int* current_item, const char* items_separated_by_zeros, int height_in_items = -1)
+        bool Combo(
+            const char* label, int* current_item,
+            const char* items_separated_by_zeros,
+            int height_in_items = -1
+        )
 
     """
     cdef int inout_current = current

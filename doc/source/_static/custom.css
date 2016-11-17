@@ -1,0 +1,55 @@
+/*
+ * Custom stylesheets for alabaster Sphinx theme.
+ */
+
+
+/* do not hyphenate "Parameters" and <code> tags */
+th.field-name, code {
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    -webkit-hyphens: none;
+    hyphens: none;
+}
+
+/* add negative space between autodoc members */
+dl + dl, dd > dl {
+    margin-top: 2em;
+}
+
+dl + dl.class {
+    margin-top: 3.5em;
+}
+
+/* reformat class attributes ... */
+/* ... to be close together ... */
+dl.attribute + dl.attribute {
+    padding-top: 0;
+}
+/* ... to have a pseudo-heading ... */
+dl.attribute:first-of-type:before {
+    content: "Attributes:";
+    margin-left: -1em;
+    font-weight: bold;
+}
+/* ... and to be indented slightly */
+dl.attribute {
+    padding-left: 1em;
+}
+
+/* fix negative margin for code-blocks */
+dl dl pre, .admonition.note {
+    margin-left: 0;
+    padding-left: 30px;
+}
+
+/* fix negative margin and padding for admonition notes */
+.admonition.note {
+    margin-left: 0;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.admonition.note .first.admonition-title {
+    line-height: 1.5;
+}
+
