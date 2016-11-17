@@ -19,6 +19,9 @@
 import os
 import sys
 
+CONF_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT_DIR = os.path.dirname(os.path.dirname(CONF_DIR))
+
 try:
     import glfw
 
@@ -39,7 +42,7 @@ if glfw is None:
         MOCK_MODULES = ['glfw']
         sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, CONF_DIR)
 
 
 # this is quite dirty approach but we're not working at NASA and nobody can die
@@ -68,6 +71,8 @@ if on_rtd:
     def setup(app):
         app.connect("autodoc-skip-member", skip)
 
+    sys.path.insert(0, PROJECT_ROOT_DIR)
+
 else:
     render_examples = True
 
@@ -78,9 +83,7 @@ def get_version(version_tuple):
     return '.'.join(map(str, version_tuple))
 
 
-init = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-    'imgui', '__init__.py')
+init = os.path.join(PROJECT_ROOT_DIR, 'imgui', '__init__.py')
 version_line = list(filter(lambda l: l.startswith('VERSION'), open(init)))[0]
 
 VERSION = get_version(eval(version_line.split('=')[-1]))
