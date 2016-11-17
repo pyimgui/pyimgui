@@ -2,5 +2,7 @@ imgui.impl subpackage
 =====================
 
 
-.. automodule:: imgui.impl
+.. autoclass:: imgui.impl.GlfwImpl
+    :undoc-members:
     :members:
+

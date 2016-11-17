@@ -6,7 +6,9 @@ import imgui
 import ctypes
 
 
-class Impl(object):
+class GlfwImpl(object):
+    """Basic GLFW3 integration implementation."""
+
     VERTEX_SHADER_SRC = """
     #version 330
 
