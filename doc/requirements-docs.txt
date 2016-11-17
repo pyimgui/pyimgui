@@ -1,5 +1,5 @@
 Cython
-Sphinx
+Sphinx==1.4.8
 sphinxcontrib-napoleon
 PyOpenGL
 pypandoc
