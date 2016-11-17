@@ -129,3 +129,9 @@ WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = core.WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR
 #: Ensure child windows without border uses style.WindowPadding (ignored by
 #: default for non-bordered child windows, because more convenient)
 WINDOW_ALWAYS_USE_WINDOW_PADDING = core.WINDOW_ALWAYS_USE_WINDOW_PADDING
+
+#: to test attrib doc as comment
+FOO = 1
+
+BAR = 2
+"""To test attrib doc as string"""
