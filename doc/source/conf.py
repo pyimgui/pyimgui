@@ -19,6 +19,25 @@
 import os
 import sys
 
+try:
+    import glfw
+
+except ImportError:
+    glfw = None
+
+if glfw is None:
+    try:
+        from unittest.mock import MagicMock
+    except ImportError:
+        from mock import MagicMock
+
+        class Mock(MagicMock):
+            @classmethod
+            def __getattr__(cls, name):
+                    return Mock()
+
+        MOCK_MODULES = ['glfw']
+        sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 sys.path.insert(0, os.path.dirname(__file__))
 

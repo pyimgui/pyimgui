@@ -5,3 +5,4 @@ PyOpenGL
 glfw
 pypandoc
 git-lfs
+mock
