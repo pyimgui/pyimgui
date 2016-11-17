@@ -519,8 +519,8 @@ cdef extern from "imgui.h" namespace "ImGui":
             int height_in_items
     )
     # Widgets: color-edits
-    bool ColorEdit3(const char* label, float col[3])  # ✗
-    bool ColorEdit4(  # ✗
+    bool ColorEdit3(const char* label, float col[3])  # ✓
+    bool ColorEdit4(  # ✓
             const char* label, float col[4],
             # note: optional
             bool show_alpha

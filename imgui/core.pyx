@@ -1881,6 +1881,87 @@ def combo(str label, int current, list items, int height_in_items=-1):
     ), inout_current
 
 
+def color_edit3(str label, float r, float g, float b):
+    """Display color edit widget for color without alpha value.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 300
+
+        color_1 = 1., .0, .5
+        color_2 = 0., .8, .3
+
+        imgui.begin("Example: color edit without alpha")
+
+        changed, color_1 = imgui.color_edit3("Color 1", *color_1)
+        changed, color_2 = imgui.color_edit3("Color 2", *color_2)
+
+        imgui.end()
+
+    Args:
+        label (str): color edit label.
+        r (float): red color intensity.
+        g (float): green color intensity.
+        b (float): blue color instensity.
+        a (float): alpha intensity.
+
+    Returns:
+        tuple: a ``(changed, color)`` tuple that contains indicator of color
+        change and current value of color
+
+    .. wraps::
+        bool ColorEdit3(const char* label, float col[3])
+    """
+
+    cdef float[3] inout_color = [r, g, b]
+
+    return cimgui.ColorEdit3(
+        label, <float *>(&inout_color)
+    ), (inout_color[0], inout_color[1], inout_color[2])
+
+
+def color_edit4(
+    str label, float r, float g, float b, float a, cimgui.bool show_alpha=True
+):
+    """Display color edit widget for color with alpha value.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+
+        color = 1., .0, .5, 1.
+
+        imgui.begin("Example: color edit with alpha")
+
+        _, color = imgui.color_edit4("Alpha", *color, show_alpha=True)
+        _, color = imgui.color_edit4("No alpha", *color, show_alpha=False)
+
+        imgui.end()
+
+    Args:
+        label (str): color edit label.
+        r (float): red color intensity.
+        g (float): green color intensity.
+        b (float): blue color instensity.
+        a (float): alpha intensity.
+        show_alpha (bool): if set to True wiget allows to modify alpha
+
+    Returns:
+        tuple: a ``(changed, color)`` tuple that contains indicator of color
+        change and current value of color
+
+    .. wraps::
+        ColorEdit4(
+            const char* label, float col[4], bool show_alpha = true
+        )
+    """
+    cdef float[4] inout_color = [r, g, b, a]
+
+    return cimgui.ColorEdit4(
+        label, <float *>(&inout_color), show_alpha
+    ), (inout_color[0], inout_color[1], inout_color[2], inout_color[3])
+
+
 def is_item_hovered():
     """Check if the last item is hovered by mouse.
 
