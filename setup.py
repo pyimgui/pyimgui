@@ -2,7 +2,7 @@
 import os
 import sys
 
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 from Cython.Build import cythonize
 
 
@@ -52,7 +52,7 @@ else:  # OS X and Linux
 setup(
     name='imgui',
     version=VERSION,
-    packages=['imgui'],
+    packages=find_packages('.'),
 
     author=u'Michał Jaworski',
     author_email='swistakm@gmail.com',
