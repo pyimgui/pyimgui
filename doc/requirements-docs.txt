@@ -5,3 +5,4 @@ glfw
 pypandoc
 git-lfs
 mock
+-e.
