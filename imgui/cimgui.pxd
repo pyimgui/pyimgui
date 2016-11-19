@@ -303,7 +303,12 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiSetCond cond
     )
-    void SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeConstraintCallback custom_callback, void* custom_callback_data)  # ✗
+    void SetNextWindowSizeConstraints(  # ✗
+            const ImVec2& size_min,
+            const ImVec2& size_max,
+            ImGuiSizeConstraintCallback custom_callback,
+            void* custom_callback_data
+    )
     void SetNextWindowContentSize(const ImVec2& size)  # ✗
     void SetNextWindowContentWidth(float width)  # ✗
     void SetNextWindowCollapsed(  # ✓
@@ -563,25 +568,25 @@ cdef extern from "imgui.h" namespace "ImGui":
     # functions, remember than a 'float v[3]' function argument is the same
     # as 'float* v'. You can pass address of your first element out of a
     # contiguous set, e.g. &myvector.x
-    bool DragFloat(  # ✗
+    bool DragFloat(  # ✓
             const char* label, float* v,
             # note: optional
             float v_speed, float v_min, float v_max,
             const char* display_format, float power
     )
-    bool DragFloat2(  # ✗
+    bool DragFloat2(  # ✓
             const char* label, float v[2],
             # note: optional
             float v_speed, float v_min, float v_max,
             const char* display_format, float power
     )
-    bool DragFloat3(  # ✗
+    bool DragFloat3(  # ✓
             const char* label, float v[3],
             # note: optional
             float v_speed, float v_min, float v_max,
             const char* display_format, float power
     )
-    bool DragFloat4(  # ✗
+    bool DragFloat4(  # ✓
             const char* label, float v[4],
             # note: optional
             float v_speed, float v_min, float v_max,

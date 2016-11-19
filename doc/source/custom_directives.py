@@ -118,10 +118,14 @@ class VisualDirective(Directive):
         env = self.state.document.settings.env
 
         if render_snippet and env.config['render_examples']:
-            render_snippet(
-                source, file_path,
-                output_dir=SOURCE_DIR, **self.options
-            )
+            try:
+                render_snippet(
+                    source, file_path,
+                    output_dir=SOURCE_DIR, **self.options
+                )
+            except:
+                print("problematic code:\n%s" % source)
+                raise
 
         img = nodes.image()
         img['uri'] = "/" + file_path

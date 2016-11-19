@@ -1723,7 +1723,7 @@ def image(
     )
 
 
-def checkbox(str label, cimgui.bool state):
+def checkbox(char* label, cimgui.bool state):
     """Display checkbox widget.
 
     .. visual-example::
@@ -1757,7 +1757,7 @@ def checkbox(str label, cimgui.bool state):
     return cimgui.Checkbox(label, &inout_state), inout_state
 
 
-def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
+def checkbox_flags(char* label, unsigned int flags, unsigned int flags_value):
     """Display checkbox widget that handle integer flags (bit fields).
 
     It is useful for handling window/style flags or any kind of flags
@@ -1814,7 +1814,7 @@ def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
     return cimgui.CheckboxFlags(label, &inout_flags, flags_value), inout_flags
 
 
-def radio_button(str label, cimgui.bool active):
+def radio_button(char* label, cimgui.bool active):
     """Display radio button widget
 
     .. visual-example::
@@ -1843,7 +1843,7 @@ def radio_button(str label, cimgui.bool active):
     return cimgui.RadioButton(label, active)
 
 
-def combo(str label, int current, list items, int height_in_items=-1):
+def combo(char* label, int current, list items, int height_in_items=-1):
     """Display combo widget.
 
     .. visual-example::
@@ -1887,7 +1887,7 @@ def combo(str label, int current, list items, int height_in_items=-1):
     ), inout_current
 
 
-def color_edit3(str label, float r, float g, float b):
+def color_edit3(char* label, float r, float g, float b):
     """Display color edit widget for color without alpha value.
 
     .. visual-example::
@@ -1927,7 +1927,7 @@ def color_edit3(str label, float r, float g, float b):
 
 
 def color_edit4(
-    str label, float r, float g, float b, float a, cimgui.bool show_alpha=True
+    char* label, float r, float g, float b, float a, cimgui.bool show_alpha=True
 ):
     """Display color edit widget for color with alpha value.
 
@@ -1966,6 +1966,249 @@ def color_edit4(
     return cimgui.ColorEdit4(
         label, <float *>(&inout_color), show_alpha
     ), (inout_color[0], inout_color[1], inout_color[2], inout_color[3])
+
+
+def drag_float(
+    char* label, float value,
+    float change_speed = 1.0,
+    float max_value=0.0,
+    float min_value=0.0,
+    str display_format = "%.3f",
+    float power = 1.
+):
+    """Display float drag widget.
+
+    .. todo::
+        Consider replacing ``display_format`` with something that allows
+        for safer way to specify display format without loosing the
+        functionality of wrapped function.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        value = 42.0
+
+        imgui.begin("Example: drag float")
+        changed, value = imgui.drag_float(
+            "Default", value,
+        )
+        changed, value = imgui.drag_float(
+            "Less precise", value, display_format="%.1f"
+        )
+        imgui.text("Changed: %s, Value: %s" % (changed, value))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (float): drag values,
+        change_speed (float): how fast values change on drag.
+        max_value (float): max value allowed by widget.
+        min_value (float): min value allowed by widget.
+        display_format (str): display format string as C-style ``printf``
+            format string. **Warning:** Highly unsafe when used without care.
+            May lead to segmentation faults and other memory violation issues.
+        power (float): index of the power function applied to the value.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+            widget state change and the current drag value.
+
+    .. wraps::
+        bool DragFloat(
+            const char* label,
+            float* v,
+            float v_speed = 1.0f,
+            float v_min = 0.0f,
+            float v_max = 0.0f,
+            const char* display_format = "%.3f",
+            float power = 1.0f
+        )
+    """
+    cdef float inout_value = value
+
+    return cimgui.DragFloat(
+        label, &inout_value,
+        change_speed, max_value, min_value, display_format, power
+    ), inout_value
+
+
+def drag_float2(
+    char* label, float value0, float value1,
+    float change_speed = 1.0,
+    float max_value=0.0,
+    float min_value=0.0,
+    str display_format = "%.3f",
+    float power = 1.
+):
+    """Display float drag widget with 2 values.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88.0, 42.0
+
+        imgui.begin("Example: drag float")
+        changed, values = imgui.drag_float2(
+            "Default", *values
+        )
+        changed, values = imgui.drag_float2(
+            "Less precise", *values, display_format="%.1f"
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1 (float): drag values.
+        change_speed (float): how fast values change on drag.
+        max_value (float): max value allowed by widget.
+        min_value (float): min value allowed by widget.
+        display_format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe. See :any:`drag_float()`.
+        power (float): index of the power function applied to the value.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+            widget state change and the tuple of current drag values.
+
+    .. wraps::
+        bool DragFloat2(
+            const char* label,
+            float v[2],
+            float v_speed = 1.0f,
+            float v_min = 0.0f,
+            float v_max = 0.0f,
+            const char* display_format = "%.3f",
+            float power = 1.0f
+        )
+    """
+    cdef float[2] inout_values = [value0, value1]
+    return cimgui.DragFloat2(
+        label, <float*>&inout_values,
+        change_speed, max_value, min_value, display_format, power
+    ), (inout_values[0], inout_values[1])
+
+
+def drag_float3(
+    char* label, float value0, float value1, float value2,
+    float change_speed = 1.0,
+    float max_value=0.0,
+    float min_value=0.0,
+    str display_format = "%.3f",
+    float power = 1.
+):
+    """Display float drag widget with 3 values.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88.0, 42.0, 69.0
+
+        imgui.begin("Example: drag float")
+        changed, values = imgui.drag_float3(
+            "Default", *values
+        )
+        changed, values = imgui.drag_float3(
+            "Less precise", *values, display_format="%.1f"
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1, value2 (float): drag values.
+        change_speed (float): how fast values change on drag.
+        max_value (float): max value allowed by widget.
+        min_value (float): min value allowed by widget.
+        display_format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe. See :any:`drag_float()`.
+        power (float): index of the power function applied to the value.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+            widget state change and the tuple of current drag values.
+
+    .. wraps::
+        bool DragFloat3(
+            const char* label,
+            float v[3],
+            float v_speed = 1.0f,
+            float v_min = 0.0f,
+            float v_max = 0.0f,
+            const char* display_format = "%.3f",
+            float power = 1.0f
+        )
+    """
+    cdef float[3] inout_values = [value0, value1, value2]
+    return cimgui.DragFloat3(
+        label, <float*>&inout_values,
+        change_speed, max_value, min_value, display_format, power
+    ), (inout_values[0], inout_values[1], inout_values[2])
+
+
+def drag_float4(
+    char* label, float value0, float value1, float value2, float value3,
+    float change_speed = 1.0,
+    float max_value=0.0,
+    float min_value=0.0,
+    str display_format = "%.3f",
+    float power = 1.
+):
+    """Display float drag widget with 4 values.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88.0, 42.0, 69.0, 0.0
+
+        imgui.begin("Example: drag float")
+        changed, values = imgui.drag_float4(
+            "Default", *values
+        )
+        changed, values = imgui.drag_float4(
+            "Less precise", *values, display_format="%.1f"
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1, value2, value3 (float): drag values.
+        change_speed (float): how fast values change on drag.
+        max_value (float): max value allowed by widget.
+        min_value (float): min value allowed by widget.
+        display_format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe. See :any:`drag_float()`.
+        power (float): index of the power function applied to the value.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+            widget state change and the tuple of current drag values.
+
+    .. wraps::
+        bool DragFloat4(
+            const char* label,
+            float v[4],
+            float v_speed = 1.0f,
+            float v_min = 0.0f,
+            float v_max = 0.0f,
+            const char* display_format = "%.3f",
+            float power = 1.0f
+        )
+    """
+    cdef float[4] inout_values = [value0, value1, value2, value3]
+    return cimgui.DragFloat4(
+        label, <float*>&inout_values,
+        change_speed, max_value, min_value, display_format, power
+    ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
 def is_item_hovered():
