@@ -599,25 +599,25 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* display_format,
             const char* display_format_max, float power
     )
-    bool DragInt(  # ✗
+    bool DragInt(  # ✓
             const char* label, int* v,
             # note: optional
             float v_speed, int v_min, int v_max,
             const char* display_format
     )
-    bool DragInt2(  # ✗
+    bool DragInt2(  # ✓
             const char* label, int v[2],
             # note: optional
             float v_speed, int v_min, int v_max,
             const char* display_format
     )
-    bool DragInt3(  # ✗
+    bool DragInt3(  # ✓
             const char* label, int v[3],
             # note: optional
             float v_speed, int v_min, int v_max,
             const char* display_format
     )
-    bool DragInt4(  # ✗
+    bool DragInt4(  # ✓
             const char* label, int v[4],
             # note: optional
             float v_speed, int v_min, int v_max,

@@ -2211,6 +2211,223 @@ def drag_float4(
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
+def drag_int(
+    char* label, int value,
+    float change_speed = 1.0,
+    int max_value=0,
+    int min_value=0,
+    str display_format = "%.f"
+):
+    """Display int drag widget.
+
+    .. todo::
+        Consider replacing ``display_format`` with something that allows
+        for safer way to specify display format without loosing the
+        functionality of wrapped function.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        value = 42
+
+        imgui.begin("Example: drag int")
+        changed, value = imgui.drag_int("drag int", value,)
+        imgui.text("Changed: %s, Value: %s" % (changed, value))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (int): drag value,
+        change_speed (float): how fast values change on drag.
+        max_value (int): max value allowed by widget.
+        min_value (int): min value allowed by widget.
+        display_format (str): display format string as C-style ``printf``
+            format string. **Warning:** Highly unsafe when used without care.
+            May lead to segmentation faults and other memory violation issues.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+            widget state change and the current drag value.
+
+    .. wraps::
+        bool DragInt(
+            const char* label,
+            int* v,
+            float v_speed = 1.0f,
+            int v_min = 0.0f,
+            int v_max = 0.0f,
+            const char* display_format = "%.f",
+        )
+    """
+    cdef int inout_value = value
+
+    return cimgui.DragInt(
+        label, &inout_value,
+        change_speed, max_value, min_value, display_format
+    ), inout_value
+
+
+def drag_int2(
+    char* label, int value0, int value1,
+    float change_speed = 1.0,
+    int max_value=0,
+    int min_value=0,
+    str display_format = "%.f"
+):
+    """Display int drag widget with 2 values.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88, 42
+
+        imgui.begin("Example: drag int")
+        changed, values = imgui.drag_int2(
+            "drag ints", *values
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1 (int): drag values.
+        change_speed (float): how fast values change on drag.
+        max_value (int): max value allowed by widget.
+        min_value (int): min value allowed by widget.
+        display_format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe. See :any:`drag_int()`.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+            widget state change and the tuple of current drag values.
+
+    .. wraps::
+        bool DragInt2(
+            const char* label,
+            int v[2],
+            float v_speed = 1.0f,
+            int v_min = 0.0f,
+            int v_max = 0.0f,
+            const char* display_format = "%.f",
+        )
+    """
+    cdef int[2] inout_values = [value0, value1]
+    return cimgui.DragInt2(
+        label, <int*>&inout_values,
+        change_speed, max_value, min_value, display_format,
+    ), (inout_values[0], inout_values[1])
+
+
+def drag_int3(
+    char* label, int value0, int value1, int value2,
+    float change_speed = 1.0,
+    int max_value=0,
+    int min_value=0,
+    str display_format = "%.f"
+):
+    """Display int drag widget with 3 values.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88, 42, 69
+
+        imgui.begin("Example: drag int")
+        changed, values = imgui.drag_int3(
+            "drag ints", *values
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1 (int): drag values.
+        change_speed (float): how fast values change on drag.
+        max_value (int): max value allowed by widget.
+        min_value (int): min value allowed by widget.
+        display_format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe. See :any:`drag_int()`.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+            widget state change and the tuple of current drag values.
+
+    .. wraps::
+        bool DragInt3(
+            const char* label,
+            int v[3],
+            float v_speed = 1.0f,
+            int v_min = 0.0f,
+            int v_max = 0.0f,
+            const char* display_format = "%.f",
+        )
+    """
+    cdef int[3] inout_values = [value0, value1, value2]
+    return cimgui.DragInt3(
+        label, <int*>&inout_values,
+        change_speed, max_value, min_value, display_format,
+    ), (inout_values[0], inout_values[1], inout_values[2])
+
+
+def drag_int4(
+    char* label, int value0, int value1, int value2, int value3,
+    float change_speed = 1.0,
+    int max_value=0,
+    int min_value=0,
+    str display_format = "%.f"
+):
+    """Display int drag widget with 4 values.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88, 42, 69, 0
+
+        imgui.begin("Example: drag int")
+        changed, values = imgui.drag_int4(
+            "drag ints", *values
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1 (int): drag values.
+        change_speed (float): how fast values change on drag.
+        max_value (int): max value allowed by widget.
+        min_value (int): min value allowed by widget.
+        display_format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe. See :any:`drag_int()`.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+            widget state change and the tuple of current drag values.
+
+    .. wraps::
+        bool DragInt4(
+            const char* label,
+            int v[4],
+            float v_speed = 1.0f,
+            int v_min = 0.0f,
+            int v_max = 0.0f,
+            const char* display_format = "%.f",
+        )
+    """
+    cdef int[4] inout_values = [value0, value1, value2, value3]
+    return cimgui.DragInt4(
+        label, <int*>&inout_values,
+        change_speed, max_value, min_value, display_format,
+    ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
+
+
 def is_item_hovered():
     """Check if the last item is hovered by mouse.
 
