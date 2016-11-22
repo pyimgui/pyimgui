@@ -83,7 +83,6 @@ setup(
 
         'Programming Language :: Cython',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2 :: Only',
 
         'Operating System :: MacOS :: MacOS X',
 
