@@ -170,9 +170,9 @@ class GlfwImpl(object):
         else:
             io.mouse_pos = -1, -1
 
-        # todo: py3k compat
-        for i in xrange(3):
-            io.mouse_down[i] = glfw.get_mouse_button(self.window, i)
+        io.mouse_down[0] = glfw.get_mouse_button(self.window, 0)
+        io.mouse_down[1] = glfw.get_mouse_button(self.window, 1)
+        io.mouse_down[2] = glfw.get_mouse_button(self.window, 2)
 
         imgui.new_frame()
 

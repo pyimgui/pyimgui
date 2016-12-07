@@ -14,7 +14,10 @@ from cython.view cimport array as cvarray
 from collections import namedtuple
 import warnings
 from contextlib import contextmanager
-from itertools import izip_longest
+try:
+    from itertools import izip_longest
+except ImportError:
+    from itertools import zip_longest as izip_longest
 
 from libc.stdint cimport uintptr_t
 from libcpp cimport bool
