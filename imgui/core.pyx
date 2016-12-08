@@ -96,10 +96,7 @@ Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
 
 
 cdef bytes _bytes(str text):
-    if PY_MAJOR_VERSION < 3:
-        return unicode(text, 'utf-8').encode('utf-8')
-    else:
-        return text.encode('utf-8')
+    return <bytes>(text if PY_MAJOR_VERSION < 3 else text.encode('utf-8'))
 
 
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
