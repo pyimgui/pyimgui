@@ -940,7 +940,7 @@ def show_metrics_window(closable=False):
     return opened
 
 
-def begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
+def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """Begin a window.
 
     .. visual-example::
@@ -969,7 +969,7 @@ def begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """
     cdef cimgui.bool opened = True
 
-    return cimgui.Begin(name, &opened if closable else NULL, flags), opened
+    return cimgui.Begin(name.encode('utf-8'), &opened if closable else NULL, flags), opened
 
 
 def get_draw_data():
@@ -1368,7 +1368,7 @@ def is_window_collapsed():
     return cimgui.IsWindowCollapsed()
 
 
-def text(char* text):
+def text(str text):
     """Add text to current widget stack.
 
     .. visual-example::
@@ -1387,10 +1387,10 @@ def text(char* text):
         Text(const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.Text("%s", text)
+    cimgui.Text("%s", <bytes>text.encode('utf-8'))
 
 
-def text_colored(char* text, float r, float g, float b, float a=1.):
+def text_colored(str text, float r, float g, float b, float a=1.):
     """Add colored text to current widget stack.
 
     It is a shortcut for:
@@ -1422,7 +1422,7 @@ def text_colored(char* text, float r, float g, float b, float a=1.):
         TextColored(const ImVec4& col, const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", text)
+    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", <bytes>text.encode('utf-8'))
 
 
 def label_text(char* label, char* text):
