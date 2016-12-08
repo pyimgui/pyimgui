@@ -25,6 +25,8 @@ from libcpp cimport bool
 cimport cimgui
 cimport enums
 
+from cpython.version cimport PY_MAJOR_VERSION
+
 # todo: find a way to cimport this directly from imgui.h
 DEF TARGET_IMGUI_VERSION = (1, 49)
 
@@ -91,6 +93,13 @@ WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
 
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
+
+
+cdef bytes _bytes(str text):
+    if PY_MAJOR_VERSION < 3:
+        return unicode(text, 'utf-8').encode('utf-8')
+    else:
+        return text.encode('utf-8')
 
 
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
@@ -969,7 +978,7 @@ def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """
     cdef cimgui.bool opened = True
 
-    return cimgui.Begin(name.encode('utf-8'), &opened if closable else NULL, flags), opened
+    return cimgui.Begin(_bytes(name), &opened if closable else NULL, flags), opened
 
 
 def get_draw_data():
@@ -1387,7 +1396,7 @@ def text(str text):
         Text(const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.Text("%s", <bytes>text.encode('utf-8'))
+    cimgui.Text("%s", _bytes(text))
 
 
 def text_colored(str text, float r, float g, float b, float a=1.):
@@ -1422,7 +1431,7 @@ def text_colored(str text, float r, float g, float b, float a=1.):
         TextColored(const ImVec4& col, const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", <bytes>text.encode('utf-8'))
+    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
 
 
 def label_text(char* label, char* text):
