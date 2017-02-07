@@ -1365,6 +1365,196 @@ def is_window_collapsed():
     return cimgui.IsWindowCollapsed()
 
 
+def begin_main_menu_bar():
+    """Begin a main menu bar.
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_main_menu_bar():
+            imgui.end_main_menu_bar()
+
+    Args:
+
+    Returns:
+        bool: True if main menu bar is created, False otherwise.
+
+    .. wraps::
+         bool BeginMainMenuBar()
+    )
+    """
+    cdef cimgui.bool opened = True
+    opened = cimgui.BeginMainMenuBar()
+    return opened
+
+
+def end_main_menu_bar():
+    """End a main menu bar.
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_main_menu_bar():
+            imgui.end_main_menu_bar()
+
+    Args:
+
+    Returns:
+
+    .. wraps::
+         bool EndMainMenuBar()
+    )
+    """
+    cimgui.EndMainMenuBar()
+
+
+def begin_menu_bar():
+    """Create a menu bar.
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_menu_bar():
+            imgui.end_menu_bar()
+
+    Args:
+
+    Returns:
+        bool: True if menu bar is created, False otherwise.
+
+    .. wraps::
+        bool BeginMenuBar()
+    )
+    """
+    return cimgui.BeginMenuBar()
+
+
+def end_menu_bar():
+    """End a menu bar item.
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_menu_bar():
+            imgui.end_menu_bar()
+
+    Args:
+
+    Returns:
+
+    .. wraps::
+         void EndMenuBar()
+    )
+    """
+    cimgui.EndMenuBar()
+
+
+def begin_menu(char* label, enabled=False):
+    """Create a menu.
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_menu("File"):
+            imgui.end_menu()
+
+    Args:
+        label (char *): label of the menu.
+        enabled (bool): define if menu is enabled or disabled.
+
+    Returns:
+        bool: If the menu was created successfully.
+
+    .. wraps::
+        bool BeginMenu(const char* label, bool enabled)
+    )
+    """
+    return cimgui.BeginMenu(label, enabled)
+
+
+def end_menu():
+    """End a menu.
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_menu():
+            imgui.end_menu()
+
+    Args:
+
+    Returns:
+
+    .. wraps::
+         void EndMenu()
+    )
+    """
+    cimgui.EndMenu()
+
+
+def menu_item(char* name, char* shortcut='', selected=False, enabled=True):
+    """Create a menu item.
+
+    .. visual-example::
+        :auto_layout:
+
+        imgui.menu_item("New File", "Ctrl+N", False, True):
+
+    Args:
+        label (char *): label of the menu item.
+        shortcut (char *): shortcut text of the menu item.
+        selected (bool): define if menu item is selected.
+        enabled (bool): define if menu item is enabled or disabled.
+
+    Returns:
+        bool: If the menu item was created successfully.
+
+    .. wraps::
+        MenuItem(const char* label,
+                 const char* shortcut = NULL,
+                 bool selected = false,
+                 bool enabled = true)
+    )
+    """
+    cdef cimgui.bool selected0 = selected
+    cdef cimgui.bool enabled0 = enabled
+    return cimgui.MenuItem(name,
+                           shortcut if shortcut else NULL,
+                           selected0,
+                           enabled0)
+
+
+def menu_item(char* name, char* shortcut, cimgui.bool selected, enabled=True):
+    """Create a menu item.
+
+    .. visual-example::
+        :auto_layout:
+
+        imgui.menu_item("New File", "Ctrl+N", False, True):
+
+    Args:
+        label (char *): label of the menu item.
+        shortcut (char *): shortcut text of the menu item.
+        selected (bool): define if menu item is selected.
+        enabled (bool): define if menu item is enabled or disabled.
+
+    Returns:
+        tuple: a ``(selected, state)`` two-tuple idicating the selected item
+        and the item selection.
+
+    .. wraps::
+        MenuItem(const char* label,
+                 const char* shortcut,
+                 bool* selected = false,
+                 bool enabled = true)
+    )
+    """
+    cdef cimgui.bool selected0 = selected
+    cdef cimgui.bool enabled0 = enabled
+
+    return cimgui.MenuItem(name, shortcut, &selected0, enabled0), selected0
+
+
 def text(char* text):
     """Add text to current widget stack.
 
