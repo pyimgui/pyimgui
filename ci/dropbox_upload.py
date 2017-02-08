@@ -14,20 +14,25 @@ import os
 import dropbox
 import dropbox.files
 
-dropbox_token = os.environ.get('DROPBOX_TOKEN')
 
-dbx = dropbox.Dropbox(dropbox_token)
+if __name__:
+    dropbox_token = os.environ.get('DROPBOX_TOKEN', None)
 
+    if dropbox_token is None:
+        print("Not configured to upload! Set DROPBOX_TOKEN env variable!")
+        exit()
 
-for root, dirs, files in os.walk('dist'):
-    for filename in files:
-        local_path = os.path.join(root, filename)
-        relative_path = os.path.relpath(local_path, 'dist')
-        dropbox_path = "/" + relative_path
+    dbx = dropbox.Dropbox(dropbox_token)
 
-        with open(local_path, 'rb') as f:
-            print("uploading %s" % local_path)
-            dbx.files_upload(
-                f.read(), dropbox_path,
-                dropbox.files.WriteMode('overwrite')
-            )
+    for root, dirs, files in os.walk('dist'):
+        for filename in files:
+            local_path = os.path.join(root, filename)
+            relative_path = os.path.relpath(local_path, 'dist')
+            dropbox_path = "/" + relative_path
+
+            with open(local_path, 'rb') as f:
+                print("uploading %s" % local_path)
+                dbx.files_upload(
+                    f.read(), dropbox_path,
+                    dropbox.files.WriteMode('overwrite')
+                )

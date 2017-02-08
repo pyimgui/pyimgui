@@ -44,7 +44,6 @@ init:
   - "%PYTHON%\\python.exe --version"
 
 install:
-  - set
   # python requirements needed to create distribution
   - "%PYTHON%\\python.exe -m pip install wheel"
 
