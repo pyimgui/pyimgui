@@ -14,13 +14,18 @@ from cython.view cimport array as cvarray
 from collections import namedtuple
 import warnings
 from contextlib import contextmanager
-from itertools import izip_longest
+try:
+    from itertools import izip_longest
+except ImportError:
+    from itertools import zip_longest as izip_longest
 
 from libc.stdint cimport uintptr_t
 from libcpp cimport bool
 
 cimport cimgui
 cimport enums
+
+from cpython.version cimport PY_MAJOR_VERSION
 
 # todo: find a way to cimport this directly from imgui.h
 DEF TARGET_IMGUI_VERSION = (1, 49)
@@ -88,6 +93,10 @@ WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
 
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
+
+
+cdef bytes _bytes(str text):
+    return <bytes>(text if PY_MAJOR_VERSION < 3 else text.encode('utf-8'))
 
 
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
@@ -937,7 +946,7 @@ def show_metrics_window(closable=False):
     return opened
 
 
-def begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
+def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """Begin a window.
 
     .. visual-example::
@@ -966,7 +975,7 @@ def begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """
     cdef cimgui.bool opened = True
 
-    return cimgui.Begin(name, &opened if closable else NULL, flags), opened
+    return cimgui.Begin(_bytes(name), &opened if closable else NULL, flags), opened
 
 
 def get_draw_data():
@@ -1365,7 +1374,7 @@ def is_window_collapsed():
     return cimgui.IsWindowCollapsed()
 
 
-def text(char* text):
+def text(str text):
     """Add text to current widget stack.
 
     .. visual-example::
@@ -1384,10 +1393,10 @@ def text(char* text):
         Text(const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.Text("%s", text)
+    cimgui.Text("%s", _bytes(text))
 
 
-def text_colored(char* text, float r, float g, float b, float a=1.):
+def text_colored(str text, float r, float g, float b, float a=1.):
     """Add colored text to current widget stack.
 
     It is a shortcut for:
@@ -1419,10 +1428,10 @@ def text_colored(char* text, float r, float g, float b, float a=1.):
         TextColored(const ImVec4& col, const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", text)
+    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
 
 
-def label_text(char* label, char* text):
+def label_text(str label, str text):
     """Display text+label aligned the same way as value+label widgets.
 
     .. visual-example::
@@ -1442,7 +1451,7 @@ def label_text(char* label, char* text):
         void LabelText(const char* label, const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.LabelText(label, "%s", text)
+    cimgui.LabelText(_bytes(label), "%s", _bytes(text))
 
 
 def bullet():
@@ -1468,7 +1477,7 @@ def bullet():
     cimgui.Bullet()
 
 
-def bullet_text(char* text):
+def bullet_text(str text):
     """Display bullet and text.
 
     This is shortcut for:
@@ -1495,10 +1504,10 @@ def bullet_text(char* text):
         void BulletText(const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.BulletText("%s", text)
+    cimgui.BulletText("%s", _bytes(text))
 
 
-def button(char* label, width=0, height=0):
+def button(str label, width=0, height=0):
     """Display button.
 
     .. visual-example::
@@ -1521,10 +1530,10 @@ def button(char* label, width=0, height=0):
     .. wraps::
         bool Button(const char* label, const ImVec2& size = ImVec2(0,0))
     """
-    return cimgui.Button(label, _cast_args_ImVec2(width, height))
+    return cimgui.Button(_bytes(label), _cast_args_ImVec2(width, height))
 
 
-def small_button(char* label):
+def small_button(str label):
     """Display small button (with 0 frame padding).
 
     .. visual-example::
@@ -1545,7 +1554,7 @@ def small_button(char* label):
     .. wraps::
         bool SmallButton(const char* label)
     """
-    return cimgui.SmallButton(label)
+    return cimgui.SmallButton(_bytes(label))
 
 
 def invisible_button(char* identifier, width, height):
@@ -1723,7 +1732,7 @@ def image(
     )
 
 
-def checkbox(char* label, cimgui.bool state):
+def checkbox(str label, cimgui.bool state):
     """Display checkbox widget.
 
     .. visual-example::
@@ -1754,10 +1763,10 @@ def checkbox(char* label, cimgui.bool state):
         bool Checkbox(const char* label, bool* v)
     """
     cdef cimgui.bool inout_state = state
-    return cimgui.Checkbox(label, &inout_state), inout_state
+    return cimgui.Checkbox(_bytes(label), &inout_state), inout_state
 
 
-def checkbox_flags(char* label, unsigned int flags, unsigned int flags_value):
+def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
     """Display checkbox widget that handle integer flags (bit fields).
 
     It is useful for handling window/style flags or any kind of flags
@@ -1811,7 +1820,7 @@ def checkbox_flags(char* label, unsigned int flags, unsigned int flags_value):
     """
     cdef unsigned int inout_flags = flags
 
-    return cimgui.CheckboxFlags(label, &inout_flags, flags_value), inout_flags
+    return cimgui.CheckboxFlags(_bytes(label), &inout_flags, flags_value), inout_flags
 
 
 def radio_button(char* label, cimgui.bool active):
@@ -1843,7 +1852,7 @@ def radio_button(char* label, cimgui.bool active):
     return cimgui.RadioButton(label, active)
 
 
-def combo(char* label, int current, list items, int height_in_items=-1):
+def combo(str label, int current, list items, int height_in_items=-1):
     """Display combo widget.
 
     .. visual-example::
@@ -1883,7 +1892,7 @@ def combo(char* label, int current, list items, int height_in_items=-1):
     in_items = "\0".join(items)
 
     return cimgui.Combo(
-        label, &inout_current, in_items, height_in_items
+        _bytes(label), &inout_current, in_items, height_in_items
     ), inout_current
 
 
