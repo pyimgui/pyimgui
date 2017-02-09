@@ -844,23 +844,23 @@ cdef extern from "imgui.h" namespace "ImGui":
     void EndTooltip()  # ✗
 
     # Menus
-    bool BeginMainMenuBar()  # ✗
-    void EndMainMenuBar()  # ✗
-    bool BeginMenuBar()  # ✗
-    void EndMenuBar()  # ✗
-    bool BeginMenu(  # ✗
+    bool BeginMainMenuBar()  # ✓
+    void EndMainMenuBar()  # ✓
+    bool BeginMenuBar()  # ✓
+    void EndMenuBar()  # ✓
+    bool BeginMenu(  # ✓
             const char* label,
             # note: optional
             bool enabled
     )
-    void EndMenu()  # ✗
-    bool MenuItem(  # ✗
+    void EndMenu()  # ✓
+    bool MenuItem(  # ✓
             const char* label,
             # note: optional
             const char* shortcut, bool selected,
             bool enabled
     )
-    bool MenuItem(  # ✗
+    bool MenuItem(  # ✓
             const char* label, const char* shortcut, bool* p_selected,
             # note: optional
             bool enabled
