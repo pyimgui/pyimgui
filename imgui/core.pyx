@@ -14,18 +14,13 @@ from cython.view cimport array as cvarray
 from collections import namedtuple
 import warnings
 from contextlib import contextmanager
-try:
-    from itertools import izip_longest
-except ImportError:
-    from itertools import zip_longest as izip_longest
+from itertools import izip_longest
 
 from libc.stdint cimport uintptr_t
 from libcpp cimport bool
 
 cimport cimgui
 cimport enums
-
-from cpython.version cimport PY_MAJOR_VERSION
 
 # todo: find a way to cimport this directly from imgui.h
 DEF TARGET_IMGUI_VERSION = (1, 49)
@@ -93,10 +88,6 @@ WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
 
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
-
-
-cdef bytes _bytes(str text):
-    return <bytes>(text if PY_MAJOR_VERSION < 3 else text.encode('utf-8'))
 
 
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
@@ -946,7 +937,7 @@ def show_metrics_window(closable=False):
     return opened
 
 
-def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
+def begin(char* name, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """Begin a window.
 
     .. visual-example::
@@ -975,7 +966,7 @@ def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """
     cdef cimgui.bool opened = True
 
-    return cimgui.Begin(_bytes(name), &opened if closable else NULL, flags), opened
+    return cimgui.Begin(name, &opened if closable else NULL, flags), opened
 
 
 def get_draw_data():
@@ -1375,35 +1366,30 @@ def is_window_collapsed():
 
 
 def begin_main_menu_bar():
-    """Create and append to a full screen menu-bar. Only call :func:`end_main_menu_bar` if this returns true!
+    """Begin a main menu bar.
 
     .. visual-example::
         :auto_layout:
 
         if imgui.begin_main_menu_bar():
-            if imgui.begin_menu('File', True):
-                imgui.menu_item('New', 'Ctrl+N', False, True)
-                imgui.menu_item('Open ...', 'Ctrl+O', False, True)
-                if imgui.begin_menu('Open Recent', True):
-                    imgui.menu_item('doc.txt', '', False, True)
-                    imgui.end_menu()
-                imgui.end_menu()
             imgui.end_main_menu_bar()
 
+    Args:
+
     Returns:
-        bool: True if main menu bar is displayed (opened).
+        bool: True if main menu bar is created, False otherwise.
 
     .. wraps::
-        bool BeginMainMenuBar()
+         bool BeginMainMenuBar()
+    )
     """
-    return cimgui.BeginMainMenuBar()
+    cdef cimgui.bool opened = True
+    opened = cimgui.BeginMainMenuBar()
+    return opened
 
 
 def end_main_menu_bar():
-    """Only call this function if the :func:`end_main_menu_bar` returns true.
-
-    | For visual example, please see :func:`begin_main_menu_bar`.
-    | For practical example how to use this function see :func:`begin_main_menu_bar`.
+    """End a main menu bar.
 
     .. visual-example::
         :auto_layout:
@@ -1411,43 +1397,40 @@ def end_main_menu_bar():
         if imgui.begin_main_menu_bar():
             imgui.end_main_menu_bar()
 
+    Args:
+
+    Returns:
+
     .. wraps::
-        bool EndMainMenuBar()
+         bool EndMainMenuBar()
+    )
     """
     cimgui.EndMainMenuBar()
 
 
 def begin_menu_bar():
-    """Append to menu-bar of current window
-    (requires :ref:`WINDOW_MENU_BAR <window-flag-options>` flag set of the current window).
-    Different from :func:`begin_main_menu_bar`, as this is child-window specific.
-    Only call :func:`end_menu_bar` if this returns true!
+    """Create a menu bar.
 
     .. visual-example::
         :auto_layout:
 
-        imgui.begin("Child Window - File Browser")
         if imgui.begin_menu_bar():
-            if imgui.begin_menu('File'):
-                imgui.menu_item('Close')
-                imgui.end_menu()
             imgui.end_menu_bar()
-        imgui.end()
+
+    Args:
 
     Returns:
-        bool: True if menu bar is displayed (opened).
+        bool: True if menu bar is created, False otherwise.
 
     .. wraps::
         bool BeginMenuBar()
+    )
     """
     return cimgui.BeginMenuBar()
 
 
 def end_menu_bar():
-    """Only call this function if the :func:`begin_menu_bar` returns true.
-
-    | For visual example, please see :func:`begin_menu_bar`.
-    | For practical example how to use this function, please see :func:`begin_menu_bar`.
+    """End a menu bar item.
 
     .. visual-example::
         :auto_layout:
@@ -1455,45 +1438,42 @@ def end_menu_bar():
         if imgui.begin_menu_bar():
             imgui.end_menu_bar()
 
+    Args:
+
+    Returns:
+
     .. wraps::
-        void EndMenuBar()
+         void EndMenuBar()
+    )
     """
     cimgui.EndMenuBar()
 
 
-def begin_menu(str label, enabled=True):
-    """Create a sub-menu entry. Only call :func:`end_menu` if this returns true!
-
-    | For practical example how to use this function, please see :func:`begin_main_menu_bar`.
+def begin_menu(char* label, enabled=False):
+    """Create a menu.
 
     .. visual-example::
         :auto_layout:
 
-        if imgui.begin_menu('File'):
-            imgui.menu_item('Close')
+        if imgui.begin_menu("File"):
             imgui.end_menu()
 
     Args:
-        label (str): label of the menu.
+        label (char *): label of the menu.
         enabled (bool): define if menu is enabled or disabled.
 
     Returns:
-        bool: True if the menu is displayed (opened).
+        bool: If the menu was created successfully.
 
     .. wraps::
-        bool BeginMenu(
-            const char* label,
-            bool enabled
-        )
+        bool BeginMenu(const char* label, bool enabled)
+    )
     """
-    return cimgui.BeginMenu(_bytes(label), enabled)
+    return cimgui.BeginMenu(label, enabled)
 
 
 def end_menu():
-    """Only call this function if the :func:`begin_menu` returns true.
-
-    | For visual example, please see :func:`begin_menu`.
-    | For practical example how to use this function, please see :func:`begin_menu`.
+    """End a menu.
 
     .. visual-example::
         :auto_layout:
@@ -1501,54 +1481,81 @@ def end_menu():
         if imgui.begin_menu():
             imgui.end_menu()
 
+    Args:
+
+    Returns:
+
     .. wraps::
-        void EndMenu()
+         void EndMenu()
+    )
     """
     cimgui.EndMenu()
 
 
-def menu_item(str name, str shortcut, cimgui.bool selected=None, enabled=True):
-    """Create a menu item. Return true when activated. shortcuts are displayed for
-    convenience but not processed by ImGui at the moment.
-
-    | For practical example how to use this function, please see :func:`begin_main_menu_bar`.
+def menu_item(char* name, char* shortcut='', selected=False, enabled=True):
+    """Create a menu item.
 
     .. visual-example::
         :auto_layout:
 
-        if imgui.begin_menu_bar():
-            if imgui.begin_menu('File'):
-                imgui.menu_item('New File', 'Ctrl+N', False, True):
-                imgui.end_menu()
-            imgui.end_menu_bar()
+        imgui.menu_item("New File", "Ctrl+N", False, True):
 
     Args:
-        label (str): label of the menu item.
-        shortcut (str): shortcut text of the menu item.
+        label (char *): label of the menu item.
+        shortcut (char *): shortcut text of the menu item.
         selected (bool): define if menu item is selected.
         enabled (bool): define if menu item is enabled or disabled.
 
     Returns:
-        tuple: a ``(activated, selected)`` two-tuple idicating item activated (hovered) and
-        selected if clicked.
+        bool: If the menu item was created successfully.
 
     .. wraps::
-        MenuItem(
-            const char* label,
-            const char* shortcut,
-            bool* p_selected,
-            bool enabled = true);
-        )
+        MenuItem(const char* label,
+                 const char* shortcut = NULL,
+                 bool selected = false,
+                 bool enabled = true)
+    )
     """
-    cdef cimgui.bool inout_selected = selected
-    return cimgui.MenuItem(
-        _bytes(name),
-        _bytes(shortcut),
-        &inout_selected,
-        <bool>enabled), inout_selected
+    cdef cimgui.bool selected0 = selected
+    cdef cimgui.bool enabled0 = enabled
+    return cimgui.MenuItem(name,
+                           shortcut if shortcut else NULL,
+                           selected0,
+                           enabled0)
 
 
-def text(str text):
+def menu_item(char* name, char* shortcut, cimgui.bool selected, enabled=True):
+    """Create a menu item.
+
+    .. visual-example::
+        :auto_layout:
+
+        imgui.menu_item("New File", "Ctrl+N", False, True):
+
+    Args:
+        label (char *): label of the menu item.
+        shortcut (char *): shortcut text of the menu item.
+        selected (bool): define if menu item is selected.
+        enabled (bool): define if menu item is enabled or disabled.
+
+    Returns:
+        tuple: a ``(selected, state)`` two-tuple idicating the selected item
+        and the item selection.
+
+    .. wraps::
+        MenuItem(const char* label,
+                 const char* shortcut,
+                 bool* selected = false,
+                 bool enabled = true)
+    )
+    """
+    cdef cimgui.bool selected0 = selected
+    cdef cimgui.bool enabled0 = enabled
+
+    return cimgui.MenuItem(name, shortcut, &selected0, enabled0), selected0
+
+
+def text(char* text):
     """Add text to current widget stack.
 
     .. visual-example::
@@ -1567,10 +1574,10 @@ def text(str text):
         Text(const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.Text("%s", _bytes(text))
+    cimgui.Text("%s", text)
 
 
-def text_colored(str text, float r, float g, float b, float a=1.):
+def text_colored(char* text, float r, float g, float b, float a=1.):
     """Add colored text to current widget stack.
 
     It is a shortcut for:
@@ -1602,10 +1609,10 @@ def text_colored(str text, float r, float g, float b, float a=1.):
         TextColored(const ImVec4& col, const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
+    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", text)
 
 
-def label_text(str label, str text):
+def label_text(char* label, char* text):
     """Display text+label aligned the same way as value+label widgets.
 
     .. visual-example::
@@ -1625,7 +1632,7 @@ def label_text(str label, str text):
         void LabelText(const char* label, const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.LabelText(_bytes(label), "%s", _bytes(text))
+    cimgui.LabelText(label, "%s", text)
 
 
 def bullet():
@@ -1651,7 +1658,7 @@ def bullet():
     cimgui.Bullet()
 
 
-def bullet_text(str text):
+def bullet_text(char* text):
     """Display bullet and text.
 
     This is shortcut for:
@@ -1678,10 +1685,10 @@ def bullet_text(str text):
         void BulletText(const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.BulletText("%s", _bytes(text))
+    cimgui.BulletText("%s", text)
 
 
-def button(str label, width=0, height=0):
+def button(char* label, width=0, height=0):
     """Display button.
 
     .. visual-example::
@@ -1704,10 +1711,10 @@ def button(str label, width=0, height=0):
     .. wraps::
         bool Button(const char* label, const ImVec2& size = ImVec2(0,0))
     """
-    return cimgui.Button(_bytes(label), _cast_args_ImVec2(width, height))
+    return cimgui.Button(label, _cast_args_ImVec2(width, height))
 
 
-def small_button(str label):
+def small_button(char* label):
     """Display small button (with 0 frame padding).
 
     .. visual-example::
@@ -1728,7 +1735,7 @@ def small_button(str label):
     .. wraps::
         bool SmallButton(const char* label)
     """
-    return cimgui.SmallButton(_bytes(label))
+    return cimgui.SmallButton(label)
 
 
 def invisible_button(char* identifier, width, height):
@@ -1906,7 +1913,7 @@ def image(
     )
 
 
-def checkbox(str label, cimgui.bool state):
+def checkbox(char* label, cimgui.bool state):
     """Display checkbox widget.
 
     .. visual-example::
@@ -1937,10 +1944,10 @@ def checkbox(str label, cimgui.bool state):
         bool Checkbox(const char* label, bool* v)
     """
     cdef cimgui.bool inout_state = state
-    return cimgui.Checkbox(_bytes(label), &inout_state), inout_state
+    return cimgui.Checkbox(label, &inout_state), inout_state
 
 
-def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
+def checkbox_flags(char* label, unsigned int flags, unsigned int flags_value):
     """Display checkbox widget that handle integer flags (bit fields).
 
     It is useful for handling window/style flags or any kind of flags
@@ -1994,7 +2001,7 @@ def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
     """
     cdef unsigned int inout_flags = flags
 
-    return cimgui.CheckboxFlags(_bytes(label), &inout_flags, flags_value), inout_flags
+    return cimgui.CheckboxFlags(label, &inout_flags, flags_value), inout_flags
 
 
 def radio_button(char* label, cimgui.bool active):
@@ -2026,7 +2033,7 @@ def radio_button(char* label, cimgui.bool active):
     return cimgui.RadioButton(label, active)
 
 
-def combo(str label, int current, list items, int height_in_items=-1):
+def combo(char* label, int current, list items, int height_in_items=-1):
     """Display combo widget.
 
     .. visual-example::
@@ -2066,7 +2073,7 @@ def combo(str label, int current, list items, int height_in_items=-1):
     in_items = "\0".join(items)
 
     return cimgui.Combo(
-        _bytes(label), &inout_current, in_items, height_in_items
+        label, &inout_current, in_items, height_in_items
     ), inout_current
 
 
