@@ -3,8 +3,17 @@ import os
 import sys
 
 from setuptools import setup, Extension, find_packages
-from Cython.Build import cythonize
 
+try:
+    from Cython.Build import cythonize
+except ImportError:
+    # note: This is only to cheat the RTD builds from single requirement file
+    #       with -e flag. This package will be either distributed with C
+    #       sources or as properly built wheels from Travis CI and Appveyor.
+    if os.environ.get('READTHEDOCS', None) == 'True':
+        cythonize = lambda x: x
+    else:
+        raise
 
 try:
     from pypandoc import convert
