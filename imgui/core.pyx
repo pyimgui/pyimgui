@@ -1374,6 +1374,180 @@ def is_window_collapsed():
     return cimgui.IsWindowCollapsed()
 
 
+def begin_main_menu_bar():
+    """Create and append to a full screen menu-bar. Only call :func:`end_main_menu_bar` if this returns true!
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_main_menu_bar():
+            if imgui.begin_menu('File', True):
+                imgui.menu_item('New', 'Ctrl+N', False, True)
+                imgui.menu_item('Open ...', 'Ctrl+O', False, True)
+                if imgui.begin_menu('Open Recent', True):
+                    imgui.menu_item('doc.txt', '', False, True)
+                    imgui.end_menu()
+                imgui.end_menu()
+            imgui.end_main_menu_bar()
+
+    Returns:
+        bool: True if main menu bar is displayed (opened).
+
+    .. wraps::
+        bool BeginMainMenuBar()
+    """
+    return cimgui.BeginMainMenuBar()
+
+
+def end_main_menu_bar():
+    """Only call this function if the :func:`end_main_menu_bar` returns true.
+
+    | For visual example, please see :func:`begin_main_menu_bar`.
+    | For practical example how to use this function see :func:`begin_main_menu_bar`.
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_main_menu_bar():
+            imgui.end_main_menu_bar()
+
+    .. wraps::
+        bool EndMainMenuBar()
+    """
+    cimgui.EndMainMenuBar()
+
+
+def begin_menu_bar():
+    """Append to menu-bar of current window
+    (requires :ref:`WINDOW_MENU_BAR <window-flag-options>` flag set of the current window).
+    Different from :func:`begin_main_menu_bar`, as this is child-window specific.
+    Only call :func:`end_menu_bar` if this returns true!
+
+    .. visual-example::
+        :auto_layout:
+
+        imgui.begin("Child Window - File Browser")
+        if imgui.begin_menu_bar():
+            if imgui.begin_menu('File'):
+                imgui.menu_item('Close')
+                imgui.end_menu()
+            imgui.end_menu_bar()
+        imgui.end()
+
+    Returns:
+        bool: True if menu bar is displayed (opened).
+
+    .. wraps::
+        bool BeginMenuBar()
+    """
+    return cimgui.BeginMenuBar()
+
+
+def end_menu_bar():
+    """Only call this function if the :func:`begin_menu_bar` returns true.
+
+    | For visual example, please see :func:`begin_menu_bar`.
+    | For practical example how to use this function, please see :func:`begin_menu_bar`.
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_menu_bar():
+            imgui.end_menu_bar()
+
+    .. wraps::
+        void EndMenuBar()
+    """
+    cimgui.EndMenuBar()
+
+
+def begin_menu(str label, enabled=True):
+    """Create a sub-menu entry. Only call :func:`end_menu` if this returns true!
+
+    | For practical example how to use this function, please see :func:`begin_main_menu_bar`.
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_menu('File'):
+            imgui.menu_item('Close')
+            imgui.end_menu()
+
+    Args:
+        label (str): label of the menu.
+        enabled (bool): define if menu is enabled or disabled.
+
+    Returns:
+        bool: True if the menu is displayed (opened).
+
+    .. wraps::
+        bool BeginMenu(
+            const char* label,
+            bool enabled
+        )
+    """
+    return cimgui.BeginMenu(_bytes(label), enabled)
+
+
+def end_menu():
+    """Only call this function if the :func:`begin_menu` returns true.
+
+    | For visual example, please see :func:`begin_menu`.
+    | For practical example how to use this function, please see :func:`begin_menu`.
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_menu():
+            imgui.end_menu()
+
+    .. wraps::
+        void EndMenu()
+    """
+    cimgui.EndMenu()
+
+
+def menu_item(str name, str shortcut, cimgui.bool selected=None, enabled=True):
+    """Create a menu item. Return true when activated. shortcuts are displayed for
+    convenience but not processed by ImGui at the moment.
+
+    | For practical example how to use this function, please see :func:`begin_main_menu_bar`.
+
+    .. visual-example::
+        :auto_layout:
+
+        if imgui.begin_menu_bar():
+            if imgui.begin_menu('File'):
+                imgui.menu_item('New File', 'Ctrl+N', False, True):
+                imgui.end_menu()
+            imgui.end_menu_bar()
+
+    Args:
+        label (str): label of the menu item.
+        shortcut (str): shortcut text of the menu item.
+        selected (bool): define if menu item is selected.
+        enabled (bool): define if menu item is enabled or disabled.
+
+    Returns:
+        tuple: a ``(activated, selected)`` two-tuple idicating item activated (hovered) and
+        selected if clicked.
+
+    .. wraps::
+        MenuItem(
+            const char* label,
+            const char* shortcut,
+            bool* p_selected,
+            bool enabled = true);
+        )
+    """
+    cdef cimgui.bool inout_selected = selected
+    return cimgui.MenuItem(
+        _bytes(name),
+        _bytes(shortcut),
+        &inout_selected,
+        <bool>enabled), inout_selected
+
+
 def text(str text):
     """Add text to current widget stack.
 
