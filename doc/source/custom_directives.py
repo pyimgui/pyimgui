@@ -32,6 +32,23 @@ def flag(argument):
         return True
 
 
+def nonnegative_int_list(argument):
+    if ',' in argument:
+        entries = argument.split(',')
+    else:
+        entries = argument.split()
+    return [directives.nonnegative_int(entry) for entry in entries]
+
+
+def click_list(argument):
+    value = nonnegative_int_list(argument)
+
+    if len(value) != 2:
+        ValueError("argument must contain 3 non-negative values")
+
+    return value
+
+
 class WrapsDirective(Directive):
     has_content = True
 
@@ -56,6 +73,7 @@ class VisualDirective(Directive):
         'height': directives.positive_int,
         'auto_window': flag,
         'auto_layout': flag,
+        'click': click_list,
     }
 
     def run(self):

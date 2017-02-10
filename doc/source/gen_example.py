@@ -19,6 +19,7 @@ def render_snippet(
     auto_window=False,
     auto_layout=False,
     output_dir='.',
+    click=None,
 ):
     code = compile(source, '<str>', 'exec')
     window_name = "minimal ImGui/GLFW3 example"
@@ -68,6 +69,11 @@ def render_snippet(
     with imgui.styled(imgui.STYLE_ALPHA, 1):
         imgui.core.set_next_window_size(0, 0)
 
+        if click:
+            imgui_ctx.io.mouse_draw_cursor = True
+            imgui_ctx.io.mouse_pos = click[0], click[1]
+            imgui_ctx.io.mouse_down[0] = 1
+
         if auto_layout:
             imgui.set_next_window_size(width - 10, height - 10)
             imgui.set_next_window_centered()
@@ -75,7 +81,9 @@ def render_snippet(
         if auto_window:
             imgui.set_next_window_size(width - 10, height - 10)
             imgui.set_next_window_centered()
-            imgui.begin("Example: %s" % title)
+            # note: title may be unicode and since we are building docs on py27
+            #       there is a need for encoding it.
+            imgui.begin("Example: %s" % title.encode())
 
         exec(code, locals(), globals())
 
