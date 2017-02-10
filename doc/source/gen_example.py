@@ -10,6 +10,48 @@ import imgui
 from imgui.impl import GlfwImpl
 
 
+io = imgui.get_io()
+
+
+new_frame = imgui.new_frame
+
+mouse_pos = (-1, -1)
+mouse_down = 0
+
+
+def _clear_mouse():
+    global mouse_pos
+    global mouse_down
+
+    mouse_pos = (-1, -1)
+    mouse_down = 0
+
+
+def _new_frame_patched():
+    global mouse_pos
+    global mouse_down
+
+    io.mouse_pos = mouse_pos
+    io.mouse_down[0] = mouse_down
+
+    return new_frame()
+
+
+def _patch_imgui():
+    if imgui.new_frame == new_frame:
+        imgui.new_frame = _new_frame_patched
+
+    _clear_mouse()
+
+
+def simulate_click(x, y, state):
+    global mouse_pos
+    global mouse_down
+
+    mouse_pos = x, y
+    mouse_down = state
+
+
 def render_snippet(
     source,
     file_path,
@@ -21,6 +63,8 @@ def render_snippet(
     output_dir='.',
     click=None,
 ):
+    _patch_imgui()
+
     code = compile(source, '<str>', 'exec')
     window_name = "minimal ImGui/GLFW3 example"
 
@@ -64,38 +108,51 @@ def render_snippet(
     # attach texture to framebuffer
     gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_COLOR_ATTACHMENT0, gl.GL_TEXTURE_2D, texture, 0)
 
-    imgui_ctx.new_frame()
+    # note: Clicking simulation is hacky as fuck and it
+    #       requires at least three frames to be rendered:
+    #       * 1st with mouse in position but without button pressed.
+    #       * 2nd in roughly same posiotion of mouse to turn on hover
+    #         mouse button starts to press but still does not trigger click.
+    #       * 3rd in the same position with button pressed still to finally
+    #         trigger the "clicked" state.
+    # note: If clicking simulation is not required we draw only one frame.
+    for m_state in ([None] if not click else [False, True, True]):
 
-    with imgui.styled(imgui.STYLE_ALPHA, 1):
-        imgui.core.set_next_window_size(0, 0)
-
+        # note: Mouse click MUST be simulated before new_frame call!
         if click:
             imgui_ctx.io.mouse_draw_cursor = True
-            imgui_ctx.io.mouse_pos = click[0], click[1]
-            imgui_ctx.io.mouse_down[0] = 1
+            simulate_click(click[0], click[1], m_state)
+        else:
+            # just make sure mouse state is clear
+            _clear_mouse()
 
-        if auto_layout:
-            imgui.set_next_window_size(width - 10, height - 10)
-            imgui.set_next_window_centered()
+        imgui_ctx.new_frame()
 
-        if auto_window:
-            imgui.set_next_window_size(width - 10, height - 10)
-            imgui.set_next_window_centered()
-            # note: title may be unicode and since we are building docs on py27
-            #       there is a need for encoding it.
-            imgui.begin("Example: %s" % title.encode())
+        with imgui.styled(imgui.STYLE_ALPHA, 1):
+            imgui.core.set_next_window_size(0, 0)
 
-        exec(code, locals(), globals())
+            if auto_layout:
+                imgui.set_next_window_size(width - 10, height - 10)
+                imgui.set_next_window_centered()
 
-        if auto_window:
-            imgui.end()
+            if auto_window:
+                imgui.set_next_window_size(width - 10, height - 10)
+                imgui.set_next_window_centered()
+                # note: title may be unicode and since we are building docs on py27
+                #       there is a need for encoding it.
+                imgui.begin("Example: %s" % title.encode())
 
-    gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, offscreen_fb)
+            exec(code, locals(), globals())
 
-    gl.glClearColor(1, 1, 1, 0)
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+            if auto_window:
+                imgui.end()
 
-    imgui.render()
+        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, offscreen_fb)
+
+        gl.glClearColor(1, 1, 1, 0)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+        imgui.render()
 
     # retrieve pixels from framebuffer and write to file
     pixels = gl.glReadPixels(0, 0, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
