@@ -11,7 +11,7 @@ except ImportError:
     #       with -e flag. This package will be either distributed with C
     #       sources or as properly built wheels from Travis CI and Appveyor.
     if os.environ.get('READTHEDOCS', None) == 'True':
-        cythonize = lambda x: x
+        cythonize = lambda extensions, **kwargs: extensions
     else:
         raise
 
