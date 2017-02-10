@@ -1375,19 +1375,30 @@ def is_window_collapsed():
 
 
 def begin_main_menu_bar():
-    """Create and append to a full screen menu-bar. Only call :func:`end_main_menu_bar` if this returns true!
+    """Create new full-screen menu bar.
+
+     Only call :func:`end_main_menu_bar` if this function returns ``True``!
 
     .. visual-example::
         :auto_layout:
+        :height: 100
+        :width: 200
+        :click: 10 10
+
 
         if imgui.begin_main_menu_bar():
+            # first menu dropdown
             if imgui.begin_menu('File', True):
                 imgui.menu_item('New', 'Ctrl+N', False, True)
                 imgui.menu_item('Open ...', 'Ctrl+O', False, True)
+
+                # submenu
                 if imgui.begin_menu('Open Recent', True):
-                    imgui.menu_item('doc.txt', '', False, True)
+                    imgui.menu_item('doc.txt', None, False, True)
                     imgui.end_menu()
+
                 imgui.end_menu()
+
             imgui.end_main_menu_bar()
 
     Returns:
@@ -1400,16 +1411,12 @@ def begin_main_menu_bar():
 
 
 def end_main_menu_bar():
-    """Only call this function if the :func:`end_main_menu_bar` returns true.
+    """Close main menu bar context.
 
-    | For visual example, please see :func:`begin_main_menu_bar`.
-    | For practical example how to use this function see :func:`begin_main_menu_bar`.
+    Only call this function if the :func:`end_main_menu_bar` returns ``True``.
 
-    .. visual-example::
-        :auto_layout:
-
-        if imgui.begin_main_menu_bar():
-            imgui.end_main_menu_bar()
+    For practical example how to use this function see documentation of
+    :func:`begin_main_menu_bar`.
 
     .. wraps::
         bool EndMainMenuBar()
@@ -1418,20 +1425,31 @@ def end_main_menu_bar():
 
 
 def begin_menu_bar():
-    """Append to menu-bar of current window
-    (requires :ref:`WINDOW_MENU_BAR <window-flag-options>` flag set of the current window).
-    Different from :func:`begin_main_menu_bar`, as this is child-window specific.
-    Only call :func:`end_menu_bar` if this returns true!
+    """Append new menu menu bar to current window.
+
+    This function is different from :func:`begin_main_menu_bar`, as this is
+    child-window specific. Only call :func:`end_menu_bar` if this returns
+    ``True``!
+
+    **Note:** this requires :ref:`WINDOW_MENU_BAR <window-flag-options>` flag
+    to be set for the current window. Without this flag set the
+    ``begin_menu_bar()`` function will always return ``False``.
 
     .. visual-example::
         :auto_layout:
+        :click: 25 30
 
-        imgui.begin("Child Window - File Browser")
+        flags = imgui.WINDOW_MENU_BAR
+
+        imgui.begin("Child Window - File Browser", flags=flags)
+
         if imgui.begin_menu_bar():
             if imgui.begin_menu('File'):
                 imgui.menu_item('Close')
                 imgui.end_menu()
+
             imgui.end_menu_bar()
+
         imgui.end()
 
     Returns:
@@ -1444,16 +1462,12 @@ def begin_menu_bar():
 
 
 def end_menu_bar():
-    """Only call this function if the :func:`begin_menu_bar` returns true.
+    """Close menu bar context.
 
-    | For visual example, please see :func:`begin_menu_bar`.
-    | For practical example how to use this function, please see :func:`begin_menu_bar`.
+    Only call this function if the :func:`begin_menu_bar` returns true.
 
-    .. visual-example::
-        :auto_layout:
-
-        if imgui.begin_menu_bar():
-            imgui.end_menu_bar()
+    For practical example how to use this function see documentation of
+    :func:`begin_menu_bar`.
 
     .. wraps::
         void EndMenuBar()
@@ -1462,16 +1476,12 @@ def end_menu_bar():
 
 
 def begin_menu(str label, enabled=True):
-    """Create a sub-menu entry. Only call :func:`end_menu` if this returns true!
+    """Create new expandable menu in current menu bar.
 
-    | For practical example how to use this function, please see :func:`begin_main_menu_bar`.
+    Only call :func:`end_menu` if this returns ``True``!
 
-    .. visual-example::
-        :auto_layout:
-
-        if imgui.begin_menu('File'):
-            imgui.menu_item('Close')
-            imgui.end_menu()
+    For practical example how to use this function, please see documentation
+    of :func:`begin_main_menu_bar` or :func:`begin_menu_bar`.
 
     Args:
         label (str): label of the menu.
@@ -1490,16 +1500,12 @@ def begin_menu(str label, enabled=True):
 
 
 def end_menu():
-    """Only call this function if the :func:`begin_menu` returns true.
+    """Close menu context.
 
-    | For visual example, please see :func:`begin_menu`.
-    | For practical example how to use this function, please see :func:`begin_menu`.
+    Only call this function if the :func:`begin_menu` returns ``True``.
 
-    .. visual-example::
-        :auto_layout:
-
-        if imgui.begin_menu():
-            imgui.end_menu()
+    For practical example how to use this function, please see documentation
+    of :func:`begin_main_menu_bar` or :func:`begin_menu_bar`.
 
     .. wraps::
         void EndMenu()
@@ -1507,20 +1513,17 @@ def end_menu():
     cimgui.EndMenu()
 
 
-def menu_item(str name, str shortcut, cimgui.bool selected=None, enabled=True):
-    """Create a menu item. Return true when activated. shortcuts are displayed for
-    convenience but not processed by ImGui at the moment.
+def menu_item(
+    str name, str shortcut=None, cimgui.bool selected=None, enabled=True
+):
+    """Create a menu item.
 
-    | For practical example how to use this function, please see :func:`begin_main_menu_bar`.
+    Item shortcuts are displayed for convenience but not processed by ImGui at
+    the moment. Using ``selected`` arguement it is possible to show and trigger
+    a check mark next to the menu item label.
 
-    .. visual-example::
-        :auto_layout:
-
-        if imgui.begin_menu_bar():
-            if imgui.begin_menu('File'):
-                imgui.menu_item('New File', 'Ctrl+N', False, True):
-                imgui.end_menu()
-            imgui.end_menu_bar()
+    For practical example how to use this function, please see documentation
+    of :func:`begin_main_menu_bar` or :func:`begin_menu_bar`.
 
     Args:
         label (str): label of the menu item.
@@ -1529,23 +1532,38 @@ def menu_item(str name, str shortcut, cimgui.bool selected=None, enabled=True):
         enabled (bool): define if menu item is enabled or disabled.
 
     Returns:
-        tuple: a ``(activated, selected)`` two-tuple idicating item activated (hovered) and
-        selected if clicked.
+        tuple: a ``(clicked, state)`` two-tuple idicating if item was
+        clicked by the user and the current state of item (visibility of
+        the check mark).
 
     .. wraps::
         MenuItem(
             const char* label,
             const char* shortcut,
             bool* p_selected,
-            bool enabled = true);
+            bool enabled = true
         )
     """
     cdef cimgui.bool inout_selected = selected
-    return cimgui.MenuItem(
-        _bytes(name),
-        _bytes(shortcut),
-        &inout_selected,
-        <bool>enabled), inout_selected
+
+    # note: wee need to split this into two separate calls depending
+    #       on the value of shortcut in order to support None instead
+    #       of empty strings.
+    if shortcut is None:
+        clicked = cimgui.MenuItem(
+            _bytes(name),
+            NULL,
+            &inout_selected,
+            <bool>enabled
+        )
+    else:
+        clicked = cimgui.MenuItem(
+            _bytes(name),
+            _bytes(shortcut),
+            &inout_selected,
+            <bool>enabled
+        )
+    return clicked, inout_selected
 
 
 def text(str text):
