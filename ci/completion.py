@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from inspect import cleandoc
+import subprocess
 import sys
 import re
 import fileinput
+
+import click
 
 try:
     from urllib import quote
@@ -16,29 +18,68 @@ DONE_RE = re.compile(r'(?!(^\s*$)|(^\s*#)).*✓')
 BADGE_RE = re.compile(r'\[!\[completion\]\(.*\)\](\(.*\))?\s*$')
 
 
-if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        pxd_file_name, out_file_name = sys.argv[1], None
-    elif len(sys.argv) == 3:
-        pxd_file_name, out_file_name = sys.argv[1:]
-    else:
-        pxd_file_name, out_file_name = None, None
-        exit(cleandoc(
-            """Usage: python %s PXD_FILE [README]
+@click.group()
+@click.option(
+    '-o', '--badge-output', type=click.Path(exists=True), default=None
+)
+@click.pass_context
+def cli(ctx, badge_output):
+    ctx.obj['badge_output'] = badge_output
 
-            Estimate completion status and print result.
 
-            Note: if README argument is provided it will
-            try to update it with completion badge looking
-            for existing markdown badge markup.
-             """ % __file__
-        ))
+@cli.command(name='with-nm')
+@click.argument('srclib', type=click.Path(exists=True))
+@click.argument('dstlib', type=click.Path(exists=True))
+@click.pass_context
+def with_nm(ctx, srclib, dstlib):
+    src_symbols = lib_symbols(srclib, undefined=False)
+    dst_symbols = lib_symbols(dstlib, undefined=True)
 
-    with open(pxd_file_name) as pyx_file:
-        lines = pyx_file.readlines()
+    done_count = len(dst_symbols.intersection(src_symbols))
+    all_count = len(src_symbols)
+
+    output(done_count, all_count, ctx.obj['badge_output'])
+
+
+@cli.command(name='with-pxd')
+@click.argument('pxd_file', type=click.File('r'))
+@click.pass_context
+def with_pxd(ctx, pxd_file):
+    lines = pxd_file.readlines()
 
     all_count = len(list(filter(ALL_RE.match, lines)))
     done_count = len(list(filter(DONE_RE.match, lines)))
+
+    output(done_count, all_count, ctx.obj['badge_output'])
+
+
+@cli.command()
+@click.argument('srclib', type=click.Path(exists=True))
+@click.argument('dstlib', type=click.Path(exists=True))
+def missing(srclib, dstlib):
+    src_symbols = lib_symbols(srclib, undefined=False)
+    dst_symbols = lib_symbols(dstlib, undefined=True)
+
+    for symbol in sorted(src_symbols.difference(dst_symbols)):
+        click.echo(symbol)
+
+
+def lib_symbols(lib_path, undefined=False):
+    # get symbols
+    nm = subprocess.Popen(
+        ['nm', '-guj' if undefined else '-gUj', lib_path],
+        stdout=subprocess.PIPE
+    )
+    # demangle
+    cppfilt = subprocess.Popen(
+        ['c++filt'], stdin=nm.stdout, stdout=subprocess.PIPE
+    )
+    out = cppfilt.communicate()[0]
+
+    return set(out.split('\n'))
+
+
+def output(done_count, all_count, badge_output=None):
     result = "%d%% (%s of %s)" % (
         float(done_count)/all_count * 100,
         done_count, all_count
@@ -47,10 +88,10 @@ if __name__ == "__main__":
     badge_url = BASE_URL % quote(result)
     badge_md = BADGE_TEMPLATE % badge_url
 
-    if out_file_name:
-        output = fileinput.input(files=(out_file_name,), inplace=True)
+    if badge_output:
+        output_file = fileinput.input(files=(badge_output,), inplace=True)
         try:
-            for line in output:
+            for line in output_file:
                 if BADGE_RE.match(line):
                     sys.stdout.write(badge_md + "\n")
                 else:
@@ -59,5 +100,9 @@ if __name__ == "__main__":
         finally:
             fileinput.close()
 
-    print("Estimated: %s" % result)
-    print("Badge:     %s" % badge_md)
+    click.echo("Estimated: %s" % result)
+    click.echo("Badge:     %s" % badge_md)
+
+
+if __name__ == "__main__":
+    cli(obj={})

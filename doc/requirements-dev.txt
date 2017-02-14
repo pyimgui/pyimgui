@@ -2,3 +2,4 @@ Cython
 PyOpenGL
 glfw
 wheel
+click
