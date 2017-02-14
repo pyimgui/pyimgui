@@ -1374,6 +1374,68 @@ def is_window_collapsed():
     return cimgui.IsWindowCollapsed()
 
 
+def set_tooltip(str text):
+    """Set tooltip under mouse-cursor.
+    Usually used with :func:`is_item_hovered()`.
+    For a complex tooltip window see :func:`begin_tooltip()`.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+        :width: 200
+        :click: 10 10
+
+
+        imgui.begin("Example: tooltip")
+        imgui.button("Click me!")
+        if imgui.is_item_hovered():
+            imgui.tooltip("Please?")
+        imgui.end()
+
+    .. wraps::
+        void SetTooltip(const char* fmt, ...)
+    """
+    # note: "%s" required for safety and to favor of Python string formating
+    cimgui.SetTooltip("%s", _bytes(text))
+
+
+def begin_tooltip():
+    """Use to create full-featured tooltip windows that aren't just text.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+        :width: 200
+        :click: 10 10
+
+
+        imgui.begin("Example: tooltip")
+        imgui.button("Click me!")
+        if imgui.is_item_hovered():
+            imgui.begin_tooltip()
+            imgui.text("This button is clickable.")
+            imgui.text("This button has full window tooltip.")
+            imgui.image(texture_id, 512, 64, border_color=(1, 0, 0, 1))
+            imgui.end_tooltip()
+        imgui.end()
+
+    .. wraps::
+        void BeginTooltip()
+    """
+    cimgui.BeginTooltip()
+
+
+def end_tooltip():
+    """End tooltip window.
+
+    See :func:`begin_tooltip()` for full usage example.
+
+    .. wraps::
+        void EndTooltip()
+    """
+    cimgui.EndTooltip()
+
+
 def begin_main_menu_bar():
     """Create new full-screen menu bar.
 
@@ -1644,6 +1706,29 @@ def label_text(str label, str text):
     """
     # note: "%s" required for safety and to favor of Python string formating
     cimgui.LabelText(_bytes(label), "%s", _bytes(text))
+
+
+def text_unformatted(str text):
+    """Doesn't require ``NULL`` terminated string if 'text_end' is specified.
+    No copy done to any bounded stack buffer, recommended for long
+    chunks of text.
+
+    .. visual-example::
+        :title: simple text widget
+        :height: 80
+        :auto_layout:
+
+        imgui.begin("Example: unformatted text")
+        imgui.text_unformatted("Really ... long ... text")
+        imgui.end()
+
+    Args:
+        text (str): text to display.
+
+    .. wraps::
+        TextUnformatted(const char* text, const char* text_end = NULL)
+    """
+    cimgui.TextUnformatted(_bytes(text))
 
 
 def bullet():
@@ -2638,7 +2723,241 @@ def is_item_hovered():
     .. wraps::
         bool IsItemHovered()
     """
-    return cimgui.is_item_hovered()
+    return cimgui.IsItemHovered()
+
+
+def is_item_hovered_rect():
+    """Was the last item hovered by mouse? Even if
+    another item is active or window is blocked by popup
+    while we are hovering this.
+
+    Returns:
+        bool: True if item is hovered by mouse, otherwise False.
+
+    .. wraps::
+        bool IsItemHoveredRect()
+    """
+    return cimgui.IsItemHoveredRect()
+
+
+def is_item_active():
+    """Was the last item active?
+    (e.g. button being held, text field being edited -
+    items that don't interact will always return false).
+
+    Returns:
+        bool: True if item is active, otherwise False.
+
+    .. wraps::
+        bool IsItemActive()
+    """
+    return cimgui.IsItemActive()
+
+
+def is_item_clicked(int mouse_button = 0):
+    """Was the last item clicked?
+    (e.g. button/node just clicked on)
+
+    Returns:
+        bool: True if item is clicked, otherwise False.
+
+    .. wraps::
+        bool IsItemClicked(int mouse_button = 0)
+    """
+    return cimgui.IsItemClicked(mouse_button)
+
+
+def is_item_visible():
+    """Was the last item visible?
+    (aka not out of sight due to clipping/scrolling.)
+
+    Returns:
+        bool: True if item is visible, otherwise False.
+
+    .. wraps::
+        bool IsItemVisible()
+    """
+    return cimgui.IsItemVisible()
+
+
+def is_any_item_hovered():
+    """Was any of the items hovered.
+
+    Returns:
+        bool: True if any item is hovered, otherwise False.
+
+    .. wraps::
+        bool IsAnyItemHovered()
+    """
+    return cimgui.IsAnyItemHovered()
+
+
+def is_any_item_active():
+    """Was any of the items active.
+
+    Returns:
+        bool: True if any item is active, otherwise False.
+
+    .. wraps::
+        bool IsAnyItemActive()
+    """
+    return cimgui.IsAnyItemActive()
+
+
+def get_item_rect_min():
+    """Get bounding rect of the last item in screen space.
+
+    Returns:
+        Vec2: item minimum boundaries two-tuple ``(width, height)``
+
+    .. wraps::
+        ImVec2 GetItemRectMin()
+    """
+    return _cast_ImVec2_tuple(cimgui.GetItemRectMin())
+
+
+def get_item_rect_max():
+    """Get bounding rect of the last item in screen space.
+
+    Returns:
+        Vec2: item maximum boundaries two-tuple ``(width, height)``
+
+    .. wraps::
+        ImVec2 GetItemRectMax()
+    """
+    return _cast_ImVec2_tuple(cimgui.GetItemRectMax())
+
+
+def get_item_rect_size():
+    """Get bounding rect of the last item in screen space.
+
+    Returns:
+        Vec2: item boundaries two-tuple ``(width, height)``
+
+    .. wraps::
+        ImVec2 GetItemRectSize()
+    """
+    return _cast_ImVec2_tuple(cimgui.GetItemRectSize())
+
+
+def set_item_allow_overlap():
+    """Allow last item to be overlapped by a subsequent item.
+    Sometimes useful with invisible buttons, selectables, etc.
+    to catch unused area.
+
+    .. wraps::
+        void SetItemAllowOverlap()
+    """
+    cimgui.SetItemAllowOverlap()
+
+
+def is_window_hovered():
+    """Is current window hovered and hoverable (not blocked by a popup)
+    Differentiate child windows from each others.
+
+    Returns:
+        bool: True if current window is hovered, otherwise False.
+
+    .. wraps::
+        bool IsWindowHovered()
+    """
+    return cimgui.IsWindowHovered()
+
+
+def is_window_focused():
+    """Is current window focused.
+
+    Returns:
+        bool: True if current window is on focus, otherwise False.
+
+    .. wraps::
+        bool IsWindowFocused()
+    """
+    return cimgui.IsWindowFocused()
+
+
+def is_root_window_focused():
+    """Is root window focused.
+
+    Returns:
+        bool: True if root window is on focus, otherwise False.
+
+    .. wraps::
+        bool IsRootWindowFocused()
+    """
+    return cimgui.IsRootWindowFocused()
+
+
+def is_root_window_or_any_child_focused():
+    """Is current root window or any of its child
+    (including current window) focused.
+
+    Returns:
+        bool: True if any of the windows is on focus, otherwise False.
+
+    .. wraps::
+        bool IsRootWindowOrAnyChildFocused()
+    """
+    return cimgui.IsRootWindowOrAnyChildFocused()
+
+
+def is_root_window_or_any_child_hovered():
+    """Is current root window or any of its child
+    (including current window) hovered.
+
+    Returns:
+        bool: True if any of the windows is hovered, otherwise False.
+
+    .. wraps::
+        bool IsRootWindowOrAnyChildHovered()
+    """
+    return cimgui.IsRootWindowOrAnyChildHovered()
+
+
+def is_rect_visible(float size_width, float size_height):
+    """Test if rectangle of given size starting from cursor pos
+    is visible (not clipped). To perform coarse clipping on
+    user's side (as an optimization).
+
+    Args:
+        size_width (float): width of the rect
+        size_height (float): height of the rect
+
+    Returns:
+        bool: True if rect is visible, otherwise False.
+
+    .. wraps::
+        bool IsRectVisible(const ImVec2& size)
+    """
+    return cimgui.IsRectVisible(_cast_args_ImVec2(size_width, size_height))
+
+
+def is_pos_hovering_any_window(float position_x, float position_y):
+    """Test if position is hovering any active ImGui window.
+
+    Args:
+        position_x (float): width of the rect
+        position_y (float): height of the rect
+
+    Returns:
+        bool: True if rect is visible, otherwise False.
+
+    .. wraps::
+        bool IsPosHoveringAnyWindow(const ImVec2& size)
+    """
+    return cimgui.IsPosHoveringAnyWindow(_cast_args_ImVec2(position_x, position_y))
+
+
+def is_mouse_hovering_any_window():
+    """Test if mouse is hovering any visible window.
+
+    Returns:
+        bool: True if any item is hovered, otherwise False.
+
+    .. wraps::
+        bool IsMouseHoveringAnyWindow()
+    """
+    return cimgui.IsMouseHoveringAnyWindow()
 
 
 cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
@@ -2924,6 +3243,15 @@ def begin_group():
         void BeginGroup()
     """
     cimgui.BeginGroup()
+
+
+def end_group():
+    """End group (see: :any:`begin_group`).
+
+    .. wraps::
+        void EndGroup()
+    """
+    cimgui.EndGroup()
 
 
 def end_group():
