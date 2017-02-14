@@ -1376,6 +1376,7 @@ def is_window_collapsed():
 
 def set_tooltip(str text):
     """Set tooltip under mouse-cursor.
+
     Usually used with :func:`is_item_hovered()`.
     For a complex tooltip window see :func:`begin_tooltip()`.
 
@@ -1383,19 +1384,18 @@ def set_tooltip(str text):
         :auto_layout:
         :height: 100
         :width: 200
-        :click: 10 10
-
+        :click: 80 40
 
         imgui.begin("Example: tooltip")
-        imgui.button("Click me!")
+        imgui.button("Hover me!")
         if imgui.is_item_hovered():
-            imgui.tooltip("Please?")
+            imgui.set_tooltip("Please?")
         imgui.end()
 
     .. wraps::
         void SetTooltip(const char* fmt, ...)
     """
-    # note: "%s" required for safety and to favor of Python string formating
+    # note: "%s" required for safety and to favor of Python string formatting
     cimgui.SetTooltip("%s", _bytes(text))
 
 
@@ -1404,10 +1404,9 @@ def begin_tooltip():
 
     .. visual-example::
         :auto_layout:
-        :height: 100
-        :width: 200
-        :click: 10 10
-
+        :width: 100
+        :height: 200
+        :click: 80 40
 
         imgui.begin("Example: tooltip")
         imgui.button("Click me!")
@@ -1415,6 +1414,7 @@ def begin_tooltip():
             imgui.begin_tooltip()
             imgui.text("This button is clickable.")
             imgui.text("This button has full window tooltip.")
+            texture_id = imgui.get_io().fonts.texture_id
             imgui.image(texture_id, 512, 64, border_color=(1, 0, 0, 1))
             imgui.end_tooltip()
         imgui.end()
@@ -1446,7 +1446,6 @@ def begin_main_menu_bar():
         :height: 100
         :width: 200
         :click: 10 10
-
 
         if imgui.begin_main_menu_bar():
             # first menu dropdown
@@ -1709,13 +1708,13 @@ def label_text(str label, str text):
 
 
 def text_unformatted(str text):
-    """Doesn't require ``NULL`` terminated string if 'text_end' is specified.
-    No copy done to any bounded stack buffer, recommended for long
-    chunks of text.
+    """Big area text display - the size is defined by it's container.
+    Recommended for long chunks of text.
 
     .. visual-example::
         :title: simple text widget
-        :height: 80
+        :height: 100
+        :width: 200
         :auto_layout:
 
         imgui.begin("Example: unformatted text")
@@ -2741,9 +2740,8 @@ def is_item_hovered_rect():
 
 
 def is_item_active():
-    """Was the last item active?
-    (e.g. button being held, text field being edited -
-    items that don't interact will always return false).
+    """Was the last item active? For ex. button being held or text field
+    being edited. Items that don't interact will always return false.
 
     Returns:
         bool: True if item is active, otherwise False.
@@ -2755,8 +2753,8 @@ def is_item_active():
 
 
 def is_item_clicked(int mouse_button = 0):
-    """Was the last item clicked?
-    (e.g. button/node just clicked on)
+    """Was the last item clicked? For ex. button or node that was
+    just being clicked on.
 
     Returns:
         bool: True if item is clicked, otherwise False.
@@ -2768,8 +2766,8 @@ def is_item_clicked(int mouse_button = 0):
 
 
 def is_item_visible():
-    """Was the last item visible?
-    (aka not out of sight due to clipping/scrolling.)
+    """Was the last item visible? Aka not out of sight due to
+    clipping/scrolling.
 
     Returns:
         bool: True if item is visible, otherwise False.
@@ -2852,7 +2850,7 @@ def set_item_allow_overlap():
 
 
 def is_window_hovered():
-    """Is current window hovered and hoverable (not blocked by a popup)
+    """Is current window hovered and hoverable (not blocked by a popup).
     Differentiate child windows from each others.
 
     Returns:
@@ -2889,8 +2887,7 @@ def is_root_window_focused():
 
 
 def is_root_window_or_any_child_focused():
-    """Is current root window or any of its child
-    (including current window) focused.
+    """Is the current root window or any of its children on focus.
 
     Returns:
         bool: True if any of the windows is on focus, otherwise False.
@@ -2902,8 +2899,8 @@ def is_root_window_or_any_child_focused():
 
 
 def is_root_window_or_any_child_hovered():
-    """Is current root window or any of its child
-    (including current window) hovered.
+    """Is the current root window or any of its children
+    hovered with the mouse.
 
     Returns:
         bool: True if any of the windows is hovered, otherwise False.
@@ -2915,9 +2912,8 @@ def is_root_window_or_any_child_hovered():
 
 
 def is_rect_visible(float size_width, float size_height):
-    """Test if rectangle of given size starting from cursor pos
-    is visible (not clipped). To perform coarse clipping on
-    user's side (as an optimization).
+    """Test if a rectangle of the given size, starting from the cursor
+    position is visible (not clipped).
 
     Args:
         size_width (float): width of the rect
@@ -2945,7 +2941,9 @@ def is_pos_hovering_any_window(float position_x, float position_y):
     .. wraps::
         bool IsPosHoveringAnyWindow(const ImVec2& size)
     """
-    return cimgui.IsPosHoveringAnyWindow(_cast_args_ImVec2(position_x, position_y))
+    return cimgui.IsPosHoveringAnyWindow(
+        _cast_args_ImVec2(position_x, position_y)
+    )
 
 
 def is_mouse_hovering_any_window():
