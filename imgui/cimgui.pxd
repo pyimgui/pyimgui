@@ -458,7 +458,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void TextColored(const ImVec4&, const char*, ...)  # ✓
     void TextDisabled(const char*, ...)  # ✗
     void TextWrapped(const char*, ...)  # ✗
-    void TextUnformatted(const char*)  # ✗
+    void TextUnformatted(const char*)  # ✓
     void LabelText(const char*, const char*, ...)  # ✓
     void Bullet()  # ✓
     void BulletText(const char*, ...)  # ✓
@@ -838,10 +838,10 @@ cdef extern from "imgui.h" namespace "ImGui":
     void ValueColor(const char* prefix, unsigned int v)  # ✗
 
     # Tooltips
-    void SetTooltip(const char* fmt, ...)  # ✗
+    void SetTooltip(const char* fmt, ...)  # ✓
     # void SetTooltipV(const char* fmt, va_list args)  # ✗
-    void BeginTooltip()  # ✗
-    void EndTooltip()  # ✗
+    void BeginTooltip()  # ✓
+    void EndTooltip()  # ✓
 
     # Menus
     bool BeginMainMenuBar()  # ✓
@@ -916,26 +916,26 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # Utilities
     bool IsItemHovered()  # ✓
-    bool IsItemHoveredRect()  # ✗
-    bool IsItemActive()  # ✗
-    bool IsItemClicked(  # ✗
+    bool IsItemHoveredRect()  # ✓
+    bool IsItemActive()  # ✓
+    bool IsItemClicked(  # ✓
             # note: optional
             int mouse_button
     )
-    bool IsItemVisible()  # ✗
-    bool IsAnyItemHovered()  # ✗
-    bool IsAnyItemActive()  # ✗
-    ImVec2 GetItemRectMin()  # ✗
-    ImVec2 GetItemRectMax()  # ✗
-    ImVec2 GetItemRectSize()  # ✗
-    void SetItemAllowOverlap()  # ✗
-    bool IsWindowHovered()  # ✗
-    bool IsWindowFocused()  # ✗
-    bool IsRootWindowFocused()  # ✗
-    bool IsRootWindowOrAnyChildFocused()  # ✗
-    bool IsRootWindowOrAnyChildHovered()  # ✗
-    bool IsRectVisible(const ImVec2& size)  # ✗
-    bool IsPosHoveringAnyWindow(const ImVec2& pos)  # ✗
+    bool IsItemVisible()  # ✓
+    bool IsAnyItemHovered()  # ✓
+    bool IsAnyItemActive()  # ✓
+    ImVec2 GetItemRectMin()  # ✓
+    ImVec2 GetItemRectMax()  # ✓
+    ImVec2 GetItemRectSize()  # ✓
+    void SetItemAllowOverlap()  # ✓
+    bool IsWindowHovered()  # ✓
+    bool IsWindowFocused()  # ✓
+    bool IsRootWindowFocused()  # ✓
+    bool IsRootWindowOrAnyChildFocused()  # ✓
+    bool IsRootWindowOrAnyChildHovered()  # ✓
+    bool IsRectVisible(const ImVec2& size)  # ✓
+    bool IsPosHoveringAnyWindow(const ImVec2& pos)  # ✓
     float GetTime()  # ✗
     int GetFrameCount()  # ✗
     const char* GetStyleColName(ImGuiCol idx)  # ✗
