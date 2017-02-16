@@ -1404,7 +1404,7 @@ def begin_tooltip():
 
     .. visual-example::
         :auto_layout:
-        :width: 100
+        :width: 600
         :height: 200
         :click: 80 40
 
