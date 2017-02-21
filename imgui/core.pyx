@@ -19,7 +19,9 @@ try:
 except ImportError:
     from itertools import zip_longest as izip_longest
 
+from libc.stdlib cimport malloc, free
 from libc.stdint cimport uintptr_t
+from libc.string cimport strdup
 from libcpp cimport bool
 
 cimport cimgui
@@ -90,6 +92,23 @@ WINDOW_NO_BRING_TO_FRONT_ON_FOCUS = enums.ImGuiWindowFlags_NoBringToFrontOnFocus
 WINDOW_ALWAYS_VERTICAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysVerticalScrollbar
 WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysHorizontalScrollbar
 WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
+
+# ==== TreeNode flags enum redefines ====
+TREE_NODE_SELECTED = enums.ImGuiTreeNodeFlags_Selected
+TREE_NODE_FRAME = enums.ImGuiTreeNodeFlags_Framed
+TREE_NODE_ALLOW_OVERLAP_MODE = enums.ImGuiTreeNodeFlags_AllowOverlapMode
+TREE_NODE_NO_TREE_PUSH_ON_OPEN = enums.ImGuiTreeNodeFlags_NoTreePushOnOpen
+TREE_NODE_NO_AUTO_OPEN_ON_LOG = enums.ImGuiTreeNodeFlags_NoAutoOpenOnLog
+TREE_NODE_DEFAULT_OPEN = enums.ImGuiTreeNodeFlags_DefaultOpen
+TREE_NODE_OPEN_ON_DOUBLE_CLICK = enums.ImGuiTreeNodeFlags_OpenOnDoubleClick
+TREE_NODE_OPEN_ON_ARROW = enums.ImGuiTreeNodeFlags_OpenOnArrow
+TREE_NODE_LEAF = enums.ImGuiTreeNodeFlags_Leaf
+TREE_NODE_BULLET = enums.ImGuiTreeNodeFlags_Bullet
+
+# ==== Selectable flags enum redefines ====
+SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups
+SELECTABLE_SPAN_ALL_COLUMNS = enums.ImGuiSelectableFlags_SpanAllColumns
+SELECTABLE_ALLOW_DOUBLE_CLICK = enums.ImGuiSelectableFlags_AllowDoubleClick
 
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
@@ -1374,6 +1393,307 @@ def is_window_collapsed():
     return cimgui.IsWindowCollapsed()
 
 
+def tree_node(str text):
+    """Draw a tree node.
+    Returns 'true' if the node is drawn, call :func:`tree_pop()` to finish.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+        :width: 200
+        :click: 80 40
+
+        imgui.begin("Example: tree node")
+        if imgui.tree_node("Expand me!"):
+            imgui.text("Lorem Ipsum")
+            imgui.tree_pop()
+        imgui.end()
+
+    Args:
+        text (str): Tree node label
+
+    Returns:
+        bool: True if tree node is displayed (opened).
+
+    .. wraps::
+        bool TreeNode(const char* label)
+    """
+    return cimgui.TreeNode(_bytes(text))
+
+
+def tree_node(str text, cimgui.ImGuiTreeNodeFlags flags=0):
+    """Draw a tree node with flags.
+    Returns 'true' if the node is drawn, call :func:`tree_pop()` to finish.
+
+    For a tree example see :func:`tree_node()`.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+        :width: 200
+        :click: 80 40
+
+        imgui.begin("Example: tree node")
+        if imgui.tree_node("Expand me!", imgui.TREE_NODE_DEFAULT_OPEN):
+            imgui.text("Lorem Ipsum")
+            imgui.tree_pop()
+        imgui.end()
+
+    Args:
+        text (str): Tree node label
+        flags: TreeNode flags. See:
+            :ref:`list of available flags <treenode-flag-options>`.
+
+    Returns:
+        bool: True if tree node is displayed (opened).
+
+    .. wraps::
+        bool TreeNodeEx(const char* label, ImGuiTreeNodeFlags flags = 0)
+    """
+    return cimgui.TreeNodeEx(_bytes(text), flags)
+
+
+def tree_pop():
+    """Called to clear the tree nodes stack and return back the identation.
+
+    Same as calls to :func:`unindent()` and :func:`pop_id()`.
+    For a tree example see :func:`tree_node()`.
+
+    .. wraps::
+        void TreePop()
+    """
+    cimgui.TreePop()
+
+
+def collapsing_header(
+    str text,
+    closable=None,
+    cimgui.ImGuiTreeNodeFlags flags=0
+):
+    """Collapsable header view with collapsable X button.
+    Returns 'true' if the header is open. Doesn't indent or push to stack,
+    so no need to call any pop function.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+        :width: 200
+        :click: 80 40
+
+        imgui.begin("Example: collapsing header")
+        clicked, visible = imgui.collapsing_header("Expand me!", visible)
+        if clicked:
+            imgui.text("Lorem Ipsum")
+        imgui.end()
+
+    Args:
+        text (str): Tree node label
+        closable (bool): define if the header is closable.
+        flags: TreeNode flags. See:
+            :ref:`list of available flags <treenode-flag-options>`.
+
+    Returns:
+        tuple: a ``(opened, closable)`` two-tuple indicating if item was
+        clicked and whether the header is opened or not.
+
+    .. wraps::
+        bool CollapsingHeader(const char* label, ImGuiTreeNodeFlags flags = 0)
+
+        bool CollapsingHeader(
+            const char* label,
+            bool* p_open,
+            ImGuiTreeNodeFlags flags = 0
+        )
+    """
+    cdef cimgui.bool inout_opened = closable
+    if closable is None:
+        clicked = cimgui.CollapsingHeader(_bytes(text), NULL, flags)
+    else:
+        clicked = cimgui.CollapsingHeader(_bytes(text), &inout_opened, flags)
+    return clicked, inout_opened
+
+
+def selectable(
+    str label,
+    selected=False,
+    cimgui.ImGuiTreeNodeFlags flags=0,
+    width=0,
+    height=0
+):
+    """Selectable text. Returns 'true' if the item is pressed.
+
+    Width of 0.0 will use the available width in the parent container.
+    Height of 0.0 will use the available height in the parent container.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 200
+        :width: 200
+        :click: 80 40
+
+        selected = [False, False]
+        imgui.begin("Example: selectable")
+        _, selected[0] = imgui.selectable(
+            "1. I am selectable", selected[0]
+        )
+        _, selected[1] = imgui.selectable(
+            "2. I am selectable too", selected[1]
+        )
+        imgui.text("3. I am not selectable")
+        imgui.end()
+
+    Args:
+        label (str): The label.
+        selected (bool): defines if item is selected or not.
+        flags: Selectable flags. See:
+            :ref:`list of available flags <selectable-flag-options>`.
+        width (float): button width.
+        height (float): button height.
+
+    Returns:
+        tuple: a ``(opened, selected)`` two-tuple indicating if item was
+        clicked by the user and the current state of item.
+
+    .. wraps::
+        bool Selectable(
+            const char* label,
+            bool selected = false,
+            ImGuiSelectableFlags flags = 0,
+            const ImVec2& size = ImVec2(0,0)
+        )
+
+        bool Selectable(
+            const char* label,
+            bool* selected,
+            ImGuiSelectableFlags flags = 0,
+            const ImVec2& size = ImVec2(0,0)
+        )
+    """
+    cdef cimgui.bool inout_selected = selected
+    return cimgui.Selectable(
+        _bytes(label),
+        &inout_selected,
+        flags,
+        _cast_args_ImVec2(width, height)), inout_selected
+
+
+def listbox(
+    str label,
+    int current,
+    list items,
+    int items_count,
+    int height_in_items=-1
+):
+    """Show listbox widget.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+
+        current = 2
+        imgui.begin("Example: listbox widget")
+
+        clicked, current = imgui.listbox(
+            "List", current, ["first", "second", "third"], 3
+        )
+
+        imgui.end()
+
+    Args:
+        label (str): The label.
+        current (int): index of selected item.
+        items (list): list of string labels for items.
+        items_count (int): items count
+        height_in_items (int): height of dropdown in items. Defaults to -1
+            (autosized).
+
+    Returns:
+        tuple: a ``(changed, current)`` tuple indicating change of selection
+        and current index of selected item.
+
+    .. wraps::
+        bool ListBox(
+            const char* label,
+            int* current_item,
+            const char** items,
+            int items_count,
+            int height_in_items = -1
+
+    """
+    cdef int inout_current = current
+
+    cdef const char** in_items = <const char**> malloc(len(items) * sizeof(char*))
+    for i in range(len(items)):
+        in_items[i] = strdup(_bytes(items[i]))
+
+    opened = cimgui.ListBox(
+        _bytes(label),
+        &inout_current,
+        in_items,
+        items_count,
+        height_in_items)
+
+    free(in_items)
+
+    return opened, inout_current
+
+
+def listbox_header(
+    str label,
+    width=0,
+    height=0
+):
+    """For use if you want to reimplement :func:`listbox()` with custom data
+    or interactions. You need to call :func:`listbox_footer()` at the end.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 200
+        :width: 100
+        :click: 80 40
+
+        imgui.begin("Example: custom listbox")
+       ﻿
+        imgui.listbox_header("List", 200, 100)
+
+        imgui.selectable("Selected", True)
+        imgui.selectable("Not Selected", False)
+
+        imgui.listbox_footer()
+
+        imgui.end()
+
+    Args:
+        label (str): The label.
+        width (float): button width.
+        height (float): button height.
+
+    Returns:
+        opened (bool): If the item is opened or closed.
+
+    .. wraps::
+        bool ListBoxHeader(
+            const char* label,
+            const ImVec2& size = ImVec2(0,0)
+        )
+    """
+    return cimgui.ListBoxHeader(
+        _bytes(label),
+        _cast_args_ImVec2(width, height)
+    )
+
+
+def listbox_footer():
+    """Closing the listbox, previously opened by :func:`listbox_header()`.
+
+    See :func:`listbox_header()` for usage example.
+
+    .. wraps::
+        void ListBoxFooter()
+    """
+    cimgui.ListBoxFooter()
+
+
 def set_tooltip(str text):
     """Set tooltip under mouse-cursor.
 
@@ -1593,7 +1913,7 @@ def menu_item(
         enabled (bool): define if menu item is enabled or disabled.
 
     Returns:
-        tuple: a ``(clicked, state)`` two-tuple idicating if item was
+        tuple: a ``(clicked, state)`` two-tuple indicating if item was
         clicked by the user and the current state of item (visibility of
         the check mark).
 
@@ -2032,7 +2352,7 @@ def checkbox(str label, cimgui.bool state):
             the return value.
 
     Returns:
-        tuple: a ``(clicked, state)`` two-tuple idicating click event and the
+        tuple: a ``(clicked, state)`` two-tuple indicating click event and the
         current state of the checkbox.
 
     .. wraps::
@@ -2085,7 +2405,7 @@ def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
             at once (specify using bit OR operator `|`, see example above).
 
     Returns:
-        tuple: a ``(clicked, flags)`` two-tuple idicating click event and the
+        tuple: a ``(clicked, flags)`` two-tuple indicating click event and the
         current state of the flags controlled with this checkbox.
 
     .. wraps::
