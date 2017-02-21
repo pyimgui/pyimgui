@@ -107,3 +107,20 @@ cdef extern from "imgui.h":
         ImGuiWindowFlags_AlwaysVerticalScrollbar    # Always show vertical scrollbar (even if ContentSize.y < Size.y)
         ImGuiWindowFlags_AlwaysHorizontalScrollbar  # Always show horizontal scrollbar (even if ContentSize.x < Size.x)
         ImGuiWindowFlags_AlwaysUseWindowPadding     # Ensure child windows without border uses style.WindowPadding (ignored by default for non-bordered child windows, because more convenient)
+
+    ctypedef enum ImGuiTreeNodeFlags_:
+        ImGuiTreeNodeFlags_Selected             # Draw as selected
+        ImGuiTreeNodeFlags_Framed               # Full colored frame (e.g. for CollapsingHeader)
+        ImGuiTreeNodeFlags_AllowOverlapMode     # Hit testing to allow subsequent widgets to overlap this one
+        ImGuiTreeNodeFlags_NoTreePushOnOpen     # Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra indent nor pushing on ID stack
+        ImGuiTreeNodeFlags_NoAutoOpenOnLog      # Don't automatically and temporarily open node when Logging is active (by default logging will automatically open tree nodes)
+        ImGuiTreeNodeFlags_DefaultOpen          # Default node to be open
+        ImGuiTreeNodeFlags_OpenOnDoubleClick    # Need double-click to open node
+        ImGuiTreeNodeFlags_OpenOnArrow          # Only open when clicking on the arrow part. If ImGuiTreeNodeFlags_OpenOnDoubleClick is also set, single-click arrow or double-click all box to open.
+        ImGuiTreeNodeFlags_Leaf                 # No collapsing, no arrow (use as a convenience for leaf nodes).
+        ImGuiTreeNodeFlags_Bullet               # Display a bullet instead of arrow
+
+    ctypedef enum ImGuiSelectableFlags_:
+        ImGuiSelectableFlags_DontClosePopups    # Clicking this don't close parent popup window
+        ImGuiSelectableFlags_SpanAllColumns     # Selectable frame can span all columns (text will still fit in current column)
+        ImGuiSelectableFlags_AllowDoubleClick   # Generate press events on double clicks too
