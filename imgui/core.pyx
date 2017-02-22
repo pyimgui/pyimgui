@@ -3039,10 +3039,10 @@ def slider_float(
     float min_value,
     float max_value,
     str display_format = "%.f",
-    float power=0.0
+    float power=1.0
 ):
     """Display float slider widget.
-    Use power!=1.0 for logarithmic sliders.
+    Use power different from 1.0 for logarithmic sliders.
 
     For a float slider example see :func:`slider_float4()`.
 
@@ -3083,10 +3083,10 @@ def slider_float2(
     float min_value,
     float max_value,
     str display_format = "%.f",
-    float power=0.0
+    float power=1.0
 ):
     """Display float slider widget with 2 values.
-    Use power!=1.0 for logarithmic sliders.
+    Use power different from 1.0 for logarithmic sliders.
 
     For a float slider example see :func:`slider_float4()`.
 
@@ -3127,10 +3127,10 @@ def slider_float3(
     float min_value,
     float max_value,
     str display_format = "%.f",
-    float power=0.0
+    float power=1.0
 ):
     """Display float slider widget with 3 values.
-    Use power!=1.0 for logarithmic sliders.
+    Use power different from 1.0 for logarithmic sliders.
 
     For a float slider example see :func:`slider_float4()`.
 
@@ -3171,10 +3171,10 @@ def slider_float4(
     float min_value,
     float max_value,
     str display_format = "%.f",
-    float power=0.0
+    float power=1.0
 ):
     """Display float slider widget with 4 values.
-    Use power!=1.0 for logarithmic sliders.
+    Use power different from 1.0 for logarithmic sliders.
 
     .. visual-example::
         :auto_layout:
