@@ -1393,8 +1393,9 @@ def is_window_collapsed():
     return cimgui.IsWindowCollapsed()
 
 
-def tree_node(str text):
+def tree_node(str text, cimgui.ImGuiTreeNodeFlags flags=0):
     """Draw a tree node.
+
     Returns 'true' if the node is drawn, call :func:`tree_pop()` to finish.
 
     .. visual-example::
@@ -1408,24 +1409,6 @@ def tree_node(str text):
             imgui.text("Lorem Ipsum")
             imgui.tree_pop()
         imgui.end()
-
-    Args:
-        text (str): Tree node label
-
-    Returns:
-        bool: True if tree node is displayed (opened).
-
-    .. wraps::
-        bool TreeNode(const char* label)
-    """
-    return cimgui.TreeNode(_bytes(text))
-
-
-def tree_node(str text, cimgui.ImGuiTreeNodeFlags flags=0):
-    """Draw a tree node with flags.
-    Returns 'true' if the node is drawn, call :func:`tree_pop()` to finish.
-
-    For a tree example see :func:`tree_node()`.
 
     .. visual-example::
         :auto_layout:
@@ -1448,6 +1431,7 @@ def tree_node(str text, cimgui.ImGuiTreeNodeFlags flags=0):
         bool: True if tree node is displayed (opened).
 
     .. wraps::
+        bool TreeNode(const char* label)
         bool TreeNodeEx(const char* label, ImGuiTreeNodeFlags flags = 0)
     """
     return cimgui.TreeNodeEx(_bytes(text), flags)
@@ -1470,7 +1454,8 @@ def collapsing_header(
     closable=None,
     cimgui.ImGuiTreeNodeFlags flags=0
 ):
-    """Collapsable header view with collapsable X button.
+    """Collapsable/Expandable header view.
+
     Returns 'true' if the header is open. Doesn't indent or push to stack,
     so no need to call any pop function.
 
@@ -1481,20 +1466,20 @@ def collapsing_header(
         :click: 80 40
 
         imgui.begin("Example: collapsing header")
-        clicked, visible = imgui.collapsing_header("Expand me!", visible)
-        if clicked:
-            imgui.text("Lorem Ipsum")
+        expanded, closable = imgui.collapsing_header("Expand me!", closable)
+        if expanded:
+            imgui.text("Now you see me!")
         imgui.end()
 
     Args:
         text (str): Tree node label
-        closable (bool): define if the header is closable.
+        closable (bool): define if the header is closable with X.
         flags: TreeNode flags. See:
             :ref:`list of available flags <treenode-flag-options>`.
 
     Returns:
-        tuple: a ``(opened, closable)`` two-tuple indicating if item was
-        clicked and whether the header is opened or not.
+        tuple: a ``(expanded, closable)`` two-tuple indicating if item was
+        expanded and whether the header is closable or not.
 
     .. wraps::
         bool CollapsingHeader(const char* label, ImGuiTreeNodeFlags flags = 0)
@@ -1581,7 +1566,6 @@ def listbox(
     str label,
     int current,
     list items,
-    int items_count,
     int height_in_items=-1
 ):
     """Show listbox widget.
@@ -1589,12 +1573,13 @@ def listbox(
     .. visual-example::
         :auto_layout:
         :height: 100
+        :width: 200
 
         current = 2
         imgui.begin("Example: listbox widget")
 
         clicked, current = imgui.listbox(
-            "List", current, ["first", "second", "third"], 3
+            "List", current, ["first", "second", "third"]
         )
 
         imgui.end()
@@ -1603,7 +1588,6 @@ def listbox(
         label (str): The label.
         current (int): index of selected item.
         items (list): list of string labels for items.
-        items_count (int): items count
         height_in_items (int): height of dropdown in items. Defaults to -1
             (autosized).
 
@@ -1621,17 +1605,21 @@ def listbox(
 
     """
     cdef int inout_current = current
-
     cdef const char** in_items = <const char**> malloc(len(items) * sizeof(char*))
-    for i in range(len(items)):
-        in_items[i] = strdup(_bytes(items[i]))
+
+    for index, item in enumerate(items):
+        in_items[index] = strdup(_bytes(item))
 
     opened = cimgui.ListBox(
         _bytes(label),
         &inout_current,
         in_items,
-        items_count,
-        height_in_items)
+        len(items),
+        height_in_items
+    )
+
+    for i in range(len(items)):
+        free(<char*>in_items[i])
 
     free(in_items)
 
@@ -3038,7 +3026,7 @@ def slider_float(
     float value,
     float min_value,
     float max_value,
-    str display_format = "%.f",
+    str display_format = "%.3f",
     float power=1.0
 ):
     """Display float slider widget.
@@ -3082,7 +3070,7 @@ def slider_float2(
     float value0, float value1,
     float min_value,
     float max_value,
-    str display_format = "%.f",
+    str display_format = "%.3f",
     float power=1.0
 ):
     """Display float slider widget with 2 values.
@@ -3126,7 +3114,7 @@ def slider_float3(
     float value0, float value1, float value2,
     float min_value,
     float max_value,
-    str display_format = "%.f",
+    str display_format = "%.3f",
     float power=1.0
 ):
     """Display float slider widget with 3 values.
@@ -3170,7 +3158,7 @@ def slider_float4(
     float value0, float value1, float value2, float value3,
     float min_value,
     float max_value,
-    str display_format = "%.f",
+    str display_format = "%.3f",
     float power=1.0
 ):
     """Display float slider widget with 4 values.
