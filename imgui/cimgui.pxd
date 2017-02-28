@@ -689,22 +689,22 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # Widgets: Sliders (tip: ctrl+click on a slider to input with keyboard.
     #  manually input values aren't clamped, can go off-bounds)
-    bool SliderFloat(  # ✗
+    bool SliderFloat(  # ✓
             const char* label, float* v, float v_min, float v_max,
             # note: optional
             const char* display_format, float power
     )
-    bool SliderFloat2(  # ✗
+    bool SliderFloat2(  # ✓
             const char* label, float v[2], float v_min, float v_max,
             # note: optional
             const char* display_format, float power
     )
-    bool SliderFloat3(  # ✗
+    bool SliderFloat3(  # ✓
             const char* label, float v[3], float v_min, float v_max,
             # note: optional
             const char* display_format, float power
     )
-    bool SliderFloat4(  # ✗
+    bool SliderFloat4(  # ✓
             const char* label, float v[4], float v_min, float v_max,
             # note: optional
             const char* display_format, float power
@@ -714,45 +714,45 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             float v_degrees_min, float v_degrees_max
     )
-    bool SliderInt(  # ✗
+    bool SliderInt(  # ✓
             const char* label, int* v, int v_min, int v_max,
             # note: optional
             const char* display_format
     )
-    bool SliderInt2(  # ✗
+    bool SliderInt2(  # ✓
             const char* label, int v[2], int v_min, int v_max,
             # note: optional
             const char* display_format
     )
-    bool SliderInt3(  # ✗
+    bool SliderInt3(  # ✓
             const char* label, int v[3], int v_min, int v_max,
             # note: optional
             const char* display_format
     )
-    bool SliderInt4(  # ✗
+    bool SliderInt4(  # ✓
             const char* label, int v[4], int v_min, int v_max,
             # note: optional
             const char* display_format
     )
-    bool VSliderFloat(  # ✗
+    bool VSliderFloat(  # ✓
             const char* label, const ImVec2& size, float* v,
             float v_min, float v_max,
             # note: optional
             const char* display_format, float power
     )
-    bool VSliderInt(  # ✗
+    bool VSliderInt(  # ✓
             const char* label, const ImVec2& size, int* v, int v_min, int v_max,
             # note: optional
             const char* display_format
     )
 
     # Widgets: Trees
-    bool TreeNode(const char* label)  # ✗
+    bool TreeNode(const char* label)  # ✓
     # bool TreeNode(const char* str_id, const char* fmt, ...)  # ✗
     # bool TreeNode(const void* ptr_id, const char* fmt, ...)  # ✗
     # bool TreeNodeV(const char* str_id, const char* fmt, va_list args)  # ✗
     # bool TreeNodeV(const void* ptr_id, const char* fmt, va_list args)  # ✗
-    bool TreeNodeEx(  # ✗
+    bool TreeNodeEx(  # ✓
             const char* label,
             # note: optional
             ImGuiTreeNodeFlags flags
@@ -769,7 +769,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             const void* ptr_id
     )
-    void TreePop()  # ✗
+    void TreePop()  # ✓
     void TreeAdvanceToLabelPos()  # ✗
     float GetTreeNodeToLabelSpacing()  # ✗
     void SetNextTreeNodeOpen(  # ✗
@@ -777,30 +777,30 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiSetCond cond
     )
-    bool CollapsingHeader(  # ✗
+    bool CollapsingHeader(  # ✓
             const char* label,
             # note: optional
             ImGuiTreeNodeFlags flags
     )
-    bool CollapsingHeader(  # ✗
+    bool CollapsingHeader(  # ✓
             const char* label, bool* p_open,
             # note: optional
             ImGuiTreeNodeFlags flags
     )
 
     # Widgets: Selectable / Lists
-    bool Selectable(  # ✗
+    bool Selectable(  # ✓
             const char* label,
             # note: optional
             bool selected, ImGuiSelectableFlags flags,
             const ImVec2& size
     )
-    bool Selectable(  # ✗
+    bool Selectable(  # ✓
             const char* label, bool* p_selected,
             # note: optional
             ImGuiSelectableFlags flags, const ImVec2& size
     )
-    bool ListBox(  # ✗
+    bool ListBox(  # ✓
             const char* label, int* current_item, const char** items,
             int items_count,
             # note: optional
@@ -813,7 +813,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             int height_in_items
     )
-    bool ListBoxHeader(  # ✗
+    bool ListBoxHeader(  # ✓
             const char* label,
             # note: optional
             const ImVec2& size
@@ -823,7 +823,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             int height_in_items
     )
-    void ListBoxFooter()  # ✗
+    void ListBoxFooter()  # ✓
 
     # Widgets: Value() Helpers.
     void Value(const char* prefix, bool b)  # ✗

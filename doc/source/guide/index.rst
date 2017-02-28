@@ -9,6 +9,8 @@ usage guide
 
    conditions
    window-flags
+   treenode-flags
+   selectable-flag
 
 .. visual-example::
     :title: Guide - hello world!
