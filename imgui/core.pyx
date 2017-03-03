@@ -2476,7 +2476,7 @@ def combo(str label, int current, list items, int height_in_items=-1):
     in_items = "\0".join(items)
 
     return cimgui.Combo(
-        _bytes(label), &inout_current, in_items, height_in_items
+        _bytes(label), &inout_current, _bytes(in_items), height_in_items
     ), inout_current
 
 
@@ -3966,6 +3966,155 @@ def unindent(float width=0.0):
         void Unindent(float indent_w = 0.0f)
     """
     cimgui.Unindent(width)
+
+
+def columns(int count=1, str identifier=None, bool border=True):
+    """Setup number of columns. Use an identifier to distinguish multiple
+    column sets. close with ``columns(1)``.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 500
+        :height: 300
+
+        imgui.begin("Example: Columns - File list")
+        imgui.columns(4, 'fileLlist')
+        imgui.separator()
+        imgui.text("ID")
+        imgui.next_column()
+        imgui.text("File")
+        imgui.next_column()
+        imgui.text("Size")
+        imgui.next_column()
+        imgui.text("Last Modified")
+        imgui.next_column()
+        imgui.separator()
+        imgui.set_column_offset(1, 40)
+
+        imgui.next_column()
+        imgui.text('FileA.txt')
+        imgui.next_column()
+        imgui.text('57 Kb')
+        imgui.next_column()
+        imgui.text('12th Feb, 2016 12:19:01')
+        imgui.next_column()
+
+        imgui.next_column()
+        imgui.text('ImageQ.png')
+        imgui.next_column()
+        imgui.text('349 Kb')
+        imgui.next_column()
+        imgui.text('1st Mar, 2016 06:38:22')
+        imgui.next_column()
+
+        imgui.columns(1)
+        imgui.end()
+
+    Args:
+        count (int): Columns count.
+        identifier (str): Table identifier.
+        border (bool): Display border, defaults to ``True``.
+
+    .. wraps::
+        void Columns(
+            int count = 1,
+            const char* id = NULL,
+            bool border = true
+        )
+    """
+    if identifier is None:
+        cimgui.Columns(count, NULL, border)
+    else:
+        cimgui.Columns(count, _bytes(identifier), border)
+
+
+def next_column():
+    """Move to the next column drawing.
+
+    For a complete example see :func:`columns()`.
+
+    .. wraps::
+        void NextColumn()
+    """
+    cimgui.NextColumn()
+
+
+def get_column_index():
+    """Returns the current column index.
+
+    For a complete example see :func:`columns()`.
+
+    Returns:
+        int: the current column index.
+
+    .. wraps::
+        int GetColumnIndex()
+    """
+    return cimgui.GetColumnIndex()
+
+
+def get_column_offset(int column_index=-1):
+    """Returns position of column line (in pixels, from the left side of the
+    contents region). Pass -1 to use current column, otherwise 0 to
+    :func:`get_columns_count()`. Column 0 is usually 0.0f and not resizable
+    unless you call this method.
+
+    For a complete example see :func:`columns()`.
+
+    Args:
+        column_index (int): index of the column to get the offset for.
+
+    Returns:
+        float: the position in pixels from the left side.
+
+    .. wraps::
+        float GetColumnOffset(int column_index = -1)
+    """
+    return cimgui.GetColumnOffset(column_index)
+
+
+def set_column_offset(int column_index, float offset_x):
+    """Set the position of column line (in pixels, from the left side of the
+    contents region). Pass -1 to use current column.
+
+    For a complete example see :func:`columns()`.
+
+    Args:
+        column_index (int): index of the column to get the offset for.
+        offset_x (float): offset in pixels.
+
+    .. wraps::
+        void SetColumnOffset(int column_index, float offset_x)
+    """
+    cimgui.SetColumnOffset(column_index, offset_x)
+
+
+def get_column_width(int column_index=-1):
+    """Return the column width.
+
+    For a complete example see :func:`columns()`.
+
+    Args:
+        column_index (int): index of the column to get the width for.
+
+    .. wraps::
+        void GetColumnWidth(int column_index = -1)
+    """
+    cimgui.GetColumnWidth(column_index)
+
+
+def get_columns_count():
+    """Get count of the columns in the current table.
+
+    For a complete example see :func:`columns()`.
+
+    Returns:
+        int: columns count.
+
+    .. wraps::
+        int GetColumnsCount()
+    """
+    return cimgui.GetColumnsCount()
 
 
 def begin_group():

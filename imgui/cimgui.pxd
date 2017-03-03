@@ -421,22 +421,22 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # ====
     # Columns
-    void Columns(  # ✗
+    void Columns(  # ✓
             # note: optional
             int count, const char* id, bool border
     )
-    void NextColumn()  # ✗
-    int GetColumnIndex()  # ✗
-    float GetColumnOffset(  # ✗
+    void NextColumn()  # ✓
+    int GetColumnIndex()  # ✓
+    float GetColumnOffset(  # ✓
             # note: optional
             int column_index
     )
-    void SetColumnOffset(int column_index, float offset_x)  # ✗
-    float GetColumnWidth(  # ✗
+    void SetColumnOffset(int column_index, float offset_x)  # ✓
+    float GetColumnWidth(  # ✓
             # note: optional
             int column_index
     )
-    int GetColumnsCount()  # ✗
+    int GetColumnsCount()  # ✓
 
     # ====
     # ID scopes
