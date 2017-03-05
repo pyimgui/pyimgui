@@ -1405,18 +1405,6 @@ def tree_node(str text, cimgui.ImGuiTreeNodeFlags flags=0):
         :click: 80 40
 
         imgui.begin("Example: tree node")
-        if imgui.tree_node("Expand me!"):
-            imgui.text("Lorem Ipsum")
-            imgui.tree_pop()
-        imgui.end()
-
-    .. visual-example::
-        :auto_layout:
-        :height: 100
-        :width: 200
-        :click: 80 40
-
-        imgui.begin("Example: tree node")
         if imgui.tree_node("Expand me!", imgui.TREE_NODE_DEFAULT_OPEN):
             imgui.text("Lorem Ipsum")
             imgui.tree_pop()
@@ -1451,7 +1439,7 @@ def tree_pop():
 
 def collapsing_header(
     str text,
-    closable=None,
+    visible=None,
     cimgui.ImGuiTreeNodeFlags flags=0
 ):
     """Collapsable/Expandable header view.
@@ -1465,21 +1453,28 @@ def collapsing_header(
         :width: 200
         :click: 80 40
 
+        visible = True
+
         imgui.begin("Example: collapsing header")
-        expanded, closable = imgui.collapsing_header("Expand me!", closable)
+        expanded, visible = imgui.collapsing_header("Expand me!", visible)
+
         if expanded:
             imgui.text("Now you see me!")
         imgui.end()
 
     Args:
         text (str): Tree node label
-        closable (bool): define if the header is closable with X.
+        visible (bool or None): Force visibility of a header. If set to True
+            shows additional (X) close button. If set to False header is not
+            visible at all. If set to None header is always visible and close
+            button is not displayed.
         flags: TreeNode flags. See:
             :ref:`list of available flags <treenode-flag-options>`.
 
     Returns:
-        tuple: a ``(expanded, closable)`` two-tuple indicating if item was
-        expanded and whether the header is closable or not.
+        tuple: a ``(expanded, visible)`` two-tuple indicating if item was
+        expanded and whether the header is visible or not (only if ``visible``
+        input argument is True/False).
 
     .. wraps::
         bool CollapsingHeader(const char* label, ImGuiTreeNodeFlags flags = 0)
@@ -1490,12 +1485,12 @@ def collapsing_header(
             ImGuiTreeNodeFlags flags = 0
         )
     """
-    cdef cimgui.bool inout_opened = closable
-    if closable is None:
+    cdef cimgui.bool inout_opened = visible
+    if visible is None:
         clicked = cimgui.CollapsingHeader(_bytes(text), NULL, flags)
     else:
         clicked = cimgui.CollapsingHeader(_bytes(text), &inout_opened, flags)
-    return clicked, inout_opened
+    return clicked, None if visible is None else inout_opened
 
 
 def selectable(
