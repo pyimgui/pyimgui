@@ -966,45 +966,45 @@ cdef extern from "imgui.h" namespace "ImGui":
     void ColorConvertHSVtoRGB(float h, float s, float v, float& out_r, float& out_g, float& out_b)  # ✗
 
     # Inputs
-    int GetKeyIndex(ImGuiKey key)  # ✗
-    bool IsKeyDown(int key_index)  # ✗
-    bool IsKeyPressed(  # ✗
+    int GetKeyIndex(ImGuiKey key)  # ✓
+    bool IsKeyDown(int key_index)  # ✓
+    bool IsKeyPressed(  # ✓
             int key_index,
             # note: optional
             bool repeat
     )
-    bool IsKeyReleased(int key_index)  # ✗
-    bool IsMouseDown(int button)  # ✗
-    bool IsMouseClicked(  # ✗
+    bool IsKeyReleased(int key_index)  # ✓
+    bool IsMouseDown(int button)  # ✓
+    bool IsMouseClicked(  # ✓
             int button,
             # note: optional
             bool repeat
     )
-    bool IsMouseDoubleClicked(int button)  # ✗
-    bool IsMouseReleased(int button)  # ✗
-    bool IsMouseHoveringWindow()  # ✗
-    bool IsMouseHoveringAnyWindow()  # ✗
-    bool IsMouseHoveringRect(  # ✗
+    bool IsMouseDoubleClicked(int button)  # ✓
+    bool IsMouseReleased(int button)  # ✓
+    bool IsMouseHoveringWindow()  # ✓
+    bool IsMouseHoveringAnyWindow()  # ✓
+    bool IsMouseHoveringRect(  # ✓
             const ImVec2& r_min, const ImVec2& r_max,
             # note: optional
             bool clip
     )
-    bool IsMouseDragging(  # ✗
+    bool IsMouseDragging(  # ✓
             # note: optional
             int button, float lock_threshold
     )
-    ImVec2 GetMousePos()  # ✗
+    ImVec2 GetMousePos()  # ✓
     ImVec2 GetMousePosOnOpeningCurrentPopup()  # ✗
-    ImVec2 GetMouseDragDelta(  # ✗
+    ImVec2 GetMouseDragDelta(  # ✓
             # note: optional
             int button, float lock_threshold
     )
-    void ResetMouseDragDelta(  # ✗
+    void ResetMouseDragDelta(  # ✓
             # note: optional
             int button
     )
-    ImGuiMouseCursor GetMouseCursor()  # ✗
-    void SetMouseCursor(ImGuiMouseCursor type)  # ✗
+    ImGuiMouseCursor GetMouseCursor()  # ✓
+    void SetMouseCursor(ImGuiMouseCursor type)  # ✓
     void CaptureKeyboardFromApp(  # ✗
             # note: optional
             bool capture

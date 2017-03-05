@@ -124,3 +124,13 @@ cdef extern from "imgui.h":
         ImGuiSelectableFlags_DontClosePopups    # Clicking this don't close parent popup window
         ImGuiSelectableFlags_SpanAllColumns     # Selectable frame can span all columns (text will still fit in current column)
         ImGuiSelectableFlags_AllowDoubleClick   # Generate press events on double clicks too
+
+    ctypedef enum ImGuiMouseCursor_:
+        ImGuiMouseCursor_Arrow
+        ImGuiMouseCursor_TextInput              # When hovering over InputText, etc.
+        ImGuiMouseCursor_Move                   # Unused
+        ImGuiMouseCursor_ResizeNS               # Unused
+        ImGuiMouseCursor_ResizeEW               # When hovering over a column
+        ImGuiMouseCursor_ResizeNESW             # Unused
+        ImGuiMouseCursor_ResizeNWSE             # When hovering over the bottom-right corner of a window
+        ImGuiMouseCursor_Count_

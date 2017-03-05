@@ -110,6 +110,14 @@ SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups
 SELECTABLE_SPAN_ALL_COLUMNS = enums.ImGuiSelectableFlags_SpanAllColumns
 SELECTABLE_ALLOW_DOUBLE_CLICK = enums.ImGuiSelectableFlags_AllowDoubleClick
 
+MOUSE_CURSOR_ARROW = enums.ImGuiMouseCursor_Arrow
+MOUSE_CURSOR_TEXT_INPUT = enums.ImGuiMouseCursor_TextInput
+MOUSE_CURSOR_MOVE = enums.ImGuiMouseCursor_Move
+MOUSE_CURSOR_RESIZE_NS = enums.ImGuiMouseCursor_ResizeNS
+MOUSE_CURSOR_RESIZE_EW = enums.ImGuiMouseCursor_ResizeEW
+MOUSE_CURSOR_RESIZE_NESW = enums.ImGuiMouseCursor_ResizeNESW
+MOUSE_CURSOR_RESIZE_NWSE = enums.ImGuiMouseCursor_ResizeNWSE
+
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
 
@@ -3707,6 +3715,18 @@ def is_pos_hovering_any_window(float position_x, float position_y):
     )
 
 
+def is_mouse_hovering_window():
+    """Test if mouse is hovering the current window.
+
+    Returns:
+        bool: True if the window is hovered, otherwise False.
+
+    .. wraps::
+        bool IsMouseHoveringWindow()
+    """
+    return cimgui.IsMouseHoveringWindow()
+
+
 def is_mouse_hovering_any_window():
     """Test if mouse is hovering any visible window.
 
@@ -3717,6 +3737,103 @@ def is_mouse_hovering_any_window():
         bool IsMouseHoveringAnyWindow()
     """
     return cimgui.IsMouseHoveringAnyWindow()
+
+
+def is_mouse_hovering_rect(
+    float r_min_x, float r_min_y,
+    float r_max_x, float r_max_y,
+    bool clip=True
+):
+    """Test if mouse is hovering rectangle with given coordinates.
+
+    Args:
+        r_min_x, r_min_y (float): x,y coordinate of the upper-left corner
+        r_max_x, r_max_y (float): x,y coordinate of the lower-right corner
+
+    Returns:
+        bool: True if mouse is hovering the rectangle.
+
+    .. wraps::
+        bool IsMouseHoveringRect(
+            const ImVec2& r_min,
+            const ImVec2& r_max,
+            bool clip = true
+        )
+    """
+    return cimgui.IsMouseHoveringRect(
+        _cast_args_ImVec2(r_min_x, r_min_y),
+        _cast_args_ImVec2(r_max_x, r_max_y),
+        clip
+    )
+
+
+def is_mouse_dragging(int button = 0, float lock_threshold = -1.0):
+    """Returns if mouse is dragging.
+
+    Args:
+        button (int): mouse button index.
+        lock_threshold (float): if less than -1.0
+            uses io.MouseDraggingThreshold.
+
+    Returns:
+        bool: if mouse is dragging.
+
+    .. wraps::
+        bool IsMouseDragging(int button = 0, float lock_threshold = -1.0f)
+    """
+    return cimgui.IsMouseDragging(button, lock_threshold)
+
+
+def get_mouse_drag_delta(int button=0, float lock_threshold = -1.0):
+    """Dragging amount since clicking.
+
+    Args:
+        button (int): mouse button index.
+        lock_threshold (float): if less than -1.0
+            uses io.MouseDraggingThreshold.
+
+    Returns:
+        Vec2: mouse position two-tuple ``(x, y)``
+
+    .. wraps::
+        ImVec2 GetMouseDragDelta(int button = 0, float lock_threshold = -1.0f)
+    """
+    return _cast_ImVec2_tuple(
+        cimgui.GetMouseDragDelta(button, lock_threshold)
+    )
+
+
+def reset_mouse_drag_delta(int button = 0):
+    """Reset the mouse dragging delta.
+
+    Args:
+        button (int): mouse button index.
+
+    .. wraps::
+        void ResetMouseDragDelta(int button = 0)
+    """
+    cimgui.ResetMouseDragDelta(button)
+
+
+def get_mouse_cursor():
+    """Return the mouse cursor id.
+
+    .. wraps::
+        void GetMouseCursor()
+    """
+    return cimgui.GetMouseCursor()
+
+
+def set_mouse_cursor(cimgui.ImGuiMouseCursor type):
+    """Set the mouse cursor id.
+
+    Args:
+        type (ImGuiMouseCursor): cursor type.
+
+    .. wraps::
+        void SetMouseCursor(ImGuiMouseCursor type)
+    """
+    return cimgui.SetMouseCursor(type)
 
 
 cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
