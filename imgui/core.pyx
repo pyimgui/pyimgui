@@ -1597,6 +1597,7 @@ def listbox(
             const char** items,
             int items_count,
             int height_in_items = -1
+        )
 
     """
     cdef int inout_current = current
@@ -1632,11 +1633,11 @@ def listbox_header(
     .. visual-example::
         :auto_layout:
         :height: 200
-        :width: 100
+        :width: 200
         :click: 80 40
 
         imgui.begin("Example: custom listbox")
-       ﻿
+
         imgui.listbox_header("List", 200, 100)
 
         imgui.selectable("Selected", True)
@@ -2601,7 +2602,7 @@ def drag_float(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            widget state change and the current drag value.
+        widget state change and the current drag value.
 
     .. wraps::
         bool DragFloat(
@@ -2661,7 +2662,7 @@ def drag_float2(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragFloat2(
@@ -2720,7 +2721,7 @@ def drag_float3(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragFloat3(
@@ -2779,7 +2780,7 @@ def drag_float4(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragFloat4(
@@ -2837,7 +2838,7 @@ def drag_int(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            widget state change and the current drag value.
+        widget state change and the current drag value.
 
     .. wraps::
         bool DragInt(
@@ -2891,7 +2892,7 @@ def drag_int2(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragInt2(
@@ -2944,7 +2945,7 @@ def drag_int3(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragInt3(
@@ -2997,7 +2998,7 @@ def drag_int4(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragInt4(
@@ -3041,7 +3042,7 @@ def slider_float(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the current slider value.
+        widget state change and the current slider value.
 
     .. wraps::
         bool SliderFloat(
@@ -3085,7 +3086,7 @@ def slider_float2(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderFloat2(
@@ -3129,7 +3130,7 @@ def slider_float3(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderFloat3(
@@ -3168,7 +3169,10 @@ def slider_float4(
 
         imgui.begin("Example: slider float")
         changed, values = imgui.slider_float4(
-            "slide floats", *values, 0.0, 100.0, "%.0f", 1.0
+            "slide floats", *values,
+            min_value=0.0, max_value=100.0,
+            display_format="%.0f",
+            power=1.0
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -3185,7 +3189,7 @@ def slider_float4(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderFloat4(
@@ -3226,7 +3230,7 @@ def slider_int(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            widget state change and the slider value.
+        widget state change and the slider value.
 
     .. wraps::
         bool SliderInt(
@@ -3266,7 +3270,7 @@ def slider_int2(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderInt2(
@@ -3306,7 +3310,7 @@ def slider_int3(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderInt3(
@@ -3342,7 +3346,8 @@ def slider_int4(
 
         imgui.begin("Example: slider int")
         changed, values = imgui.slider_int4(
-            "slide ints", *values, 0, 100, "%.3f"
+            "slide ints", *values,
+            min_value=0, max_value=100, display_format="%.3f"
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -3358,7 +3363,7 @@ def slider_int4(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderInt4(
@@ -3403,7 +3408,7 @@ def v_slider_float(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            widget state change and the slider value.
+        widget state change and the slider value.
 
     .. wraps::
         bool VSliderFloat(
@@ -3448,7 +3453,7 @@ def v_slider_int(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            widget state change and the slider value.
+        widget state change and the slider value.
 
     .. wraps::
         bool VSliderInt(
