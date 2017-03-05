@@ -2437,7 +2437,8 @@ def combo(str label, int current, list items, int height_in_items=-1):
 
     .. visual-example::
         :auto_layout:
-        :height: 100
+        :height: 200
+        :click: 80 40
 
         current = 2
         imgui.begin("Example: combo widget")
