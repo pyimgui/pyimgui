@@ -60,6 +60,7 @@ def render_snippet(
     height=200,
     auto_window=False,
     auto_layout=False,
+    animated=False,
     output_dir='.',
     click=None,
 ):
@@ -108,6 +109,8 @@ def render_snippet(
     # attach texture to framebuffer
     gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_COLOR_ATTACHMENT0, gl.GL_TEXTURE_2D, texture, 0)
 
+    image_list = []
+
     # note: Clicking simulation is hacky as fuck and it
     #       requires at least three frames to be rendered:
     #       * 1st with mouse in position but without button pressed.
@@ -147,6 +150,14 @@ def render_snippet(
             if auto_window:
                 imgui.end()
 
+        # retrieve pixels from framebuffer and write to file
+        pixels = gl.glReadPixels(0, 0, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
+        image = Image.frombytes('RGBA', (width, height), pixels)
+        # note: glReadPixels returns lines "bottom to top" but PIL reads bytes
+        #       top to bottom
+        image = image.transpose(Image.FLIP_TOP_BOTTOM)
+        image_list.append(image)
+
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, offscreen_fb)
 
         gl.glClearColor(1, 1, 1, 0)
@@ -154,14 +165,10 @@ def render_snippet(
 
         imgui.render()
 
-    # retrieve pixels from framebuffer and write to file
-    pixels = gl.glReadPixels(0, 0, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
-
-    image = Image.frombytes('RGBA', (width, height), pixels)
-    # note: glReadPixels returns lines "bottom to top" but PIL reads bytes
-    #       top to bottom
-    image = image.transpose(Image.FLIP_TOP_BOTTOM)
-    image.save(os.path.join(output_dir, file_path))
+    if animated:
+        pass
+    else:
+        image_list[-1].save(os.path.join(output_dir, file_path))
 
     glfw.terminate()
 

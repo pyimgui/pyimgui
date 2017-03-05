@@ -73,6 +73,7 @@ class VisualDirective(Directive):
         'height': directives.positive_int,
         'auto_window': flag,
         'auto_layout': flag,
+        'animated': flag,
         'click': click_list,
     }
 
@@ -99,7 +100,7 @@ class VisualDirective(Directive):
 
         return directive_nodes
 
-    def name_source_snippet(self, source):
+    def name_source_snippet(self, source, animated=False):
         env = self.state.document.settings.env
 
         if (
@@ -118,19 +119,21 @@ class VisualDirective(Directive):
             # If we could not quess then use explicit title or hexdigest
             name = self.options.get('title', sha1(source).hexdigest())
 
-        return self.phrase_to_filename(name)
+        return self.phrase_to_filename(name, animated)
 
-    def phrase_to_filename(self, phrase):
+    def phrase_to_filename(self, phrase, animated=False):
         """Convert phrase to normilized file name."""
         # remove non-word characters
         name = re.sub(r"[^\w\s\.]", '', phrase.strip().lower())
         # replace whitespace with underscores
         name = re.sub(r"\s+", '_', name)
 
-        return name + '.png'
+        return name + '.gif' if animated else '.png'
 
     def get_image_node(self, source):
-        file_name = self.name_source_snippet(source)
+        file_name = self.name_source_snippet(
+            source, animated=self.options['animated']
+        )
         file_path = os.path.join(VISUAL_EXAMPLES_DIR, file_name)
 
         env = self.state.document.settings.env
