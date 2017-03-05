@@ -7,7 +7,7 @@ if [[ $TRAVIS_OS_NAME == "osx" ]]; then
     python --version
     python -m pip freeze
 
-    python -m pip install -r doc/requirements-dev.txt
+    python -m pip install Cython wheel
     python -m pip wheel . -w dist/
 
 else
