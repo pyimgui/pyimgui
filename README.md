@@ -1,4 +1,4 @@
-[![completion](https://img.shields.io/badge/completion-53%25%20%28209%20of%20389%29-blue.svg)](https://github.com/swistakm/pyimgui)
+[![completion](https://img.shields.io/badge/completion-55%25%20%28216%20of%20389%29-blue.svg)](https://github.com/swistakm/pyimgui)
 
 Builds:
 
