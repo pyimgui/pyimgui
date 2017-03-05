@@ -3,3 +3,5 @@ PyOpenGL
 glfw
 wheel
 click
+imageio
+numpy

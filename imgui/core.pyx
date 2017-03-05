@@ -1749,6 +1749,7 @@ def begin_main_menu_bar():
         :auto_layout:
         :height: 100
         :width: 200
+        :animated:
         :click: 10 10
 
         if imgui.begin_main_menu_bar():
@@ -2438,6 +2439,7 @@ def combo(str label, int current, list items, int height_in_items=-1):
     .. visual-example::
         :auto_layout:
         :height: 200
+        :animated:
         :click: 80 40
 
         current = 2

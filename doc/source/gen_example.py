@@ -5,6 +5,8 @@ import os
 import glfw
 import OpenGL.GL as gl
 from PIL import Image
+import imageio
+import numpy
 
 import imgui
 from imgui.impl import GlfwImpl
@@ -119,7 +121,7 @@ def render_snippet(
     #       * 3rd in the same position with button pressed still to finally
     #         trigger the "clicked" state.
     # note: If clicking simulation is not required we draw only one frame.
-    for m_state in ([None] if not click else [False, True, True]):
+    for m_state in ([None] if not click else [False, True, True, True]):
 
         # note: Mouse click MUST be simulated before new_frame call!
         if click:
@@ -141,14 +143,21 @@ def render_snippet(
             if auto_window:
                 imgui.set_next_window_size(width - 10, height - 10)
                 imgui.set_next_window_centered()
-                # note: title may be unicode and since we are building docs on py27
-                #       there is a need for encoding it.
+                # note: title may be unicode and since we are building docs
+                #       on py27 there is a need for encoding it.
                 imgui.begin("Example: %s" % title.encode())
 
             exec(code, locals(), globals())
 
             if auto_window:
                 imgui.end()
+
+        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, offscreen_fb)
+
+        gl.glClearColor(1, 1, 1, 0)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+        imgui.render()
 
         # retrieve pixels from framebuffer and write to file
         pixels = gl.glReadPixels(0, 0, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
@@ -158,15 +167,13 @@ def render_snippet(
         image = image.transpose(Image.FLIP_TOP_BOTTOM)
         image_list.append(image)
 
-        gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, offscreen_fb)
-
-        gl.glClearColor(1, 1, 1, 0)
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-
-        imgui.render()
-
     if animated:
-        pass
+        path = os.path.join(output_dir, file_path)
+
+        imageio.mimsave(
+            path,
+            [numpy.asarray(im, dtype=numpy.uint8) for im in image_list]
+        )
     else:
         image_list[-1].save(os.path.join(output_dir, file_path))
 
@@ -176,10 +183,24 @@ def render_snippet(
 if __name__ == "__main__":
     example_source = cleandoc(
         """
-        imgui.text("Bar")
-        imgui.text_colored("Eggs", 0.2, 1., 0.)
+        current = 2
+        imgui.begin("Example: combo widget")
+
+        clicked, current = imgui.combo(
+            "combo", current, ["first", "second", "third"]
+        )
+
+        imgui.end()
         """
     )
 
-    render_snippet(example_source, 'example_snippet.png')
+    render_snippet(
+        example_source,
+        'example_snippet.gif',
+        height=200,
+        width=200,
+        animated=True,
+        auto_layout=True,
+        click=(80, 40)
+    )
 

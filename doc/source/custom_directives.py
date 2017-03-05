@@ -128,11 +128,11 @@ class VisualDirective(Directive):
         # replace whitespace with underscores
         name = re.sub(r"\s+", '_', name)
 
-        return name + '.gif' if animated else '.png'
+        return name + ('.gif' if animated else '.png')
 
     def get_image_node(self, source):
         file_name = self.name_source_snippet(
-            source, animated=self.options['animated']
+            source, animated=self.check_flag('animated')
         )
         file_path = os.path.join(VISUAL_EXAMPLES_DIR, file_name)
 
@@ -151,6 +151,12 @@ class VisualDirective(Directive):
         img = nodes.image()
         img['uri'] = "/" + file_path
         return img
+
+    def check_flag(self, flag_name):
+        if flag_name not in self.option_spec:
+            raise TypeError('[{}] is not allowed as flag')
+
+        return flag_name in self.options
 
 
 def setup(app):
