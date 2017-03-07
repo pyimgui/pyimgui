@@ -1951,17 +1951,13 @@ def open_popup(str name):
         :width: 220
         :auto_layout:
 
-        imgui.begin("Example: popup window")
-        show_popup = imgui.button("Open")
-        closable = True
-        if show_popup:
-            imgui.open_popup("Popup Title")
-        popup_opened, popup_visible = imgui.begin_popup_modal(
-            "Popup Title",
-            closable
-        )
-        if popup_opened:
-            imgui.text("Popup contents")
+        imgui.begin("Example: simple popup")
+        if imgui.button('Toggle..'):
+            imgui.open_popup("toggle")
+        if imgui.begin_popup("toggle"):
+            if imgui.begin_menu('Sub-menu'):
+                _, _ = imgui.menu_item('Click me')
+                imgui.end_menu()
             imgui.end_popup()
         imgui.end()
 
@@ -1983,8 +1979,28 @@ def begin_popup(str name):
     content to it. Only call :func:`end_popup()` if :func:`begin_popup()`
     returned true.
 
-    For practical example how to use this function, please see documentation
-    of :func:`open_popup`.
+    .. visual-example::
+        :title: Simple popup window
+        :height: 100
+        :width: 220
+        :auto_layout:
+
+        imgui.begin("Example: simple popup")
+
+        if imgui.button("select"):
+            imgui.open_popup("select-popup")
+
+        imgui.same_line()
+
+        if imgui.begin_popup("select-popup"):
+            imgui.text("Select one")
+            imgui.separator()
+            imgui.selectable("One")
+            imgui.selectable("Two")
+            imgui.selectable("Three")
+            imgui.end_popup()
+
+        imgui.end()
 
     Args:
         name (str): label of the modal window.
@@ -1997,24 +2013,47 @@ def begin_popup(str name):
             const char* str_id
         )
     """
-    return cimgui.OpenPopup(_bytes(name))
+    return cimgui.BeginPopup(_bytes(name))
 
 
-def begin_popup_modal(str title, closable=None, cimgui.ImGuiWindowFlags flags=0):
+def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
     """Begin pouring popup contents.
 
-    For practical example how to use this function, please see documentation
-    of :func:`open_popup`.
+    Differes from :func:`begin_popup()` with its modality - meaning it
+    opens up on top of every other window.
+
+    .. visual-example::
+        :title: Simple popup window
+        :height: 100
+        :width: 220
+        :auto_layout:
+
+        imgui.begin("Example: simple popup modal")
+
+        if imgui.button("Open Modal popup"):
+            imgui.open_popup("select-popup")
+
+        imgui.same_line()
+
+        if imgui.begin_popup_modal("select-popup")[0]:
+            imgui.text("Select an option:")
+            imgui.separator()
+            imgui.selectable("One")
+            imgui.selectable("Two")
+            imgui.selectable("Three")
+            imgui.end_popup()
+
+        imgui.end()
 
     Args:
         title (str): label of the modal window.
-        closable (bool): define if popup is closable with X.
+        visible (bool): define if popup is visible or not.
         flags: Window flags. See:
             :ref:`list of available flags <window-flag-options>`.
 
     Returns:
         tuple: ``(opened, visible)`` tuple of bools.
-        opened can be False when the popup is completely clipped
+        opened can be ``False`` when the popup is completely clipped
         (e.g. zero size display).
 
     .. wraps::
@@ -2024,13 +2063,13 @@ def begin_popup_modal(str title, closable=None, cimgui.ImGuiWindowFlags flags=0)
             ImGuiWindowFlags extra_flags = 0
         )
     """
-    cdef cimgui.bool inout_opened = closable
+    cdef cimgui.bool inout_visible = visible
 
     return cimgui.BeginPopupModal(
         _bytes(title),
-        &inout_opened if closable else NULL,
+        &inout_visible if visible is not None else NULL,
         flags
-    ), inout_opened
+    ), inout_visible
 
 
 def begin_popup_context_item(str name, int mouse_button=1):
