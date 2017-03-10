@@ -168,3 +168,40 @@ SELECTABLE_DONT_CLOSE_POPUPS = core.SELECTABLE_DONT_CLOSE_POPUPS
 SELECTABLE_SPAN_ALL_COLUMNS = core.SELECTABLE_SPAN_ALL_COLUMNS
 #: Generate press events on double clicks too.
 SELECTABLE_ALLOW_DOUBLE_CLICK = core.SELECTABLE_ALLOW_DOUBLE_CLICK
+
+#: Allow 0123456789.+-*/
+INPUT_TEXT_CHARS_DECIMAL = core.INPUT_TEXT_CHARS_DECIMAL
+#: Allow 0123456789ABCDEFabcdef
+INPUT_TEXT_CHARS_HEXADECIMAL = core.INPUT_TEXT_CHARS_HEXADECIMAL
+#: Turn a..z into A..Z
+INPUT_TEXT_CHARS_UPPERCASE = core.INPUT_TEXT_CHARS_UPPERCASE
+#: Filter out spaces, tabs
+INPUT_TEXT_CHARS_NO_BLANK = core.INPUT_TEXT_CHARS_NO_BLANK
+#: Select entire text when first taking mouse focus
+INPUT_TEXT_AUTO_SELECT_ALL = core.INPUT_TEXT_AUTO_SELECT_ALL
+#: Return 'true' when Enter is pressed (as opposed to when the
+#: # value was modified)
+INPUT_TEXT_ENTER_RETURNS_TRUE = core.INPUT_TEXT_ENTER_RETURNS_TRUE
+#: Call user function on pressing TAB (for completion handling)
+INPUT_TEXT_CALLBACK_COMPLETION = core.INPUT_TEXT_CALLBACK_COMPLETION
+#: Call user function on pressing Up/Down arrows (for history handling)
+INPUT_TEXT_CALLBACK_HISTORY = core.INPUT_TEXT_CALLBACK_HISTORY
+#: Call user function every time. User code may query cursor position,
+#: # modify text buffer.
+INPUT_TEXT_CALLBACK_ALWAYS = core.INPUT_TEXT_CALLBACK_ALWAYS
+#: Call user function to filter character. Modify data->EventChar to
+#: # replace/filter input, or return 1 to discard character.
+INPUT_TEXT_CALLBACK_CHAR_FILTER = core.INPUT_TEXT_CALLBACK_CHAR_FILTER
+#: Pressing TAB input a '\t' character into the text field
+INPUT_TEXT_ALLOW_TAB_INPUT = core.INPUT_TEXT_ALLOW_TAB_INPUT
+#: In multi-line mode, allow exiting edition by pressing Enter.
+#: # Ctrl+Enter to add new line (by default adds new lines with Enter).
+INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE = core.INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE
+#: Disable following the cursor horizontally
+INPUT_TEXT_NO_HORIZONTAL_SCROLL = core.INPUT_TEXT_NO_HORIZONTAL_SCROLL
+#: Insert mode
+INPUT_TEXT_ALWAYS_INSERT_MODE = core.INPUT_TEXT_ALWAYS_INSERT_MODE
+#: Read-only mode
+INPUT_TEXT_READ_ONLY = core.INPUT_TEXT_READ_ONLY
+#: Password mode, display all characters as '*'
+INPUT_TEXT_PASSWORD = core.INPUT_TEXT_PASSWORD

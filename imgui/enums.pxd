@@ -125,3 +125,21 @@ cdef extern from "imgui.h":
         ImGuiSelectableFlags_DontClosePopups    # Clicking this don't close parent popup window
         ImGuiSelectableFlags_SpanAllColumns     # Selectable frame can span all columns (text will still fit in current column)
         ImGuiSelectableFlags_AllowDoubleClick   # Generate press events on double clicks too
+
+    ctypedef enum ImGuiInputTextFlags_:
+        ImGuiInputTextFlags_CharsDecimal        # Allow 0123456789.+-*/
+        ImGuiInputTextFlags_CharsHexadecimal    # Allow 0123456789ABCDEFabcdef
+        ImGuiInputTextFlags_CharsUppercase      # Turn a..z into A..Z
+        ImGuiInputTextFlags_CharsNoBlank        # Filter out spaces, tabs
+        ImGuiInputTextFlags_AutoSelectAll       # Select entire text when first taking mouse focus
+        ImGuiInputTextFlags_EnterReturnsTrue    # Return 'true' when Enter is pressed (as opposed to when the value was modified)
+        ImGuiInputTextFlags_CallbackCompletion  # Call user function on pressing TAB (for completion handling)
+        ImGuiInputTextFlags_CallbackHistory     # Call user function on pressing Up/Down arrows (for history handling)
+        ImGuiInputTextFlags_CallbackAlways      # Call user function every time. User code may query cursor position, modify text buffer.
+        ImGuiInputTextFlags_CallbackCharFilter  # Call user function to filter character. Modify data->EventChar to replace/filter input, or return 1 to discard character.
+        ImGuiInputTextFlags_AllowTabInput       # Pressing TAB input a '\t' character into the text field
+        ImGuiInputTextFlags_CtrlEnterForNewLine # In multi-line mode, allow exiting edition by pressing Enter. Ctrl+Enter to add new line (by default adds new lines with Enter).
+        ImGuiInputTextFlags_NoHorizontalScroll  # Disable following the cursor horizontally
+        ImGuiInputTextFlags_AlwaysInsertMode    # Insert mode
+        ImGuiInputTextFlags_ReadOnly            # Read-only mode
+        ImGuiInputTextFlags_Password            # Password mode, display all characters as '*'
