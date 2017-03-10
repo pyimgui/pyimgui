@@ -5,7 +5,10 @@ from docutils.parsers.rst import directives
 import os
 import re
 from hashlib import sha1
+
+from sphinx.builders import Builder
 from sphinx.ext.autodoc import AutodocReporter
+from sphinx.util.console import bold
 
 try:
     from gen_example import render_snippet
@@ -79,6 +82,7 @@ class VisualDirective(Directive):
     def run(self):
         source = '\n'.join(self.content.data)
         literal = nodes.literal_block(source, source)
+        literal['visualnodetype'] = True
         literal['language'] = 'python'
 
         # docutils document model is insane!
@@ -150,9 +154,74 @@ class VisualDirective(Directive):
         return img
 
 
+class VisualBuilder(Builder):
+    """
+    Runs visual examples in the documentation as tests.
+    """
+    name = 'vistest'
+
+    def get_outdated_docs(self):
+        return self.env.found_docs
+
+    def write(self, build_docnames, updated_docnames, method='update'):
+        if build_docnames is None:
+            build_docnames = sorted(self.env.all_docs)
+
+        self.info(bold('running tests...'))
+        for docname in build_docnames:
+            # no need to resolve the doctree
+            doctree = self.env.get_doctree(docname)
+            self.test_doc(docname, doctree)
+
+    @staticmethod
+    def traverse_condition(node):
+        return isinstance(
+            node, nodes.literal_block
+        ) and 'visualnodetype' in node
+
+    def test_doc(self, docname, doctree):
+        print docname, type(doctree)
+        import traceback
+
+        for node in doctree.traverse(self.traverse_condition):
+            print("")
+            print("")
+            print("=" * 79)
+            print("Testing {}".format(node.source))
+            print("=" * 79)
+            print("")
+            print(node.astext())
+            print("")
+            print("^" * 79)
+
+            try:
+                self.test_snippet(node.astext())
+            except Exception as err:
+                print("ERR: {}".format(err))
+                traceback.print_exc()
+
+    def test_snippet(self, source):
+        import imgui
+
+        code = compile(source, '<str>', 'exec')
+
+        io = imgui.get_io()
+        io.delta_time = 1.0 / 60.0
+        io.display_size = 300, 300
+
+        # setup default font
+        io.fonts.get_tex_data_as_rgba32()
+        io.fonts.add_font_default()
+
+        imgui.new_frame()
+        exec(code, locals(), globals())
+        imgui.render()
+
+
 def setup(app):
     app.add_config_value('render_examples', False, 'html')
     app.add_directive('wraps', WrapsDirective)
     app.add_directive('visual-example', VisualDirective)
+    app.add_builder(VisualBuilder)
 
     return {'version': '0.1'}
