@@ -22,6 +22,7 @@ except ImportError:
 from libc.stdlib cimport malloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
+from libc.string cimport strcpy
 from libcpp cimport bool
 
 cimport cimgui
