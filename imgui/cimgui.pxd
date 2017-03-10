@@ -867,29 +867,29 @@ cdef extern from "imgui.h" namespace "ImGui":
     )
 
     # Popups
-    void OpenPopup(const char* str_id)  # ✗
-    bool BeginPopup(const char* str_id)  # ✗
-    bool BeginPopupModal(  # ✗
+    void OpenPopup(const char* str_id)  # ✓
+    bool BeginPopup(const char* str_id)  # ✓
+    bool BeginPopupModal(  # ✓
             const char* name,
             # note: optional
             bool* p_open, ImGuiWindowFlags extra_flags
     )
-    bool BeginPopupContextItem(  # ✗
+    bool BeginPopupContextItem(  # ✓
             const char* str_id,
             # note: optional
             int mouse_button
     )
-    bool BeginPopupContextWindow(  # ✗
+    bool BeginPopupContextWindow(  # ✓
             bool also_over_items, const char* str_id,
             # note: optional
             int mouse_button
     )
-    bool BeginPopupContextVoid(  # ✗
+    bool BeginPopupContextVoid(  # ✓
             # note: optional
             const char* str_id, int mouse_button
     )
-    void EndPopup()  # ✗
-    void CloseCurrentPopup()  # ✗
+    void EndPopup()  # ✓
+    void CloseCurrentPopup()  # ✓
 
     # Logging: all text output from interface is redirected to
     # tty/file/clipboard. By default, tree nodes are automatically opened

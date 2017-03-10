@@ -1931,6 +1931,259 @@ def menu_item(
     return clicked, inout_selected
 
 
+def open_popup(str name):
+    """Open a popup window.
+
+    Marks a popup window as open. Popups are closed when user click outside,
+    or activate a pressable item, or :func:`close_current_popup()` is
+    called within a :func:`begin_popup()`/:func:`end_popup()` block.
+    Popup identifiers are relative to the current ID-stack
+    (so :func:`open_popup` and :func:`begin_popup` needs to be at
+    the same level).
+
+    .. visual-example::
+        :title: Simple popup window
+        :height: 100
+        :width: 220
+        :auto_layout:
+
+        imgui.begin("Example: simple popup")
+        if imgui.button('Toggle..'):
+            imgui.open_popup("toggle")
+        if imgui.begin_popup("toggle"):
+            if imgui.begin_menu('Sub-menu'):
+                _, _ = imgui.menu_item('Click me')
+                imgui.end_menu()
+            imgui.end_popup()
+        imgui.end()
+
+    Args:
+        name (str): label of the modal window.
+
+    .. wraps::
+        void OpenPopup(
+            const char* str_id
+        )
+    """
+    cimgui.OpenPopup(_bytes(name))
+
+
+def begin_popup(str name):
+    """Open a popup window.
+
+    Returns ``True`` if the popup is open and you can start outputting
+    content to it. Only call :func:`end_popup()` if :func:`begin_popup()`
+    returned true.
+
+    .. visual-example::
+        :title: Simple popup window
+        :height: 100
+        :width: 220
+        :auto_layout:
+
+        imgui.begin("Example: simple popup")
+
+        if imgui.button("select"):
+            imgui.open_popup("select-popup")
+
+        imgui.same_line()
+
+        if imgui.begin_popup("select-popup"):
+            imgui.text("Select one")
+            imgui.separator()
+            imgui.selectable("One")
+            imgui.selectable("Two")
+            imgui.selectable("Three")
+            imgui.end_popup()
+
+        imgui.end()
+
+    Args:
+        name (str): label of the modal window.
+
+    Returns:
+        opened (bool): True if popup is opened.
+
+    .. wraps::
+        bool BeginPopup(
+            const char* str_id
+        )
+    """
+    return cimgui.BeginPopup(_bytes(name))
+
+
+def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
+    """Begin pouring popup contents.
+
+    Differes from :func:`begin_popup()` with its modality - meaning it
+    opens up on top of every other window.
+
+    .. visual-example::
+        :title: Simple popup window
+        :height: 100
+        :width: 220
+        :auto_layout:
+
+        imgui.begin("Example: simple popup modal")
+
+        if imgui.button("Open Modal popup"):
+            imgui.open_popup("select-popup")
+
+        imgui.same_line()
+
+        if imgui.begin_popup_modal("select-popup")[0]:
+            imgui.text("Select an option:")
+            imgui.separator()
+            imgui.selectable("One")
+            imgui.selectable("Two")
+            imgui.selectable("Three")
+            imgui.end_popup()
+
+        imgui.end()
+
+    Args:
+        title (str): label of the modal window.
+        visible (bool): define if popup is visible or not.
+        flags: Window flags. See:
+            :ref:`list of available flags <window-flag-options>`.
+
+    Returns:
+        tuple: ``(opened, visible)`` tuple of bools.
+        opened can be ``False`` when the popup is completely clipped
+        (e.g. zero size display).
+
+    .. wraps::
+        bool BeginPopupModal(
+            const char* name,
+            bool* p_open = NULL,
+            ImGuiWindowFlags extra_flags = 0
+        )
+    """
+    cdef cimgui.bool inout_visible = visible
+
+    return cimgui.BeginPopupModal(
+        _bytes(title),
+        &inout_visible if visible is not None else NULL,
+        flags
+    ), inout_visible
+
+
+def begin_popup_context_item(str name, int mouse_button=1):
+    """This is a helper function to handle the most simple case of associating
+    one named popup to one given widget.
+
+    .. visual-example::
+        :title: Popup context view
+        :height: 100
+        :width: 200
+        :auto_layout:
+
+        imgui.begin("Example: popup context view")
+        imgui.text("Right-click to set value.")
+        if imgui.begin_popup_context_item("Item Context Menu"):
+            imgui.selectable("Set to Zero")
+            imgui.end_popup()
+        imgui.end()
+
+    Args:
+        name (str): label of item.
+        mouse_button (int): mouse button identifier: 0 - left button,
+            1 - right button, 2 - middle button
+
+    Returns:
+        opened (bool): opened can be False when the popup is completely
+        clipped (e.g. zero size display).
+
+    .. wraps::
+        bool BeginPopupContextItem(
+            const char* str_id,
+            int mouse_button = 1
+        )
+    """
+    return cimgui.BeginPopupContextItem(_bytes(name), mouse_button)
+
+
+def begin_popup_context_window(
+    bool also_over_items=True,
+    str name=None,
+    int mouse_button=1
+):
+    """Helper function to open and begin popup when clicked on current window.
+
+    As all popup functions it should end with :func:`end_popup()`.
+
+    .. visual-example::
+        :title: Popup context view
+        :height: 100
+        :width: 200
+        :auto_layout:
+
+        imgui.begin("Example: popup context window")
+        if imgui.begin_popup_context_window():
+            imgui.selectable("Clear")
+            imgui.end_popup()
+        imgui.end()
+
+    Args:
+        also_over_items (bool): display on top of widget.
+        name (str): name of the window
+        mouse_button (int): mouse button identifier:
+            0 - left button
+            1 - right button
+            2 - middle button
+
+    Returns:
+        opened (bool): if the context window is opened.
+
+    .. wraps::
+        bool BeginPopupContextWindow(
+            bool also_over_items = true,
+            const char* str_id = NULL,
+            int mouse_button = 1
+        )
+    """
+    if name is None:
+        return cimgui.BeginPopupContextWindow(
+            also_over_items,
+            NULL,
+            mouse_button
+        )
+    else:
+        return cimgui.BeginPopupContextWindow(
+            also_over_items,
+            _bytes(name),
+            mouse_button
+        )
+
+
+def end_popup():
+    """End a popup window.
+
+    Should be called after each XYZPopupXYZ function.
+
+    For practical example how to use this function, please see documentation
+    of :func:`open_popup`.
+
+    .. wraps::
+        void EndPopup()
+    """
+    cimgui.EndPopup()
+
+
+def close_current_popup():
+    """Close the current popup window begin-ed directly above this call.
+    Clicking on a :func:`menu_item()` or :func:`selectable()` automatically
+    close the current popup.
+
+    For practical example how to use this function, please see documentation
+    of :func:`open_popup`.
+
+    .. wraps::
+        void CloseCurrentPopup()
+    """
+    cimgui.CloseCurrentPopup()
+
+
 def text(str text):
     """Add text to current widget stack.
 
