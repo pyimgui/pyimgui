@@ -5,6 +5,8 @@ import os
 import glfw
 import OpenGL.GL as gl
 from PIL import Image
+import imageio
+import numpy
 
 import imgui
 from imgui.impl import GlfwImpl
@@ -60,6 +62,7 @@ def render_snippet(
     height=200,
     auto_window=False,
     auto_layout=False,
+    animated=False,
     output_dir='.',
     click=None,
 ):
@@ -108,6 +111,8 @@ def render_snippet(
     # attach texture to framebuffer
     gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_COLOR_ATTACHMENT0, gl.GL_TEXTURE_2D, texture, 0)
 
+    image_list = []
+
     # note: Clicking simulation is hacky as fuck and it
     #       requires at least three frames to be rendered:
     #       * 1st with mouse in position but without button pressed.
@@ -116,7 +121,7 @@ def render_snippet(
     #       * 3rd in the same position with button pressed still to finally
     #         trigger the "clicked" state.
     # note: If clicking simulation is not required we draw only one frame.
-    for m_state in ([None] if not click else [False, True, True]):
+    for m_state in ([None] if not click else [False, True, True, True]):
 
         # note: Mouse click MUST be simulated before new_frame call!
         if click:
@@ -138,8 +143,8 @@ def render_snippet(
             if auto_window:
                 imgui.set_next_window_size(width - 10, height - 10)
                 imgui.set_next_window_centered()
-                # note: title may be unicode and since we are building docs on py27
-                #       there is a need for encoding it.
+                # note: title may be unicode and since we are building docs
+                #       on py27 there is a need for encoding it.
                 imgui.begin("Example: %s" % title.encode())
 
             exec(code, locals(), globals())
@@ -154,14 +159,23 @@ def render_snippet(
 
         imgui.render()
 
-    # retrieve pixels from framebuffer and write to file
-    pixels = gl.glReadPixels(0, 0, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
+        # retrieve pixels from framebuffer and write to file
+        pixels = gl.glReadPixels(0, 0, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
+        image = Image.frombytes('RGBA', (width, height), pixels)
+        # note: glReadPixels returns lines "bottom to top" but PIL reads bytes
+        #       top to bottom
+        image = image.transpose(Image.FLIP_TOP_BOTTOM)
+        image_list.append(image)
 
-    image = Image.frombytes('RGBA', (width, height), pixels)
-    # note: glReadPixels returns lines "bottom to top" but PIL reads bytes
-    #       top to bottom
-    image = image.transpose(Image.FLIP_TOP_BOTTOM)
-    image.save(os.path.join(output_dir, file_path))
+    if animated:
+        path = os.path.join(output_dir, file_path)
+
+        imageio.mimsave(
+            path,
+            [numpy.asarray(im, dtype=numpy.uint8) for im in image_list]
+        )
+    else:
+        image_list[-1].save(os.path.join(output_dir, file_path))
 
     glfw.terminate()
 
@@ -169,10 +183,24 @@ def render_snippet(
 if __name__ == "__main__":
     example_source = cleandoc(
         """
-        imgui.text("Bar")
-        imgui.text_colored("Eggs", 0.2, 1., 0.)
+        current = 2
+        imgui.begin("Example: combo widget")
+
+        clicked, current = imgui.combo(
+            "combo", current, ["first", "second", "third"]
+        )
+
+        imgui.end()
         """
     )
 
-    render_snippet(example_source, 'example_snippet.png')
+    render_snippet(
+        example_source,
+        'example_snippet.gif',
+        height=200,
+        width=200,
+        animated=True,
+        auto_layout=True,
+        click=(80, 40)
+    )
 
