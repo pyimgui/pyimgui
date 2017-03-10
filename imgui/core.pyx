@@ -2077,10 +2077,11 @@ def begin_popup_context_item(str name, int mouse_button=1):
         :height: 100
         :width: 200
         :auto_layout:
+        :click: 40 40
 
         imgui.begin("Example: popup context view")
         imgui.text("Right-click to set value.")
-        if imgui.begin_popup_context_item("Item Context Menu"):
+        if imgui.begin_popup_context_item("Item Context Menu", mouse_button=0):
             imgui.selectable("Set to Zero")
             imgui.end_popup()
         imgui.end()
@@ -2117,9 +2118,10 @@ def begin_popup_context_window(
         :height: 100
         :width: 200
         :auto_layout:
+        :click: 40 40
 
         imgui.begin("Example: popup context window")
-        if imgui.begin_popup_context_window():
+        if imgui.begin_popup_context_window(mouse_button=0):
             imgui.selectable("Clear")
             imgui.end_popup()
         imgui.end()
