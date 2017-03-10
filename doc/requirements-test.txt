@@ -5,3 +5,4 @@ click
 Sphinx==1.4.8
 docutils<0.13.1
 mock
+pytest
