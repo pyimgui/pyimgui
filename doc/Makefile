@@ -220,6 +220,14 @@ xml: readme
 	@echo
 	@echo "Build finished. The XML files are in $(BUILDDIR)/xml."
 
+
+.PHONY: vistest
+vistest: readme
+	$(SPHINXBUILD) -b vistest $(ALLSPHINXOPTS) $(BUILDDIR)/vistest
+	@echo
+	@echo "Build finished. The VisTest files are in $(BUILDDIR)/vistest."
+
+
 .PHONY: pseudoxml
 pseudoxml: readme
 	$(SPHINXBUILD) -b pseudoxml $(ALLSPHINXOPTS) $(BUILDDIR)/pseudoxml

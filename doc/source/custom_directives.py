@@ -5,7 +5,13 @@ from docutils.parsers.rst import directives
 import os
 import re
 from hashlib import sha1
+import traceback
+
+from sphinx.builders import Builder
 from sphinx.ext.autodoc import AutodocReporter
+from sphinx.util.console import bold
+
+import imgui
 
 try:
     from gen_example import render_snippet
@@ -71,7 +77,6 @@ class VisualDirective(Directive):
         'title': directives.unchanged,
         'width': directives.positive_int,
         'height': directives.positive_int,
-        'auto_window': flag,
         'auto_layout': flag,
         'click': click_list,
     }
@@ -79,6 +84,7 @@ class VisualDirective(Directive):
     def run(self):
         source = '\n'.join(self.content.data)
         literal = nodes.literal_block(source, source)
+        literal['visualnodetype'] = True
         literal['language'] = 'python'
 
         # docutils document model is insane!
@@ -116,7 +122,7 @@ class VisualDirective(Directive):
             name = signature + '_' + str(occurence)
         else:
             # If we could not quess then use explicit title or hexdigest
-            name = self.options.get('title', sha1(source).hexdigest())
+            name = self.options.get('title', sha1(source.encode()).hexdigest())
 
         return self.phrase_to_filename(name)
 
@@ -135,7 +141,11 @@ class VisualDirective(Directive):
 
         env = self.state.document.settings.env
 
-        if render_snippet and env.config['render_examples']:
+        if all([
+            render_snippet,
+            env.config['render_examples'],
+            not os.environ.get('SPHINX_DISABLE_RENDER', False),
+        ]):
             try:
                 render_snippet(
                     source, file_path,
@@ -150,9 +160,44 @@ class VisualDirective(Directive):
         return img
 
 
+class VisualBuilder(Builder):
+    """
+    Collects visual examples in the documentation for testing purpose.
+    """
+    name = 'vistest'
+
+    def get_outdated_docs(self):
+        return self.env.found_docs
+
+    def write(self, build_docnames, updated_docnames, method='update'):
+        # todo: monkey patching, rewrite
+        self.snippets = []
+
+        if build_docnames is None:
+            build_docnames = sorted(self.env.all_docs)
+
+        for docname in build_docnames:
+            # no need to resolve the doctree
+            doctree = self.env.get_doctree(docname)
+            self.snippets.extend(self.collect_doc(docname, doctree))
+
+    @staticmethod
+    def traverse_condition(node):
+        return isinstance(
+            node, nodes.literal_block
+        ) and 'visualnodetype' in node
+
+    def collect_doc(self, docname, doctree):
+        return [
+            (node.source, node.astext())
+            for node in doctree.traverse(self.traverse_condition)
+        ]
+
+
 def setup(app):
     app.add_config_value('render_examples', False, 'html')
     app.add_directive('wraps', WrapsDirective)
     app.add_directive('visual-example', VisualDirective)
+    app.add_builder(VisualBuilder)
 
     return {'version': '0.1'}

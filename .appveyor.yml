@@ -58,15 +58,16 @@ install:
   #       with environment setup).
   # try to do a dirty workaround for Cython with C++ for py27
   - cp "c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdint.h" "C:\Users\appveyor\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include\stdint.h"
-
-  - "%PYTHON%\\python.exe -m pip install cython"
   # get latest version of all submodules
   - "git submodule update --init --recursive"
+  - "%PYTHON%\\python.exe -m pip install -r doc/requirements-test.txt"
 
 build: off
 
 build_script:
   - "ci\\appveyor_build.cmd %PYTHON%/python.exe -m pip wheel . -w dist"
+  - "%PYTHON%/python.exe -m pip install -e ."
+  - "%PYTHON%/python.exe -m pytest -v"
 
 on_success:
   - if [%APPVEYOR_REPO_BRANCH%]==[master] (
