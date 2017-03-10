@@ -122,7 +122,7 @@ class VisualDirective(Directive):
             name = signature + '_' + str(occurence)
         else:
             # If we could not quess then use explicit title or hexdigest
-            name = self.options.get('title', sha1(source).hexdigest())
+            name = self.options.get('title', sha1(source.encode()).hexdigest())
 
         return self.phrase_to_filename(name)
 
