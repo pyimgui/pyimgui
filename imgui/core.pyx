@@ -3990,13 +3990,14 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
 
     .. visual-example::
         :title: style variables
-        :auto_window:
         :width: 200
         :height: 80
 
+        imgui.begin("Example: style variables")
         imgui.push_style_var(imgui.STYLE_ALPHA, 0.2)
         imgui.text("Alpha text")
         imgui.pop_style_var(1)
+        imgui.end()
 
     Args:
         variable: imgui style variable constant

@@ -58,7 +58,6 @@ def render_snippet(
     title="",
     width=200,
     height=200,
-    auto_window=False,
     auto_layout=False,
     output_dir='.',
     click=None,
@@ -135,17 +134,7 @@ def render_snippet(
                 imgui.set_next_window_size(width - 10, height - 10)
                 imgui.set_next_window_centered()
 
-            if auto_window:
-                imgui.set_next_window_size(width - 10, height - 10)
-                imgui.set_next_window_centered()
-                # note: title may be unicode and since we are building docs on py27
-                #       there is a need for encoding it.
-                imgui.begin("Example: %s" % title.encode())
-
             exec(code, locals(), globals())
-
-            if auto_window:
-                imgui.end()
 
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, offscreen_fb)
 

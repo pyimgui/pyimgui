@@ -5,10 +5,13 @@ from docutils.parsers.rst import directives
 import os
 import re
 from hashlib import sha1
+import traceback
 
 from sphinx.builders import Builder
 from sphinx.ext.autodoc import AutodocReporter
 from sphinx.util.console import bold
+
+import imgui
 
 try:
     from gen_example import render_snippet
@@ -74,7 +77,6 @@ class VisualDirective(Directive):
         'title': directives.unchanged,
         'width': directives.positive_int,
         'height': directives.positive_int,
-        'auto_window': flag,
         'auto_layout': flag,
         'click': click_list,
     }
@@ -180,19 +182,18 @@ class VisualBuilder(Builder):
         ) and 'visualnodetype' in node
 
     def test_doc(self, docname, doctree):
-        print docname, type(doctree)
-        import traceback
+        test_nodes = []
 
         for node in doctree.traverse(self.traverse_condition):
-            print("")
-            print("")
-            print("=" * 79)
-            print("Testing {}".format(node.source))
-            print("=" * 79)
-            print("")
-            print(node.astext())
-            print("")
-            print("^" * 79)
+            test_nodes.append(node)
+
+        if not test_nodes:
+            return
+        print("=" * 79)
+        print("Running {} tests for {}".format(len(test_nodes), docname))
+
+        for node in test_nodes:
+            print(" - Testing {}".format(node.source))
 
             try:
                 self.test_snippet(node.astext())
@@ -200,9 +201,8 @@ class VisualBuilder(Builder):
                 print("ERR: {}".format(err))
                 traceback.print_exc()
 
-    def test_snippet(self, source):
-        import imgui
-
+    @staticmethod
+    def test_snippet(source):
         code = compile(source, '<str>', 'exec')
 
         io = imgui.get_io()
@@ -212,6 +212,7 @@ class VisualBuilder(Builder):
         # setup default font
         io.fonts.get_tex_data_as_rgba32()
         io.fonts.add_font_default()
+        io.fonts.texture_id = 0  # set any texture ID
 
         imgui.new_frame()
         exec(code, locals(), globals())
