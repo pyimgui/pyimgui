@@ -1,0 +1,7 @@
+Cython
+wheel
+click
+# note: sphinx and docutils are for collecting tests
+Sphinx==1.4.8
+docutils<0.13.1
+mock

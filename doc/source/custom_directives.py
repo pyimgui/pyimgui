@@ -141,7 +141,11 @@ class VisualDirective(Directive):
 
         env = self.state.document.settings.env
 
-        if render_snippet and env.config['render_examples']:
+        if all([
+            render_snippet,
+            env.config['render_examples'],
+            not os.environ.get('SPHINX_DISABLE_RENDER', False),
+        ]):
             try:
                 render_snippet(
                     source, file_path,
@@ -158,7 +162,7 @@ class VisualDirective(Directive):
 
 class VisualBuilder(Builder):
     """
-    Runs visual examples in the documentation as tests.
+    Collects visual examples in the documentation for testing purpose.
     """
     name = 'vistest'
 
@@ -166,14 +170,16 @@ class VisualBuilder(Builder):
         return self.env.found_docs
 
     def write(self, build_docnames, updated_docnames, method='update'):
+        # todo: monkey patching, rewrite
+        self.snippets = []
+
         if build_docnames is None:
             build_docnames = sorted(self.env.all_docs)
 
-        self.info(bold('running tests...'))
         for docname in build_docnames:
             # no need to resolve the doctree
             doctree = self.env.get_doctree(docname)
-            self.test_doc(docname, doctree)
+            self.snippets.extend(self.collect_doc(docname, doctree))
 
     @staticmethod
     def traverse_condition(node):
@@ -181,42 +187,11 @@ class VisualBuilder(Builder):
             node, nodes.literal_block
         ) and 'visualnodetype' in node
 
-    def test_doc(self, docname, doctree):
-        test_nodes = []
-
-        for node in doctree.traverse(self.traverse_condition):
-            test_nodes.append(node)
-
-        if not test_nodes:
-            return
-        print("=" * 79)
-        print("Running {} tests for {}".format(len(test_nodes), docname))
-
-        for node in test_nodes:
-            print(" - Testing {}".format(node.source))
-
-            try:
-                self.test_snippet(node.astext())
-            except Exception as err:
-                print("ERR: {}".format(err))
-                traceback.print_exc()
-
-    @staticmethod
-    def test_snippet(source):
-        code = compile(source, '<str>', 'exec')
-
-        io = imgui.get_io()
-        io.delta_time = 1.0 / 60.0
-        io.display_size = 300, 300
-
-        # setup default font
-        io.fonts.get_tex_data_as_rgba32()
-        io.fonts.add_font_default()
-        io.fonts.texture_id = 0  # set any texture ID
-
-        imgui.new_frame()
-        exec(code, locals(), globals())
-        imgui.render()
+    def collect_doc(self, docname, doctree):
+        return [
+            (node.source, node.astext())
+            for node in doctree.traverse(self.traverse_condition)
+        ]
 
 
 def setup(app):
