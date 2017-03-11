@@ -8,12 +8,11 @@ if [[ $TRAVIS_OS_NAME == "osx" ]]; then
     python --version
     python -m pip freeze
 
-    python -m pip install wheel
     python -m pip install -r doc/requirements-test.txt
 
     python -m pip wheel . -w dist/
     python -m pip install -e .
-    python -m pytest -v --ignore build-env --color=yes
+    python -m pytest -v --ignore=build-env --color=yes
 
 else
     # if docker image is set then run actual Linux build inside of docker
