@@ -1026,7 +1026,7 @@ def end():
 
 
 ctypedef fused child_id:
-    cython.p_char
+    str
     cimgui.ImGuiID
 
 
@@ -1084,7 +1084,7 @@ def begin_child(
     # note: we do not take advantage of C++ function overloading
     #       in order to take adventage of Python keyword arguments
     return cimgui.BeginChild(
-        name, _cast_args_ImVec2(width, height), border, flags
+        _bytes(name), _cast_args_ImVec2(width, height), border, flags
     )
 
 def end_child():
@@ -2392,7 +2392,7 @@ def small_button(str label):
     return cimgui.SmallButton(_bytes(label))
 
 
-def invisible_button(char* identifier, width, height):
+def invisible_button(str identifier, width, height):
     """Create invisible button.
 
     .. visual-example::
@@ -2417,7 +2417,10 @@ def invisible_button(char* identifier, width, height):
     .. wraps::
         bool InvisibleButton(const char* str_id, const ImVec2& size)
     """
-    return cimgui.InvisibleButton(identifier, _cast_args_ImVec2(width, height))
+    return cimgui.InvisibleButton(
+        _bytes(identifier),
+        _cast_args_ImVec2(width, height)
+    )
 
 
 def color_button(
@@ -2658,7 +2661,7 @@ def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
     return cimgui.CheckboxFlags(_bytes(label), &inout_flags, flags_value), inout_flags
 
 
-def radio_button(char* label, cimgui.bool active):
+def radio_button(str label, cimgui.bool active):
     """Display radio button widget
 
     .. visual-example::
@@ -2684,7 +2687,7 @@ def radio_button(char* label, cimgui.bool active):
     .. wraps::
         bool RadioButton(const char* label, bool active)
     """
-    return cimgui.RadioButton(label, active)
+    return cimgui.RadioButton(_bytes(label), active)
 
 
 def combo(str label, int current, list items, int height_in_items=-1):
@@ -2732,7 +2735,7 @@ def combo(str label, int current, list items, int height_in_items=-1):
     ), inout_current
 
 
-def color_edit3(char* label, float r, float g, float b):
+def color_edit3(str label, float r, float g, float b):
     """Display color edit widget for color without alpha value.
 
     .. visual-example::
@@ -2767,12 +2770,12 @@ def color_edit3(char* label, float r, float g, float b):
     cdef float[3] inout_color = [r, g, b]
 
     return cimgui.ColorEdit3(
-        label, <float *>(&inout_color)
+        _bytes(label), <float *>(&inout_color)
     ), (inout_color[0], inout_color[1], inout_color[2])
 
 
 def color_edit4(
-    char* label, float r, float g, float b, float a, cimgui.bool show_alpha=True
+    str label, float r, float g, float b, float a, cimgui.bool show_alpha=True
 ):
     """Display color edit widget for color with alpha value.
 
@@ -2809,12 +2812,12 @@ def color_edit4(
     cdef float[4] inout_color = [r, g, b, a]
 
     return cimgui.ColorEdit4(
-        label, <float *>(&inout_color), show_alpha
+        _bytes(label), <float *>(&inout_color), show_alpha
     ), (inout_color[0], inout_color[1], inout_color[2], inout_color[3])
 
 
 def drag_float(
-    char* label, float value,
+    str label, float value,
     float change_speed = 1.0,
     float max_value=0.0,
     float min_value=0.0,
@@ -2874,13 +2877,13 @@ def drag_float(
     cdef float inout_value = value
 
     return cimgui.DragFloat(
-        label, &inout_value,
-        change_speed, max_value, min_value, display_format, power
+        _bytes(label), &inout_value,
+        change_speed, max_value, min_value, _bytes(display_format), power
     ), inout_value
 
 
 def drag_float2(
-    char* label, float value0, float value1,
+    str label, float value0, float value1,
     float change_speed = 1.0,
     float max_value=0.0,
     float min_value=0.0,
@@ -2933,13 +2936,13 @@ def drag_float2(
     """
     cdef float[2] inout_values = [value0, value1]
     return cimgui.DragFloat2(
-        label, <float*>&inout_values,
-        change_speed, max_value, min_value, display_format, power
+        _bytes(label), <float*>&inout_values,
+        change_speed, max_value, min_value, _bytes(display_format), power
     ), (inout_values[0], inout_values[1])
 
 
 def drag_float3(
-    char* label, float value0, float value1, float value2,
+    str label, float value0, float value1, float value2,
     float change_speed = 1.0,
     float max_value=0.0,
     float min_value=0.0,
@@ -2992,13 +2995,13 @@ def drag_float3(
     """
     cdef float[3] inout_values = [value0, value1, value2]
     return cimgui.DragFloat3(
-        label, <float*>&inout_values,
-        change_speed, max_value, min_value, display_format, power
+        _bytes(label), <float*>&inout_values,
+        change_speed, max_value, min_value, _bytes(display_format), power
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
 def drag_float4(
-    char* label, float value0, float value1, float value2, float value3,
+    str label, float value0, float value1, float value2, float value3,
     float change_speed = 1.0,
     float max_value=0.0,
     float min_value=0.0,
@@ -3051,13 +3054,13 @@ def drag_float4(
     """
     cdef float[4] inout_values = [value0, value1, value2, value3]
     return cimgui.DragFloat4(
-        label, <float*>&inout_values,
-        change_speed, max_value, min_value, display_format, power
+        _bytes(label), <float*>&inout_values,
+        change_speed, max_value, min_value, _bytes(display_format), power
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
 def drag_int(
-    char* label, int value,
+    str label, int value,
     float change_speed = 1.0,
     int max_value=0,
     int min_value=0,
@@ -3109,13 +3112,13 @@ def drag_int(
     cdef int inout_value = value
 
     return cimgui.DragInt(
-        label, &inout_value,
-        change_speed, max_value, min_value, display_format
+        _bytes(label), &inout_value,
+        change_speed, max_value, min_value, _bytes(display_format)
     ), inout_value
 
 
 def drag_int2(
-    char* label, int value0, int value1,
+    str label, int value0, int value1,
     float change_speed = 1.0,
     int max_value=0,
     int min_value=0,
@@ -3162,13 +3165,13 @@ def drag_int2(
     """
     cdef int[2] inout_values = [value0, value1]
     return cimgui.DragInt2(
-        label, <int*>&inout_values,
-        change_speed, max_value, min_value, display_format,
+        _bytes(label), <int*>&inout_values,
+        change_speed, max_value, min_value, _bytes(display_format),
     ), (inout_values[0], inout_values[1])
 
 
 def drag_int3(
-    char* label, int value0, int value1, int value2,
+    str label, int value0, int value1, int value2,
     float change_speed = 1.0,
     int max_value=0,
     int min_value=0,
@@ -3215,13 +3218,13 @@ def drag_int3(
     """
     cdef int[3] inout_values = [value0, value1, value2]
     return cimgui.DragInt3(
-        label, <int*>&inout_values,
-        change_speed, max_value, min_value, display_format,
+        _bytes(label), <int*>&inout_values,
+        change_speed, max_value, min_value, _bytes(display_format),
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
 def drag_int4(
-    char* label, int value0, int value1, int value2, int value3,
+    str label, int value0, int value1, int value2, int value3,
     float change_speed = 1.0,
     int max_value=0,
     int min_value=0,
@@ -3268,7 +3271,7 @@ def drag_int4(
     """
     cdef int[4] inout_values = [value0, value1, value2, value3]
     return cimgui.DragInt4(
-        label, <int*>&inout_values,
+        _bytes(label), <int*>&inout_values,
         change_speed, max_value, min_value, _bytes(display_format),
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
