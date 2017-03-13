@@ -32,6 +32,8 @@ matrix:
     - os: linux
       # note: this is only to properly annotate coverage build in the matrix
       env: COVERAGE=1
+      language: python
+      python: '3.5'
 
 before_install:
   - source ci/travis_before.sh
