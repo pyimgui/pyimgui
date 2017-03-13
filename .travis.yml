@@ -35,6 +35,11 @@ matrix:
       language: python
       python: '3.5'
 
+cache:
+  - pip
+  - directories:
+    - $HOME/.pyenv_cache
+
 before_install:
   - source ci/travis_before.sh
 
