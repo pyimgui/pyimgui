@@ -8,7 +8,9 @@ travis_fold() {
 if [[ $TRAVIS_OS_NAME == "osx" ]]; then
 
     if [[ "$PY_VERSION" != "2.7" ]]; then
+        travis_fold start brew-update
         brew update
+        travis_fold end brew-update
 
         travis_fold start brew-upgrade
         brew outdated pyenv || brew upgrade pyenv

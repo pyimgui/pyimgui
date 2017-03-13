@@ -36,9 +36,9 @@ matrix:
       python: '3.5'
 
 cache:
-  - pip
-  - directories:
-    - $HOME/.pyenv_cache
+  pip: true
+  directories:
+  - $HOME/.pyenv
 
 before_install:
   - source ci/travis_before.sh
