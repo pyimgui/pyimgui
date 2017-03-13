@@ -58,6 +58,18 @@ else:  # OS X and Linux
     os_specific_macros = []
 
 
+if os.environ.get("_CYTHONIZE_WITH_COVERAGE", None):
+    cythonize_opts = {
+        'linetrace': True,
+        'gdb_debug': True,
+        'build_inplace': True
+    }
+    general_macros = [('CYTHON_TRACE_NOGIL', '1')]
+else:
+    cythonize_opts = {}
+    general_macros = []
+
+
 setup(
     name='imgui',
     version=VERSION,
@@ -77,10 +89,12 @@ setup(
             define_macros=[
                 # note: for raising custom exceptions directly in ImGui code
                 ('PYIMGUI_CUSTOM_EXCEPTION', None)
-            ] + os_specific_macros,
+            ] + os_specific_macros + general_macros,
             include_dirs=['imgui', 'config-cpp'],
         ),
-    ], gdb_debug=True),
+        # todo: control gdb_debug with evn variable?
+    ], compiler_directives=cythonize_opts, gdb_debug=True),
+
     setup_requires=['cython'],
 
     include_package_data=True,
