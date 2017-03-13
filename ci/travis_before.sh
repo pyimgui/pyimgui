@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
-set -v
+travis_fold() {
+  local action=$1
+  local name=$2
+  echo -en "travis_fold:${action}:${name}\r"
+}
 
 if [[ $TRAVIS_OS_NAME == "osx" ]]; then
 
     if [[ "$PY_VERSION" != "2.7" ]]; then
         brew update
+
+        travis_fold start brew-upgrade
         brew outdated pyenv || brew upgrade pyenv
+        travis_fold end brew-upgrade
+
+        travis_fold start pyenv-install
         pyenv install $PY_VERSION
         pyenv local $PY_VERSION
+        travis_fold end pyenv-install
+
         eval "$(pyenv init -)"
     fi
 

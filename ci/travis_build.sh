@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-set -v
+travis_fold() {
+  local action=$1
+  local name=$2
+  echo -en "travis_fold:${action}:${name}\r"
+}
 
 if [[ $TRAVIS_OS_NAME == "osx" ]]; then
     # if there is no docker image set then make simple OS X build in place
@@ -10,9 +14,14 @@ if [[ $TRAVIS_OS_NAME == "osx" ]]; then
 
     python -m pip install -r doc/requirements-test.txt
 
+    travis_fold start pip-build
     python -m pip wheel . -w dist/
     python -m pip install -e .
+    travis_fold end pip-build
+
+    travis_fold start pytest
     python -m pytest -v --ignore=build-env --color=yes
+    travis_fold end pytest
 
 elif [[ $DOCKER_IMAGE ]]; then
     # if docker image is set then run actual Linux build inside of docker
