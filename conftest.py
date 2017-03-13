@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 
 import pytest
+from inspect import currentframe, getframeinfo
 from sphinx.application import Sphinx
 
 import imgui
@@ -48,9 +50,9 @@ class DocItem(pytest.Item):
     def runtest(self):
         self.exec_snippet(self.code)
 
-    @staticmethod
-    def exec_snippet(source):
+    def exec_snippet(self, source):
         code = compile(source, '<str>', 'exec')
+        frameinfo = getframeinfo(currentframe())
 
         io = imgui.get_io()
         io.render_callback = lambda *args, **kwargs: None
@@ -63,20 +65,39 @@ class DocItem(pytest.Item):
         io.fonts.texture_id = 0  # set any texture ID to avoid segfaults
 
         imgui.new_frame()
-        exec(code, locals(), globals())
+
+        try:
+            exec(code, locals(), globals())
+        except Exception as err:
+            # note: quick and dirty way to annotate sources with error marker
+            lines = source.split('\n')
+            lines.insert(sys.exc_info()[2].tb_next.tb_lineno, "^^^")
+            self.code = "\n".join(lines)
+            raise
+
         imgui.render()
+
+    @staticmethod
+    def indent(text, width=4):
+        return "\n".join(
+            ">" + " " * width + line
+            for line in text.split('\n')
+        )
 
     def repr_failure(self, excinfo):
         """ called when self.runtest() raises an exception. """
-        return "\n".join([
-            "Documentation test execution for code:",
-            self.code,
-            "---",
-            str(excinfo)
-        ])
+        return "Visual example fail: {}\n\n{}\n\n{}".format(
+            excinfo,
+            self.indent(self.code),
+            excinfo.getrepr(funcargs=True, style='short')
+        )
 
     def reportinfo(self):
-        return self.fspath, 0, "usecase: %s" % self.name
+        return self.fspath, 0, "testcase: %s" % self.name
+
+
+class ExecException(Exception):
+    pass
 
 
 def pytest_collect_file(parent, path):
