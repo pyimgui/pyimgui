@@ -29,6 +29,9 @@ matrix:
       env: DOCKER_IMAGE=quay.io/pypa/manylinux1_i686 PRE_CMD=linux32
       services: docker
 
+    - os: linux
+      # note: this is only to properly annotate coverage build in the matrix
+      env: COVERAGE=1
 
 before_install:
   - source ci/travis_before.sh

@@ -11,6 +11,6 @@ if [[ $TRAVIS_OS_NAME == "osx" ]]; then
         eval "$(pyenv init -)"
     fi
 
-else
+elif [[ $DOCKER_IMAGE ]]; then
     docker pull $DOCKER_IMAGE
 fi
