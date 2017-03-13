@@ -119,6 +119,7 @@ cdef extern from "imgui.h":
         ImGuiTreeNodeFlags_OpenOnArrow          # Only open when clicking on the arrow part. If ImGuiTreeNodeFlags_OpenOnDoubleClick is also set, single-click arrow or double-click all box to open.
         ImGuiTreeNodeFlags_Leaf                 # No collapsing, no arrow (use as a convenience for leaf nodes).
         ImGuiTreeNodeFlags_Bullet               # Display a bullet instead of arrow
+        ImGuiTreeNodeFlags_CollapsingHeader     # ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_NoAutoOpenOnLog
 
     ctypedef enum ImGuiSelectableFlags_:
         ImGuiSelectableFlags_DontClosePopups    # Clicking this don't close parent popup window

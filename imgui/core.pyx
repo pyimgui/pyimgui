@@ -95,7 +95,7 @@ WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
 
 # ==== TreeNode flags enum redefines ====
 TREE_NODE_SELECTED = enums.ImGuiTreeNodeFlags_Selected
-TREE_NODE_FRAME = enums.ImGuiTreeNodeFlags_Framed
+TREE_NODE_FRAMED = enums.ImGuiTreeNodeFlags_Framed
 TREE_NODE_ALLOW_OVERLAP_MODE = enums.ImGuiTreeNodeFlags_AllowOverlapMode
 TREE_NODE_NO_TREE_PUSH_ON_OPEN = enums.ImGuiTreeNodeFlags_NoTreePushOnOpen
 TREE_NODE_NO_AUTO_OPEN_ON_LOG = enums.ImGuiTreeNodeFlags_NoAutoOpenOnLog
@@ -104,6 +104,7 @@ TREE_NODE_OPEN_ON_DOUBLE_CLICK = enums.ImGuiTreeNodeFlags_OpenOnDoubleClick
 TREE_NODE_OPEN_ON_ARROW = enums.ImGuiTreeNodeFlags_OpenOnArrow
 TREE_NODE_LEAF = enums.ImGuiTreeNodeFlags_Leaf
 TREE_NODE_BULLET = enums.ImGuiTreeNodeFlags_Bullet
+TREE_NODE_COLLAPSING_HEADER = enums.ImGuiTreeNodeFlags_CollapsingHeader
 
 # ==== Selectable flags enum redefines ====
 SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups
