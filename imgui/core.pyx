@@ -139,6 +139,10 @@ cdef bytes _bytes(str text):
     return <bytes>(text if PY_MAJOR_VERSION < 3 else text.encode('utf-8'))
 
 
+cdef str _from_bytes(bytes text):
+    return <str>(text if PY_MAJOR_VERSION < 3 else text.decode('utf-8'))
+
+
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
     return Vec2(vec.x, vec.y)
 
@@ -3297,8 +3301,15 @@ def drag_int4(
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
-def input_text(str label, str value, cimgui.ImGuiInputTextFlags flags=0):
+def input_text(
+    str label,
+    str value,
+    int buffer_length,
+    cimgui.ImGuiInputTextFlags flags=0
+):
     """Display text input widget.
+
+    ``buffer_length`` is the maximum allowed length of the content.
 
     .. visual-example::
         :auto_layout:
@@ -3307,7 +3318,11 @@ def input_text(str label, str value, cimgui.ImGuiInputTextFlags flags=0):
 
         text_val = 'Please, type the coefficient here.'
         imgui.begin("Example: text input")
-        changed, text_val = imgui.input_text('Amount:', text_val)
+        changed, text_val = imgui.input_text(
+            'Amount:',
+            text_val,
+            256
+        )
         imgui.text('You wrote:')
         imgui.same_line()
         imgui.text(text_val)
@@ -3316,6 +3331,7 @@ def input_text(str label, str value, cimgui.ImGuiInputTextFlags flags=0):
     Args:
         label (str): widget label.
         value (str): textbox value
+        buffer_length (int): length of the content buffer
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
 
@@ -3333,28 +3349,31 @@ def input_text(str label, str value, cimgui.ImGuiInputTextFlags flags=0):
             void* user_data = NULL
         )
     """
+    value_bytes = _bytes(value)
+    value_len = len(value)
 
-    # return changed, bytes_text.decode('utf-8')
-
-    cdef bytes bytes_text = _bytes(value)
-    cdef char inout_text[2056]
-    strcpy(inout_text, bytes_text)
+    cdef char* inout_text = NULL
+    temp_value = value_bytes[:value_len]
+    inout_text = <bytes>temp_value
 
     changed = cimgui.InputText(
-        _bytes(label), inout_text, sizeof(inout_text), flags, NULL, NULL
+        _bytes(label), inout_text, buffer_length, flags, NULL, NULL
     )
 
-    return changed, bytes_text.decode('utf-8')
+    return changed, _from_bytes(inout_text)
 
 
 def input_text_multiline(
     str label,
     str value,
+    int buffer_length,
     float width=0,
     float height=0,
     cimgui.ImGuiInputTextFlags flags=0
 ):
     """Display multiline text input widget.
+
+    ``buffer_length`` is the maximum allowed length of the content.
 
     .. visual-example::
         :auto_layout:
@@ -3363,7 +3382,11 @@ def input_text_multiline(
 
         text_val = 'Type the your message here.'
         imgui.begin("Example: text input")
-        changed, text_val = imgui.input_text_multiline('Message:', text_val)
+        changed, text_val = imgui.input_text_multiline(
+            'Message:',
+            text_val,
+            2056
+        )
         imgui.text('You wrote:')
         imgui.same_line()
         imgui.text(text_val)
@@ -3372,6 +3395,7 @@ def input_text_multiline(
     Args:
         label (str): widget label.
         value (str): textbox value
+        buffer_length (int): length of the content buffer
         width (float): width of the textbox
         height (float): height of the textbox
         flags: InputText flags. See:
@@ -3392,17 +3416,20 @@ def input_text_multiline(
             void* user_data = NULL
         )
     """
-    cdef bytes bytes_text = _bytes(value)
-    cdef char inout_text[1024 * 16]
-    strcpy(inout_text, bytes_text)
+    value_bytes = _bytes(value)
+    value_len = len(value)
+
+    cdef char* inout_text = NULL
+    temp_value = value_bytes[:value_len]
+    inout_text = <bytes>temp_value
 
     changed = cimgui.InputTextMultiline(
-        _bytes(label), inout_text, sizeof(inout_text),
+        _bytes(label), inout_text, buffer_length,
         _cast_args_ImVec2(width, height), flags,
         NULL, NULL
     )
 
-    return changed, bytes_text.decode('utf-8')
+    return changed, _from_bytes(inout_text)
 
 
 def input_float(
