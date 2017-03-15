@@ -4421,15 +4421,6 @@ def end_group():
     """
     cimgui.EndGroup()
 
-
-def end_group():
-    """End group (see: :any:`begin_group`).
-
-    .. wraps::
-        void EndGroup()
-    """
-    cimgui.EndGroup()
-
 # additional helpers
 # todo: move to separate extension module (extra?)
 
