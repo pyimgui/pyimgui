@@ -3566,7 +3566,7 @@ def input_float3(
             ImGuiInputTextFlags extra_flags = 0
         )
     """
-    cdef float[3] inout_values = [value0, value1, values2]
+    cdef float[3] inout_values = [value0, value1, value2]
 
     return cimgui.InputFloat3(
         _bytes(label), <float*>&inout_values,
@@ -3611,7 +3611,7 @@ def input_float4(
             ImGuiInputTextFlags extra_flags = 0
         )
     """
-    cdef float[4] inout_values = [value0, value1, values2, value3]
+    cdef float[4] inout_values = [value0, value1, value2, value3]
 
     return cimgui.InputFloat4(
         _bytes(label), <float*>&inout_values,
