@@ -1,7 +1,7 @@
 .. _guide-selectable-flags:
 
 Using selectable flags
-==================
+======================
 
 Selectable/Lists functions accept various flags to manage their behaviour.
 

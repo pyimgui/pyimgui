@@ -1,7 +1,7 @@
 .. _guide-inputtext-flags:
 
 Using input text flags
-==================
+======================
 
 InpuText functions accept various flags to manage their behaviour.
 
