@@ -671,7 +671,7 @@ cdef class _IO(object):
         return self._ptr.MouseDoubleClickTime
 
     @mouse_double_click_time.setter
-    def mouse_double_click_time(self, float value)
+    def mouse_double_click_time(self, float value):
         self._ptr.MouseDoubleClickTime = value
 
     @property
@@ -4540,8 +4540,7 @@ def is_mouse_hovering_any_window():
     return cimgui.IsMouseHoveringAnyWindow()
 
 
-cpdef 
-_var(cimgui.ImGuiStyleVar variable, value):
+cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     """Push style variable on stack.
 
     This function accepts both float and float two-tuples as ``value``
