@@ -134,7 +134,7 @@ WINDOW_ALWAYS_USE_WINDOW_PADDING = core.WINDOW_ALWAYS_USE_WINDOW_PADDING
 #: Draw as selected
 TREE_NODE_SELECTED = core.TREE_NODE_SELECTED
 #: Full colored frame (e.g. for CollapsingHeader)
-TREE_NODE_FRAME = core.TREE_NODE_FRAME
+TREE_NODE_FRAMED = core.TREE_NODE_FRAMED
 #: Hit testing to allow subsequent widgets to overlap this one
 TREE_NODE_ALLOW_OVERLAP_MODE = core.TREE_NODE_ALLOW_OVERLAP_MODE
 #: Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra
