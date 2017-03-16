@@ -2422,7 +2422,7 @@ def invisible_button(str identifier, width, height):
 
     .. visual-example::
         :auto_layout:
-        :height: 100
+        :height: 300
         :width: 300
 
         imgui.begin("Example: invisible button :)")
@@ -3313,7 +3313,7 @@ def input_text(
 
     .. visual-example::
         :auto_layout:
-        :width: 200
+        :width: 400
         :height: 100
 
         text_val = 'Please, type the coefficient here.'
@@ -3337,7 +3337,7 @@ def input_text(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            textbox state change and the current text contents.
+        textbox state change and the current text contents.
 
     .. wraps::
         bool InputText(
@@ -3377,8 +3377,8 @@ def input_text_multiline(
 
     .. visual-example::
         :auto_layout:
-        :width: 200
-        :height: 100
+        :width: 400
+        :height: 200
 
         text_val = 'Type the your message here.'
         imgui.begin("Example: text input")
@@ -3403,7 +3403,7 @@ def input_text_multiline(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            textbox state change and the current text contents.
+        textbox state change and the current text contents.
 
     .. wraps::
         bool InputTextMultiline(
@@ -3444,7 +3444,7 @@ def input_float(
 
     .. visual-example::
         :auto_layout:
-        :width: 200
+        :width: 400
         :height: 100
 
         float_val = 0.4
@@ -3464,7 +3464,7 @@ def input_float(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            textbox state change and the current textbox content.
+        textbox state change and the current textbox content.
 
     .. wraps::
         bool InputFloat(
@@ -3494,7 +3494,7 @@ def input_float2(
 
     .. visual-example::
         :auto_layout:
-        :width: 200
+        :width: 400
         :height: 100
 
         values = 0.4, 3.2
@@ -3511,7 +3511,7 @@ def input_float2(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            textbox state change and the tuple of current values.
+        textbox state change and the tuple of current values.
 
     .. wraps::
         bool InputFloat2(
@@ -3539,7 +3539,7 @@ def input_float3(
 
     .. visual-example::
         :auto_layout:
-        :width: 200
+        :width: 400
         :height: 100
 
         values = 0.4, 3.2, 29.3
@@ -3556,7 +3556,7 @@ def input_float3(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            textbox state change and the tuple of current values.
+        textbox state change and the tuple of current values.
 
     .. wraps::
         bool InputFloat3(
@@ -3584,7 +3584,7 @@ def input_float4(
 
     .. visual-example::
         :auto_layout:
-        :width: 200
+        :width: 400
         :height: 100
 
         values = 0.4, 3.2, 29.3, 12.9
@@ -3601,7 +3601,7 @@ def input_float4(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            textbox state change and the tuple of current values.
+        textbox state change and the tuple of current values.
 
     .. wraps::
         bool InputFloat4(
@@ -3630,7 +3630,7 @@ def input_int(
 
     .. visual-example::
         :auto_layout:
-        :width: 200
+        :width: 400
         :height: 100
 
         int_val = 3
@@ -3649,7 +3649,7 @@ def input_int(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            textbox state change and the current textbox content.
+        textbox state change and the current textbox content.
 
     .. wraps::
         bool InputInt(
@@ -3676,7 +3676,7 @@ def input_int2(
 
     .. visual-example::
         :auto_layout:
-        :width: 200
+        :width: 400
         :height: 100
 
         values = 4, 12
@@ -3693,7 +3693,7 @@ def input_int2(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            textbox state change and the current textbox content.
+        textbox state change and the current textbox content.
 
     .. wraps::
         bool InputInt2(
@@ -3718,7 +3718,7 @@ def input_int3(
 
     .. visual-example::
         :auto_layout:
-        :width: 200
+        :width: 400
         :height: 100
 
         values = 4, 12, 28
@@ -3735,7 +3735,7 @@ def input_int3(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            textbox state change and the current textbox content.
+        textbox state change and the current textbox content.
 
     .. wraps::
         bool InputInt3(
@@ -3760,7 +3760,7 @@ def input_int4(
 
     .. visual-example::
         :auto_layout:
-        :width: 200
+        :width: 400
         :height: 100
 
         values = 4, 12, 28, 73
@@ -3777,7 +3777,7 @@ def input_int4(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            textbox state change and the current textbox content.
+        textbox state change and the current textbox content.
 
     .. wraps::
         bool InputInt4(
@@ -4509,7 +4509,7 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     use :func:`styled` or :func:`istyled` context managers.
 
     .. visual-example::
-        :title: style variables
+        :auto_layout:
         :width: 200
         :height: 80
 
