@@ -22,6 +22,7 @@ except ImportError:
 from libc.stdlib cimport malloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
+from libc.string cimport strcpy
 from libcpp cimport bool
 
 cimport cimgui
@@ -95,7 +96,7 @@ WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
 
 # ==== TreeNode flags enum redefines ====
 TREE_NODE_SELECTED = enums.ImGuiTreeNodeFlags_Selected
-TREE_NODE_FRAME = enums.ImGuiTreeNodeFlags_Framed
+TREE_NODE_FRAMED = enums.ImGuiTreeNodeFlags_Framed
 TREE_NODE_ALLOW_OVERLAP_MODE = enums.ImGuiTreeNodeFlags_AllowOverlapMode
 TREE_NODE_NO_TREE_PUSH_ON_OPEN = enums.ImGuiTreeNodeFlags_NoTreePushOnOpen
 TREE_NODE_NO_AUTO_OPEN_ON_LOG = enums.ImGuiTreeNodeFlags_NoAutoOpenOnLog
@@ -104,6 +105,7 @@ TREE_NODE_OPEN_ON_DOUBLE_CLICK = enums.ImGuiTreeNodeFlags_OpenOnDoubleClick
 TREE_NODE_OPEN_ON_ARROW = enums.ImGuiTreeNodeFlags_OpenOnArrow
 TREE_NODE_LEAF = enums.ImGuiTreeNodeFlags_Leaf
 TREE_NODE_BULLET = enums.ImGuiTreeNodeFlags_Bullet
+TREE_NODE_COLLAPSING_HEADER = enums.ImGuiTreeNodeFlags_CollapsingHeader
 
 # ==== Selectable flags enum redefines ====
 SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups
@@ -156,12 +158,35 @@ COLOR_TEXT_SELECTED_BACKGROUND = enums.ImGuiCol_TextSelectedBg
 COLOR_MODAL_WINDOW_DARKENING = enums.ImGuiCol_ModalWindowDarkening
 COLOR_COUNT = enums.ImGuiCol_COUNT
 
+# ==== Text input flags ====
+INPUT_TEXT_CHARS_DECIMAL = enums.ImGuiInputTextFlags_CharsDecimal
+INPUT_TEXT_CHARS_HEXADECIMAL = enums.ImGuiInputTextFlags_CharsHexadecimal
+INPUT_TEXT_CHARS_UPPERCASE = enums.ImGuiInputTextFlags_CharsUppercase
+INPUT_TEXT_CHARS_NO_BLANK = enums.ImGuiInputTextFlags_CharsNoBlank
+INPUT_TEXT_AUTO_SELECT_ALL = enums.ImGuiInputTextFlags_AutoSelectAll
+INPUT_TEXT_ENTER_RETURNS_TRUE = enums.ImGuiInputTextFlags_EnterReturnsTrue
+INPUT_TEXT_CALLBACK_COMPLETION = enums.ImGuiInputTextFlags_CallbackCompletion
+INPUT_TEXT_CALLBACK_HISTORY = enums.ImGuiInputTextFlags_CallbackHistory
+INPUT_TEXT_CALLBACK_ALWAYS = enums.ImGuiInputTextFlags_CallbackAlways
+INPUT_TEXT_CALLBACK_CHAR_FILTER = enums.ImGuiInputTextFlags_CallbackCharFilter
+INPUT_TEXT_ALLOW_TAB_INPUT = enums.ImGuiInputTextFlags_AllowTabInput
+INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE = enums.ImGuiInputTextFlags_CtrlEnterForNewLine
+INPUT_TEXT_NO_HORIZONTAL_SCROLL = enums.ImGuiInputTextFlags_NoHorizontalScroll
+INPUT_TEXT_ALWAYS_INSERT_MODE = enums.ImGuiInputTextFlags_AlwaysInsertMode
+INPUT_TEXT_READ_ONLY = enums.ImGuiInputTextFlags_ReadOnly
+INPUT_TEXT_PASSWORD = enums.ImGuiInputTextFlags_Password
+
+
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
 
 
 cdef bytes _bytes(str text):
     return <bytes>(text if PY_MAJOR_VERSION < 3 else text.encode('utf-8'))
+
+
+cdef str _from_bytes(bytes text):
+    return <str>(text if PY_MAJOR_VERSION < 3 else text.decode('utf-8'))
 
 
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
@@ -646,7 +671,7 @@ cdef class _IO(object):
         return self._ptr.MouseDoubleClickTime
 
     @mouse_double_click_time.setter
-    def mouse_double_click_time(self, float value):
+    def mouse_double_click_time(self, float value)
         self._ptr.MouseDoubleClickTime = value
 
     @property
@@ -1072,7 +1097,7 @@ def end():
 
 
 ctypedef fused child_id:
-    cython.p_char
+    str
     cimgui.ImGuiID
 
 
@@ -1130,7 +1155,7 @@ def begin_child(
     # note: we do not take advantage of C++ function overloading
     #       in order to take adventage of Python keyword arguments
     return cimgui.BeginChild(
-        name, _cast_args_ImVec2(width, height), border, flags
+        _bytes(name), _cast_args_ImVec2(width, height), border, flags
     )
 
 def end_child():
@@ -1451,18 +1476,6 @@ def tree_node(str text, cimgui.ImGuiTreeNodeFlags flags=0):
         :click: 80 40
 
         imgui.begin("Example: tree node")
-        if imgui.tree_node("Expand me!"):
-            imgui.text("Lorem Ipsum")
-            imgui.tree_pop()
-        imgui.end()
-
-    .. visual-example::
-        :auto_layout:
-        :height: 100
-        :width: 200
-        :click: 80 40
-
-        imgui.begin("Example: tree node")
         if imgui.tree_node("Expand me!", imgui.TREE_NODE_DEFAULT_OPEN):
             imgui.text("Lorem Ipsum")
             imgui.tree_pop()
@@ -1497,7 +1510,7 @@ def tree_pop():
 
 def collapsing_header(
     str text,
-    closable=None,
+    visible=None,
     cimgui.ImGuiTreeNodeFlags flags=0
 ):
     """Collapsable/Expandable header view.
@@ -1511,21 +1524,28 @@ def collapsing_header(
         :width: 200
         :click: 80 40
 
+        visible = True
+
         imgui.begin("Example: collapsing header")
-        expanded, closable = imgui.collapsing_header("Expand me!", closable)
+        expanded, visible = imgui.collapsing_header("Expand me!", visible)
+
         if expanded:
             imgui.text("Now you see me!")
         imgui.end()
 
     Args:
         text (str): Tree node label
-        closable (bool): define if the header is closable with X.
+        visible (bool or None): Force visibility of a header. If set to True
+            shows additional (X) close button. If set to False header is not
+            visible at all. If set to None header is always visible and close
+            button is not displayed.
         flags: TreeNode flags. See:
             :ref:`list of available flags <treenode-flag-options>`.
 
     Returns:
-        tuple: a ``(expanded, closable)`` two-tuple indicating if item was
-        expanded and whether the header is closable or not.
+        tuple: a ``(expanded, visible)`` two-tuple indicating if item was
+        expanded and whether the header is visible or not (only if ``visible``
+        input argument is True/False).
 
     .. wraps::
         bool CollapsingHeader(const char* label, ImGuiTreeNodeFlags flags = 0)
@@ -1536,12 +1556,12 @@ def collapsing_header(
             ImGuiTreeNodeFlags flags = 0
         )
     """
-    cdef cimgui.bool inout_opened = closable
-    if closable is None:
+    cdef cimgui.bool inout_opened = visible
+    if visible is None:
         clicked = cimgui.CollapsingHeader(_bytes(text), NULL, flags)
     else:
         clicked = cimgui.CollapsingHeader(_bytes(text), &inout_opened, flags)
-    return clicked, inout_opened
+    return clicked, None if visible is None else inout_opened
 
 
 def selectable(
@@ -1648,6 +1668,7 @@ def listbox(
             const char** items,
             int items_count,
             int height_in_items = -1
+        )
 
     """
     cdef int inout_current = current
@@ -1683,11 +1704,11 @@ def listbox_header(
     .. visual-example::
         :auto_layout:
         :height: 200
-        :width: 100
+        :width: 200
         :click: 80 40
 
         imgui.begin("Example: custom listbox")
-       ﻿
+
         imgui.listbox_header("List", 200, 100)
 
         imgui.selectable("Selected", True)
@@ -2127,10 +2148,11 @@ def begin_popup_context_item(str name, int mouse_button=1):
         :height: 100
         :width: 200
         :auto_layout:
+        :click: 40 40
 
         imgui.begin("Example: popup context view")
         imgui.text("Right-click to set value.")
-        if imgui.begin_popup_context_item("Item Context Menu"):
+        if imgui.begin_popup_context_item("Item Context Menu", mouse_button=0):
             imgui.selectable("Set to Zero")
             imgui.end_popup()
         imgui.end()
@@ -2167,9 +2189,10 @@ def begin_popup_context_window(
         :height: 100
         :width: 200
         :auto_layout:
+        :click: 40 40
 
         imgui.begin("Example: popup context window")
-        if imgui.begin_popup_context_window():
+        if imgui.begin_popup_context_window(mouse_button=0):
             imgui.selectable("Clear")
             imgui.end_popup()
         imgui.end()
@@ -2440,12 +2463,12 @@ def small_button(str label):
     return cimgui.SmallButton(_bytes(label))
 
 
-def invisible_button(char* identifier, width, height):
+def invisible_button(str identifier, width, height):
     """Create invisible button.
 
     .. visual-example::
         :auto_layout:
-        :height: 100
+        :height: 300
         :width: 300
 
         imgui.begin("Example: invisible button :)")
@@ -2465,7 +2488,10 @@ def invisible_button(char* identifier, width, height):
     .. wraps::
         bool InvisibleButton(const char* str_id, const ImVec2& size)
     """
-    return cimgui.InvisibleButton(identifier, _cast_args_ImVec2(width, height))
+    return cimgui.InvisibleButton(
+        _bytes(identifier),
+        _cast_args_ImVec2(width, height)
+    )
 
 
 def color_button(
@@ -2706,7 +2732,7 @@ def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
     return cimgui.CheckboxFlags(_bytes(label), &inout_flags, flags_value), inout_flags
 
 
-def radio_button(char* label, cimgui.bool active):
+def radio_button(str label, cimgui.bool active):
     """Display radio button widget
 
     .. visual-example::
@@ -2732,7 +2758,7 @@ def radio_button(char* label, cimgui.bool active):
     .. wraps::
         bool RadioButton(const char* label, bool active)
     """
-    return cimgui.RadioButton(label, active)
+    return cimgui.RadioButton(_bytes(label), active)
 
 
 def combo(str label, int current, list items, int height_in_items=-1):
@@ -2740,7 +2766,8 @@ def combo(str label, int current, list items, int height_in_items=-1):
 
     .. visual-example::
         :auto_layout:
-        :height: 100
+        :height: 200
+        :click: 80 40
 
         current = 2
         imgui.begin("Example: combo widget")
@@ -2775,11 +2802,11 @@ def combo(str label, int current, list items, int height_in_items=-1):
     in_items = "\0".join(items)
 
     return cimgui.Combo(
-        _bytes(label), &inout_current, in_items, height_in_items
+        _bytes(label), &inout_current, _bytes(in_items), height_in_items
     ), inout_current
 
 
-def color_edit3(char* label, float r, float g, float b):
+def color_edit3(str label, float r, float g, float b):
     """Display color edit widget for color without alpha value.
 
     .. visual-example::
@@ -2814,12 +2841,12 @@ def color_edit3(char* label, float r, float g, float b):
     cdef float[3] inout_color = [r, g, b]
 
     return cimgui.ColorEdit3(
-        label, <float *>(&inout_color)
+        _bytes(label), <float *>(&inout_color)
     ), (inout_color[0], inout_color[1], inout_color[2])
 
 
 def color_edit4(
-    char* label, float r, float g, float b, float a, cimgui.bool show_alpha=True
+    str label, float r, float g, float b, float a, cimgui.bool show_alpha=True
 ):
     """Display color edit widget for color with alpha value.
 
@@ -2856,12 +2883,12 @@ def color_edit4(
     cdef float[4] inout_color = [r, g, b, a]
 
     return cimgui.ColorEdit4(
-        label, <float *>(&inout_color), show_alpha
+        _bytes(label), <float *>(&inout_color), show_alpha
     ), (inout_color[0], inout_color[1], inout_color[2], inout_color[3])
 
 
 def drag_float(
-    char* label, float value,
+    str label, float value,
     float change_speed = 1.0,
     float max_value=0.0,
     float min_value=0.0,
@@ -2905,7 +2932,7 @@ def drag_float(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            widget state change and the current drag value.
+        widget state change and the current drag value.
 
     .. wraps::
         bool DragFloat(
@@ -2921,13 +2948,13 @@ def drag_float(
     cdef float inout_value = value
 
     return cimgui.DragFloat(
-        label, &inout_value,
-        change_speed, max_value, min_value, display_format, power
+        _bytes(label), &inout_value,
+        change_speed, max_value, min_value, _bytes(display_format), power
     ), inout_value
 
 
 def drag_float2(
-    char* label, float value0, float value1,
+    str label, float value0, float value1,
     float change_speed = 1.0,
     float max_value=0.0,
     float min_value=0.0,
@@ -2965,7 +2992,7 @@ def drag_float2(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragFloat2(
@@ -2980,13 +3007,13 @@ def drag_float2(
     """
     cdef float[2] inout_values = [value0, value1]
     return cimgui.DragFloat2(
-        label, <float*>&inout_values,
-        change_speed, max_value, min_value, display_format, power
+        _bytes(label), <float*>&inout_values,
+        change_speed, max_value, min_value, _bytes(display_format), power
     ), (inout_values[0], inout_values[1])
 
 
 def drag_float3(
-    char* label, float value0, float value1, float value2,
+    str label, float value0, float value1, float value2,
     float change_speed = 1.0,
     float max_value=0.0,
     float min_value=0.0,
@@ -3024,7 +3051,7 @@ def drag_float3(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragFloat3(
@@ -3039,13 +3066,13 @@ def drag_float3(
     """
     cdef float[3] inout_values = [value0, value1, value2]
     return cimgui.DragFloat3(
-        label, <float*>&inout_values,
-        change_speed, max_value, min_value, display_format, power
+        _bytes(label), <float*>&inout_values,
+        change_speed, max_value, min_value, _bytes(display_format), power
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
 def drag_float4(
-    char* label, float value0, float value1, float value2, float value3,
+    str label, float value0, float value1, float value2, float value3,
     float change_speed = 1.0,
     float max_value=0.0,
     float min_value=0.0,
@@ -3083,7 +3110,7 @@ def drag_float4(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragFloat4(
@@ -3098,13 +3125,13 @@ def drag_float4(
     """
     cdef float[4] inout_values = [value0, value1, value2, value3]
     return cimgui.DragFloat4(
-        label, <float*>&inout_values,
-        change_speed, max_value, min_value, display_format, power
+        _bytes(label), <float*>&inout_values,
+        change_speed, max_value, min_value, _bytes(display_format), power
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
 def drag_int(
-    char* label, int value,
+    str label, int value,
     float change_speed = 1.0,
     int max_value=0,
     int min_value=0,
@@ -3141,7 +3168,7 @@ def drag_int(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            widget state change and the current drag value.
+        widget state change and the current drag value.
 
     .. wraps::
         bool DragInt(
@@ -3156,13 +3183,13 @@ def drag_int(
     cdef int inout_value = value
 
     return cimgui.DragInt(
-        label, &inout_value,
-        change_speed, max_value, min_value, display_format
+        _bytes(label), &inout_value,
+        change_speed, max_value, min_value, _bytes(display_format)
     ), inout_value
 
 
 def drag_int2(
-    char* label, int value0, int value1,
+    str label, int value0, int value1,
     float change_speed = 1.0,
     int max_value=0,
     int min_value=0,
@@ -3195,7 +3222,7 @@ def drag_int2(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragInt2(
@@ -3209,13 +3236,13 @@ def drag_int2(
     """
     cdef int[2] inout_values = [value0, value1]
     return cimgui.DragInt2(
-        label, <int*>&inout_values,
-        change_speed, max_value, min_value, display_format,
+        _bytes(label), <int*>&inout_values,
+        change_speed, max_value, min_value, _bytes(display_format),
     ), (inout_values[0], inout_values[1])
 
 
 def drag_int3(
-    char* label, int value0, int value1, int value2,
+    str label, int value0, int value1, int value2,
     float change_speed = 1.0,
     int max_value=0,
     int min_value=0,
@@ -3248,7 +3275,7 @@ def drag_int3(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragInt3(
@@ -3262,13 +3289,13 @@ def drag_int3(
     """
     cdef int[3] inout_values = [value0, value1, value2]
     return cimgui.DragInt3(
-        label, <int*>&inout_values,
-        change_speed, max_value, min_value, display_format,
+        _bytes(label), <int*>&inout_values,
+        change_speed, max_value, min_value, _bytes(display_format),
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
 def drag_int4(
-    char* label, int value0, int value1, int value2, int value3,
+    str label, int value0, int value1, int value2, int value3,
     float change_speed = 1.0,
     int max_value=0,
     int min_value=0,
@@ -3301,7 +3328,7 @@ def drag_int4(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current drag values.
+        widget state change and the tuple of current drag values.
 
     .. wraps::
         bool DragInt4(
@@ -3315,9 +3342,501 @@ def drag_int4(
     """
     cdef int[4] inout_values = [value0, value1, value2, value3]
     return cimgui.DragInt4(
-        label, <int*>&inout_values,
+        _bytes(label), <int*>&inout_values,
         change_speed, max_value, min_value, _bytes(display_format),
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
+
+
+def input_text(
+    str label,
+    str value,
+    int buffer_length,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display text input widget.
+
+    ``buffer_length`` is the maximum allowed length of the content.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        text_val = 'Please, type the coefficient here.'
+        imgui.begin("Example: text input")
+        changed, text_val = imgui.input_text(
+            'Amount:',
+            text_val,
+            256
+        )
+        imgui.text('You wrote:')
+        imgui.same_line()
+        imgui.text(text_val)
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (str): textbox value
+        buffer_length (int): length of the content buffer
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current text contents.
+
+    .. wraps::
+        bool InputText(
+            const char* label,
+            char* buf,
+            size_t buf_size,
+            ImGuiInputTextFlags flags = 0,
+            ImGuiTextEditCallback callback = NULL,
+            void* user_data = NULL
+        )
+    """
+    value_bytes = _bytes(value)
+    value_len = len(value)
+
+    cdef char* inout_text = NULL
+    temp_value = value_bytes[:value_len]
+    inout_text = <bytes>temp_value
+
+    changed = cimgui.InputText(
+        _bytes(label), inout_text, buffer_length, flags, NULL, NULL
+    )
+
+    return changed, _from_bytes(inout_text)
+
+
+def input_text_multiline(
+    str label,
+    str value,
+    int buffer_length,
+    float width=0,
+    float height=0,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display multiline text input widget.
+
+    ``buffer_length`` is the maximum allowed length of the content.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 200
+
+        text_val = 'Type the your message here.'
+        imgui.begin("Example: text input")
+        changed, text_val = imgui.input_text_multiline(
+            'Message:',
+            text_val,
+            2056
+        )
+        imgui.text('You wrote:')
+        imgui.same_line()
+        imgui.text(text_val)
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (str): textbox value
+        buffer_length (int): length of the content buffer
+        width (float): width of the textbox
+        height (float): height of the textbox
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current text contents.
+
+    .. wraps::
+        bool InputTextMultiline(
+            const char* label,
+            char* buf,
+            size_t buf_size,
+            const ImVec2& size = ImVec2(0,0),
+            ImGuiInputTextFlags flags = 0,
+            ImGuiTextEditCallback callback = NULL,
+            void* user_data = NULL
+        )
+    """
+    value_bytes = _bytes(value)
+    value_len = len(value)
+
+    cdef char* inout_text = NULL
+    temp_value = value_bytes[:value_len]
+    inout_text = <bytes>temp_value
+
+    changed = cimgui.InputTextMultiline(
+        _bytes(label), inout_text, buffer_length,
+        _cast_args_ImVec2(width, height), flags,
+        NULL, NULL
+    )
+
+    return changed, _from_bytes(inout_text)
+
+
+def input_float(
+    str label,
+    float value,
+    float step=0.0,
+    float step_fast=0.0,
+    int decimal_precision=-1,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display float input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        float_val = 0.4
+        imgui.begin("Example: float input")
+        changed, float_val = imgui.input_float('Type coefficient:', float_val)
+        imgui.text('You wrote: %f' % float_val)
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (float): textbox value
+        step (float): incremental step
+        step_fast (float): fast incremental step
+        decimal_precision (int): float precision
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current textbox content.
+
+    .. wraps::
+        bool InputFloat(
+            const char* label,
+            float* v,
+            float step = 0.0f,
+            float step_fast = 0.0f,
+            int decimal_precision = -1,
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef float inout_value = value
+
+    return cimgui.InputFloat(
+        _bytes(label), &inout_value, step,
+        step_fast, decimal_precision, flags
+    ), inout_value
+
+
+def input_float2(
+    str label,
+    float value0, float value1,
+    int decimal_precision=-1,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display two-float input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 0.4, 3.2
+        imgui.begin("Example: two float inputs")
+        changed, values = imgui.input_float2('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1 (float): input values.
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+        textbox state change and the tuple of current values.
+
+    .. wraps::
+        bool InputFloat2(
+            const char* label,
+            float v[2],
+            int decimal_precision = -1,
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef float[2] inout_values = [value0, value1]
+
+    return cimgui.InputFloat2(
+        _bytes(label), <float*>&inout_values,
+        decimal_precision, flags
+    ), (inout_values[0], inout_values[1])
+
+
+def input_float3(
+    str label,
+    float value0, float value1, float value2,
+    int decimal_precision=-1,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display three-float input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 0.4, 3.2, 29.3
+        imgui.begin("Example: three float inputs")
+        changed, values = imgui.input_float3('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1, value2 (float): input values.
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+        textbox state change and the tuple of current values.
+
+    .. wraps::
+        bool InputFloat3(
+            const char* label,
+            float v[3],
+            int decimal_precision = -1,
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef float[3] inout_values = [value0, value1, value2]
+
+    return cimgui.InputFloat3(
+        _bytes(label), <float*>&inout_values,
+        decimal_precision, flags
+    ), (inout_values[0], inout_values[1], inout_values[2])
+
+
+def input_float4(
+    str label,
+    float value0, float value1, float value2, float value3,
+    int decimal_precision=-1,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display four-float input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 0.4, 3.2, 29.3, 12.9
+        imgui.begin("Example: four float inputs")
+        changed, values = imgui.input_float4('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1, value2, value3 (float): input values.
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+        textbox state change and the tuple of current values.
+
+    .. wraps::
+        bool InputFloat4(
+            const char* label,
+            float v[4],
+            int decimal_precision = -1,
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef float[4] inout_values = [value0, value1, value2, value3]
+
+    return cimgui.InputFloat4(
+        _bytes(label), <float*>&inout_values,
+        decimal_precision, flags
+    ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
+
+
+def input_int(
+    str label,
+    int value,
+    int step=1,
+    int step_fast=100,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display integer input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        int_val = 3
+        imgui.begin("Example: integer input")
+        changed, int_val = imgui.input_float('Type multiplier:', int_val)
+        imgui.text('You wrote: %i' % int_val)
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (int): textbox value
+        step (int): incremental step
+        step_fast (int): fast incremental step
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current textbox content.
+
+    .. wraps::
+        bool InputInt(
+            const char* label,
+            int* v,
+            int step = 1,
+            int step_fast = 100,
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef int inout_value = value
+
+    return cimgui.InputInt(
+        _bytes(label), &inout_value, step, step_fast, flags
+    ), inout_value
+
+
+def input_int2(
+    str label,
+    int value0, int value1,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display two-integer input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 4, 12
+        imgui.begin("Example: two int inputs")
+        changed, values = imgui.input_int2('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1 (int): textbox values
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current textbox content.
+
+    .. wraps::
+        bool InputInt2(
+            const char* label,
+            int v[2],
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef int[2] inout_values = [value0, value1]
+
+    return cimgui.InputInt2(
+        _bytes(label), <int*>&inout_values, flags
+    ), [inout_values[0], inout_values[1]]
+
+
+def input_int3(
+    str label,
+    int value0, int value1, int value2,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display three-integer input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 4, 12, 28
+        imgui.begin("Example: three int inputs")
+        changed, values = imgui.input_int3('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1, value2 (int): textbox values
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current textbox content.
+
+    .. wraps::
+        bool InputInt3(
+            const char* label,
+            int v[3],
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef int[3] inout_values = [value0, value1, value2]
+
+    return cimgui.InputInt3(
+        _bytes(label), <int*>&inout_values, flags
+    ), [inout_values[0], inout_values[1], inout_values[2]]
+
+
+def input_int4(
+    str label,
+    int value0, int value1, int value2, int value3,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display four-integer input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 4, 12, 28, 73
+        imgui.begin("Example: four int inputs")
+        changed, values = imgui.input_int4('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1, value2, value3 (int): textbox values
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current textbox content.
+
+    .. wraps::
+        bool InputInt4(
+            const char* label,
+            int v[4],
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef int[4] inout_values = [value0, value1, value2, value3]
+
+    return cimgui.InputInt4(
+        _bytes(label), <int*>&inout_values, flags
+    ), [inout_values[0], inout_values[1], inout_values[2], inout_values[3]]
 
 
 def slider_float(
@@ -3345,7 +3864,7 @@ def slider_float(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the current slider value.
+        widget state change and the current slider value.
 
     .. wraps::
         bool SliderFloat(
@@ -3389,7 +3908,7 @@ def slider_float2(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderFloat2(
@@ -3433,7 +3952,7 @@ def slider_float3(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderFloat3(
@@ -3472,7 +3991,10 @@ def slider_float4(
 
         imgui.begin("Example: slider float")
         changed, values = imgui.slider_float4(
-            "slide floats", *values, 0.0, 100.0, "%.0f", 1.0
+            "slide floats", *values,
+            min_value=0.0, max_value=100.0,
+            display_format="%.0f",
+            power=1.0
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -3489,7 +4011,7 @@ def slider_float4(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderFloat4(
@@ -3530,7 +4052,7 @@ def slider_int(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            widget state change and the slider value.
+        widget state change and the slider value.
 
     .. wraps::
         bool SliderInt(
@@ -3570,7 +4092,7 @@ def slider_int2(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderInt2(
@@ -3610,7 +4132,7 @@ def slider_int3(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderInt3(
@@ -3646,7 +4168,8 @@ def slider_int4(
 
         imgui.begin("Example: slider int")
         changed, values = imgui.slider_int4(
-            "slide ints", *values, 0, 100, "%.3f"
+            "slide ints", *values,
+            min_value=0, max_value=100, display_format="%.3f"
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -3662,7 +4185,7 @@ def slider_int4(
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
-            widget state change and the tuple of current slider values.
+        widget state change and the tuple of current slider values.
 
     .. wraps::
         bool SliderInt4(
@@ -3707,7 +4230,7 @@ def v_slider_float(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            widget state change and the slider value.
+        widget state change and the slider value.
 
     .. wraps::
         bool VSliderFloat(
@@ -3752,7 +4275,7 @@ def v_slider_int(
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
-            widget state change and the slider value.
+        widget state change and the slider value.
 
     .. wraps::
         bool VSliderInt(
@@ -4017,7 +4540,8 @@ def is_mouse_hovering_any_window():
     return cimgui.IsMouseHoveringAnyWindow()
 
 
-cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
+cpdef 
+_var(cimgui.ImGuiStyleVar variable, value):
     """Push style variable on stack.
 
     This function accepts both float and float two-tuples as ``value``
@@ -4032,14 +4556,15 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     use :func:`styled` or :func:`istyled` context managers.
 
     .. visual-example::
-        :title: style variables
-        :auto_window:
+        :auto_layout:
         :width: 200
         :height: 80
 
+        imgui.begin("Example: style variables")
         imgui.push_style_var(imgui.STYLE_ALPHA, 0.2)
         imgui.text("Alpha text")
         imgui.pop_style_var(1)
+        imgui.end()
 
     Args:
         variable: imgui style variable constant
@@ -4412,6 +4937,155 @@ def unindent(float width=0.0):
     cimgui.Unindent(width)
 
 
+def columns(int count=1, str identifier=None, bool border=True):
+    """Setup number of columns. Use an identifier to distinguish multiple
+    column sets. close with ``columns(1)``.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 500
+        :height: 300
+
+        imgui.begin("Example: Columns - File list")
+        imgui.columns(4, 'fileLlist')
+        imgui.separator()
+        imgui.text("ID")
+        imgui.next_column()
+        imgui.text("File")
+        imgui.next_column()
+        imgui.text("Size")
+        imgui.next_column()
+        imgui.text("Last Modified")
+        imgui.next_column()
+        imgui.separator()
+        imgui.set_column_offset(1, 40)
+
+        imgui.next_column()
+        imgui.text('FileA.txt')
+        imgui.next_column()
+        imgui.text('57 Kb')
+        imgui.next_column()
+        imgui.text('12th Feb, 2016 12:19:01')
+        imgui.next_column()
+
+        imgui.next_column()
+        imgui.text('ImageQ.png')
+        imgui.next_column()
+        imgui.text('349 Kb')
+        imgui.next_column()
+        imgui.text('1st Mar, 2016 06:38:22')
+        imgui.next_column()
+
+        imgui.columns(1)
+        imgui.end()
+
+    Args:
+        count (int): Columns count.
+        identifier (str): Table identifier.
+        border (bool): Display border, defaults to ``True``.
+
+    .. wraps::
+        void Columns(
+            int count = 1,
+            const char* id = NULL,
+            bool border = true
+        )
+    """
+    if identifier is None:
+        cimgui.Columns(count, NULL, border)
+    else:
+        cimgui.Columns(count, _bytes(identifier), border)
+
+
+def next_column():
+    """Move to the next column drawing.
+
+    For a complete example see :func:`columns()`.
+
+    .. wraps::
+        void NextColumn()
+    """
+    cimgui.NextColumn()
+
+
+def get_column_index():
+    """Returns the current column index.
+
+    For a complete example see :func:`columns()`.
+
+    Returns:
+        int: the current column index.
+
+    .. wraps::
+        int GetColumnIndex()
+    """
+    return cimgui.GetColumnIndex()
+
+
+def get_column_offset(int column_index=-1):
+    """Returns position of column line (in pixels, from the left side of the
+    contents region). Pass -1 to use current column, otherwise 0 to
+    :func:`get_columns_count()`. Column 0 is usually 0.0f and not resizable
+    unless you call this method.
+
+    For a complete example see :func:`columns()`.
+
+    Args:
+        column_index (int): index of the column to get the offset for.
+
+    Returns:
+        float: the position in pixels from the left side.
+
+    .. wraps::
+        float GetColumnOffset(int column_index = -1)
+    """
+    return cimgui.GetColumnOffset(column_index)
+
+
+def set_column_offset(int column_index, float offset_x):
+    """Set the position of column line (in pixels, from the left side of the
+    contents region). Pass -1 to use current column.
+
+    For a complete example see :func:`columns()`.
+
+    Args:
+        column_index (int): index of the column to get the offset for.
+        offset_x (float): offset in pixels.
+
+    .. wraps::
+        void SetColumnOffset(int column_index, float offset_x)
+    """
+    cimgui.SetColumnOffset(column_index, offset_x)
+
+
+def get_column_width(int column_index=-1):
+    """Return the column width.
+
+    For a complete example see :func:`columns()`.
+
+    Args:
+        column_index (int): index of the column to get the width for.
+
+    .. wraps::
+        void GetColumnWidth(int column_index = -1)
+    """
+    cimgui.GetColumnWidth(column_index)
+
+
+def get_columns_count():
+    """Get count of the columns in the current table.
+
+    For a complete example see :func:`columns()`.
+
+    Returns:
+        int: columns count.
+
+    .. wraps::
+        int GetColumnsCount()
+    """
+    return cimgui.GetColumnsCount()
+
+
 def begin_group():
     """Start item group and lock its horizontal starting position.
 
@@ -4445,15 +5119,6 @@ def begin_group():
         void BeginGroup()
     """
     cimgui.BeginGroup()
-
-
-def end_group():
-    """End group (see: :any:`begin_group`).
-
-    .. wraps::
-        void EndGroup()
-    """
-    cimgui.EndGroup()
 
 
 def end_group():

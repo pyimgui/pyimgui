@@ -1,7 +1,7 @@
 .. _guide-treenode-flags:
 
 Using tree node flags
-==================
+=====================
 
 TreeNode functions accept various flags to manage their behaviour.
 

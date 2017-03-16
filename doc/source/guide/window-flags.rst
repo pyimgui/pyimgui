@@ -78,7 +78,7 @@ List of all available window flags (click to see documentation):
 .. _window-flag-options:
 
 * :py:data:`imgui.WINDOW_NO_TITLE_BAR`
-* :py:data:`imgui.WINDOW_NO_RESIZE``
+* :py:data:`imgui.WINDOW_NO_RESIZE`
 * :py:data:`imgui.WINDOW_NO_MOVE` 
 * :py:data:`imgui.WINDOW_NO_SCROLLBAR` 
 * :py:data:`imgui.WINDOW_NO_SCROLL_WITH_MOUSE` 

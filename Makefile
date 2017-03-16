@@ -7,6 +7,7 @@ help:
 	@echo "  livedoc     to serve live documentation"
 	@echo "  bootstrap   to bootstrap whole development environment"
 	@echo "  completion  to get detailed overview on completion progress"
+	@echo "  coverage    to run tests with coverage"
 
 
 # note: empty recipe as alias for .bootstrapped target
@@ -21,12 +22,12 @@ bootstrap: .bootstrapped ;
 
 .PHONY: clean
 clean:
-	rm -f imgui/*.cpp imgui/*.c imgui/*.h imgui/*.so
+	rm -rf imgui/*.cpp imgui/*.c imgui/*.h imgui/*.so build/*
 
 
 .PHONY: build
 build: bootstrap
-	python setup.py develop
+	_CYTHONIZE_WITH_COVERAGE=1 python -m pip install -e . -v
 	python ci/completion.py -o README.md with-pxd imgui/cimgui.pxd
 
 
@@ -40,8 +41,15 @@ livedoc: build
 	sphinx-autobuild doc/source/ doc/build/html
 
 
+.PHONY: coverage
+coverage: build
+	coverage run --source imgui -m pytest
+	coverage report
+	coverage html
+
+
 .PHONY: completion
 completion:
-	python setup.py develop
+	_CYTHONIZE_WITH_COVERAGE=1 python -m pip install -e . -v
 	@python ci/completion.py missing `find build/ -name imgui.o -print -quit` `find build/ -name core.o -print -quit`
 	@python ci/completion.py with-nm `find build/ -name imgui.o -print -quit` `find build/ -name core.o -print -quit`

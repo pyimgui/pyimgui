@@ -1,4 +1,5 @@
-[![completion](https://img.shields.io/badge/completion-48%25%20%28189%20of%20389%29-blue.svg)](https://github.com/swistakm/pyimgui)
+[![completion](https://img.shields.io/badge/completion-60%25%20%28234%20of%20389%29-blue.svg)](https://github.com/swistakm/pyimgui)
+[![Coverage Status](https://coveralls.io/repos/github/swistakm/pyimgui/badge.svg?branch=master)](https://coveralls.io/github/swistakm/pyimgui?branch=master)
 
 Builds:
 

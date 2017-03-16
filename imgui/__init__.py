@@ -66,68 +66,69 @@ KEY_Z = core.KEY_Z
 
 
 # === Style var constants (redefines for autodoc)
-#: associated type: ``float``
+#: associated type: ``float``.
 STYLE_ALPHA = core.STYLE_ALPHA
-#: associated type: ``Vec2``
+#: associated type: ``Vec2``.
 STYLE_WINDOW_PADDING = core.STYLE_WINDOW_PADDING
-#: associated type: ``float``
+#: associated type: ``float``.
 STYLE_WINDOW_ROUNDING = core.STYLE_WINDOW_ROUNDING
-#: associated type: ``Vec2``
+#: associated type: ``Vec2``.
 STYLE_WINDOW_MIN_SIZE = core.STYLE_WINDOW_MIN_SIZE
-#: associated type: ``float``
+#: associated type: ``float``.
 STYLE_CHILD_WINDOW_ROUNDING = core.STYLE_CHILD_WINDOW_ROUNDING
-#: associated type: ``Vec2``
+#: associated type: ``Vec2``.
 STYLE_FRAME_PADDING = core.STYLE_FRAME_PADDING
-#: associated type: ``float``
+#: associated type: ``float``.
 STYLE_FRAME_ROUNDING = core.STYLE_FRAME_ROUNDING
-#: associated type: ``Vec2``
+#: associated type: ``Vec2``.
 STYLE_ITEM_SPACING = core.STYLE_ITEM_SPACING
-#: associated type: ``Vec2``
+#: associated type: ``Vec2``.
 STYLE_ITEM_INNER_SPACING = core.STYLE_ITEM_INNER_SPACING
-#: associated type: ``float``
+#: associated type: ``float``.
 STYLE_INDENT_SPACING = core.STYLE_INDENT_SPACING
-#: associated type: ``float``
+#: associated type: ``float``.
 STYLE_GRAB_MIN_SIZE = core.STYLE_GRAB_MIN_SIZE
 
 if hasattr(core, 'STYLE_BUTTON_TEXT_ALIGN'):
-    #: associated type: flags ImGuiAlign_*
+    #: associated type: flags ImGuiAlign_*.
     STYLE_BUTTON_TEXT_ALIGN = core.STYLE_BUTTON_TEXT_ALIGN
 
-#: Disable title-bar
+# === Window flag constants (redefines for autodoc)
+#: Disable title-bar.
 WINDOW_NO_TITLE_BAR = core.WINDOW_NO_TITLE_BAR
-#: Disable user resizing with the lower-right grip
+#: Disable user resizing with the lower-right grip.
 WINDOW_NO_RESIZE = core.WINDOW_NO_RESIZE
-#: Disable user moving the window
+#: Disable user moving the window.
 WINDOW_NO_MOVE = core.WINDOW_NO_MOVE
-#: Disable scrollbars (window can still scroll with mouse or programatically)
+#: Disable scrollbars (window can still scroll with mouse or programatically).
 WINDOW_NO_SCROLLBAR = core.WINDOW_NO_SCROLLBAR
-#: Disable user vertically scrolling with mouse wheel
+#: Disable user vertically scrolling with mouse wheel.
 WINDOW_NO_SCROLL_WITH_MOUSE = core.WINDOW_NO_SCROLL_WITH_MOUSE
-#: Disable user collapsing window by double-clicking on it
+#: Disable user collapsing window by double-clicking on it.
 WINDOW_NO_COLLAPSE = core.WINDOW_NO_COLLAPSE
-#: Resize every window to its content every frame
+#: Resize every window to its content every frame.
 WINDOW_ALWAYS_AUTO_RESIZE = core.WINDOW_ALWAYS_AUTO_RESIZE
-#: Show borders around windows and items
+#: Show borders around windows and items.
 WINDOW_SHOW_BORDERS = core.WINDOW_SHOW_BORDERS
-#: Never load/save settings in .ini file
+#: Never load/save settings in ``.ini`` file.
 WINDOW_NO_SAVED_SETTINGS = core.WINDOW_NO_SAVED_SETTINGS
-#: Disable catching mouse or keyboard inputs
+#: Disable catching mouse or keyboard inputs.
 WINDOW_NO_INPUTS = core.WINDOW_NO_INPUTS
-#: Has a menu-bar
+#: Has a menu-bar.
 WINDOW_MENU_BAR = core.WINDOW_MENU_BAR
-#: Allow horizontal scrollbar to appear (off by default)
+#: Allow horizontal scrollbar to appear (off by default).
 WINDOW_HORIZONTAL_SCROLLING_BAR = core.WINDOW_HORIZONTAL_SCROLLING_BAR
-#: Disable taking focus when transitioning from hidden to visible state
+#: Disable taking focus when transitioning from hidden to visible state.
 WINDOW_NO_FOCUS_ON_APPEARING = core.WINDOW_NO_FOCUS_ON_APPEARING
 #: Disable bringing window to front when taking focus (e.g. clicking on it or
-#: programatically giving it focus)
+#: programatically giving it focus).
 WINDOW_NO_BRING_TO_FRONT_ON_FOCUS = core.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS
-#: Always show vertical scrollbar (even if ContentSize.y < Size.y)
+#: Always show vertical scrollbar (even if ContentSize.y < Size.y).
 WINDOW_ALWAYS_VERTICAL_SCROLLBAR = core.WINDOW_ALWAYS_VERTICAL_SCROLLBAR
-#: Always show horizontal scrollbar (even if ContentSize.x < Size.x)
+#: Always show horizontal scrollbar (even if ContentSize.x < Size.x).
 WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = core.WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR
 #: Ensure child windows without border uses style.WindowPadding (ignored by
-#: default for non-bordered child windows, because more convenient)
+#: default for non-bordered child windows, because more convenient).
 WINDOW_ALWAYS_USE_WINDOW_PADDING = core.WINDOW_ALWAYS_USE_WINDOW_PADDING
 
 #: Draw as selected
@@ -154,6 +155,8 @@ TREE_NODE_OPEN_ON_ARROW = core.TREE_NODE_OPEN_ON_ARROW
 TREE_NODE_LEAF = core.TREE_NODE_LEAF
 #: Display a bullet instead of arrow
 TREE_NODE_BULLET = core.TREE_NODE_BULLET
+#: Shortcut: ``imgui.TREE_NODE_FRAMED | imgui.TREE_NODE_NO_AUTO_OPEN_ON_LOG``
+TREE_NODE_COLLAPSING_HEADER = core.TREE_NODE_COLLAPSING_HEADER
 
 #: Clicking this don't close parent popup window
 SELECTABLE_DONT_CLOSE_POPUPS = core.SELECTABLE_DONT_CLOSE_POPUPS
@@ -207,3 +210,49 @@ COLOR_PLOT_HISTOGRAM_HOVERED = core.COLOR_PLOT_HISTOGRAM_HOVERED
 COLOR_TEXT_SELECTED_BACKGROUND = core.COLOR_TEXT_SELECTED_BACKGROUND
 COLOR_MODAL_WINDOW_DARKENING = core.COLOR_MODAL_WINDOW_DARKENING
 COLOR_COUNT = core.COLOR_COUNT
+
+# === Selectable flag constants (redefines for autodoc)
+#: Clicking this don't close parent popup window.
+SELECTABLE_DONT_CLOSE_POPUPS = core.SELECTABLE_DONT_CLOSE_POPUPS
+#: Selectable frame can span all columns
+#: (text will still fit in current column).
+SELECTABLE_SPAN_ALL_COLUMNS = core.SELECTABLE_SPAN_ALL_COLUMNS
+#: Generate press events on double clicks too.
+SELECTABLE_ALLOW_DOUBLE_CLICK = core.SELECTABLE_ALLOW_DOUBLE_CLICK
+
+#: Allow ``0123456789.+-*/``
+INPUT_TEXT_CHARS_DECIMAL = core.INPUT_TEXT_CHARS_DECIMAL
+#: Allow ``0123456789ABCDEFabcdef``
+INPUT_TEXT_CHARS_HEXADECIMAL = core.INPUT_TEXT_CHARS_HEXADECIMAL
+#: Turn a..z into A..Z
+INPUT_TEXT_CHARS_UPPERCASE = core.INPUT_TEXT_CHARS_UPPERCASE
+#: Filter out spaces, tabs
+INPUT_TEXT_CHARS_NO_BLANK = core.INPUT_TEXT_CHARS_NO_BLANK
+#: Select entire text when first taking mouse focus
+INPUT_TEXT_AUTO_SELECT_ALL = core.INPUT_TEXT_AUTO_SELECT_ALL
+#: Return 'true' when Enter is pressed (as opposed to when the
+#: value was modified)
+INPUT_TEXT_ENTER_RETURNS_TRUE = core.INPUT_TEXT_ENTER_RETURNS_TRUE
+#: Call user function on pressing TAB (for completion handling)
+INPUT_TEXT_CALLBACK_COMPLETION = core.INPUT_TEXT_CALLBACK_COMPLETION
+#: Call user function on pressing Up/Down arrows (for history handling)
+INPUT_TEXT_CALLBACK_HISTORY = core.INPUT_TEXT_CALLBACK_HISTORY
+#: Call user function every time. User code may query cursor position,
+#: modify text buffer.
+INPUT_TEXT_CALLBACK_ALWAYS = core.INPUT_TEXT_CALLBACK_ALWAYS
+#: Call user function to filter character. Modify data->EventChar to
+#: replace/filter input, or return 1 to discard character.
+INPUT_TEXT_CALLBACK_CHAR_FILTER = core.INPUT_TEXT_CALLBACK_CHAR_FILTER
+#: Pressing TAB input a '\t' character into the text field
+INPUT_TEXT_ALLOW_TAB_INPUT = core.INPUT_TEXT_ALLOW_TAB_INPUT
+#: In multi-line mode, allow exiting edition by pressing Enter.
+#: Ctrl+Enter to add new line (by default adds new lines with Enter).
+INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE = core.INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE
+#: Disable following the cursor horizontally
+INPUT_TEXT_NO_HORIZONTAL_SCROLL = core.INPUT_TEXT_NO_HORIZONTAL_SCROLL
+#: Insert mode
+INPUT_TEXT_ALWAYS_INSERT_MODE = core.INPUT_TEXT_ALWAYS_INSERT_MODE
+#: Read-only mode
+INPUT_TEXT_READ_ONLY = core.INPUT_TEXT_READ_ONLY
+#: Password mode, display all characters as '*'
+INPUT_TEXT_PASSWORD = core.INPUT_TEXT_PASSWORD

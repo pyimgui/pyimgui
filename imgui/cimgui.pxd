@@ -433,22 +433,22 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # ====
     # Columns
-    void Columns(  # ✗
+    void Columns(  # ✓
             # note: optional
             int count, const char* id, bool border
     )
-    void NextColumn()  # ✗
-    int GetColumnIndex()  # ✗
-    float GetColumnOffset(  # ✗
+    void NextColumn()  # ✓
+    int GetColumnIndex()  # ✓
+    float GetColumnOffset(  # ✓
             # note: optional
             int column_index
     )
-    void SetColumnOffset(int column_index, float offset_x)  # ✗
-    float GetColumnWidth(  # ✗
+    void SetColumnOffset(int column_index, float offset_x)  # ✓
+    float GetColumnWidth(  # ✓
             # note: optional
             int column_index
     )
-    int GetColumnsCount()  # ✗
+    int GetColumnsCount()  # ✓
 
     # ====
     # ID scopes
@@ -644,56 +644,56 @@ cdef extern from "imgui.h" namespace "ImGui":
     )
 
     # Widgets: Input with Keyboard
-    bool InputText(  # ✗
+    bool InputText(  # ✓
             const char* label, char* buf, size_t buf_size,
             # note: optional
             ImGuiInputTextFlags flags,
             ImGuiTextEditCallback callback, void* user_data
     )
-    bool InputTextMultiline(  # ✗
+    bool InputTextMultiline(  # ✓
             const char* label, char* buf, size_t buf_size,
             # note: optional
             const ImVec2& size, ImGuiInputTextFlags flags,
             ImGuiTextEditCallback callback, void* user_data
     )
-    bool InputFloat(  # ✗
+    bool InputFloat(  # ✓
             const char* label, float* v,
             # note: optional
             float step, float step_fast,
             int decimal_precision, ImGuiInputTextFlags extra_flags
     )
-    bool InputFloat2(  # ✗
+    bool InputFloat2(  # ✓
             const char* label, float v[2],
             # note: optional
             int decimal_precision, ImGuiInputTextFlags extra_flags
     )
-    bool InputFloat3(  # ✗
+    bool InputFloat3(  # ✓
             const char* label, float v[3],
             # note: optional
             int decimal_precision, ImGuiInputTextFlags extra_flags
     )
-    bool InputFloat4(  # ✗
+    bool InputFloat4(  # ✓
             const char* label, float v[4],
             # note: optional
             int decimal_precision, ImGuiInputTextFlags extra_flags
     )
-    bool InputInt(  # ✗
+    bool InputInt(  # ✓
             const char* label, int* v,
             # note: optional
             int step, int step_fast,
             ImGuiInputTextFlags extra_flags
     )
-    bool InputInt2(  # ✗
+    bool InputInt2(  # ✓
             const char* label, int v[2],
             # note: optional
             ImGuiInputTextFlags extra_flags
     )
-    bool InputInt3(  # ✗
+    bool InputInt3(  # ✓
             const char* label, int v[3],
             # note: optional
             ImGuiInputTextFlags extra_flags
     )
-    bool InputInt4(  # ✗
+    bool InputInt4(  # ✓
             const char* label, int v[4],
             # note: optional
             ImGuiInputTextFlags extra_flags
