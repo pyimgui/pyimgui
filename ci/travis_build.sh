@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# stop on failures immediately
+set -e
+
 travis_fold() {
   local action=$1
   local name=$2
