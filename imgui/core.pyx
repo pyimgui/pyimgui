@@ -22,6 +22,7 @@ except ImportError:
 from libc.stdlib cimport malloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
+from libc.string cimport strcpy
 from libcpp cimport bool
 
 cimport cimgui
@@ -111,6 +112,7 @@ SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups
 SELECTABLE_SPAN_ALL_COLUMNS = enums.ImGuiSelectableFlags_SpanAllColumns
 SELECTABLE_ALLOW_DOUBLE_CLICK = enums.ImGuiSelectableFlags_AllowDoubleClick
 
+# ==== Mouse Cursors ====
 MOUSE_CURSOR_ARROW = enums.ImGuiMouseCursor_Arrow
 MOUSE_CURSOR_TEXT_INPUT = enums.ImGuiMouseCursor_TextInput
 MOUSE_CURSOR_MOVE = enums.ImGuiMouseCursor_Move
@@ -119,12 +121,35 @@ MOUSE_CURSOR_RESIZE_EW = enums.ImGuiMouseCursor_ResizeEW
 MOUSE_CURSOR_RESIZE_NESW = enums.ImGuiMouseCursor_ResizeNESW
 MOUSE_CURSOR_RESIZE_NWSE = enums.ImGuiMouseCursor_ResizeNWSE
 
+# ==== Text input flags ====
+INPUT_TEXT_CHARS_DECIMAL = enums.ImGuiInputTextFlags_CharsDecimal
+INPUT_TEXT_CHARS_HEXADECIMAL = enums.ImGuiInputTextFlags_CharsHexadecimal
+INPUT_TEXT_CHARS_UPPERCASE = enums.ImGuiInputTextFlags_CharsUppercase
+INPUT_TEXT_CHARS_NO_BLANK = enums.ImGuiInputTextFlags_CharsNoBlank
+INPUT_TEXT_AUTO_SELECT_ALL = enums.ImGuiInputTextFlags_AutoSelectAll
+INPUT_TEXT_ENTER_RETURNS_TRUE = enums.ImGuiInputTextFlags_EnterReturnsTrue
+INPUT_TEXT_CALLBACK_COMPLETION = enums.ImGuiInputTextFlags_CallbackCompletion
+INPUT_TEXT_CALLBACK_HISTORY = enums.ImGuiInputTextFlags_CallbackHistory
+INPUT_TEXT_CALLBACK_ALWAYS = enums.ImGuiInputTextFlags_CallbackAlways
+INPUT_TEXT_CALLBACK_CHAR_FILTER = enums.ImGuiInputTextFlags_CallbackCharFilter
+INPUT_TEXT_ALLOW_TAB_INPUT = enums.ImGuiInputTextFlags_AllowTabInput
+INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE = enums.ImGuiInputTextFlags_CtrlEnterForNewLine
+INPUT_TEXT_NO_HORIZONTAL_SCROLL = enums.ImGuiInputTextFlags_NoHorizontalScroll
+INPUT_TEXT_ALWAYS_INSERT_MODE = enums.ImGuiInputTextFlags_AlwaysInsertMode
+INPUT_TEXT_READ_ONLY = enums.ImGuiInputTextFlags_ReadOnly
+INPUT_TEXT_PASSWORD = enums.ImGuiInputTextFlags_Password
+
+
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
 
 
 cdef bytes _bytes(str text):
     return <bytes>(text if PY_MAJOR_VERSION < 3 else text.encode('utf-8'))
+
+
+cdef str _from_bytes(bytes text):
+    return <str>(text if PY_MAJOR_VERSION < 3 else text.decode('utf-8'))
 
 
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
@@ -2406,7 +2431,7 @@ def invisible_button(str identifier, width, height):
 
     .. visual-example::
         :auto_layout:
-        :height: 100
+        :height: 300
         :width: 300
 
         imgui.begin("Example: invisible button :)")
@@ -3285,6 +3310,498 @@ def drag_int4(
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
+def input_text(
+    str label,
+    str value,
+    int buffer_length,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display text input widget.
+
+    ``buffer_length`` is the maximum allowed length of the content.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        text_val = 'Please, type the coefficient here.'
+        imgui.begin("Example: text input")
+        changed, text_val = imgui.input_text(
+            'Amount:',
+            text_val,
+            256
+        )
+        imgui.text('You wrote:')
+        imgui.same_line()
+        imgui.text(text_val)
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (str): textbox value
+        buffer_length (int): length of the content buffer
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current text contents.
+
+    .. wraps::
+        bool InputText(
+            const char* label,
+            char* buf,
+            size_t buf_size,
+            ImGuiInputTextFlags flags = 0,
+            ImGuiTextEditCallback callback = NULL,
+            void* user_data = NULL
+        )
+    """
+    value_bytes = _bytes(value)
+    value_len = len(value)
+
+    cdef char* inout_text = NULL
+    temp_value = value_bytes[:value_len]
+    inout_text = <bytes>temp_value
+
+    changed = cimgui.InputText(
+        _bytes(label), inout_text, buffer_length, flags, NULL, NULL
+    )
+
+    return changed, _from_bytes(inout_text)
+
+
+def input_text_multiline(
+    str label,
+    str value,
+    int buffer_length,
+    float width=0,
+    float height=0,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display multiline text input widget.
+
+    ``buffer_length`` is the maximum allowed length of the content.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 200
+
+        text_val = 'Type the your message here.'
+        imgui.begin("Example: text input")
+        changed, text_val = imgui.input_text_multiline(
+            'Message:',
+            text_val,
+            2056
+        )
+        imgui.text('You wrote:')
+        imgui.same_line()
+        imgui.text(text_val)
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (str): textbox value
+        buffer_length (int): length of the content buffer
+        width (float): width of the textbox
+        height (float): height of the textbox
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current text contents.
+
+    .. wraps::
+        bool InputTextMultiline(
+            const char* label,
+            char* buf,
+            size_t buf_size,
+            const ImVec2& size = ImVec2(0,0),
+            ImGuiInputTextFlags flags = 0,
+            ImGuiTextEditCallback callback = NULL,
+            void* user_data = NULL
+        )
+    """
+    value_bytes = _bytes(value)
+    value_len = len(value)
+
+    cdef char* inout_text = NULL
+    temp_value = value_bytes[:value_len]
+    inout_text = <bytes>temp_value
+
+    changed = cimgui.InputTextMultiline(
+        _bytes(label), inout_text, buffer_length,
+        _cast_args_ImVec2(width, height), flags,
+        NULL, NULL
+    )
+
+    return changed, _from_bytes(inout_text)
+
+
+def input_float(
+    str label,
+    float value,
+    float step=0.0,
+    float step_fast=0.0,
+    int decimal_precision=-1,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display float input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        float_val = 0.4
+        imgui.begin("Example: float input")
+        changed, float_val = imgui.input_float('Type coefficient:', float_val)
+        imgui.text('You wrote: %f' % float_val)
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (float): textbox value
+        step (float): incremental step
+        step_fast (float): fast incremental step
+        decimal_precision (int): float precision
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current textbox content.
+
+    .. wraps::
+        bool InputFloat(
+            const char* label,
+            float* v,
+            float step = 0.0f,
+            float step_fast = 0.0f,
+            int decimal_precision = -1,
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef float inout_value = value
+
+    return cimgui.InputFloat(
+        _bytes(label), &inout_value, step,
+        step_fast, decimal_precision, flags
+    ), inout_value
+
+
+def input_float2(
+    str label,
+    float value0, float value1,
+    int decimal_precision=-1,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display two-float input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 0.4, 3.2
+        imgui.begin("Example: two float inputs")
+        changed, values = imgui.input_float2('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1 (float): input values.
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+        textbox state change and the tuple of current values.
+
+    .. wraps::
+        bool InputFloat2(
+            const char* label,
+            float v[2],
+            int decimal_precision = -1,
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef float[2] inout_values = [value0, value1]
+
+    return cimgui.InputFloat2(
+        _bytes(label), <float*>&inout_values,
+        decimal_precision, flags
+    ), (inout_values[0], inout_values[1])
+
+
+def input_float3(
+    str label,
+    float value0, float value1, float value2,
+    int decimal_precision=-1,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display three-float input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 0.4, 3.2, 29.3
+        imgui.begin("Example: three float inputs")
+        changed, values = imgui.input_float3('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1, value2 (float): input values.
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+        textbox state change and the tuple of current values.
+
+    .. wraps::
+        bool InputFloat3(
+            const char* label,
+            float v[3],
+            int decimal_precision = -1,
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef float[3] inout_values = [value0, value1, value2]
+
+    return cimgui.InputFloat3(
+        _bytes(label), <float*>&inout_values,
+        decimal_precision, flags
+    ), (inout_values[0], inout_values[1], inout_values[2])
+
+
+def input_float4(
+    str label,
+    float value0, float value1, float value2, float value3,
+    int decimal_precision=-1,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display four-float input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 0.4, 3.2, 29.3, 12.9
+        imgui.begin("Example: four float inputs")
+        changed, values = imgui.input_float4('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1, value2, value3 (float): input values.
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+        textbox state change and the tuple of current values.
+
+    .. wraps::
+        bool InputFloat4(
+            const char* label,
+            float v[4],
+            int decimal_precision = -1,
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef float[4] inout_values = [value0, value1, value2, value3]
+
+    return cimgui.InputFloat4(
+        _bytes(label), <float*>&inout_values,
+        decimal_precision, flags
+    ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
+
+
+def input_int(
+    str label,
+    int value,
+    int step=1,
+    int step_fast=100,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display integer input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        int_val = 3
+        imgui.begin("Example: integer input")
+        changed, int_val = imgui.input_float('Type multiplier:', int_val)
+        imgui.text('You wrote: %i' % int_val)
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (int): textbox value
+        step (int): incremental step
+        step_fast (int): fast incremental step
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current textbox content.
+
+    .. wraps::
+        bool InputInt(
+            const char* label,
+            int* v,
+            int step = 1,
+            int step_fast = 100,
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef int inout_value = value
+
+    return cimgui.InputInt(
+        _bytes(label), &inout_value, step, step_fast, flags
+    ), inout_value
+
+
+def input_int2(
+    str label,
+    int value0, int value1,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display two-integer input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 4, 12
+        imgui.begin("Example: two int inputs")
+        changed, values = imgui.input_int2('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1 (int): textbox values
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current textbox content.
+
+    .. wraps::
+        bool InputInt2(
+            const char* label,
+            int v[2],
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef int[2] inout_values = [value0, value1]
+
+    return cimgui.InputInt2(
+        _bytes(label), <int*>&inout_values, flags
+    ), [inout_values[0], inout_values[1]]
+
+
+def input_int3(
+    str label,
+    int value0, int value1, int value2,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display three-integer input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 4, 12, 28
+        imgui.begin("Example: three int inputs")
+        changed, values = imgui.input_int3('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1, value2 (int): textbox values
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current textbox content.
+
+    .. wraps::
+        bool InputInt3(
+            const char* label,
+            int v[3],
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef int[3] inout_values = [value0, value1, value2]
+
+    return cimgui.InputInt3(
+        _bytes(label), <int*>&inout_values, flags
+    ), [inout_values[0], inout_values[1], inout_values[2]]
+
+
+def input_int4(
+    str label,
+    int value0, int value1, int value2, int value3,
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display four-integer input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        values = 4, 12, 28, 73
+        imgui.begin("Example: four int inputs")
+        changed, values = imgui.input_int4('Type here:', *values)
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value0, value1, value2, value3 (int): textbox values
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current textbox content.
+
+    .. wraps::
+        bool InputInt4(
+            const char* label,
+            int v[4],
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef int[4] inout_values = [value0, value1, value2, value3]
+
+    return cimgui.InputInt4(
+        _bytes(label), <int*>&inout_values, flags
+    ), [inout_values[0], inout_values[1], inout_values[2], inout_values[3]]
+
+
 def slider_float(
     str label,
     float value,
@@ -4110,7 +4627,7 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     use :func:`styled` or :func:`istyled` context managers.
 
     .. visual-example::
-        :title: style variables
+        :auto_layout:
         :width: 200
         :height: 80
 
