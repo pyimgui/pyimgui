@@ -4595,21 +4595,21 @@ def get_mouse_cursor():
     """Return the mouse cursor id.
 
     .. wraps::
-        void GetMouseCursor()
+        ImGuiMouseCursor GetMouseCursor()
     """
     return cimgui.GetMouseCursor()
 
 
-def set_mouse_cursor(cimgui.ImGuiMouseCursor type):
+def set_mouse_cursor(cimgui.ImGuiMouseCursor mouse_cursor_type):
     """Set the mouse cursor id.
 
     Args:
-        type (ImGuiMouseCursor): cursor type.
+        mouse_cursor_type (ImGuiMouseCursor): mouse cursor type.
 
     .. wraps::
         void SetMouseCursor(ImGuiMouseCursor type)
     """
-    return cimgui.SetMouseCursor(type)
+    return cimgui.SetMouseCursor(mouse_cursor_type)
 
 
 cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
