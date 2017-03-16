@@ -375,7 +375,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     # Parameters stacks (shared)
     void PushFont(ImFont*)  # ✗
     void PopFont()  # ✗
-    void PushStyleColor(ImGuiCol, const ImVec4&)  # ✗
+    void PushStyleColor(ImGuiCol, const ImVec4&)  # ✓
     void PopStyleColor(int)  # ✗
     void PushStyleVar(ImGuiStyleVar, float) except +  # ✓
     void PushStyleVar(ImGuiStyleVar, const ImVec2&) except +  # ✓
@@ -385,6 +385,18 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImVec2 GetFontTexUvWhitePixel()  # ✗
     ImU32 GetColorU32(ImGuiCol, float)  # ✗
     ImU32 GetColorU32(const ImVec4& col)  # ✗
+
+    # ====
+    # Parameters stacks (current window)
+    void PushItemWidth(float item_width)  # ✓
+    void PopItemWidth()  # ✓
+    float CalcItemWidth()  # ✓
+    void PushTextWrapPos(float wrap_pos_x)  # ✓
+    void PopTextWrapPos()  # ✓
+    void PushAllowKeyboardFocus(bool v)  # ✗
+    void PopAllowKeyboardFocus()  # ✗
+    void PushButtonRepeat(bool repeat)  # ✗
+    void PopButtonRepeat()  # ✗
 
     # ====
     # Cursor / Layout

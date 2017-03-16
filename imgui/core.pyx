@@ -121,6 +121,52 @@ MOUSE_CURSOR_RESIZE_EW = enums.ImGuiMouseCursor_ResizeEW
 MOUSE_CURSOR_RESIZE_NESW = enums.ImGuiMouseCursor_ResizeNESW
 MOUSE_CURSOR_RESIZE_NWSE = enums.ImGuiMouseCursor_ResizeNWSE
 
+# ==== Color identifiers for styling ====
+COLOR_TEXT = enums.ImGuiCol_Text
+COLOR_TEXT_DISABLED = enums.ImGuiCol_TextDisabled
+COLOR_WINDOW_BACKGROUND = enums.ImGuiCol_WindowBg
+COLOR_CHILD_WINDOW_BACKGROUND = enums.ImGuiCol_ChildWindowBg
+COLOR_POPUP_BACKGROUND = enums.ImGuiCol_PopupBg
+COLOR_BORDER = enums.ImGuiCol_Border
+COLOR_BORDER_SHADOW = enums.ImGuiCol_BorderShadow
+COLOR_FRAME_BACKGROUND = enums.ImGuiCol_FrameBg
+COLOR_FRAME_BACKGROUND_HOVERED = enums.ImGuiCol_FrameBgHovered
+COLOR_FRAME_BACKGROUND_ACTIVE = enums.ImGuiCol_FrameBgActive
+COLOR_TITLE_BACKGROUND = enums.ImGuiCol_TitleBg
+COLOR_TITLE_BACKGROUND_COLLAPSED = enums.ImGuiCol_TitleBgCollapsed
+COLOR_TITLE_BACKGROUND_ACTIVE = enums.ImGuiCol_TitleBgActive
+COLOR_MENUBAR_BACKGROUND = enums.ImGuiCol_MenuBarBg
+COLOR_SCROLLBAR_BACKGROUND = enums.ImGuiCol_ScrollbarBg
+COLOR_SCROLLBAR_GRAB = enums.ImGuiCol_ScrollbarGrab
+COLOR_SCROLLBAR_GRAB_HOVERED = enums.ImGuiCol_ScrollbarGrabHovered
+COLOR_SCROLLBAR_GRAB_ACTIVE = enums.ImGuiCol_ScrollbarGrabActive
+COLOR_COMBO_BACKGROUND = enums.ImGuiCol_ComboBg
+COLOR_CHECK_MARK = enums.ImGuiCol_CheckMark
+COLOR_SLIDER_GRAB = enums.ImGuiCol_SliderGrab
+COLOR_SLIDER_GRAB_ACTIVE = enums.ImGuiCol_SliderGrabActive
+COLOR_BUTTON = enums.ImGuiCol_Button
+COLOR_BUTTON_HOVERED = enums.ImGuiCol_ButtonHovered
+COLOR_BUTTON_ACTIVE = enums.ImGuiCol_ButtonActive
+COLOR_HEADER = enums.ImGuiCol_Header
+COLOR_HEADER_HOVERED = enums.ImGuiCol_HeaderHovered
+COLOR_HEADER_ACTIVE = enums.ImGuiCol_HeaderActive
+COLOR_COLUMN = enums.ImGuiCol_Column
+COLOR_COLUMN_HOVERED = enums.ImGuiCol_ColumnHovered
+COLOR_COLUMN_ACTIVE = enums.ImGuiCol_ColumnActive
+COLOR_RESIZE_GRIP = enums.ImGuiCol_ResizeGrip
+COLOR_RESIZE_GRIP_HOVERED = enums.ImGuiCol_ResizeGripHovered
+COLOR_RESIZE_GRIP_ACTIVE = enums.ImGuiCol_ResizeGripActive
+COLOR_CLOSE_BUTTON = enums.ImGuiCol_CloseButton
+COLOR_CLOSE_BUTTON_HOVERED = enums.ImGuiCol_CloseButtonHovered
+COLOR_CLOSE_BUTTON_ACTIVE = enums.ImGuiCol_CloseButtonActive
+COLOR_PLOT_LINES = enums.ImGuiCol_PlotLines
+COLOR_PLOT_LINES_HOVERED = enums.ImGuiCol_PlotLinesHovered
+COLOR_PLOT_HISTOGRAM = enums.ImGuiCol_PlotHistogram
+COLOR_PLOT_HISTOGRAM_HOVERED = enums.ImGuiCol_PlotHistogramHovered
+COLOR_TEXT_SELECTED_BACKGROUND = enums.ImGuiCol_TextSelectedBg
+COLOR_MODAL_WINDOW_DARKENING = enums.ImGuiCol_ModalWindowDarkening
+COLOR_COUNT = enums.ImGuiCol_COUNT
+
 # ==== Text input flags ====
 INPUT_TEXT_CHARS_DECIMAL = enums.ImGuiInputTextFlags_CharsDecimal
 INPUT_TEXT_CHARS_HEXADECIMAL = enums.ImGuiInputTextFlags_CharsHexadecimal
@@ -4664,6 +4710,50 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
         return True
 
 
+cpdef push_style_color(
+    cimgui.ImGuiCol variable,
+    float r,
+    float g,
+    float b,
+    float a = 1.
+):
+    """Push style color on stack.
+
+    **Note:** variables pushed on stack need to be poped using
+    :func:`pop_style_color()` until the end of current frame. This
+    implementation guards you from segfaults caused by redundant stack pops
+    (raises exception if this happens) but generally it is safer and easier to
+    use :func:`styled` or :func:`istyled` context managers.
+
+    .. visual-example::
+        :title: color variables
+        :auto_window:
+        :width: 200
+        :height: 80
+
+        imgui.push_style_color(imgui.COLOR_TEXT, 1.0, 0.0, 0.0)
+        imgui.text("Colored text")
+        imgui.pop_style_color(1)
+
+    Args:
+        variable: imgui style color constant
+        r (float): red color intensity.
+        g (float): green color intensity.
+        b (float): blue color instensity.
+        a (float): alpha intensity.
+
+    .. wraps::
+        PushStyleColor(ImGuiCol idx, const ImVec4& col)
+    """
+    IF TARGET_IMGUI_VERSION > (1, 49):
+        # note: this check is not available on imgui<=1.49
+        if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
+            warnings.warn("Unknown style variable: {}".format(variable))
+            return False
+
+    cimgui.PushStyleColor(variable, _cast_args_ImVec4(r, g, b, a))
+
+
 cpdef pop_style_var(unsigned int count=1):
     """Pop style variables from stack.
 
@@ -4679,6 +4769,113 @@ cpdef pop_style_var(unsigned int count=1):
         void PopStyleVar(int count = 1)
     """
     cimgui.PopStyleVar(count)
+
+
+cpdef push_item_width(float item_width):
+    """Push item width in the stack.
+
+    **Note:** sizing of child region allows for three modes:
+    * ``0.0`` - default to ~2/3 of windows width
+    * ``>0.0`` - width in pixels
+    * ``<0.0`` - align xx pixels to the right of window
+    (so -1.0f always align width to the right side)
+
+    **Note:** width pushed on stack need to be poped using
+    :func:`pop_item_width()` or it will be applied to all subsequent
+    children components.
+
+    .. visual-example::
+        :title: item width
+        :auto_window:
+        :width: 200
+        :height: 80
+
+        imgui.push_item_width(imgui.get_window_width() * 0.33)
+        imgui.text('Lorem Ipsum ...')
+        imgui.slider_float('float slider', 10.2, 0.0, 20.0, '%.2f', 1.0)
+        imgui.pop_item_width()
+
+    Args:
+        item_width (float): width of the component
+
+    .. wraps::
+        void PushItemWidth(float item_width)
+    """
+    cimgui.PushItemWidth(item_width)
+
+
+cpdef pop_item_width():
+    """Reset width back to the default width.
+
+    **Note:** This implementation guards you from segfaults caused by
+    redundant stack pops (raises exception if this happens) but generally
+    it is safer and easier to use :func:`styled` or :func:`istyled` context
+    managers. See: :any:`push_item_width()`.
+
+    .. wraps::
+        void PopItemWidth()
+    """
+    cimgui.PopItemWidth()
+
+
+cpdef calculate_item_width():
+    """Calculate and return the current item width.
+
+    Returns:
+        float: calculated item width.
+
+    .. wraps::
+        float CalcItemWidth()
+    """
+    return cimgui.CalcItemWidth()
+
+
+cpdef push_text_wrap_pos(float wrap_pos_x = 0.0):
+    """Word-wrapping function for text*() commands.
+
+    **Note:** wrapping position allows these modes:
+    * ``0.0`` - wrap to end of window (or column)
+    * ``>0.0`` - wrap at 'wrap_pos_x' position in window local space
+    * ``<0.0`` - no wrapping
+
+    Args:
+        wrap_pos_x (float): calculated item width.
+
+    .. wraps::
+        float PushTextWrapPos(float wrap_pos_x = 0.0f)
+    """
+    cimgui.PushTextWrapPos(wrap_pos_x)
+
+
+cpdef pop_text_wrap_pos():
+    """Pop the text wrapping position from the stack.
+
+    **Note:** This implementation guards you from segfaults caused by
+    redundant stack pops (raises exception if this happens) but generally
+    it is safer and easier to use :func:`styled` or :func:`istyled` context
+    managers. See: :func:`push_text_wrap_pos()`.
+
+    .. wraps::
+        void PopTextWrapPos()
+    """
+    cimgui.PopTextWrapPos()
+
+
+cpdef pop_style_color(unsigned int count=1):
+    """Pop style color from stack.
+
+    **Note:** This implementation guards you from segfaults caused by
+    redundant stack pops (raises exception if this happens) but generally
+    it is safer and easier to use :func:`styled` or :func:`istyled` context
+    managers. See: :any:`push_style_color()`.
+
+    Args:
+        count (int): number of variables to pop from style color stack.
+
+    .. wraps::
+        void PopStyleColor(int count = 1)
+    """
+    cimgui.PopStyleColor(count)
 
 
 def separator():
