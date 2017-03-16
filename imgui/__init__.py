@@ -215,6 +215,21 @@ SELECTABLE_SPAN_ALL_COLUMNS = core.SELECTABLE_SPAN_ALL_COLUMNS
 #: Generate press events on double clicks too.
 SELECTABLE_ALLOW_DOUBLE_CLICK = core.SELECTABLE_ALLOW_DOUBLE_CLICK
 
+# === Mouse cursor flag constants (redefines for autodoc)
+MOUSE_CURSOR_ARROW = core.MOUSE_CURSOR_ARROW
+#: When hovering over InputText, etc.
+MOUSE_CURSOR_TEXT_INPUT = core.MOUSE_CURSOR_TEXT_INPUT
+#: Unused
+MOUSE_CURSOR_MOVE = core.MOUSE_CURSOR_MOVE
+#: Unused
+MOUSE_CURSOR_RESIZE_NS = core.MOUSE_CURSOR_RESIZE_NS
+#: When hovering over a column
+MOUSE_CURSOR_RESIZE_EW = core.MOUSE_CURSOR_RESIZE_EW
+#: Unused
+MOUSE_CURSOR_RESIZE_NESW = core.MOUSE_CURSOR_RESIZE_NESW
+#: When hovering over the bottom-right corner of a window
+MOUSE_CURSOR_RESIZE_NWSE = core.MOUSE_CURSOR_RESIZE_NWSE
+
 # === Text input flag constants (redefines for autodoc)
 #: Allow ``0123456789.+-*/``
 INPUT_TEXT_CHARS_DECIMAL = core.INPUT_TEXT_CHARS_DECIMAL
