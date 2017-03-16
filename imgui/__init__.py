@@ -131,41 +131,36 @@ WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = core.WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR
 #: default for non-bordered child windows, because more convenient).
 WINDOW_ALWAYS_USE_WINDOW_PADDING = core.WINDOW_ALWAYS_USE_WINDOW_PADDING
 
+# === Tree node flag constants (redefines for autodoc)
 #: Draw as selected
 TREE_NODE_SELECTED = core.TREE_NODE_SELECTED
-#: Full colored frame (e.g. for CollapsingHeader)
+#: Full colored frame (e.g. for :func:`imgui.core.collapsing_header`).
 TREE_NODE_FRAMED = core.TREE_NODE_FRAMED
-#: Hit testing to allow subsequent widgets to overlap this one
+#: Hit testing to allow subsequent widgets to overlap this one.
 TREE_NODE_ALLOW_OVERLAP_MODE = core.TREE_NODE_ALLOW_OVERLAP_MODE
-#: Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra
-#: # indent nor pushing on ID stack
+#: Don't do a ``TreePush()`` when open
+#: (e.g. for :func:`imgui.core.collapsing_header`).
+#: No extra indent nor pushing on ID stack.
 TREE_NODE_NO_TREE_PUSH_ON_OPEN = core.TREE_NODE_NO_TREE_PUSH_ON_OPEN
 #: Don't automatically and temporarily open node when Logging is active
-#: (by default logging will automatically open tree nodes)
+#: (by default logging will automatically open tree nodes).
 TREE_NODE_NO_AUTO_OPEN_ON_LOG = core.TREE_NODE_NO_AUTO_OPEN_ON_LOG
-#: Default node to be open
+#: Default node to be open.
 TREE_NODE_DEFAULT_OPEN = core.TREE_NODE_DEFAULT_OPEN
-#: Need double-click to open node
+#: Need double-click to open node.
 TREE_NODE_OPEN_ON_DOUBLE_CLICK = core.TREE_NODE_OPEN_ON_DOUBLE_CLICK
-#: Only open when clicking on the arrow part.
-#: # If ImGuiTreeNodeFlags_OpenOnDoubleClick is also set,
-#: # single-click arrow or double-click all box to open.
+#: Only open when clicking on the arrow part. If
+#: :py:data:`TREE_NODE_OPEN_ON_DOUBLE_CLICK` is also set,
+#: single-click arrow or double-click all box to open.
 TREE_NODE_OPEN_ON_ARROW = core.TREE_NODE_OPEN_ON_ARROW
 #: No collapsing, no arrow (use as a convenience for leaf nodes).
 TREE_NODE_LEAF = core.TREE_NODE_LEAF
-#: Display a bullet instead of arrow
+#: Display a bullet instead of arrow.
 TREE_NODE_BULLET = core.TREE_NODE_BULLET
-#: Shortcut: ``imgui.TREE_NODE_FRAMED | imgui.TREE_NODE_NO_AUTO_OPEN_ON_LOG``
+#: Shortcut: ``imgui.TREE_NODE_FRAMED | imgui.TREE_NODE_NO_AUTO_OPEN_ON_LOG``.
 TREE_NODE_COLLAPSING_HEADER = core.TREE_NODE_COLLAPSING_HEADER
 
-#: Clicking this don't close parent popup window
-SELECTABLE_DONT_CLOSE_POPUPS = core.SELECTABLE_DONT_CLOSE_POPUPS
-#: Selectable frame can span all columns
-#: # (text will still fit in current column)
-SELECTABLE_SPAN_ALL_COLUMNS = core.SELECTABLE_SPAN_ALL_COLUMNS
-#: Generate press events on double clicks too
-SELECTABLE_ALLOW_DOUBLE_CLICK = core.SELECTABLE_ALLOW_DOUBLE_CLICK
-
+# === Color flag constants (redefines for autodoc)
 COLOR_TEXT = core.COLOR_TEXT
 COLOR_TEXT_DISABLED = core.COLOR_TEXT_DISABLED
 COLOR_WINDOW_BACKGROUND = core.COLOR_WINDOW_BACKGROUND
@@ -220,6 +215,7 @@ SELECTABLE_SPAN_ALL_COLUMNS = core.SELECTABLE_SPAN_ALL_COLUMNS
 #: Generate press events on double clicks too.
 SELECTABLE_ALLOW_DOUBLE_CLICK = core.SELECTABLE_ALLOW_DOUBLE_CLICK
 
+# === Mouse cursor flag constants (redefines for autodoc)
 MOUSE_CURSOR_ARROW = core.MOUSE_CURSOR_ARROW
 #: When hovering over InputText, etc.
 MOUSE_CURSOR_TEXT_INPUT = core.MOUSE_CURSOR_TEXT_INPUT
@@ -234,6 +230,7 @@ MOUSE_CURSOR_RESIZE_NESW = core.MOUSE_CURSOR_RESIZE_NESW
 #: When hovering over the bottom-right corner of a window
 MOUSE_CURSOR_RESIZE_NWSE = core.MOUSE_CURSOR_RESIZE_NWSE
 
+# === Text input flag constants (redefines for autodoc)
 #: Allow ``0123456789.+-*/``
 INPUT_TEXT_CHARS_DECIMAL = core.INPUT_TEXT_CHARS_DECIMAL
 #: Allow ``0123456789ABCDEFabcdef``

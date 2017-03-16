@@ -4726,14 +4726,15 @@ cpdef push_style_color(
     use :func:`styled` or :func:`istyled` context managers.
 
     .. visual-example::
-        :title: color variables
-        :auto_window:
+        :auto_layout:
         :width: 200
         :height: 80
 
+        imgui.begin("Example: Color variables")
         imgui.push_style_color(imgui.COLOR_TEXT, 1.0, 0.0, 0.0)
         imgui.text("Colored text")
         imgui.pop_style_color(1)
+        imgui.end()
 
     Args:
         variable: imgui style color constant
@@ -4775,25 +4776,34 @@ cpdef push_item_width(float item_width):
     """Push item width in the stack.
 
     **Note:** sizing of child region allows for three modes:
+
     * ``0.0`` - default to ~2/3 of windows width
     * ``>0.0`` - width in pixels
     * ``<0.0`` - align xx pixels to the right of window
-    (so -1.0f always align width to the right side)
+      (so -1.0f always align width to the right side)
 
     **Note:** width pushed on stack need to be poped using
     :func:`pop_item_width()` or it will be applied to all subsequent
     children components.
 
     .. visual-example::
-        :title: item width
-        :auto_window:
+        :auto_layout:
         :width: 200
-        :height: 80
+        :height: 200
 
+        imgui.begin("Example: item width")
+
+        # custom width
         imgui.push_item_width(imgui.get_window_width() * 0.33)
         imgui.text('Lorem Ipsum ...')
         imgui.slider_float('float slider', 10.2, 0.0, 20.0, '%.2f', 1.0)
         imgui.pop_item_width()
+
+        # default width
+        imgui.text('Lorem Ipsum ...')
+        imgui.slider_float('float slider', 10.2, 0.0, 20.0, '%.2f', 1.0)
+
+        imgui.end()
 
     Args:
         item_width (float): width of the component
