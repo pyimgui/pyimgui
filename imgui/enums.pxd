@@ -83,6 +83,14 @@ cdef extern from "imgui.h":
         ImGuiStyleVar_ButtonTextAlign     # flags ImGuiAlign_*
         ImGuiStyleVar_Count_
 
+    ctypedef enum ImGuiAlign_:
+        ImGuiAlign_Left
+        ImGuiAlign_Center
+        ImGuiAlign_Right
+        ImGuiAlign_Top
+        ImGuiAlign_VCenter
+        ImGuiAlign_Default
+
     ctypedef enum ImGuiSetCond_:
         ImGuiSetCond_Always               # Set the variable
         ImGuiSetCond_Once                 # Only set the variable on the first call per runtime session

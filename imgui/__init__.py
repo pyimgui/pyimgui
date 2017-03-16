@@ -131,34 +131,85 @@ WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = core.WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR
 #: default for non-bordered child windows, because more convenient).
 WINDOW_ALWAYS_USE_WINDOW_PADDING = core.WINDOW_ALWAYS_USE_WINDOW_PADDING
 
-# === Tree node flag constants (redefines for autodoc)
 #: Draw as selected
 TREE_NODE_SELECTED = core.TREE_NODE_SELECTED
-#: Full colored frame (e.g. for :func:`imgui.core.collapsing_header`).
+#: Full colored frame (e.g. for CollapsingHeader)
 TREE_NODE_FRAMED = core.TREE_NODE_FRAMED
-#: Hit testing to allow subsequent widgets to overlap this one.
+#: Hit testing to allow subsequent widgets to overlap this one
 TREE_NODE_ALLOW_OVERLAP_MODE = core.TREE_NODE_ALLOW_OVERLAP_MODE
-#: Don't do a ``TreePush()`` when open
-#: (e.g. for :func:`imgui.core.collapsing_header`).
-#: No extra indent nor pushing on ID stack.
+#: Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra
+#: # indent nor pushing on ID stack
 TREE_NODE_NO_TREE_PUSH_ON_OPEN = core.TREE_NODE_NO_TREE_PUSH_ON_OPEN
 #: Don't automatically and temporarily open node when Logging is active
-#: (by default logging will automatically open tree nodes).
+#: (by default logging will automatically open tree nodes)
 TREE_NODE_NO_AUTO_OPEN_ON_LOG = core.TREE_NODE_NO_AUTO_OPEN_ON_LOG
-#: Default node to be open.
+#: Default node to be open
 TREE_NODE_DEFAULT_OPEN = core.TREE_NODE_DEFAULT_OPEN
-#: Need double-click to open node.
+#: Need double-click to open node
 TREE_NODE_OPEN_ON_DOUBLE_CLICK = core.TREE_NODE_OPEN_ON_DOUBLE_CLICK
-#: Only open when clicking on the arrow part. If
-#: :py:data:`TREE_NODE_OPEN_ON_DOUBLE_CLICK` is also set,
-#: single-click arrow or double-click all box to open.
+#: Only open when clicking on the arrow part.
+#: # If ImGuiTreeNodeFlags_OpenOnDoubleClick is also set,
+#: # single-click arrow or double-click all box to open.
 TREE_NODE_OPEN_ON_ARROW = core.TREE_NODE_OPEN_ON_ARROW
 #: No collapsing, no arrow (use as a convenience for leaf nodes).
 TREE_NODE_LEAF = core.TREE_NODE_LEAF
-#: Display a bullet instead of arrow.
+#: Display a bullet instead of arrow
 TREE_NODE_BULLET = core.TREE_NODE_BULLET
 #: Shortcut: ``imgui.TREE_NODE_FRAMED | imgui.TREE_NODE_NO_AUTO_OPEN_ON_LOG``
 TREE_NODE_COLLAPSING_HEADER = core.TREE_NODE_COLLAPSING_HEADER
+
+#: Clicking this don't close parent popup window
+SELECTABLE_DONT_CLOSE_POPUPS = core.SELECTABLE_DONT_CLOSE_POPUPS
+#: Selectable frame can span all columns
+#: # (text will still fit in current column)
+SELECTABLE_SPAN_ALL_COLUMNS = core.SELECTABLE_SPAN_ALL_COLUMNS
+#: Generate press events on double clicks too
+SELECTABLE_ALLOW_DOUBLE_CLICK = core.SELECTABLE_ALLOW_DOUBLE_CLICK
+
+COLOR_TEXT = core.COLOR_TEXT
+COLOR_TEXT_DISABLED = core.COLOR_TEXT_DISABLED
+COLOR_WINDOW_BACKGROUND = core.COLOR_WINDOW_BACKGROUND
+COLOR_CHILD_WINDOW_BACKGROUND = core.COLOR_CHILD_WINDOW_BACKGROUND
+COLOR_POPUP_BACKGROUND = core.COLOR_POPUP_BACKGROUND
+COLOR_BORDER = core.COLOR_BORDER
+COLOR_BORDER_SHADOW = core.COLOR_BORDER_SHADOW
+COLOR_FRAME_BACKGROUND = core.COLOR_FRAME_BACKGROUND
+COLOR_FRAME_BACKGROUND_HOVERED = core.COLOR_FRAME_BACKGROUND_HOVERED
+COLOR_FRAME_BACKGROUND_ACTIVE = core.COLOR_FRAME_BACKGROUND_ACTIVE
+COLOR_TITLE_BACKGROUND = core.COLOR_TITLE_BACKGROUND
+COLOR_TITLE_BACKGROUND_COLLAPSED = core.COLOR_TITLE_BACKGROUND_COLLAPSED
+COLOR_TITLE_BACKGROUND_ACTIVE = core.COLOR_TITLE_BACKGROUND_ACTIVE
+COLOR_MENUBAR_BACKGROUND = core.COLOR_MENUBAR_BACKGROUND
+COLOR_SCROLLBAR_BACKGROUND = core.COLOR_SCROLLBAR_BACKGROUND
+COLOR_SCROLLBAR_GRAB = core.COLOR_SCROLLBAR_GRAB
+COLOR_SCROLLBAR_GRAB_HOVERED = core.COLOR_SCROLLBAR_GRAB_HOVERED
+COLOR_SCROLLBAR_GRAB_ACTIVE = core.COLOR_SCROLLBAR_GRAB_ACTIVE
+COLOR_COMBO_BACKGROUND = core.COLOR_COMBO_BACKGROUND
+COLOR_CHECK_MARK = core.COLOR_CHECK_MARK
+COLOR_SLIDER_GRAB = core.COLOR_SLIDER_GRAB
+COLOR_SLIDER_GRAB_ACTIVE = core.COLOR_SLIDER_GRAB_ACTIVE
+COLOR_BUTTON = core.COLOR_BUTTON
+COLOR_BUTTON_HOVERED = core.COLOR_BUTTON_HOVERED
+COLOR_BUTTON_ACTIVE = core.COLOR_BUTTON_ACTIVE
+COLOR_HEADER = core.COLOR_HEADER
+COLOR_HEADER_HOVERED = core.COLOR_HEADER_HOVERED
+COLOR_HEADER_ACTIVE = core.COLOR_HEADER_ACTIVE
+COLOR_COLUMN = core.COLOR_COLUMN
+COLOR_COLUMN_HOVERED = core.COLOR_COLUMN_HOVERED
+COLOR_COLUMN_ACTIVE = core.COLOR_COLUMN_ACTIVE
+COLOR_RESIZE_GRIP = core.COLOR_RESIZE_GRIP
+COLOR_RESIZE_GRIP_HOVERED = core.COLOR_RESIZE_GRIP_HOVERED
+COLOR_RESIZE_GRIP_ACTIVE = core.COLOR_RESIZE_GRIP_ACTIVE
+COLOR_CLOSE_BUTTON = core.COLOR_CLOSE_BUTTON
+COLOR_CLOSE_BUTTON_HOVERED = core.COLOR_CLOSE_BUTTON_HOVERED
+COLOR_CLOSE_BUTTON_ACTIVE = core.COLOR_CLOSE_BUTTON_ACTIVE
+COLOR_PLOT_LINES = core.COLOR_PLOT_LINES
+COLOR_PLOT_LINES_HOVERED = core.COLOR_PLOT_LINES_HOVERED
+COLOR_PLOT_HISTOGRAM = core.COLOR_PLOT_HISTOGRAM
+COLOR_PLOT_HISTOGRAM_HOVERED = core.COLOR_PLOT_HISTOGRAM_HOVERED
+COLOR_TEXT_SELECTED_BACKGROUND = core.COLOR_TEXT_SELECTED_BACKGROUND
+COLOR_MODAL_WINDOW_DARKENING = core.COLOR_MODAL_WINDOW_DARKENING
+COLOR_COUNT = core.COLOR_COUNT
 
 # === Selectable flag constants (redefines for autodoc)
 #: Clicking this don't close parent popup window.
