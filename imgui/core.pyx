@@ -4597,7 +4597,7 @@ cpdef push_style_color(
     float r,
     float g,
     float b,
-    float a
+    float a = 1.
 ):
     """Push style color on stack.
 
@@ -4613,7 +4613,7 @@ cpdef push_style_color(
         :width: 200
         :height: 80
 
-        imgui.push_style_color(imgui.COLOR_TEXT, 1.0, 0.0, 0.0, 1.0)
+        imgui.push_style_color(imgui.COLOR_TEXT, 1.0, 0.0, 0.0)
         imgui.text("Colored text")
         imgui.pop_style_color(1)
 
@@ -4627,6 +4627,12 @@ cpdef push_style_color(
     .. wraps::
         PushStyleColor(ImGuiCol idx, const ImVec4& col)
     """
+    IF TARGET_IMGUI_VERSION > (1, 49):
+        # note: this check is not available on imgui<=1.49
+        if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
+            warnings.warn("Unknown style variable: {}".format(variable))
+            return False
+
     cimgui.PushStyleColor(variable, _cast_args_ImVec4(r, g, b, a))
 
 
