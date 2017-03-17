@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from imgui.impl._glfw import GlfwImpl
-from imgui.impl._pysdl2 import SDL2Impl
+try:
+    from imgui.impl._glfw import GlfwImpl
+except ImportError:
+    pass
 
+try:
+    from imgui.impl._pysdl2 import SDL2Impl
+except ImportError:
+    pass
 
-__all__ = [
-    'GlfwImpl',
-    'SDL2Impl'
-]
