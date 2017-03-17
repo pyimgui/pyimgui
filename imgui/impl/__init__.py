@@ -5,7 +5,7 @@ except ImportError:
     pass
 
 try:
-    from imgui.impl._pysdl2 import SDL2Impl
+    from imgui.impl._sdl2 import SDL2Impl
 except ImportError:
     pass
 
