@@ -1,5 +1,6 @@
 [![completion](https://img.shields.io/badge/completion-64%25%20%28257%20of%20398%29-blue.svg)](https://github.com/swistakm/pyimgui)
 [![Coverage Status](https://coveralls.io/repos/github/swistakm/pyimgui/badge.svg?branch=master)](https://coveralls.io/github/swistakm/pyimgui?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=latest)](https://pyimgui.readthedocs.io/en/latest/?badge=latest)
 
 Builds:
 
@@ -60,8 +61,7 @@ Python versions:
 Project has has even working Sphinx documentation with custom extension that
 is able to offscreen render GUI examples from docstring snippets. It is already
 hosted on ReadTheDocs and images are provided with git-lfs. See for yourself: 
-[pyimgui.readthedocs.io](http://pyimgui.readthedocs.io/en/latest/index.html).
-
+[pyimgui.readthedocs.io](https://pyimgui.readthedocs.io/en/latest/index.html).
 
 
 The only thing that is stopping me from publishing it on PyPI is lack of
