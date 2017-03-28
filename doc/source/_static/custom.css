@@ -53,3 +53,7 @@ dl dl pre, .admonition.note {
     line-height: 1.5;
 }
 
+div.support {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
