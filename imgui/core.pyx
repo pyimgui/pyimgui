@@ -5,7 +5,7 @@
 """
 
 .. todo:: consider inlining every occurence of ``_cast_args_ImVecX`` (profile)
-
+.. todo: verify mem safety of char* variables and check for leaks
 """
 
 import cython
@@ -22,7 +22,7 @@ except ImportError:
 from libc.stdlib cimport malloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
-from libc.string cimport strcpy
+from libc.string cimport strncpy
 from libcpp cimport bool
 
 cimport cimgui
@@ -3404,18 +3404,18 @@ def input_text(
             void* user_data = NULL
         )
     """
-    value_bytes = _bytes(value)
-    value_len = len(value)
-
-    cdef char* inout_text = NULL
-    temp_value = value_bytes[:value_len]
-    inout_text = <bytes>temp_value
+    # todo: pymalloc
+    cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
+    # todo: take special care of terminating char
+    strncpy(inout_text, _bytes(value), buffer_length)
 
     changed = cimgui.InputText(
         _bytes(label), inout_text, buffer_length, flags, NULL, NULL
     )
+    output = _from_bytes(inout_text)
 
-    return changed, _from_bytes(inout_text)
+    free(inout_text)
+    return changed, output
 
 
 def input_text_multiline(
@@ -3471,20 +3471,19 @@ def input_text_multiline(
             void* user_data = NULL
         )
     """
-    value_bytes = _bytes(value)
-    value_len = len(value)
-
-    cdef char* inout_text = NULL
-    temp_value = value_bytes[:value_len]
-    inout_text = <bytes>temp_value
+    cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
+    # todo: take special care of terminating char
+    strncpy(inout_text, _bytes(value), buffer_length)
 
     changed = cimgui.InputTextMultiline(
         _bytes(label), inout_text, buffer_length,
         _cast_args_ImVec2(width, height), flags,
         NULL, NULL
     )
+    output = _from_bytes(inout_text)
 
-    return changed, _from_bytes(inout_text)
+    free(inout_text)
+    return changed, output
 
 
 def input_float(
