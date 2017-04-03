@@ -62,11 +62,10 @@ class OpenGLBaseImpl(object):
         # todo: maybe it is not necessary
         self.io.delta_time = 1.0 / 60.0
 
+        self._create_device_objects()
+
         # setup default font
         self.io.fonts.add_font_default()
-        self.io.fonts.get_tex_data_as_rgba32()
-
-        self._create_device_objects()
         self._create_font_texture()
 
         # todo: add option to set new_frame callback/implementation
@@ -136,6 +135,7 @@ class OpenGLBaseImpl(object):
 
         self.io.fonts.texture_id = self._font_texture
         gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
+        self.io.fonts.clear_tex_data()
 
     def render(self, draw_data):
         # perf: local for faster access
