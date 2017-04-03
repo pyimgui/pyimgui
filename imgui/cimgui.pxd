@@ -202,9 +202,30 @@ cdef extern from "imgui.h":
     ctypedef struct ImFontAtlas:  # ✓
         void*   TexID  # ✓
 
-        ImFont* AddFontDefault(const ImFontConfig* = NULL)  # ✓
+        ImFont* AddFontDefault(  # ✓
+                   # note: optional
+                   const ImFontConfig* font_cfg
+        ) except +
+        ImFont* AddFontFromFileTTF(  # ✓
+                    const char* filename, float size_pixels,
+                    # note: optional
+                    const ImFontConfig* font_cfg,
+                    const ImWchar* glyph_ranges
+        ) except +
         void GetTexDataAsAlpha8(unsigned char**, int*, int*, int* = NULL)  # ✓
         void GetTexDataAsRGBA32(unsigned char**, int*, int*, int* = NULL)  # ✓
+
+        void ClearTexData()  # ✓
+        void ClearInputData()  # ✓
+        void ClearFonts()  # ✓
+        void Clear()  # ✓
+
+        const ImWchar* GetGlyphRangesDefault()  # ✓
+        const ImWchar* GetGlyphRangesKorean()  # ✓
+        const ImWchar* GetGlyphRangesJapanese()  # ✓
+        const ImWchar* GetGlyphRangesChinese()  # ✓
+        const ImWchar* GetGlyphRangesCyrillic()  # ✓
+
 
     ctypedef struct ImGuiStorage:
         pass

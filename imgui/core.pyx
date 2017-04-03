@@ -33,6 +33,8 @@ from cpython.version cimport PY_MAJOR_VERSION
 # todo: find a way to cimport this directly from imgui.h
 DEF TARGET_IMGUI_VERSION = (1, 49)
 
+cdef unsigned short* _LATIN_ALL = [0x0020, 0x024F , 0]
+
 # ==== Condition enum redefines ====
 ALWAYS = enums.ImGuiSetCond_Always
 ONCE = enums.ImGuiSetCond_Once
@@ -570,6 +572,16 @@ cdef class _DrawData(object):
         ]
 
 
+cdef class _StaticGlyphRanges(object):
+    cdef const cimgui.ImWchar* ranges_ptr
+
+    @staticmethod
+    cdef from_ptr(const cimgui.ImWchar* ptr):
+        instance = _StaticGlyphRanges()
+        instance.ranges_ptr = ptr
+        return instance
+
+
 cdef class _FontAtlas(object):
     cdef cimgui.ImFontAtlas* _ptr
 
@@ -593,7 +605,52 @@ cdef class _FontAtlas(object):
     def add_font_default(self):
         self._require_pointer()
 
-        self._ptr.AddFontDefault()
+        self._ptr.AddFontDefault(NULL)
+
+    def add_font_from_file_ttf(
+        self, str filename, float size_pixels,
+        _StaticGlyphRanges glyph_ranges=None,
+    ):
+        self._require_pointer()
+        # note: cannot use cimgui.ImWchar here due to Cython bug
+        # note: whole unicode
+        cdef char* in_glyph_ranges
+
+        self._ptr.AddFontFromFileTTF(
+            _bytes(filename), size_pixels,  NULL,
+            glyph_ranges.ranges_ptr if glyph_ranges is not None else NULL
+        )
+
+    def clear_tex_data(self):
+        self._ptr.ClearTexData()
+
+    def clear_input_data(self):
+        self._ptr.ClearInputData()
+
+    def clear_fonts(self):
+        self._ptr.ClearFonts()
+
+    def clear(self):
+        self._ptr.Clear()
+
+    def get_glyph_ranges_default(self):
+        return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesDefault())
+
+    def get_glyph_ranges_korean(self):
+        return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesKorean())
+
+    def get_glyph_ranges_japanese(self):
+        return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesJapanese())
+
+    def get_glyph_ranges_chinese(self):
+        return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesChinese())
+
+    def get_glyph_ranges_cyrillic(self):
+        return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesCyrillic())
+
+    def get_glyph_ranges_latin(self):
+        # note: this is a custom glyph range with full latin character set
+        return _StaticGlyphRanges.from_ptr(_LATIN_ALL)
 
     def get_tex_data_as_alpha8(self):
         self._require_pointer()
