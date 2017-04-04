@@ -94,6 +94,10 @@ setup(
 
     install_requires=['cython'],
     setup_requires=['cython'],
+    extras_require={
+        'glfw': ['glfw'],
+        'sdl2': ['PySDL2'],
+    },
 
     include_package_data=True,
 
