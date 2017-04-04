@@ -10,88 +10,80 @@ Builds:
 
 # pyimgui
 
-**pyimgui** is a Cython-based binding for impressive 
-[dear imgui](https://github.com/ocornut/imgui) C++ library - 
-a Bloat-free Immediate Mode Graphical User Interface.
+**pyimgui** is a Cython-based binding for the amazing 
+[dear imgui](https://github.com/ocornut/imgui) C++ library - a Bloat-free
+Immediate Mode Graphical User Interface.
+
+
+# installation
+
+**pyimgui** is available on PyPI so you can easily
+install it with `pip`:
  
-It is still unfinished project but I plan to provide minimal fully-functional
-binding in incoming few months. Any help would be appreciated.
+    pip install imgui
 
+`imgui` package integrates easily with various graphic backends. Each backend
+requires one or more additional packages. You can install them with `imgui`
+using pip's *extras* feature:
 
-# why?
+* for GLFW3 backend use `pip install imgui[glfw]`
+* for SDL2 backend use `pip install imgui[sdl2]`
 
-**dear imgui** looks very interesting. I wanted to give it a try becasue I was
-looking for simple GUI solution for my little Python-based game engine (to be
-opensourced soon!). Offical **dear imgui** Wiki used to say that there is some
-other Python binding available ([cyimgui](https://github.com/chromy/cyimgui)) 
-but it quickly turned out that it far from completion and isn't even barely 
-usable.
-
-In fact, my initial experimental work on this project was based on the cyimgui 
-code base. After only three days of developlment my code had almost nothing in 
-common with the **cyimgui**. This fact and vanity made me start my own project 
-instead of forking the **cyimgui**.
+Package is distributed in form of *built wheels* so it does not require
+compilation on most operating systems. For more details about compatibility
+with diffferent OSes and Python versions see the *project ditribution*
+section of this documentation page.
 
 
 # project status
 
-pyimgui is working! It's not feature complete and only small subset of ImGui
-API is mapped right now. But you can run examples with ImGui test windows (see:
-`docs/examples/glfw3/`) and everything should work wihout any issues.
+The `imgui` package provides support for most of core ImGui widgets and
+functionalities. Some low-level API elements and complex widgets (like plots)
+may be missing. We are working hard to provide 100% feature mapping of the core
+ImGui library. The *completion badge* shows actual progress.
 
-Example integration with `glfw` supports all inputs and renders GUI as expected.
 
-Project has working build pipeline on Appveyor and Travis and builds 
+# project distribution
+
+This project has working build pipeline on Appveyor and Travis and builds 
 succesfully for all major operating systems with different architectures:
 
 * Windows (32bit & 64bit)
 * Linux (32bit & 64bit)
 * OS X (universal build)
 
-Right now I am ready to ship working built wheels for all these systems (even 
-for Linux using `manylinux1` wheels). Build pipeline also works on different
-Python versions:
+Right now we are ready to ship working built wheels for these three systems
+(even for Linux using `manylinux1` wheels). Build pipeline also works on
+different Python versions:
 
 * py27
 * py33
 * py34
 * py35
 
-
-Project has has even working Sphinx documentation with custom extension that
+**pyimgu** has has even working Sphinx documentation with custom extension that
 is able to offscreen render GUI examples from docstring snippets. It is already
 hosted on ReadTheDocs and images are provided with git-lfs. See for yourself: 
 [pyimgui.readthedocs.io](https://pyimgui.readthedocs.io/en/latest/index.html).
 
-
-The only thing that is stopping me from publishing it on PyPI is lack of
-support for most of the ImGui core widgets. Anyway, the hardest parts are
-already done (like wiring C assert macros to custom Python exceptions, creating build 
-pipeline for Python wheels, or integrating with GLFW). Adding new functions, 
-widgets or integrations (e.g. Pygame, GLUT) should be simple from now.
-
-Unfortunately this is really toilsome work. A lot of copy-pasting and
-manual type-casting. It will take me weeks to provide minimal usable feature
-set if I have to work alone. This is why I encourage anyone (even unexperienced
-Python/Cython programmers) to contribute. It's not a rocket science and it
-will help me to release project officially sooner.
-
-In case of any issues with building/testing just ask me for help by creating
-GitHub issue. I have tried hard to make project building and bootstraping as 
-simple as possible (see development tips) but it still may not be perfect.
+In case of any issues with building/testing just ask us for help by creating
+GitHub issue. We have tried hard to make the process of bootstraping this
+project as simple as possible (see *development tips* section).
 
 
 # development tips
 
 Make sure you have created and activated virtual environment using `virtualenv`
-or `python -m venv` (on newer Python releases). Then you can just run:
+or `python -m venv` (for newer Python releases). Then you can just run:
 
     make build
     
-Following will bootstrap whole environment (pull git submodules, install 
-dev requirements etc.) and build the project. Make will automatically install
-pyimgui in "development" mode. Then you can run example in `doc/examples`
-to see if it is working.
+This command will bootstrap whole environment (pull git submodules, install 
+dev requirements etc.) and build the project. `make` will automatically install
+pyimgui in the *development/editable* mode. Then you can run some example in
+the `doc/examples` directory to verify if project is working.
 
-For testing string documentation you will need some additional requirements
-from `doc/requirements-docs.txt`.
+For building ducumentation and running tests you will need some additional
+requirements from `doc/requirements-test.txt`. You can run tests with:
+
+    py.test
