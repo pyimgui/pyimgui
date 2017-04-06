@@ -582,6 +582,16 @@ cdef class _StaticGlyphRanges(object):
         return instance
 
 
+cdef class _Font(object):
+    cdef cimgui.ImFont* _ptr
+
+    @staticmethod
+    cdef from_ptr(cimgui.ImFont* ptr):
+        instance = _Font()
+        instance._ptr = ptr
+        return instance
+
+
 cdef class _FontAtlas(object):
     cdef cimgui.ImFontAtlas* _ptr
 
@@ -605,7 +615,7 @@ cdef class _FontAtlas(object):
     def add_font_default(self):
         self._require_pointer()
 
-        self._ptr.AddFontDefault(NULL)
+        return _Font.from_ptr(self._ptr.AddFontDefault(NULL))
 
     def add_font_from_file_ttf(
         self, str filename, float size_pixels,
@@ -616,10 +626,10 @@ cdef class _FontAtlas(object):
         # note: whole unicode
         cdef char* in_glyph_ranges
 
-        self._ptr.AddFontFromFileTTF(
+        return _Font.from_ptr(self._ptr.AddFontFromFileTTF(
             _bytes(filename), size_pixels,  NULL,
             glyph_ranges.ranges_ptr if glyph_ranges is not None else NULL
-        )
+        ))
 
     def clear_tex_data(self):
         self._ptr.ClearTexData()
@@ -4714,6 +4724,51 @@ def set_mouse_cursor(cimgui.ImGuiMouseCursor mouse_cursor_type):
     return cimgui.SetMouseCursor(mouse_cursor_type)
 
 
+def push_font(_Font font):
+    """Push font on a stack.
+
+    Example:
+
+    .. code-block: python
+
+        ...
+        font_extra = io.fonts.add_font_from_file_ttf(
+            "CODE2000.TTF", 30, io.fonts.get_glyph_ranges_latin()
+        )
+        ...
+
+        # later in application loop
+        while True:
+            ...
+            imgui.push_font(font_extra)
+            imgui.text("My text with custom font")
+            imgui.pop_font()
+
+    **Note:** Pushed fonts should be poped with :func:`pop_font()` within the
+    same frame. In order to avoid manual push/pop functions you can use the
+    :func:`font()` context manager.
+
+    Args:
+        font (_Font): font object retrieved from :any:`add_font_from_file_ttf`.
+
+    .. wraps::
+        void PushFont(ImFont*)
+    """
+    cimgui.PushFont(font._ptr)
+
+def pop_font():
+    """Pop font on a stack.
+
+    For example usage see :func:`push_font()`.
+
+    Args:
+        font (_Font): font object retrieved from :any:`add_font_from_file_ttf`.
+
+    .. wraps::
+        void PopFont()
+    """
+    cimgui.PopFont()
+
 cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     """Push style variable on stack.
 
@@ -5320,6 +5375,34 @@ def end_group():
 
 # additional helpers
 # todo: move to separate extension module (extra?)
+
+@contextmanager
+def font(_Font font):
+    """Use specified font in given context.
+
+    Example:
+
+    .. code-block: python
+
+        ...
+        font_extra = io.fonts.add_font_from_file_ttf(
+            "CODE2000.TTF", 30, io.fonts.get_glyph_ranges_latin()
+        )
+        ...
+
+        # later in application loop
+        while True:
+            ...
+            with imgui.font(font_extra):
+                imgui.text("My text with custom font")
+            ...
+
+    Args:
+        font (_Font): font object retrieved from :any:`add_font_from_file_ttf`.
+    """
+    push_font(font)
+    yield
+    pop_font()
 
 @contextmanager
 def styled(cimgui.ImGuiStyleVar variable, value):

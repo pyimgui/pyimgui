@@ -394,10 +394,10 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # ====
     # Parameters stacks (shared)
-    void PushFont(ImFont*)  # ✗
-    void PopFont()  # ✗
+    void PushFont(ImFont*)  # ✓
+    void PopFont()  # ✓
     void PushStyleColor(ImGuiCol, const ImVec4&)  # ✓
-    void PopStyleColor(int)  # ✗
+    void PopStyleColor(int)  # ✓
     void PushStyleVar(ImGuiStyleVar, float) except +  # ✓
     void PushStyleVar(ImGuiStyleVar, const ImVec2&) except +  # ✓
     void PopStyleVar(int) except +  # ✓
