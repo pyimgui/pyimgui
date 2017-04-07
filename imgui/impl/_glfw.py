@@ -8,25 +8,21 @@ from ._opengl import OpenGLBaseImpl
 
 
 class GlfwImpl(OpenGLBaseImpl):
-    def __init__(self, window):
+    def __init__(self, window, attach_callbacks=True):
         super(GlfwImpl, self).__init__()
         self.window = window
 
-    def enable(self):
-        # setup input callbacks
-        # todo: add some option to have additional callbacks
-        glfw.set_key_callback(self.window, self.keyboard_callback)
-        glfw.set_cursor_pos_callback(self.window, self.mouse_callback)
-        glfw.set_window_size_callback(self.window, self.resize_callback)
-        glfw.set_char_callback(self.window, self.char_callback)
-        glfw.set_scroll_callback(self.window, self.scroll_callback)
+        if attach_callbacks:
+            glfw.set_key_callback(self.window, self.keyboard_callback)
+            glfw.set_cursor_pos_callback(self.window, self.mouse_callback)
+            glfw.set_window_size_callback(self.window, self.resize_callback)
+            glfw.set_char_callback(self.window, self.char_callback)
+            glfw.set_scroll_callback(self.window, self.scroll_callback)
 
         self.io.display_size = glfw.get_framebuffer_size(self.window)
 
         self._map_keys()
         self._gui_time = None
-
-        super(GlfwImpl, self).enable()
 
     def _map_keys(self):
         key_map = self.io.key_map
@@ -95,7 +91,7 @@ class GlfwImpl(OpenGLBaseImpl):
     def scroll_callback(self, window, x_offset, y_offset):
         self.io.mouse_wheel = y_offset
 
-    def new_frame(self):
+    def process_inputs(self):
         # todo: consider moving to init
         io = imgui.get_io()
 
@@ -124,8 +120,3 @@ class GlfwImpl(OpenGLBaseImpl):
             self.io.delta_time = 1. / 60.
 
         self._gui_time = current_time
-
-        imgui.new_frame()
-
-    def render(self, draw_data):
-        super(GlfwImpl, self).render(draw_data)

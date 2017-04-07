@@ -8,12 +8,63 @@ from imgui.impl import SDL2Impl
 
 
 def main():
+    window, gl_context = impl_pysdl2_init()
+    impl = SDL2Impl(window)
+
+    opened = True
+
+    running = True
+    event = SDL_Event()
+    while running:
+        while SDL_PollEvent(ctypes.byref(event)) != 0:
+            if event.type == SDL_QUIT:
+                running = False
+                break
+            impl.process_event(event)
+        impl.process_inputs()
+
+        imgui.new_frame()
+
+        if imgui.begin_main_menu_bar():
+            if imgui.begin_menu("File", True):
+                clicked_quit, selected_quit = imgui.menu_item("Quit", 'Cmd+Q', False, True)
+                if clicked_quit:
+                    exit(1)
+                imgui.end_menu()
+            imgui.end_main_menu_bar()
+
+        imgui.show_user_guide()
+        imgui.show_test_window()
+
+        if opened:
+            expanded, opened = imgui.begin("fooo", True)
+            imgui.text("Bar")
+            imgui.text_colored("Eggs", 0.2, 1., 0.)
+            imgui.end()
+
+        with imgui.styled(imgui.STYLE_ALPHA, 1):
+            imgui.show_metrics_window()
+
+        gl.glClearColor(114 / 255., 144 / 255., 154 / 255., 1)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+        imgui.render()
+
+        SDL_GL_SwapWindow(window)
+
+    impl.shutdown()
+    SDL_GL_DeleteContext(gl_context)
+    SDL_DestroyWindow(window)
+    SDL_Quit()
+
+
+def impl_pysdl2_init():
     width, height = 1280, 720
     window_name = "minimal ImGui/SDL2 example"
 
     if SDL_Init(SDL_INIT_EVERYTHING) < 0:
         print("Error: SDL could not initialize! SDL Error: " + SDL_GetError())
-        return False
+        exit(1)
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
@@ -36,69 +87,19 @@ def main():
 
     if window is None:
         print("Error: Window could not be created! SDL Error: " + SDL_GetError())
-        return False
+        exit(1)
 
     gl_context = SDL_GL_CreateContext(window)
     if gl_context is None:
         print("Error: Cannot create OpenGL Context! SDL Error: " + SDL_GetError())
-        return False
+        exit(1)
 
     SDL_GL_MakeCurrent(window, gl_context)
     if SDL_GL_SetSwapInterval(1) < 0:
         print("Warning: Unable to set VSync! SDL Error: " + SDL_GetError())
+        exit(1)
 
-    imgui_ctx = SDL2Impl(window)
-    imgui_ctx.enable()
-
-    opened = True
-    style = imgui.GuiStyle()
-
-    running = True
-    event = SDL_Event()
-    while running:
-        while SDL_PollEvent(ctypes.byref(event)) != 0:
-            if event.type == SDL_QUIT:
-                running = False
-                break
-            imgui_ctx.process_event(event)
-
-        imgui_ctx.new_frame()
-
-        if imgui.begin_main_menu_bar():
-            if imgui.begin_menu("File", True):
-                clicked_quit, selected_quit = imgui.menu_item("Quit", 'Cmd+Q', False, True)
-                if clicked_quit:
-                    exit(1)
-                imgui.end_menu()
-            imgui.end_main_menu_bar()
-
-        imgui.show_user_guide()
-        imgui.show_test_window()
-
-        if opened:
-            expanded, opened = imgui.begin("fooo", True)
-            imgui.text("Bar")
-            imgui.text_colored("Eggs", 0.2, 1., 0.)
-            imgui.end()
-
-        with imgui.styled(imgui.STYLE_ALPHA, 1):
-            imgui.show_metrics_window()
-
-        imgui.show_style_editor(style)
-
-        gl.glViewport(0, 0, int(width / 2), int(height))
-        gl.glClearColor(114 / 255., 144 / 255., 154 / 255., 1)
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-
-        imgui.render()
-
-        SDL_GL_SwapWindow(window)
-
-    imgui_ctx.shutdown()
-    SDL_GL_DeleteContext(gl_context)
-    SDL_DestroyWindow(window)
-    SDL_Quit()
-
+    return window, gl_context
 
 if __name__ == "__main__":
     main()

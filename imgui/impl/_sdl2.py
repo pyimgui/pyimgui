@@ -21,7 +21,6 @@ class SDL2Impl(OpenGLBaseImpl):
         self._mouse_wheel = 0.0
         self._gui_time = None
 
-    def enable(self):
         s_w = ctypes.pointer(ctypes.c_int(0))
         s_h = ctypes.pointer(ctypes.c_int(0))
         SDL_GetWindowSize(self.window, s_w, s_h)
@@ -33,7 +32,6 @@ class SDL2Impl(OpenGLBaseImpl):
         self._map_keys()
 
         self.io.render_callback = self.render
-        super(SDL2Impl, self).enable()
 
     def _map_keys(self):
         key_map = self.io.key_map
@@ -91,7 +89,7 @@ class SDL2Impl(OpenGLBaseImpl):
                 io.add_input_character(ord(char))
             return True
 
-    def new_frame(self):
+    def process_inputs(self):
         io = imgui.get_io()
 
         s_w = ctypes.pointer(ctypes.c_int(0))
@@ -127,4 +125,3 @@ class SDL2Impl(OpenGLBaseImpl):
 
         io.mouse_wheel = self._mouse_wheel
         self._mouse_wheel = 0
-        imgui.new_frame()

@@ -7,6 +7,49 @@ from imgui.impl import GlfwImpl
 
 
 def main():
+    window = impl_glfw_init()
+    impl = GlfwImpl(window)
+
+    opened = True
+
+    while not glfw.window_should_close(window):
+        glfw.poll_events()
+        impl.process_inputs()
+
+        imgui.new_frame()
+
+        if imgui.begin_main_menu_bar():
+            if imgui.begin_menu("File", True):
+                clicked_quit, selected_quit = imgui.menu_item("Quit", 'Cmd+Q', False, True)
+                if clicked_quit:
+                    exit(1)
+                imgui.end_menu()
+            imgui.end_main_menu_bar()
+
+        imgui.show_user_guide()
+        imgui.show_test_window()
+
+        if opened:
+            expanded, opened = imgui.begin("fooo", True)
+            imgui.text("Bar")
+            imgui.text_colored("Eggs", 0.2, 1., 0.)
+            imgui.end()
+
+        with imgui.styled(imgui.STYLE_ALPHA, 1):
+            imgui.show_metrics_window()
+
+        gl.glClearColor(114 / 255., 144 / 255., 154 / 255., 1)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+        imgui.render()
+        glfw.swap_buffers(window)
+
+    impl.shutdown()
+    imgui.shutdown()
+    glfw.terminate()
+
+
+def impl_glfw_init():
     width, height = 1280, 720
     window_name = "minimal ImGui/GLFW3 example"
 
@@ -32,43 +75,7 @@ def main():
         print("Could not initialize Window")
         exit(1)
 
-    imgui_ctx = GlfwImpl(window)
-    imgui_ctx.enable()
-
-    opened = True
-
-    style = imgui.GuiStyle()
-
-    while not glfw.window_should_close(window):
-        glfw.poll_events()
-        imgui_ctx.new_frame()
-
-        imgui.show_user_guide()
-        imgui.show_test_window()
-
-        if opened:
-            expanded, opened = imgui.begin("fooo", True)
-            imgui.text("Bar")
-            imgui.text_colored("Eggs", 0.2, 1., 0.)
-            imgui.end()
-
-        with imgui.styled(imgui.STYLE_ALPHA, 1):
-            imgui.show_metrics_window()
-
-        imgui.show_style_editor(style)
-
-        # note: this is redundant
-        width, height = glfw.get_framebuffer_size(window)
-        gl.glViewport(0, 0, int(width/2), int(height))
-
-        gl.glClearColor(114/255., 144/255., 154/255., 1)
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-
-        imgui.render()
-        glfw.swap_buffers(window)
-
-    glfw.terminate()
-
+    return window
 
 if __name__ == "__main__":
     main()

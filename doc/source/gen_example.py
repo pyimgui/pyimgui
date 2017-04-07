@@ -90,8 +90,7 @@ def render_snippet(
         print("Could not initialize Window")
         exit(1)
 
-    imgui_ctx = GlfwImpl(window)
-    imgui_ctx.enable()
+    impl = GlfwImpl(window)
     glfw.poll_events()
 
     # render target for framebuffer
@@ -119,13 +118,14 @@ def render_snippet(
 
         # note: Mouse click MUST be simulated before new_frame call!
         if click:
-            imgui_ctx.io.mouse_draw_cursor = True
+            impl.io.mouse_draw_cursor = True
             simulate_click(click[0], click[1], m_state)
         else:
             # just make sure mouse state is clear
             _clear_mouse()
 
-        imgui_ctx.new_frame()
+        impl.process_inputs()
+        imgui.new_frame()
 
         with imgui.styled(imgui.STYLE_ALPHA, 1):
             imgui.core.set_next_window_size(0, 0)

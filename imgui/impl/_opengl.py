@@ -58,18 +58,33 @@ class OpenGLBaseImpl(object):
 
         self._font_texture = None
 
-    def enable(self):
-        # todo: maybe it is not necessary
         self.io.delta_time = 1.0 / 60.0
 
         self._create_device_objects()
-
-        # setup default font
-        self.io.fonts.add_font_default()
-        self._create_font_texture()
+        self.refresh_font_texture()
 
         # todo: add option to set new_frame callback/implementation
         self.io.render_callback = self.render
+
+    def refresh_font_texture(self):
+        # save texture state
+        last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
+
+        width, height, pixels = self.io.fonts.get_tex_data_as_rgba32()
+
+        if self._font_texture is not None:
+            gl.glDeleteTextures(1, [self._font_texture])
+
+        self._font_texture = gl.glGenTextures(1)
+
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self._font_texture)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, width, height, 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, pixels)
+
+        self.io.fonts.texture_id = self._font_texture
+        gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
+        self.io.fonts.clear_tex_data()
 
     def _create_device_objects(self):
         # save state
@@ -93,7 +108,9 @@ class OpenGLBaseImpl(object):
 
         gl.glLinkProgram(self._shader_handle)
 
-        # todo: remove shader parts after linking
+        # note: after linking shaders can be removed
+        gl.glDeleteShader(vertex_shader)
+        gl.glDeleteShader(fragment_shader)
 
         self._attrib_location_tex = gl.glGetUniformLocation(self._shader_handle, "Texture")
         self._attrib_proj_mtx = gl.glGetUniformLocation(self._shader_handle, "ProjMtx")
@@ -120,22 +137,6 @@ class OpenGLBaseImpl(object):
         gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, last_array_buffer)
         gl.glBindVertexArray(last_vertex_array)
-
-    def _create_font_texture(self):
-        # save texture state
-        last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
-
-        width, height, pixels = self.io.fonts.get_tex_data_as_rgba32()
-        self._font_texture = gl.glGenTextures(1)
-
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self._font_texture)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, width, height, 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, pixels)
-
-        self.io.fonts.texture_id = self._font_texture
-        gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
-        self.io.fonts.clear_tex_data()
 
     def render(self, draw_data):
         # perf: local for faster access
@@ -258,11 +259,11 @@ class OpenGLBaseImpl(object):
 
     def invalidate_device_objects(self):
         if self._vao_handle > -1:
-            gl.glDeleteVertexArrays(1, self._vao_handle)
+            gl.glDeleteVertexArrays(1, [self._vao_handle])
         if self._vbo_handle > -1:
-            gl.glDeleteBuffers(1, self._vbo_handle)
+            gl.glDeleteBuffers(1, [self._vbo_handle])
         if self._elements_handle > -1:
-            gl.glDeleteBuffers(1, self._elements_handle)
+            gl.glDeleteBuffers(1, [self._elements_handle])
         self._vao_handle = self._vbo_handle = self._elements_handle = 0
 
         gl.glDeleteProgram(self._shader_handle)
