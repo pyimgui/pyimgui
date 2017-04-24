@@ -6,15 +6,15 @@ from sdl2 import *
 import imgui
 import ctypes
 
-from ._opengl import OpenGLBaseImpl
+from .opengl import ProgrammablePipelineRenderer
 
 
-class SDL2Impl(OpenGLBaseImpl):
+class SDL2Renderer(ProgrammablePipelineRenderer):
     """Basic SDL2 integration implementation."""
     MOUSE_WHEEL_OFFSET_SCALE = 0.5
 
     def __init__(self, window):
-        super(SDL2Impl, self).__init__()
+        super(SDL2Renderer, self).__init__()
         self.window = window
 
         self._mouse_pressed = [False, False, False]
@@ -30,8 +30,6 @@ class SDL2Impl(OpenGLBaseImpl):
         self.io.display_size = w, h
 
         self._map_keys()
-
-        self.io.render_callback = self.render
 
     def _map_keys(self):
         key_map = self.io.key_map

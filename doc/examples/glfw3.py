@@ -3,14 +3,12 @@ import glfw
 import OpenGL.GL as gl
 
 import imgui
-from imgui.impl import GlfwImpl
+from imgui.integrations.glfw import GlfwRenderer
 
 
 def main():
     window = impl_glfw_init()
-    impl = GlfwImpl(window)
-
-    opened = True
+    impl = GlfwRenderer(window)
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
@@ -20,25 +18,25 @@ def main():
 
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
-                clicked_quit, selected_quit = imgui.menu_item("Quit", 'Cmd+Q', False, True)
+
+                clicked_quit, selected_quit = imgui.menu_item(
+                    "Quit", 'Cmd+Q', False, True
+                )
+
                 if clicked_quit:
                     exit(1)
+
                 imgui.end_menu()
             imgui.end_main_menu_bar()
 
-        imgui.show_user_guide()
         imgui.show_test_window()
 
-        if opened:
-            expanded, opened = imgui.begin("fooo", True)
-            imgui.text("Bar")
-            imgui.text_colored("Eggs", 0.2, 1., 0.)
-            imgui.end()
+        imgui.begin("Custom window", True)
+        imgui.text("Bar")
+        imgui.text_colored("Eggs", 0.2, 1., 0.)
+        imgui.end()
 
-        with imgui.styled(imgui.STYLE_ALPHA, 1):
-            imgui.show_metrics_window()
-
-        gl.glClearColor(114 / 255., 144 / 255., 154 / 255., 1)
+        gl.glClearColor(1., 1., 1., 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         imgui.render()

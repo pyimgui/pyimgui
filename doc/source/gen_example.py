@@ -7,7 +7,7 @@ import OpenGL.GL as gl
 from PIL import Image
 
 import imgui
-from imgui.impl import GlfwImpl
+from imgui.integrations import GlfwImpl
 
 
 io = imgui.get_io()

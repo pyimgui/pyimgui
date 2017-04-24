@@ -4,14 +4,12 @@ import ctypes
 import OpenGL.GL as gl
 
 import imgui
-from imgui.impl import SDL2Impl
+from imgui.integrations.sdl2 import SDL2Renderer
 
 
 def main():
     window, gl_context = impl_pysdl2_init()
-    impl = SDL2Impl(window)
-
-    opened = True
+    renderer = SDL2Renderer(window)
 
     running = True
     event = SDL_Event()
@@ -20,39 +18,39 @@ def main():
             if event.type == SDL_QUIT:
                 running = False
                 break
-            impl.process_event(event)
-        impl.process_inputs()
+            renderer.process_event(event)
+        renderer.process_inputs()
 
         imgui.new_frame()
 
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
-                clicked_quit, selected_quit = imgui.menu_item("Quit", 'Cmd+Q', False, True)
+
+                clicked_quit, selected_quit = imgui.menu_item(
+                    "Quit", 'Cmd+Q', False, True
+                )
+
                 if clicked_quit:
                     exit(1)
+
                 imgui.end_menu()
             imgui.end_main_menu_bar()
 
-        imgui.show_user_guide()
         imgui.show_test_window()
 
-        if opened:
-            expanded, opened = imgui.begin("fooo", True)
-            imgui.text("Bar")
-            imgui.text_colored("Eggs", 0.2, 1., 0.)
-            imgui.end()
+        imgui.begin("Custom window", True)
+        imgui.text("Bar")
+        imgui.text_colored("Eggs", 0.2, 1., 0.)
+        imgui.end()
 
-        with imgui.styled(imgui.STYLE_ALPHA, 1):
-            imgui.show_metrics_window()
-
-        gl.glClearColor(114 / 255., 144 / 255., 154 / 255., 1)
+        gl.glClearColor(1., 1., 1., 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         imgui.render()
 
         SDL_GL_SwapWindow(window)
 
-    impl.shutdown()
+    renderer.shutdown()
     SDL_GL_DeleteContext(gl_context)
     SDL_DestroyWindow(window)
     SDL_Quit()

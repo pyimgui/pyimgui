@@ -1,11 +1,44 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
 import OpenGL.GL as gl
 
 import imgui
 import ctypes
 
 
-class OpenGLBaseImpl(object):
+class BaseOpenGLRenderer(object):
+    def __init__(self):
+        self.io = imgui.get_io()
+
+        self._font_texture = None
+
+        self.io.delta_time = 1.0 / 60.0
+
+        self._create_device_objects()
+        self.refresh_font_texture()
+
+        # todo: add option to set new_frame callback/implementation
+        self.io.render_callback = self.render
+
+    def render(self, draw_data):
+        raise NotImplementedError
+
+    def refresh_font_texture(self):
+        raise NotImplementedError
+
+    def _create_device_objects(self):
+        raise NotImplementedError
+
+    def _invalidate_device_objects(self):
+        raise NotImplementedError
+
+    def shutdown(self):
+        self._invalidate_device_objects()
+        imgui.shutdown()
+
+
+class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
     """Basic OpenGL integration base class."""
 
     VERTEX_SHADER_SRC = """
@@ -40,8 +73,6 @@ class OpenGLBaseImpl(object):
     """
 
     def __init__(self):
-        self.io = imgui.get_io()
-
         self._shader_handle = None
         self._vert_handle = None
         self._fragment_handle = None
@@ -56,15 +87,7 @@ class OpenGLBaseImpl(object):
         self._elements_handle = None
         self._vao_handle = None
 
-        self._font_texture = None
-
-        self.io.delta_time = 1.0 / 60.0
-
-        self._create_device_objects()
-        self.refresh_font_texture()
-
-        # todo: add option to set new_frame callback/implementation
-        self.io.render_callback = self.render
+        super(ProgrammablePipelineRenderer, self).__init__()
 
     def refresh_font_texture(self):
         # save texture state
@@ -73,7 +96,7 @@ class OpenGLBaseImpl(object):
         width, height, pixels = self.io.fonts.get_tex_data_as_rgba32()
 
         if self._font_texture is not None:
-            gl.glDeleteTextures(1, [self._font_texture])
+            gl.glDeleteTextures([self._font_texture])
 
         self._font_texture = gl.glGenTextures(1)
 
@@ -253,11 +276,7 @@ class OpenGLBaseImpl(object):
         gl.glViewport(last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3])
         gl.glScissor(last_scissor_box[0], last_scissor_box[1], last_scissor_box[2], last_scissor_box[3])
 
-    def shutdown(self):
-        self.invalidate_device_objects()
-        imgui.shutdown()
-
-    def invalidate_device_objects(self):
+    def _invalidate_device_objects(self):
         if self._vao_handle > -1:
             gl.glDeleteVertexArrays(1, [self._vao_handle])
         if self._vbo_handle > -1:
@@ -270,6 +289,150 @@ class OpenGLBaseImpl(object):
         self._shader_handle = 0
 
         if self._font_texture > -1:
-            gl.glDeleteTextures(self._font_texture)
+            gl.glDeleteTextures([self._font_texture])
+        self.io.fonts.texture_id = 0
+        self._font_texture = 0
+
+
+class FixedPipelineRenderer(BaseOpenGLRenderer):
+    """Basic OpenGL integration base class."""
+
+    # note: no need to override __init__
+
+    def refresh_font_texture(self):
+        # save texture state
+        # last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
+        width, height, pixels = self.io.fonts.get_tex_data_as_alpha8()
+
+        if self._font_texture is not None:
+            gl.glDeleteTextures([self._font_texture])
+
+        self._font_texture = gl.glGenTextures(1)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self._font_texture)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_ALPHA, width, height, 0, gl.GL_ALPHA, gl.GL_UNSIGNED_BYTE, pixels)
+
+        self.io.fonts.texture_id = self._font_texture
+        # gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
+        self.io.fonts.clear_tex_data()
+
+    def _create_device_objects(self):
+        pass
+
+    def render(self, draw_data):
+        # perf: local for faster access
+        io = self.io
+
+        display_width, display_height = self.io.display_size
+        fb_width = int(display_width * io.display_fb_scale[0])
+        fb_height = int(display_height * io.display_fb_scale[1])
+
+        if fb_width == 0 or fb_height == 0:
+            return
+
+        draw_data.scale_clip_rects(*io.display_fb_scale)
+
+        # note: we are using fixed pipeline for cocos2d/pyglet
+        # todo: consider porting to programmable pipeline
+        # backup gl state
+        last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
+        last_viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
+        last_enable_blend = gl.glIsEnabled(gl.GL_BLEND)
+        last_enable_cull_face = gl.glIsEnabled(gl.GL_CULL_FACE)
+        last_enable_depth_test = gl.glIsEnabled(gl.GL_DEPTH_TEST)
+        last_enable_scissor_test = gl.glIsEnabled(gl.GL_SCISSOR_TEST)
+        last_scissor_box = gl.glGetIntegerv(gl.GL_SCISSOR_BOX)
+        last_blend_src = gl.glGetIntegerv(gl.GL_BLEND_SRC)
+        last_blend_dst = gl.glGetIntegerv(gl.GL_BLEND_DST)
+        last_blend_equation_rgb = gl. glGetIntegerv(gl.GL_BLEND_EQUATION_RGB)
+        last_blend_equation_alpha = gl.glGetIntegerv(gl.GL_BLEND_EQUATION_ALPHA)
+
+        gl.glPushAttrib(gl.GL_ENABLE_BIT | gl.GL_COLOR_BUFFER_BIT | gl.GL_TRANSFORM_BIT)
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+        gl.glDisable(gl.GL_CULL_FACE)
+        gl.glDisable(gl.GL_DEPTH_TEST)
+        gl.glEnable(gl.GL_SCISSOR_TEST)
+
+        gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
+        gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY)
+        gl.glEnableClientState(gl.GL_COLOR_ARRAY)
+        gl.glEnable(gl.GL_TEXTURE_2D)
+
+        gl.glViewport(0, 0, int(fb_width), int(fb_height))
+        gl.glMatrixMode(gl.GL_PROJECTION)
+        gl.glPushMatrix()
+        gl.glLoadIdentity()
+        gl.glOrtho(0, io.display_size.x, io.display_size.y, 0.0, -1., 1.)
+        gl.glMatrixMode(gl.GL_MODELVIEW)
+        gl.glPushMatrix()
+        gl.glLoadIdentity()
+
+        for commands in draw_data.commands_lists:
+            idx_buffer = commands.idx_buffer_data
+
+            gl.glVertexPointer(2, gl.GL_FLOAT, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer_data + imgui.VERTEX_BUFFER_POS_OFFSET))
+            gl.glTexCoordPointer(2, gl.GL_FLOAT, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer_data + imgui.VERTEX_BUFFER_UV_OFFSET))
+            gl.glColorPointer(4, gl.GL_UNSIGNED_BYTE, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer_data + imgui.VERTEX_BUFFER_COL_OFFSET))
+
+            for command in commands.commands:
+                gl.glBindTexture(gl.GL_TEXTURE_2D, command.texture_id)
+
+                x, y, w, z = command.clip_rect
+                gl.glScissor(int(x), int(fb_height - w), int(z - x), int(w - y))
+
+                if imgui.INDEX_SIZE == 2:
+                    gltype = gl.GL_UNSIGNED_SHORT
+                else:
+                    gltype = gl.GL_UNSIGNED_INT
+
+                gl.glDrawElements(gl.GL_TRIANGLES, command.elem_count, gltype, ctypes.c_void_p(idx_buffer))
+
+                idx_buffer += (command.elem_count * imgui.INDEX_SIZE)
+
+        gl.glBlendEquationSeparate(last_blend_equation_rgb, last_blend_equation_alpha)
+        gl.glBlendFunc(last_blend_src, last_blend_dst)
+
+        if last_enable_blend:
+            gl.glEnable(gl.GL_BLEND)
+        else:
+            gl.glDisable(gl.GL_BLEND)
+
+        if last_enable_cull_face:
+            gl.glEnable(gl.GL_CULL_FACE)
+        else:
+            gl.glDisable(gl.GL_CULL_FACE)
+
+        if last_enable_depth_test:
+            gl.glEnable(gl.GL_DEPTH_TEST)
+        else:
+            gl.glDisable(gl.GL_DEPTH_TEST)
+
+        if last_enable_scissor_test:
+            gl.glEnable(gl.GL_SCISSOR_TEST)
+        else:
+            gl.glDisable(gl.GL_SCISSOR_TEST)
+
+        gl.glScissor(last_scissor_box[0], last_scissor_box[1], last_scissor_box[2], last_scissor_box[3])
+
+        gl.glDisableClientState(gl.GL_COLOR_ARRAY)
+        gl.glDisableClientState(gl.GL_TEXTURE_COORD_ARRAY)
+        gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
+
+        if last_texture:
+            gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
+
+        gl.glMatrixMode(gl.GL_MODELVIEW)
+        gl.glPopMatrix()
+        gl.glMatrixMode(gl.GL_PROJECTION)
+        gl.glPopMatrix()
+        gl.glPopAttrib()
+
+        gl.glViewport(last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3])
+
+    def _invalidate_device_objects(self):
+        if self._font_texture > -1:
+            gl.glDeleteTextures([self._font_texture])
         self.io.fonts.texture_id = 0
         self._font_texture = 0
