@@ -11,17 +11,20 @@ echo -e "\n\nWill build wheels for:"
 for PY in /opt/python/*/bin/python; do echo "* $(${PY} --version 2>&1)"; done
 
 for PYBIN in /opt/python/*/bin; do
-    echo -e "\n\nBuilding wheel for $(${PYBIN}/python --version 2>&1)"
+    FOLDNAME="wheel-$(basename $(dirname ${PYBIN}))"
+    travis_fold start ${FOLDNAME}
+    echo -e "Building wheel for $(${PYBIN}/python --version 2>&1)"
 
-    travis_fold start wheel-${PYBIN}
     ${PYBIN}/pip install -r /io/doc/requirements-test.txt
     ${PYBIN}/pip wheel /io/ -w /io/dist-wip/
-    travis_fold end wheel-${PYBIN}
+    travis_fold end ${FOLDNAME}
 done
 
 
+travis_fold start auditwheels
 # Bundle external shared libraries into the wheels and fix platform tags
 echo -e "\n\nAuditing wheels:"
 for whl in /io/dist-wip/*.whl; do
     auditwheel repair $whl -w /io/dist/
 done
+travis_fold end auditwheels
