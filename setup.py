@@ -59,13 +59,15 @@ else:  # OS X and Linux
 
 
 if os.environ.get("_CYTHONIZE_WITH_COVERAGE", None):
-    cythonize_opts = {
+    compiler_directives = {
         'linetrace': True,
+    }
+    cythonize_opts = {
         'gdb_debug': True,
-        'build_inplace': True
     }
     general_macros = [('CYTHON_TRACE_NOGIL', '1')]
 else:
+    compiler_directives = None
     cythonize_opts = {}
     general_macros = []
 
@@ -92,8 +94,7 @@ setup(
             ] + os_specific_macros + general_macros,
             include_dirs=['imgui', 'config-cpp'],
         ),
-        # todo: control gdb_debug with evn variable?
-    ], compiler_directives=cythonize_opts, gdb_debug=True),
+    ], compiler_directives=compiler_directives, **cythonize_opts),
 
     setup_requires=['cython'],
 
