@@ -67,7 +67,7 @@ if os.environ.get("_CYTHONIZE_WITH_COVERAGE", None):
     }
     general_macros = [('CYTHON_TRACE_NOGIL', '1')]
 else:
-    compiler_directives = None
+    compiler_directives = {}
     cythonize_opts = {}
     general_macros = []
 
