@@ -7,13 +7,9 @@ from setuptools import setup, Extension, find_packages
 try:
     from Cython.Build import cythonize
 except ImportError:
-    # note: This is only to cheat the RTD builds from single requirement file
-    #       with -e flag. This package will be either distributed with C
-    #       sources or as properly built wheels from Travis CI and Appveyor.
-    if os.environ.get('READTHEDOCS', None) == 'True':
-        cythonize = lambda extensions, **kwargs: extensions
-    else:
-        raise
+    # A 'cythonize' stub is needed so that build, develop and install can
+    # start before Cython is installed.
+    cythonize = lambda extensions, **kwargs: extensions
 
 try:
     from pypandoc import convert
@@ -96,6 +92,7 @@ setup(
         ),
     ], compiler_directives=compiler_directives, **cythonize_opts),
 
+    install_requires=['cython'],
     setup_requires=['cython'],
 
     include_package_data=True,
