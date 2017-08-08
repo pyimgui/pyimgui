@@ -21,13 +21,11 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         self._mouse_wheel = 0.0
         self._gui_time = None
 
-        s_w = ctypes.pointer(ctypes.c_int(0))
-        s_h = ctypes.pointer(ctypes.c_int(0))
-        SDL_GetWindowSize(self.window, s_w, s_h)
-        w = s_w.contents.value
-        h = s_h.contents.value
+        width_ptr = ctypes.pointer(ctypes.c_int(0))
+        height_ptr = ctypes.pointer(ctypes.c_int(0))
+        SDL_GetWindowSize(self.window, width_ptr, height_ptr)
 
-        self.io.display_size = w, h
+        self.io.display_size = width_ptr[0], height_ptr[0]
 
         self._map_keys()
 
