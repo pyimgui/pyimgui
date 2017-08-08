@@ -7,6 +7,7 @@ usage guide
 .. toctree::
    :maxdepth: 5
 
+   first-steps
    conditions
    window-flags
    treenode-flags
