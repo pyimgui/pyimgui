@@ -9,6 +9,7 @@ travis_fold() {
 rm -rf /opt/python/cp26*
 echo -e "\n\nWill build wheels for:"
 for PY in /opt/python/*/bin/python; do echo "* $(${PY} --version 2>&1)"; done
+echo
 
 for PYBIN in /opt/python/*/bin; do
     FOLDNAME="wheel-$(basename $(dirname ${PYBIN}))"
@@ -23,7 +24,7 @@ done
 
 travis_fold start auditwheels
 # Bundle external shared libraries into the wheels and fix platform tags
-echo -e "\n\nAuditing wheels:"
+echo -e "Auditing wheels:"
 for whl in /io/dist-wip/*.whl; do
     auditwheel repair $whl -w /io/dist/
 done
