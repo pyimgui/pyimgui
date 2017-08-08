@@ -9,7 +9,19 @@ try:
 except ImportError:
     # A 'cythonize' stub is needed so that build, develop and install can
     # start before Cython is installed.
-    cythonize = lambda extensions, **kwargs: extensions
+    cythonize = lambda extensions, **kwargs: extensions  # noqa
+    USE_CYTHON = False
+else:
+    USE_CYTHON = True
+
+
+_CYTHONIZE_WITH_COVERAGE = os.environ.get("_CYTHONIZE_WITH_COVERAGE", False)
+
+if _CYTHONIZE_WITH_COVERAGE and not USE_CYTHON:
+    raise RuntimeError(
+        "Configured to build using Cython "
+        "and coverage but Cython not available."
+    )
 
 try:
     from pypandoc import convert
@@ -54,7 +66,7 @@ else:  # OS X and Linux
     os_specific_macros = []
 
 
-if os.environ.get("_CYTHONIZE_WITH_COVERAGE", None):
+if _CYTHONIZE_WITH_COVERAGE:
     compiler_directives = {
         'linetrace': True,
     }
@@ -66,6 +78,32 @@ else:
     compiler_directives = {}
     cythonize_opts = {}
     general_macros = []
+
+
+extension_sources = ["imgui/core" + ('.pyx' if USE_CYTHON else '.cpp')]
+
+if not USE_CYTHON:
+    # note: Cython will pick these files automatically but when building
+    #       a plain C++ sdist without Cython we need to explicitly mark
+    #       these files for compilation and linking.
+    extension_sources += [
+        'imgui-cpp/imgui.cpp',
+        'imgui-cpp/imgui_draw.cpp',
+        'imgui-cpp/imgui_demo.cpp',
+        'config-cpp/py_imconfig.cpp'
+    ]
+
+EXTENSIONS = [
+    Extension(
+        "imgui.core", extension_sources,
+        extra_compile_args=os_specific_flags,
+        define_macros=[
+            # note: for raising custom exceptions directly in ImGui code
+            ('PYIMGUI_CUSTOM_EXCEPTION', None)
+        ] + os_specific_macros + general_macros,
+        include_dirs=['imgui', 'config-cpp', 'imgui-cpp'],
+    ),
+]
 
 
 setup(
@@ -80,20 +118,15 @@ setup(
     long_description=read_md(README),
     url="https://github.com/swistakm/pyimgui",
 
-    ext_modules=cythonize([
-        Extension(
-            "imgui.core", ["imgui/core.pyx"],
-            extra_compile_args=os_specific_flags,
-            define_macros=[
-                # note: for raising custom exceptions directly in ImGui code
-                ('PYIMGUI_CUSTOM_EXCEPTION', None)
-            ] + os_specific_macros + general_macros,
-            include_dirs=['imgui', 'config-cpp'],
-        ),
-    ], compiler_directives=compiler_directives, **cythonize_opts),
-
     install_requires=['cython'],
     setup_requires=['cython'],
+    ext_modules=cythonize(
+        EXTENSIONS,
+        compiler_directives=compiler_directives, **cythonize_opts
+    ),
+    extras_require={
+        'Cython':  ['Cython>=0.24'],
+    },
 
     include_package_data=True,
 

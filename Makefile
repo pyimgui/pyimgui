@@ -53,3 +53,9 @@ completion:
 	_CYTHONIZE_WITH_COVERAGE=1 python -m pip install -e . -v
 	@python ci/completion.py missing `find build/ -name imgui.o -print -quit` `find build/ -name core.o -print -quit`
 	@python ci/completion.py with-nm `find build/ -name imgui.o -print -quit` `find build/ -name core.o -print -quit`
+
+.PHONY: ditribute
+distribute:
+	pip install -U Cython
+	python setup.py build
+	python sdist

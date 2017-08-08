@@ -1,0 +1,16 @@
+include README.md
+include LICENSE
+
+# Cython sources
+recursive-include imgui *.pyx *.pxd
+
+# Cython-generated C++ sources
+recursive-include imgui *.cpp *.h
+
+# Additional internal ImgGui configuration
+recursive-include config-cpp *.cpp *.h
+
+# ImGui sources
+recursive-include imgui-cpp *.cpp *.h
+prune imgui-cpp/examples
+prune imgui-cpp/extra_fonts
