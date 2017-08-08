@@ -55,7 +55,7 @@ completion:
 	@python ci/completion.py with-nm `find build/ -name imgui.o -print -quit` `find build/ -name core.o -print -quit`
 
 .PHONY: ditribute
-distribute:
-	pip install -U Cython
+distribute: clean
+	pip install -U Cython setuptools twine
 	python setup.py build
-	python sdist
+	python setup.py sdist

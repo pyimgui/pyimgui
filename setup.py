@@ -118,8 +118,6 @@ setup(
     long_description=read_md(README),
     url="https://github.com/swistakm/pyimgui",
 
-    install_requires=['cython'],
-    setup_requires=['cython'],
     ext_modules=cythonize(
         EXTENSIONS,
         compiler_directives=compiler_directives, **cythonize_opts
