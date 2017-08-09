@@ -7,7 +7,7 @@ import OpenGL.GL as gl
 from PIL import Image
 
 import imgui
-from imgui.integrations import GlfwImpl
+from imgui.integrations.glfw import GlfwRenderer
 
 
 io = imgui.get_io()
@@ -64,6 +64,19 @@ def render_snippet(
 ):
     _patch_imgui()
 
+    # Little shim that filters out the new_frame and render commands
+    # so we can use them in code examples. It's simply a hoax.
+    lines = [
+        line
+        if all([
+            "imgui.new_frame()" not in line,
+            "imgui.render()" not in line
+        ]) else ""
+        for line in
+        source.split('\n')
+    ]
+    source = "\n".join(lines)
+
     code = compile(source, '<str>', 'exec')
     window_name = "minimal ImGui/GLFW3 example"
 
@@ -90,7 +103,7 @@ def render_snippet(
         print("Could not initialize Window")
         exit(1)
 
-    impl = GlfwImpl(window)
+    impl = GlfwRenderer(window)
     glfw.poll_events()
 
     # render target for framebuffer
