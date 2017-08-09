@@ -4,7 +4,6 @@ import cocos
 from cocos.director import director
 
 from pyglet import gl
-from pyglet.window import mouse
 
 from imgui.integrations.cocos2d import ImguiLayer
 import imgui
