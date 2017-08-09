@@ -10,4 +10,4 @@ API reference
 
    imgui
    imgui.core
-   imgui.impl
+   imgui.integrations
