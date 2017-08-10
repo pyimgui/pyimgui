@@ -20,6 +20,10 @@ environment:
       PYTHON_ARCH: 32
       MSVC_VERSION: "Visual Studio 14"
 
+    - PYTHON: "C:\\Python36"
+      PYTHON_ARCH: 32
+      MSVC_VERSION: "Visual Studio 14"
+
     # x64 builds
     - PYTHON: "C:\\Python27-x64"
       PYTHON_ARCH: 64
@@ -34,6 +38,10 @@ environment:
       PYTHON_ARCH: 64
       MSVC_VERSION: "Visual Studio 10 Win64"
       DISTUTILS_USE_SDK: "1"
+
+    - PYTHON: "C:\\Python35-x64"
+      PYTHON_ARCH: 64
+      MSVC_VERSION: "Visual Studio 14 Win64"
 
     - PYTHON: "C:\\Python35-x64"
       PYTHON_ARCH: 64

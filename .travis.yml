@@ -13,10 +13,13 @@ matrix:
       env: PY_VERSION=3.3.6
 
     - os: osx
-      env: PY_VERSION=3.4.4
+      env: PY_VERSION=3.4.6
 
     - os: osx
-      env: PY_VERSION=3.5.1
+      env: PY_VERSION=3.5.4
+
+    - os: osx
+      env: PY_VERSION=3.6.1
 
     - os: linux
       sudo: required
