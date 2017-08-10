@@ -67,4 +67,4 @@ after_success:
   - source dist-env/bin/activate
   - python -m pip install dropbox
   # note: we upload dists only on master commits
-  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then python dropbox_upload.py; fi
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then python ci/dropbox_upload.py; fi
