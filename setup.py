@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+from itertools import chain
 
 from setuptools import setup, Extension, find_packages
 
@@ -82,6 +83,28 @@ else:
 
 extension_sources = ["imgui/core" + ('.pyx' if USE_CYTHON else '.cpp')]
 
+
+def backend_extras(*requirements):
+    """Construct list of requirements for backend integration.
+
+    All built-in backends depend on PyOpenGL so add it as default requirement.
+    """
+    return ["PyOpenGL"] + list(requirements)
+
+EXTRAS_REQUIRE = {
+    'Cython':  ['Cython>=0.24'],
+    'cocos2d': backend_extras('cocos2d'),
+    'sdl2': backend_extras('PySDL2'),
+    'glfw': backend_extras('glfw'),
+    'pygame': backend_extras('pygame'),
+    'opengl': backend_extras(),
+}
+
+# construct special 'full' extra that adds requirements for all built-in
+# backend integrations and additional extra features.
+EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
+
+
 if not USE_CYTHON:
     # note: Cython will pick these files automatically but when building
     #       a plain C++ sdist without Cython we need to explicitly mark
@@ -122,18 +145,7 @@ setup(
         EXTENSIONS,
         compiler_directives=compiler_directives, **cythonize_opts
     ),
-    extras_require={
-        'Cython':  ['Cython>=0.24'],
-    },
-
-    extras_require={
-        'cocos2d': ['PyOpenGL', 'cocos2d'],
-        'sdl2': ['PyOpenGL', 'PySDL'],
-        'glfw': ['PyOpenGL', 'glfw'],
-        'pygame': ['PyOpenGL', 'PySDL'],
-        # todo: consider adding to install_requires
-        'opengl': ['PyOpenGL'],
-    },
+    extras_require=EXTRAS_REQUIRE,
     include_package_data=True,
 
     license='BSD',
