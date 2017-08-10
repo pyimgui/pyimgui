@@ -4,12 +4,12 @@ from __future__ import absolute_import
 import glfw
 import imgui
 
-from ._opengl import OpenGLBaseImpl
+from .opengl import ProgrammablePipelineRenderer
 
 
-class GlfwImpl(OpenGLBaseImpl):
+class GlfwRenderer(ProgrammablePipelineRenderer):
     def __init__(self, window, attach_callbacks=True):
-        super(GlfwImpl, self).__init__()
+        super(GlfwRenderer, self).__init__()
         self.window = window
 
         if attach_callbacks:

@@ -95,6 +95,14 @@ setup(
     install_requires=['cython'],
     setup_requires=['cython'],
 
+    extras_require={
+        'cocos2d': ['PyOpenGL', 'cocos2d'],
+        'sdl2': ['PyOpenGL', 'PySDL'],
+        'glfw': ['PyOpenGL', 'glfw'],
+        'pygame': ['PyOpenGL', 'PySDL'],
+        # todo: consider adding to install_requires
+        'opengl': ['PyOpenGL'],
+    },
     include_package_data=True,
 
     license='BSD',

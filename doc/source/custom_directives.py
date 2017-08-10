@@ -75,10 +75,14 @@ class VisualDirective(Directive):
     final_argument_whitespace = True
     option_spec = {
         'title': directives.unchanged,
+        'introduction': directives.unchanged,
+        'inter': directives.unchanged,
+
         'width': directives.positive_int,
         'height': directives.positive_int,
         'auto_layout': flag,
         'click': click_list,
+
     }
 
     def run(self):
@@ -89,11 +93,14 @@ class VisualDirective(Directive):
 
         # docutils document model is insane!
         head1 = nodes.paragraph()
-        head1.append(nodes.inline("Example:", "Example: "))
 
+        introduction = self.options.pop('introduction', "Example:")
+        head1.append(nodes.inline(introduction, introduction))
+
+        inter = self.options.pop('inter', "Outputs:")
         head2 = nodes.paragraph()
         head2.append(
-            nodes.section("foo", nodes.inline("Outputs:", "Outputs: "))
+            nodes.section("foo", nodes.inline(inter, inter))
         )
 
         directive_nodes = [
