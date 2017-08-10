@@ -183,6 +183,7 @@ html_theme_options = {
     'github_repo': 'pyimgui',
     'github_button': True,
     'github_type': 'star',
+    'fixed_sidebar': True,
     'sidebar_includehidden': True,
     'description': "Python wrapper for dear ImGui",
 }

@@ -1,14 +1,18 @@
+
+.. include:: readme.rst
+
+
+Contents
+========
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    guide/index.rst
    reference/modules.rst
 
 
-.. include:: readme.rst
-
-
-indices and tables
+Indices and tables
 ==================
 
 * :ref:`genindex`

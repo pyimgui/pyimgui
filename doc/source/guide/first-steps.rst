@@ -128,6 +128,10 @@ If you want you can install **pyimgui** with multiple backends at once::
 
     $ pip install imgui[glfw,cocos2d,pygame,sdl2]
 
+You can even request to install all requirements for every supported backend
+and every optional feature using single ``full`` extras option::
+
+    $ pip install imgui[full]
 
 For actual examples of using these backends see the `doc/examples`_ directory
 of the `project page on GitHub <https://github.com/swistakm/pyimgui>`_.
