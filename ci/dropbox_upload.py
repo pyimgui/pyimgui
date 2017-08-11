@@ -30,7 +30,8 @@ if __name__:
             local_path = os.path.join(root, filename)
             relative_path = os.path.relpath(local_path, 'dist')
             # note: it is a dropbox path so there is no need for os.path.join()
-            dropbox_path = "/".join(sys.argv[1:] + [relative_path])
+            # note: dropbox paths must start with /
+            dropbox_path = "/" + "/".join(sys.argv[1:] + [relative_path])
 
             with open(local_path, 'rb') as f:
                 print("uploading %s" % local_path)

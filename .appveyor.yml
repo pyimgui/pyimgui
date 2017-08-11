@@ -43,7 +43,7 @@ environment:
       PYTHON_ARCH: 64
       MSVC_VERSION: "Visual Studio 14 Win64"
 
-    - PYTHON: "C:\\Python35-x64"
+    - PYTHON: "C:\\Python36-x64"
       PYTHON_ARCH: 64
       MSVC_VERSION: "Visual Studio 14 Win64"
 
@@ -78,9 +78,12 @@ build_script:
   - "%PYTHON%/python.exe -m pytest -v --color=yes"
 
 on_success:
-  - if [%APPVEYOR_REPO_BRANCH%]==[master] (
-       python.exe -m pip install dropbox &&
-       python.exe ci/dropbox_upload.py $(python.exe setup.py --version))
+  - ps: |
+      if ($APPVEYOR_REPO_BRANCH -eq master)
+      {
+         python.exe -m pip install dropbox
+         python.exe ci/dropbox_upload.py $(python.exe setup.py --version)
+      }
 
 artifacts:
   - path: dist\*
