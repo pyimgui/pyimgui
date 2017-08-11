@@ -15,27 +15,29 @@ Builds:
 Immediate Mode Graphical User Interface.
 
 
-# installation
+# Installation
 
-**pyimgui** is available on PyPI so you can easily
-install it with `pip`:
+**pyimgui** is available on PyPI so you can easily install it with `pip`:
  
-    pip install imgui
+    pip install imgui[full]
 
-`imgui` package integrates easily with various graphic backends and
-Python-based game engines. Each backend requires one or more additional
-packages. You can install them with `imgui` using pip's *extras* feature:
+Above command will install `imgui` package with additional dependencies for all
+built-in rendering backend integrations (pygame, cocos2d, etc.). If you don't
+want to install all additional dependencies you can always use bare
+`pip instal imgui` command or select a specific set of extra requirements:
 
+* for GLFW3 backend use `pip install imgui[pygame]`
 * for GLFW3 backend use `pip install imgui[glfw]`
 * for SDL2 backend use `pip install imgui[sdl2]`
+* for Cocos2d backend use `pip install imgui[cocos2d]`
 
 Package is distributed in form of *built wheels* so it does not require
 compilation on most operating systems. For more details about compatibility
-with diffferent OSes and Python versions see the *project ditribution*
+with diffferent OSes and Python versions see the *Project ditribution*
 section of this documentation page.
 
 
-# project status
+# Project status
 
 The `imgui` package provides support for the majority of core ImGui widgets and
 functionalities. Some low-level API elements and complex widgets (like plots)
@@ -43,7 +45,7 @@ may be missing. We are working hard to provide 100% feature mapping of the core
 ImGui library. The *completion badge* shows up-to-date status of that goal.
 
 
-# project distribution
+# Project distribution
 
 This project has working build pipeline on Appveyor and Travis and builds 
 succesfully for all major operating systems with different architectures:
@@ -79,7 +81,7 @@ commands:
     pip install imgui --no-binary imgui
 
 
-# development tips
+# Development tips
 We have tried hard to make the process of bootstraping this project as simple
 as possible.
 
@@ -94,7 +96,7 @@ dev requirements etc.) and build the project. `make` will automatically install
 `imgui` in the *development/editable* mode. Then you can run some examples
 found in the `doc/examples` directory in order to verify if project is working.
 
-For building ducumentation and running tests you will need some additional
+For building documentation and running tests you will need some additional
 requirements from `doc/requirements-test.txt`.
 
 You can run tests with:
