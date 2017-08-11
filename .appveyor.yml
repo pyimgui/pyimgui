@@ -80,7 +80,7 @@ build_script:
 on_success:
   - if [%APPVEYOR_REPO_BRANCH%]==[master] (
        python.exe -m pip install dropbox &&
-       python.exe ci/dropbox_upload.py)
+       python.exe ci/dropbox_upload.py $(python.exe setup.py --version))
 
 artifacts:
   - path: dist\*

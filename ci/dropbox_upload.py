@@ -10,6 +10,7 @@ provided by given CI system because it is more consistent.
 """
 
 import os
+import sys
 
 import dropbox
 import dropbox.files
@@ -28,7 +29,8 @@ if __name__:
         for filename in files:
             local_path = os.path.join(root, filename)
             relative_path = os.path.relpath(local_path, 'dist')
-            dropbox_path = "/" + relative_path
+            # note: it is a dropbox path so there is no need for os.path.join()
+            dropbox_path = "/".join(sys.argv[1:] + [relative_path])
 
             with open(local_path, 'rb') as f:
                 print("uploading %s" % local_path)
