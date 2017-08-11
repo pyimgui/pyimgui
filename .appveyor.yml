@@ -79,7 +79,7 @@ build_script:
 
 on_success:
   - ps: |
-      if ($APPVEYOR_REPO_BRANCH -eq master)
+      if ($APPVEYOR_REPO_BRANCH -eq "master")
       {
          python.exe -m pip install dropbox
          python.exe ci/dropbox_upload.py $(python.exe setup.py --version)
