@@ -17,7 +17,7 @@ if [[ $TRAVIS_OS_NAME == "osx" ]]; then
         travis_fold end brew-upgrade
 
         travis_fold start pyenv-install
-        pyenv install $PY_VERSION
+        pyenv install --skip-existing $PY_VERSION
         pyenv local $PY_VERSION
         travis_fold end pyenv-install
 
