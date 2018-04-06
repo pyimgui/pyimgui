@@ -3025,7 +3025,7 @@ def drag_float(
 
     return cimgui.DragFloat(
         _bytes(label), &inout_value,
-        change_speed, max_value, min_value, _bytes(display_format), power
+        change_speed, min_value, max_value, _bytes(display_format), power
     ), inout_value
 
 
@@ -3084,7 +3084,7 @@ def drag_float2(
     cdef float[2] inout_values = [value0, value1]
     return cimgui.DragFloat2(
         _bytes(label), <float*>&inout_values,
-        change_speed, max_value, min_value, _bytes(display_format), power
+        change_speed, min_value, max_value, _bytes(display_format), power
     ), (inout_values[0], inout_values[1])
 
 
@@ -3143,7 +3143,7 @@ def drag_float3(
     cdef float[3] inout_values = [value0, value1, value2]
     return cimgui.DragFloat3(
         _bytes(label), <float*>&inout_values,
-        change_speed, max_value, min_value, _bytes(display_format), power
+        change_speed, min_value, max_value, _bytes(display_format), power
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
@@ -3202,7 +3202,7 @@ def drag_float4(
     cdef float[4] inout_values = [value0, value1, value2, value3]
     return cimgui.DragFloat4(
         _bytes(label), <float*>&inout_values,
-        change_speed, max_value, min_value, _bytes(display_format), power
+        change_speed, min_value, max_value, _bytes(display_format), power
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
@@ -3260,7 +3260,7 @@ def drag_int(
 
     return cimgui.DragInt(
         _bytes(label), &inout_value,
-        change_speed, max_value, min_value, _bytes(display_format)
+        change_speed, min_value, max_value, _bytes(display_format)
     ), inout_value
 
 
@@ -3313,7 +3313,7 @@ def drag_int2(
     cdef int[2] inout_values = [value0, value1]
     return cimgui.DragInt2(
         _bytes(label), <int*>&inout_values,
-        change_speed, max_value, min_value, _bytes(display_format),
+        change_speed, min_value, max_value, _bytes(display_format),
     ), (inout_values[0], inout_values[1])
 
 
@@ -3366,7 +3366,7 @@ def drag_int3(
     cdef int[3] inout_values = [value0, value1, value2]
     return cimgui.DragInt3(
         _bytes(label), <int*>&inout_values,
-        change_speed, max_value, min_value, _bytes(display_format),
+        change_speed, min_value, max_value, _bytes(display_format),
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
@@ -3419,7 +3419,7 @@ def drag_int4(
     cdef int[4] inout_values = [value0, value1, value2, value3]
     return cimgui.DragInt4(
         _bytes(label), <int*>&inout_values,
-        change_speed, max_value, min_value, _bytes(display_format),
+        change_speed, min_value, max_value, _bytes(display_format),
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
