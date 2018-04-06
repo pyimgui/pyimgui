@@ -1,4 +1,4 @@
-Cython
+Cython>=0.24,<=0.27.3
 PyOpenGL
 glfw
 wheel

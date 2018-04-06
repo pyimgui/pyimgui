@@ -1,5 +1,4 @@
-wheel
-Cython
+Cython>=0.24,<=0.27.3
 click
 # note: sphinx and docutils are for collecting tests
 Sphinx==1.4.8
