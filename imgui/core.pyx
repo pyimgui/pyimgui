@@ -682,7 +682,7 @@ cdef class _FontAtlas(object):
         self._ptr.GetTexDataAsRGBA32(&pixels, &width, &height)
 
         return width, height, bytes(pixels[:width*height*4])
-    
+
     @property
     def texture_id(self):
         """
@@ -2904,7 +2904,6 @@ def color_edit3(str label, float r, float g, float b):
         r (float): red color intensity.
         g (float): green color intensity.
         b (float): blue color instensity.
-        a (float): alpha intensity.
 
     Returns:
         tuple: a ``(changed, color)`` tuple that contains indicator of color
@@ -2966,8 +2965,8 @@ def color_edit4(
 def drag_float(
     str label, float value,
     float change_speed = 1.0,
-    float max_value=0.0,
     float min_value=0.0,
+    float max_value=0.0,
     str display_format = "%.3f",
     float power = 1.
 ):
@@ -2999,8 +2998,8 @@ def drag_float(
         label (str): widget label.
         value (float): drag values,
         change_speed (float): how fast values change on drag.
-        max_value (float): max value allowed by widget.
         min_value (float): min value allowed by widget.
+        max_value (float): max value allowed by widget.
         display_format (str): display format string as C-style ``printf``
             format string. **Warning:** Highly unsafe when used without care.
             May lead to segmentation faults and other memory violation issues.
@@ -3032,8 +3031,8 @@ def drag_float(
 def drag_float2(
     str label, float value0, float value1,
     float change_speed = 1.0,
-    float max_value=0.0,
     float min_value=0.0,
+    float max_value=0.0,
     str display_format = "%.3f",
     float power = 1.
 ):
@@ -3060,8 +3059,8 @@ def drag_float2(
         label (str): widget label.
         value0, value1 (float): drag values.
         change_speed (float): how fast values change on drag.
-        max_value (float): max value allowed by widget.
         min_value (float): min value allowed by widget.
+        max_value (float): max value allowed by widget.
         display_format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_float()`.
         power (float): index of the power function applied to the value.
@@ -3091,8 +3090,8 @@ def drag_float2(
 def drag_float3(
     str label, float value0, float value1, float value2,
     float change_speed = 1.0,
-    float max_value=0.0,
     float min_value=0.0,
+    float max_value=0.0,
     str display_format = "%.3f",
     float power = 1.
 ):
@@ -3119,8 +3118,8 @@ def drag_float3(
         label (str): widget label.
         value0, value1, value2 (float): drag values.
         change_speed (float): how fast values change on drag.
-        max_value (float): max value allowed by widget.
         min_value (float): min value allowed by widget.
+        max_value (float): max value allowed by widget.
         display_format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_float()`.
         power (float): index of the power function applied to the value.
@@ -3150,8 +3149,8 @@ def drag_float3(
 def drag_float4(
     str label, float value0, float value1, float value2, float value3,
     float change_speed = 1.0,
-    float max_value=0.0,
     float min_value=0.0,
+    float max_value=0.0,
     str display_format = "%.3f",
     float power = 1.
 ):
@@ -3178,8 +3177,8 @@ def drag_float4(
         label (str): widget label.
         value0, value1, value2, value3 (float): drag values.
         change_speed (float): how fast values change on drag.
-        max_value (float): max value allowed by widget.
         min_value (float): min value allowed by widget.
+        max_value (float): max value allowed by widget.
         display_format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_float()`.
         power (float): index of the power function applied to the value.
@@ -3209,8 +3208,8 @@ def drag_float4(
 def drag_int(
     str label, int value,
     float change_speed = 1.0,
-    int max_value=0,
     int min_value=0,
+    int max_value=0,
     str display_format = "%.f"
 ):
     """Display int drag widget.
@@ -3236,8 +3235,8 @@ def drag_int(
         label (str): widget label.
         value (int): drag value,
         change_speed (float): how fast values change on drag.
-        max_value (int): max value allowed by widget.
         min_value (int): min value allowed by widget.
+        max_value (int): max value allowed by widget.
         display_format (str): display format string as C-style ``printf``
             format string. **Warning:** Highly unsafe when used without care.
             May lead to segmentation faults and other memory violation issues.
@@ -3267,8 +3266,8 @@ def drag_int(
 def drag_int2(
     str label, int value0, int value1,
     float change_speed = 1.0,
-    int max_value=0,
     int min_value=0,
+    int max_value=0,
     str display_format = "%.f"
 ):
     """Display int drag widget with 2 values.
@@ -3291,8 +3290,8 @@ def drag_int2(
         label (str): widget label.
         value0, value1 (int): drag values.
         change_speed (float): how fast values change on drag.
-        max_value (int): max value allowed by widget.
         min_value (int): min value allowed by widget.
+        max_value (int): max value allowed by widget.
         display_format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
 
@@ -3320,8 +3319,8 @@ def drag_int2(
 def drag_int3(
     str label, int value0, int value1, int value2,
     float change_speed = 1.0,
-    int max_value=0,
     int min_value=0,
+    int max_value=0,
     str display_format = "%.f"
 ):
     """Display int drag widget with 3 values.
@@ -3344,8 +3343,8 @@ def drag_int3(
         label (str): widget label.
         value0, value1 (int): drag values.
         change_speed (float): how fast values change on drag.
-        max_value (int): max value allowed by widget.
         min_value (int): min value allowed by widget.
+        max_value (int): max value allowed by widget.
         display_format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
 
@@ -3373,8 +3372,8 @@ def drag_int3(
 def drag_int4(
     str label, int value0, int value1, int value2, int value3,
     float change_speed = 1.0,
-    int max_value=0,
     int min_value=0,
+    int max_value=0,
     str display_format = "%.f"
 ):
     """Display int drag widget with 4 values.
@@ -3397,8 +3396,8 @@ def drag_int4(
         label (str): widget label.
         value0, value1 (int): drag values.
         change_speed (float): how fast values change on drag.
-        max_value (int): max value allowed by widget.
         min_value (int): min value allowed by widget.
+        max_value (int): max value allowed by widget.
         display_format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
 
