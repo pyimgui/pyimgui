@@ -92,7 +92,7 @@ def backend_extras(*requirements):
     return ["PyOpenGL"] + list(requirements)
 
 EXTRAS_REQUIRE = {
-    'Cython':  ['Cython>=0.24'],
+    'Cython':  ['Cython>=0.24,<=0.28.2'],
     'cocos2d': backend_extras('cocos2d'),
     'sdl2': backend_extras('PySDL2'),
     'glfw': backend_extras('glfw'),
