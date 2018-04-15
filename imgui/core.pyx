@@ -4654,6 +4654,21 @@ def is_mouse_hovering_rect(
     )
 
 
+def is_mouse_double_clicked(int button):
+    """Returns if mouse is double-clicked. A double-click returns false in IsMouseClicked().
+
+    Args:
+        button (int): mouse button index.
+
+    Returns:
+        bool: if mouse is double clicked.
+
+    .. wraps::
+         bool IsMouseDoubleClicked(int button);
+    """
+    return cimgui.IsMouseDoubleClicked(button)
+
+
 def is_mouse_dragging(int button = 0, float lock_threshold = -1.0):
     """Returns if mouse is dragging.
 
