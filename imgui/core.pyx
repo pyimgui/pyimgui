@@ -2026,7 +2026,7 @@ def end_menu():
 
 
 def menu_item(
-    str name, str shortcut=None, cimgui.bool selected=None, enabled=True
+    str name, str shortcut=None, cimgui.bool selected=False, enabled=True
 ):
     """Create a menu item.
 

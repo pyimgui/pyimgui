@@ -109,5 +109,8 @@ ENV/
 # Pycharm project settings
 .idea/
 
+# Visual Studio Code project settings
+.vscode/
+
 # Bootstrap marker
 .bootstrapped
