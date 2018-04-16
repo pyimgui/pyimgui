@@ -946,7 +946,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool IsRectVisible(const ImVec2& size) except +  # ✓
     float GetTime() except +  # ✗
     int GetFrameCount() except +  # ✗
-    const char* GetStyleColName(ImGuiCol idx) except +  # ✗
+    const char* GetStyleColorName(ImGuiCol idx) except +  # ✗
     ImVec2 CalcItemRectClosestPoint(  # ✗
             const ImVec2& pos,
             # note: optional
