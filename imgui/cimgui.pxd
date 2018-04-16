@@ -990,7 +990,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool IsMouseDoubleClicked(int button) except +  # ✓
     bool IsMouseReleased(int button) except +  # ✗
     bool IsMouseHoveringWindow() except +  # ✓
-    bool IsMouseHoveringAnyWindow() except +  # ✓
+    bool IsAnyWindowHovered() except +  # ✓
     bool IsMouseHoveringRect(  # ✓
             const ImVec2& r_min, const ImVec2& r_max,
             # note: optional

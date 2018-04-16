@@ -4596,16 +4596,16 @@ def is_mouse_hovering_window():
     return cimgui.IsMouseHoveringWindow()
 
 
-def is_mouse_hovering_any_window():
+def is_any_window_hovered():
     """Test if mouse is hovering any visible window.
 
     Returns:
         bool: True if any item is hovered, otherwise False.
 
     .. wraps::
-        bool IsMouseHoveringAnyWindow()
+        bool IsAnyWindowHovered()
     """
-    return cimgui.IsMouseHoveringAnyWindow()
+    return cimgui.IsAnyWindowHovered()
 
 
 def is_mouse_hovering_rect(
