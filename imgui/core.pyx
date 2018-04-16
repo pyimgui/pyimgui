@@ -2590,11 +2590,12 @@ def invisible_button(str identifier, width, height):
         _cast_args_ImVec2(width, height)
     )
 
-
 def color_button(
+        desc_id,
         float r, float g, float b, a=1.,
-        cimgui.bool small_height=False,
-        cimgui.bool outline_border=True,
+        cimgui.ImGuiColorEditFlags flags = 0,
+        float width= 0.,
+        float height=0.,
 ):
     """Display colored button.
 
@@ -2603,10 +2604,10 @@ def color_button(
         :height: 150
 
         imgui.begin("Example: color button")
-        imgui.color_button(1, 0, 0, 1, True, True)
-        imgui.color_button(0, 1, 0, 1, True, False)
-        imgui.color_button(0, 0, 1, 1, False, True)
-        imgui.color_button(1, 0, 1, 1, False, False)
+        imgui.color_button('Red', 1, 0, 0, 1)
+        imgui.color_button('Green', 0, 1, 0, 1)
+        imgui.color_button('Blue', 0, 0, 1, 1)
+        imgui.color_button('Violet', 1, 0, 1, 1)
         imgui.end()
 
     Args:
@@ -2614,23 +2615,28 @@ def color_button(
         g (float): green color intensity.
         b (float): blue color instensity.
         a (float): alpha intensity.
-        small_height (bool): Small height. Default to False
-        outline_border (bool): Diplay outline border. Defaults to True.
+        # note: optionals below
+        cimgui.ImGuiColorEditFlags flags,
+        float width,
+        float height,
 
     Returns:
         bool: True if button is clicked.
 
     .. wraps::
         bool ColorButton(
-            const ImVec4& col,
-            bool small_height = false,
-            bool outline_border = true
+            const char* desc_id,
+            ImVec4& col,
+            # note: optional
+            ImGuiColorEditFlags flags, ImVec2 size
         )
     """
     return cimgui.ColorButton(
-        _cast_args_ImVec4(r, g, b, a), small_height, outline_border
+        "%s" % _bytes(desc_id),
+        _cast_args_ImVec4(r, g, b, a),
+        flags,
+        _cast_args_ImVec2(width, height),
     )
-
 
 def image_button(
     texture_id,

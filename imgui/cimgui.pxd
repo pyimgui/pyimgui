@@ -508,12 +508,13 @@ cdef extern from "imgui.h" namespace "ImGui":
             const ImVec2& uv0, const ImVec2& uv1, int frame_padding,
             const ImVec4& bg_col, const ImVec4& tint_col
     ) except +
-    
-    bool ColorButton(  # ✓
-            const ImVec4& col,
-            # note: optional
-            bool small_height, bool outline_border
-    ) except +  # Widgets: images
+    bool ColorButton( # ✓
+        const char*, ImVec4 col,
+        # note: optional
+        ImGuiColorEditFlags flags, ImVec2 size
+    ) except +
+
+    # Widgets: images
     void Image(  # ✓
             ImTextureID user_texture_id, const ImVec2& size,
             # note: optional
