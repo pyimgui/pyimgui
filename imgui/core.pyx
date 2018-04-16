@@ -4584,16 +4584,16 @@ def is_rect_visible(float size_width, float size_height):
     return cimgui.IsRectVisible(_cast_args_ImVec2(size_width, size_height))
 
 
-def is_mouse_hovering_window():
+def is_window_rect_hovered():
     """Test if mouse is hovering the current window.
 
     Returns:
         bool: True if the window is hovered, otherwise False.
 
     .. wraps::
-        bool IsMouseHoveringWindow()
+        bool IsWindowRectHovered()
     """
-    return cimgui.IsMouseHoveringWindow()
+    return cimgui.IsWindowRectHovered()
 
 
 def is_any_window_hovered():
