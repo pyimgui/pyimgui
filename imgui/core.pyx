@@ -583,8 +583,6 @@ cdef class _StaticGlyphRanges(object):
 
 
 cdef class _Font(object):
-    cdef cimgui.ImFont* _ptr
-
     @staticmethod
     cdef from_ptr(cimgui.ImFont* ptr):
         instance = _Font()
@@ -5388,89 +5386,6 @@ def end_group():
         void EndGroup()
     """
     cimgui.EndGroup()
-
-# additional helpers
-# todo: move to separate extension module (extra?)
-
-@contextmanager
-def font(_Font font):
-    """Use specified font in given context.
-
-    Example:
-
-    .. code-block: python
-
-        ...
-        font_extra = io.fonts.add_font_from_file_ttf(
-            "CODE2000.TTF", 30, io.fonts.get_glyph_ranges_latin()
-        )
-        ...
-
-        # later in application loop
-        while True:
-            ...
-            with imgui.font(font_extra):
-                imgui.text("My text with custom font")
-            ...
-
-    Args:
-        font (_Font): font object retrieved from :any:`add_font_from_file_ttf`.
-    """
-    push_font(font)
-    yield
-    pop_font()
-
-@contextmanager
-def styled(cimgui.ImGuiStyleVar variable, value):
-    # note: we treat bool value as integer to guess if we are required to pop
-    #       anything because IMGUI may simply skip pushing
-    count = push_style_var(variable, value)
-    yield
-    pop_style_var(count)
-
-
-@contextmanager
-def istyled(*variables_and_values):
-    # todo: rename to nstyled?
-    count = 0
-    iterator = iter(variables_and_values)
-
-    try:
-        # note: this is a trick that allows us convert flat list to pairs
-        for var, val in izip_longest(iterator, iterator, fillvalue=None):
-            # note: since we group into pairs it is impossible to have
-            #       var equal to None
-            if val is not None:
-                count += push_style_var(var, val)
-            else:
-                raise ValueError(
-                    "Unsufficient style info: {} variable lacks a value"
-                    "".format(var)
-                )
-    except:
-        raise
-    else:
-        yield
-
-    finally:
-        # perf: short wiring despite we have a wrapper for this
-        cimgui.PopStyleVar(count)
-
-
-def vertex_buffer_vertex_pos_offset():
-    return <uintptr_t><size_t>&(<cimgui.ImDrawVert*>NULL).pos
-
-def vertex_buffer_vertex_uv_offset():
-    return <uintptr_t><size_t>&(<cimgui.ImDrawVert*>NULL).uv
-
-def vertex_buffer_vertex_col_offset():
-    return <uintptr_t><size_t>&(<cimgui.ImDrawVert*>NULL).col
-
-def vertex_buffer_vertex_size():
-    return sizeof(cimgui.ImDrawVert)
-
-def index_buffer_index_size():
-    return sizeof(cimgui.ImDrawIdx)
 
 
 # === Python/C++ cross API for error handling ===

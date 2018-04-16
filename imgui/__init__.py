@@ -4,15 +4,16 @@ __version__ = ".".join([str(x) for x in VERSION])
 
 from imgui.core import *  # noqa
 from imgui import core
+from imgui.extra import *  # noqa
+from imgui import extra
 
+VERTEX_BUFFER_POS_OFFSET = extra.vertex_buffer_vertex_pos_offset()
+VERTEX_BUFFER_UV_OFFSET = extra.vertex_buffer_vertex_uv_offset()
+VERTEX_BUFFER_COL_OFFSET = extra.vertex_buffer_vertex_col_offset()
 
-VERTEX_BUFFER_POS_OFFSET = core.vertex_buffer_vertex_pos_offset()
-VERTEX_BUFFER_UV_OFFSET = core.vertex_buffer_vertex_uv_offset()
-VERTEX_BUFFER_COL_OFFSET = core.vertex_buffer_vertex_col_offset()
+VERTEX_SIZE = extra.vertex_buffer_vertex_size()
 
-VERTEX_SIZE = core.vertex_buffer_vertex_size()
-
-INDEX_SIZE = core.index_buffer_index_size()
+INDEX_SIZE = extra.index_buffer_index_size()
 
 # ==== Condition constants (redefines for autodoc)
 #: Set the variable always
@@ -267,3 +268,24 @@ INPUT_TEXT_ALWAYS_INSERT_MODE = core.INPUT_TEXT_ALWAYS_INSERT_MODE
 INPUT_TEXT_READ_ONLY = core.INPUT_TEXT_READ_ONLY
 #: Password mode, display all characters as '*'
 INPUT_TEXT_PASSWORD = core.INPUT_TEXT_PASSWORD
+
+
+# extra aliases for backwards compatibility
+def _core_to_extra_deprecated(fn):
+    return _compat.deprecated("""
+        The imgui.core.{0}() is deprecated
+        and will be removed in 1.0.0 version of pyimgui.
+        Please use imgui.extra.{0}()
+        or imgui.{0}() instead.
+        """.format(fn.__name__)
+    )(fn)
+
+
+core.font = _core_to_extra_deprecated(extra.font)
+core.styled = _core_to_extra_deprecated(extra.styled)
+core.istyled = _core_to_extra_deprecated(extra.istyled)
+core.vertex_buffer_vertex_pos_offset = _core_to_extra_deprecated(extra.vertex_buffer_vertex_pos_offset)  # noqa
+core.vertex_buffer_vertex_uv_offset = _core_to_extra_deprecated(extra.vertex_buffer_vertex_uv_offset)  # noqa
+core.vertex_buffer_vertex_col_offset = _core_to_extra_deprecated(extra.vertex_buffer_vertex_col_offset)  # noqa
+core.vertex_buffer_vertex_size = _core_to_extra_deprecated(extra.vertex_buffer_vertex_size)  # noqa
+core.index_buffer_index_size = _core_to_extra_deprecated(extra.index_buffer_index_size)  # noqa

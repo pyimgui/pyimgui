@@ -81,7 +81,8 @@ else:
     general_macros = []
 
 
-extension_sources = ["imgui/core" + ('.pyx' if USE_CYTHON else '.cpp')]
+def extension_sources(path):
+    return [path + ('.pyx' if USE_CYTHON else '.cpp')]
 
 
 def backend_extras(*requirements):
@@ -118,7 +119,16 @@ if not USE_CYTHON:
 
 EXTENSIONS = [
     Extension(
-        "imgui.core", extension_sources,
+        "imgui.core", extension_sources("imgui/core"),
+        extra_compile_args=os_specific_flags,
+        define_macros=[
+            # note: for raising custom exceptions directly in ImGui code
+            ('PYIMGUI_CUSTOM_EXCEPTION', None)
+        ] + os_specific_macros + general_macros,
+        include_dirs=['imgui', 'config-cpp', 'imgui-cpp'],
+    ),
+    Extension(
+        "imgui.extra", extension_sources("imgui/extra"),
         extra_compile_args=os_specific_flags,
         define_macros=[
             # note: for raising custom exceptions directly in ImGui code
