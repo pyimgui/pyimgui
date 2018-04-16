@@ -6,6 +6,7 @@ from imgui.core import *  # noqa
 from imgui import core
 from imgui.extra import *  # noqa
 from imgui import extra
+from imgui import _compat
 
 VERTEX_BUFFER_POS_OFFSET = extra.vertex_buffer_vertex_pos_offset()
 VERTEX_BUFFER_UV_OFFSET = extra.vertex_buffer_vertex_uv_offset()
