@@ -5396,3 +5396,87 @@ cdef public _ImGuiError "ImGuiError" = PyErr_NewException(
 )
 
 ImGuiError = _ImGuiError # make visible to Python
+
+
+# === Extra utilities ====
+
+@contextmanager
+def _py_font(_Font font):
+    """Use specified font in given context.
+
+    Example:
+
+    .. code-block:: python
+
+        ...
+        font_extra = io.fonts.add_font_from_file_ttf(
+            "CODE2000.TTF", 30, io.fonts.get_glyph_ranges_latin()
+        )
+        ...
+
+        # later in application loop
+        while True:
+            ...
+            with imgui.font(font_extra):
+                imgui.text("My text with custom font")
+            ...
+
+    Args:
+        font (_Font): font object retrieved from :any:`add_font_from_file_ttf`.
+    """
+    push_font(font)
+    yield
+    pop_font()
+
+
+@contextmanager
+def _py_styled(cimgui.ImGuiStyleVar variable, value):
+    # note: we treat bool value as integer to guess if we are required to pop
+    #       anything because IMGUI may simply skip pushing
+    count = push_style_var(variable, value)
+    yield
+    pop_style_var(count)
+
+
+@contextmanager
+def _py_istyled(*variables_and_values):
+    # todo: rename to nstyled?
+    count = 0
+    iterator = iter(variables_and_values)
+
+    try:
+        # note: this is a trick that allows us convert flat list to pairs
+        for var, val in izip_longest(iterator, iterator, fillvalue=None):
+            # note: since we group into pairs it is impossible to have
+            #       var equal to None
+            if val is not None:
+                count += push_style_var(var, val)
+            else:
+                raise ValueError(
+                    "Unsufficient style info: {} variable lacks a value"
+                    "".format(var)
+                )
+    except:
+        raise
+    else:
+        yield
+
+    finally:
+        # perf: short wiring despite we have a wrapper for this
+        cimgui.PopStyleVar(count)
+
+
+def _py_vertex_buffer_vertex_pos_offset():
+    return <uintptr_t><size_t>&(<cimgui.ImDrawVert*>NULL).pos
+
+def _py_vertex_buffer_vertex_uv_offset():
+    return <uintptr_t><size_t>&(<cimgui.ImDrawVert*>NULL).uv
+
+def _py_vertex_buffer_vertex_col_offset():
+    return <uintptr_t><size_t>&(<cimgui.ImDrawVert*>NULL).col
+
+def _py_vertex_buffer_vertex_size():
+    return sizeof(cimgui.ImDrawVert)
+
+def _py_index_buffer_index_size():
+    return sizeof(cimgui.ImDrawIdx)

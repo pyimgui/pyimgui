@@ -82,7 +82,20 @@ else:
 
 
 def extension_sources(path):
-    return [path + ('.pyx' if USE_CYTHON else '.cpp')]
+    sources = [path + ('.pyx' if USE_CYTHON else '.cpp')]
+
+    if not USE_CYTHON:
+        # note: Cython will pick these files automatically but when building
+        #       a plain C++ sdist without Cython we need to explicitly mark
+        #       these files for compilation and linking.
+        sources += [
+            'imgui-cpp/imgui.cpp',
+            'imgui-cpp/imgui_draw.cpp',
+            'imgui-cpp/imgui_demo.cpp',
+            'config-cpp/py_imconfig.cpp'
+        ]
+
+    return sources
 
 
 def backend_extras(*requirements):
@@ -91,6 +104,7 @@ def backend_extras(*requirements):
     All built-in backends depend on PyOpenGL so add it as default requirement.
     """
     return ["PyOpenGL"] + list(requirements)
+
 
 EXTRAS_REQUIRE = {
     'Cython':  ['Cython>=0.24,<=0.28.2'],
@@ -105,18 +119,6 @@ EXTRAS_REQUIRE = {
 # backend integrations and additional extra features.
 EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
 
-
-if not USE_CYTHON:
-    # note: Cython will pick these files automatically but when building
-    #       a plain C++ sdist without Cython we need to explicitly mark
-    #       these files for compilation and linking.
-    extension_sources += [
-        'imgui-cpp/imgui.cpp',
-        'imgui-cpp/imgui_draw.cpp',
-        'imgui-cpp/imgui_demo.cpp',
-        'config-cpp/py_imconfig.cpp'
-    ]
-
 EXTENSIONS = [
     Extension(
         "imgui.core", extension_sources("imgui/core"),
@@ -124,15 +126,6 @@ EXTENSIONS = [
         define_macros=[
             # note: for raising custom exceptions directly in ImGui code
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
-        ] + os_specific_macros + general_macros,
-        include_dirs=['imgui', 'config-cpp', 'imgui-cpp'],
-    ),
-    Extension(
-        "imgui.extra", extension_sources("imgui/extra"),
-        extra_compile_args=os_specific_flags,
-        define_macros=[
-            # note: for raising custom exceptions directly in ImGui code
-            # ('PYIMGUI_CUSTOM_EXCEPTION', None)
         ] + os_specific_macros + general_macros,
         include_dirs=['imgui', 'config-cpp', 'imgui-cpp'],
     ),
