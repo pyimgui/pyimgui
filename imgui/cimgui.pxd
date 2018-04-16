@@ -47,7 +47,7 @@ cdef extern from "imgui.h":
     ctypedef int ImGuiColorEditMode
     ctypedef int ImGuiMouseCursor
     ctypedef int ImGuiWindowFlags
-    ctypedef int ImGuiSetCond
+    ctypedef int ImGuiCond
     ctypedef int ImGuiInputTextFlags
     ctypedef int ImGuiSelectableFlags
     ctypedef int ImGuiTreeNodeFlags
@@ -313,16 +313,16 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetNextWindowPos(  # ✓ note: overrides ommited
             const ImVec2& pos,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetNextWindowPosCenter(  # ✓ note: overrides ommited
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetNextWindowSize(  # ✓ note: overrides ommited
             const ImVec2& size,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetNextWindowSizeConstraints(  # ✗
             const ImVec2& size_min,
@@ -335,38 +335,38 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetNextWindowCollapsed(  # ✓
             bool collapsed,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetNextWindowFocus() except +  # ✓
     void SetWindowPos(  # ✗
             const ImVec2& pos,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowSize(  # ✗
             const ImVec2& size,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowCollapsed(  # ✗
             bool collapsed,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowFocus() except +  # ✗
     void SetWindowPos(  # ✗
             const char* name, const ImVec2& pos,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowSize(  # ✗
-            const char* name, const ImVec2& size, ImGuiSetCond
+            const char* name, const ImVec2& size, ImGuiCond
             cond
     ) except +
     void SetWindowCollapsed(  # ✗
             const char* name, bool collapsed,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowFocus(const char* name) except +  # ✗
 
@@ -789,7 +789,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetNextTreeNodeOpen(  # ✗
             bool is_open,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     bool CollapsingHeader(  # ✓
             const char* label,

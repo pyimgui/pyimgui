@@ -36,10 +36,10 @@ DEF TARGET_IMGUI_VERSION = (1, 49)
 cdef unsigned short* _LATIN_ALL = [0x0020, 0x024F , 0]
 
 # ==== Condition enum redefines ====
-ALWAYS = enums.ImGuiSetCond_Always
-ONCE = enums.ImGuiSetCond_Once
-FIRST_USE_EVER = enums.ImGuiSetCond_FirstUseEver
-APPEARING = enums.ImGuiSetCond_Appearing
+ALWAYS = enums.ImGuiCond_Always
+ONCE = enums.ImGuiCond_Once
+FIRST_USE_EVER = enums.ImGuiCond_FirstUseEver
+APPEARING = enums.ImGuiCond_Appearing
 
 # ==== Style var enum redefines ====
 STYLE_ALPHA = enums.ImGuiStyleVar_Alpha # float
@@ -1354,7 +1354,7 @@ def set_window_font_scale(float scale):
 
 
 def set_next_window_collapsed(
-    cimgui.bool collapsed, cimgui.ImGuiSetCond condition=ALWAYS
+    cimgui.bool collapsed, cimgui.ImGuiCond condition=ALWAYS
 ):
     """Set next window collapsed state.
 
@@ -1376,7 +1376,7 @@ def set_next_window_collapsed(
 
     .. wraps::
          void SetNextWindowCollapsed(
-             bool collapsed, ImGuiSetCond cond = 0
+             bool collapsed, ImGuiCond cond = 0
          )
 
     """
@@ -1444,7 +1444,7 @@ def get_window_height():
 
 
 def set_next_window_position(
-    float x, float y, cimgui.ImGuiSetCond condition=ALWAYS
+    float x, float y, cimgui.ImGuiCond condition=ALWAYS
 ):
     """Set next window position.
 
@@ -1468,13 +1468,13 @@ def set_next_window_position(
             imgui.end()
 
     .. wraps::
-        void SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond = 0)
+        void SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0)
 
     """
     cimgui.SetNextWindowPos(_cast_args_ImVec2(x, y), condition)
 
 
-def set_next_window_centered(cimgui.ImGuiSetCond condition=ALWAYS):
+def set_next_window_centered(cimgui.ImGuiCond condition=ALWAYS):
     """Set next window position to be centered on screen.
 
     Call before :func:`begin()`.
@@ -1495,13 +1495,13 @@ def set_next_window_centered(cimgui.ImGuiSetCond condition=ALWAYS):
 
 
     .. wraps::
-        void SetNextWindowPosCenter(ImGuiSetCond cond = 0)
+        void SetNextWindowPosCenter(ImGuiCond cond = 0)
     """
     cimgui.SetNextWindowPosCenter(condition)
 
 
 def set_next_window_size(
-    float width, float height, cimgui.ImGuiSetCond condition=ALWAYS
+    float width, float height, cimgui.ImGuiCond condition=ALWAYS
 ):
     """Set next window size.
 
@@ -1525,7 +1525,7 @@ def set_next_window_size(
 
     .. wraps::
         void SetNextWindowSize(
-            const ImVec2& size, ImGuiSetCond cond = 0
+            const ImVec2& size, ImGuiCond cond = 0
         )
     """
     cimgui.SetNextWindowSize(_cast_args_ImVec2(width, height), condition)

@@ -91,11 +91,11 @@ cdef extern from "imgui.h":
         ImGuiAlign_VCenter
         ImGuiAlign_Default
 
-    ctypedef enum ImGuiSetCond_:
-        ImGuiSetCond_Always               # Set the variable
-        ImGuiSetCond_Once                 # Only set the variable on the first call per runtime session
-        ImGuiSetCond_FirstUseEver         # Only set the variable if the window doesn't exist in the .ini file
-        ImGuiSetCond_Appearing            # Only set the variable if the window is appearing after being inactive (or the first time)
+    ctypedef enum ImGuiCond_:
+        ImGuiCond_Always               # Set the variable
+        ImGuiCond_Once                 # Only set the variable on the first call per runtime session
+        ImGuiCond_FirstUseEver         # Only set the variable if the window doesn't exist in the .ini file
+        ImGuiCond_Appearing            # Only set the variable if the window is appearing after being inactive (or the first time)
 
     ctypedef enum ImGuiWindowFlags_:
         ImGuiWindowFlags_NoTitleBar                 # Disable title-bar
