@@ -4584,24 +4584,6 @@ def is_rect_visible(float size_width, float size_height):
     return cimgui.IsRectVisible(_cast_args_ImVec2(size_width, size_height))
 
 
-def is_pos_hovering_any_window(float position_x, float position_y):
-    """Test if position is hovering any active ImGui window.
-
-    Args:
-        position_x (float): width of the rect
-        position_y (float): height of the rect
-
-    Returns:
-        bool: True if rect is visible, otherwise False.
-
-    .. wraps::
-        bool IsPosHoveringAnyWindow(const ImVec2& size)
-    """
-    return cimgui.IsPosHoveringAnyWindow(
-        _cast_args_ImVec2(position_x, position_y)
-    )
-
-
 def is_mouse_hovering_window():
     """Test if mouse is hovering the current window.
 
