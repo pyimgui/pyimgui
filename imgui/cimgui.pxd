@@ -924,7 +924,7 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # Utilities
     bool IsItemHovered() except +  # ✓
-    bool IsItemHoveredRect() except +  # ✓
+    bool IsItemRectHovered() except +  # ✓
     bool IsItemActive() except +  # ✓
     bool IsItemClicked(  # ✓
             # note: optional

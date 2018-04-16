@@ -4381,7 +4381,7 @@ def is_item_hovered():
     return cimgui.IsItemHovered()
 
 
-def is_item_hovered_rect():
+def is_item_rect_hovered():
     """Was the last item hovered by mouse? Even if
     another item is active or window is blocked by popup
     while we are hovering this.
@@ -4390,9 +4390,9 @@ def is_item_hovered_rect():
         bool: True if item is hovered by mouse, otherwise False.
 
     .. wraps::
-        bool IsItemHoveredRect()
+        bool IsItemRectHovered()
     """
-    return cimgui.IsItemHoveredRect()
+    return cimgui.IsItemRectHovered()
 
 
 def is_item_active():
