@@ -397,6 +397,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void PushFont(ImFont*) except +  # ✓
     void PopFont() except +  # ✓
     void PushStyleColor(ImGuiCol, const ImVec4&) except +  # ✓
+    # void PushStyleColor(ImGuiCol idx, ImU32 col) # ✗
     void PopStyleColor(int) except +  # ✓
     void PushStyleVar(ImGuiStyleVar, float) except +  # ✓
     void PushStyleVar(ImGuiStyleVar, const ImVec2&) except +  # ✓
