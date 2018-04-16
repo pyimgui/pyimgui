@@ -3,7 +3,7 @@ Sphinx==1.4.8
 docutils<0.13.1
 PyOpenGL
 glfw
-pypandoc
+pypandoc==1.4
 git-lfs
 mock
 -e.

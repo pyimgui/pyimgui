@@ -18,8 +18,10 @@ RST_README_PATH = os.path.join(DOC_DIR, 'readme.rst')
 
 
 def convert_md():
-    with open(RST_README_PATH, 'w') as readme:
-        readme.write(convert(MD_README_PATH, 'rst'))
+    with open(RST_README_PATH, 'wb') as readme:
+        converted = convert(MD_README_PATH, 'rst')
+        readme.write(converted.encode('utf-8'))
+
 
 if __name__ == '__main__':
     convert_md()
