@@ -846,8 +846,6 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             const char* float_format
     ) except +
-    void ValueColor(const char* prefix, const ImVec4& v) except +  # ✗
-    void ValueColor(const char* prefix, unsigned int v) except +  # ✗
 
     # Tooltips
     void SetTooltip(const char* fmt, ...) except +  # ✓
