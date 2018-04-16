@@ -114,6 +114,27 @@ SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups
 SELECTABLE_SPAN_ALL_COLUMNS = enums.ImGuiSelectableFlags_SpanAllColumns
 SELECTABLE_ALLOW_DOUBLE_CLICK = enums.ImGuiSelectableFlags_AllowDoubleClick
 
+# ==== ColorEdit flags enum redefines ====
+COLOR_EDIT_NO_ALPHA = enums.ImGuiColorEditFlags_NoAlpha
+COLOR_EDIT_NO_PICKER = enums.ImGuiColorEditFlags_NoPicker
+COLOR_EDIT_NO_OPTIONS = enums.ImGuiColorEditFlags_NoOptions
+COLOR_EDIT_NO_SMALL_PREVIEW = enums.ImGuiColorEditFlags_NoSmallPreview
+COLOR_EDIT_NO_INPUTS = enums.ImGuiColorEditFlags_NoInputs
+COLOR_EDIT_NO_TOOLTIP = enums.ImGuiColorEditFlags_NoTooltip
+COLOR_EDIT_NO_LABEL = enums.ImGuiColorEditFlags_NoLabel
+COLOR_EDIT_NO_SIDE_PREVIEW = enums.ImGuiColorEditFlags_NoSidePreview
+COLOR_EDIT_ALPHA_BAR = enums.ImGuiColorEditFlags_AlphaBar
+COLOR_EDIT_ALPHA_PREVIEW = enums.ImGuiColorEditFlags_AlphaPreview
+COLOR_EDIT_ALPHA_PREVIEW_HALF = enums.ImGuiColorEditFlags_AlphaPreviewHalf
+COLOR_EDIT_HDR = enums.ImGuiColorEditFlags_HDR
+COLOR_EDIT_RGB = enums.ImGuiColorEditFlags_RGB
+COLOR_EDIT_HSV = enums.ImGuiColorEditFlags_HSV
+COLOR_EDIT_HEX = enums.ImGuiColorEditFlags_HEX
+COLOR_EDIT_UINT8 = enums.ImGuiColorEditFlags_Uint8
+COLOR_EDIT_FLOAT = enums.ImGuiColorEditFlags_Float
+COLOR_EDIT_PICKER_HUE_BAR = enums.ImGuiColorEditFlags_PickerHueBar
+COLOR_EDIT_PICKER_HUE_WHEEL = enums.ImGuiColorEditFlags_PickerHueWheel
+
 # ==== Mouse Cursors ====
 MOUSE_CURSOR_ARROW = enums.ImGuiMouseCursor_Arrow
 MOUSE_CURSOR_TEXT_INPUT = enums.ImGuiMouseCursor_TextInput
@@ -2921,7 +2942,7 @@ def color_edit3(str label, float r, float g, float b):
 
 
 def color_edit4(
-    str label, float r, float g, float b, float a, cimgui.bool show_alpha=True
+    str label, float r, float g, float b, float a, unsigned int flags=0
 ):
     """Display color edit widget for color with alpha value.
 
@@ -2930,11 +2951,12 @@ def color_edit4(
         :width: 400
 
         color = 1., .0, .5, 1.
+        flags = imgui.COLOR_EDIT_NO_ALPHA
 
         imgui.begin("Example: color edit with alpha")
 
-        _, color = imgui.color_edit4("Alpha", *color, show_alpha=True)
-        _, color = imgui.color_edit4("No alpha", *color, show_alpha=False)
+        _, color = imgui.color_edit4("Alpha", *color, flags=flags)
+        _, color = imgui.color_edit4("No alpha", *color, flags=0)
 
         imgui.end()
 
@@ -2944,7 +2966,7 @@ def color_edit4(
         g (float): green color intensity.
         b (float): blue color instensity.
         a (float): alpha intensity.
-        show_alpha (bool): if set to True wiget allows to modify alpha
+        flags (ImGuiColorEditFlags): Flags for the ColorEdit widget.
 
     Returns:
         tuple: a ``(changed, color)`` tuple that contains indicator of color
@@ -2952,13 +2974,13 @@ def color_edit4(
 
     .. wraps::
         ColorEdit4(
-            const char* label, float col[4], bool show_alpha = true
+            const char* label, float col[4], ImGuiColorEditFlags flags = 0
         )
     """
     cdef float[4] inout_color = [r, g, b, a]
 
     return cimgui.ColorEdit4(
-        _bytes(label), <float *>(&inout_color), show_alpha
+        _bytes(label), <float *>(&inout_color), flags
     ), (inout_color[0], inout_color[1], inout_color[2], inout_color[3])
 
 

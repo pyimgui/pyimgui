@@ -553,7 +553,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool ColorEdit4(  # ✓
             const char* label, float col[4],
             # note: optional
-            bool show_alpha
+            ImGuiColorEditFlags flags
     ) except +
 
     # Widgets: plots

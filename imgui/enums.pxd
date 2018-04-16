@@ -134,6 +134,36 @@ cdef extern from "imgui.h":
         ImGuiSelectableFlags_SpanAllColumns     # Selectable frame can span all columns (text will still fit in current column)
         ImGuiSelectableFlags_AllowDoubleClick   # Generate press events on double clicks too
 
+    # Enumeration for ColorEdit3() / ColorEdit4() / ColorPicker3() / ColorPicker4() / ColorButton()
+    ctypedef enum ImGuiColorEditFlags_:
+        ImGuiColorEditFlags_NoAlpha            #              # ColorEdit, ColorPicker, ColorButton: ignore Alpha component (read 3 components from the input pointer).
+        ImGuiColorEditFlags_NoPicker           #              # ColorEdit: disable picker when clicking on colored square.
+        ImGuiColorEditFlags_NoOptions          #              # ColorEdit: disable toggling options menu when right-clicking on inputs/small preview.
+        ImGuiColorEditFlags_NoSmallPreview     #              # ColorEdit, ColorPicker: disable colored square preview next to the inputs. (e.g. to show only the inputs)
+        ImGuiColorEditFlags_NoInputs           #              # ColorEdit, ColorPicker: disable inputs sliders/text widgets (e.g. to show only the small preview colored square).
+        ImGuiColorEditFlags_NoTooltip          #              # ColorEdit, ColorPicker, ColorButton: disable tooltip when hovering the preview.
+        ImGuiColorEditFlags_NoLabel            #              # ColorEdit, ColorPicker: disable display of inline text label (the label is still forwarded to the tooltip and picker).
+        ImGuiColorEditFlags_NoSidePreview      #              # ColorPicker: disable bigger color preview on right side of the picker, use small colored square preview instead.
+        # User Options (right-click on widget to change some of them). You can set application defaults using SetColorEditOptions(). The idea is that you probably don't want to override them in most of your calls, let the user choose and/or call SetColorEditOptions() during startup.
+        ImGuiColorEditFlags_AlphaBar           #              # ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.
+        ImGuiColorEditFlags_AlphaPreview      #              # ColorEdit, ColorPicker, ColorButton: display preview as a transparent color over a checkerboard, instead of opaque.
+        ImGuiColorEditFlags_AlphaPreviewHalf  #              # ColorEdit, ColorPicker, ColorButton: display half opaque / half checkerboard, instead of opaque.
+        ImGuiColorEditFlags_HDR               #              # (WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use ImGuiColorEditFlags_Float flag as well).
+        ImGuiColorEditFlags_RGB               # [Inputs]     # ColorEdit: choose one among RGB/HSV/HEX. ColorPicker: choose any combination using RGB/HSV/HEX.
+        ImGuiColorEditFlags_HSV               # [Inputs]     # "
+        ImGuiColorEditFlags_HEX               # [Inputs]     # "
+        ImGuiColorEditFlags_Uint8             # [DataType]   # ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0..255.
+        ImGuiColorEditFlags_Float             # [DataType]   # ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers.
+        ImGuiColorEditFlags_PickerHueBar      # [PickerMode] # ColorPicker: bar for Hue, rectangle for Sat/Value.
+        ImGuiColorEditFlags_PickerHueWheel    # [PickerMode] # ColorPicker: wheel for Hue, triangle for Sat/Value.
+
+        # // Internals/Masks
+        # ImGuiColorEditFlags__InputsMask     = ImGuiColorEditFlags_RGB|ImGuiColorEditFlags_HSV|ImGuiColorEditFlags_HEX,
+        # ImGuiColorEditFlags__DataTypeMask   = ImGuiColorEditFlags_Uint8|ImGuiColorEditFlags_Float,
+        # ImGuiColorEditFlags__PickerMask     = ImGuiColorEditFlags_PickerHueWheel|ImGuiColorEditFlags_PickerHueBar,
+        # ImGuiColorEditFlags__OptionsDefault = ImGuiColorEditFlags_Uint8|ImGuiColorEditFlags_RGB|ImGuiColorEditFlags_PickerHueBar    // Change application default using SetColorEditOptions()
+
+
     ctypedef enum ImGuiMouseCursor_:
         ImGuiMouseCursor_Arrow
         ImGuiMouseCursor_TextInput              # When hovering over InputText, etc.
