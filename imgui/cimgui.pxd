@@ -44,7 +44,7 @@ cdef extern from "imgui.h":
     ctypedef int ImGuiStyleVar
     ctypedef int ImGuiKey
     ctypedef int ImGuiAlign
-    ctypedef int ImGuiColorEditMode
+    ctypedef int ImGuiColorEditFlags
     ctypedef int ImGuiMouseCursor
     ctypedef int ImGuiWindowFlags
     ctypedef int ImGuiCond
@@ -553,7 +553,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* label, float col[4],
             # note: optional
             bool show_alpha
-    ) except +  #void ColorEditMode(ImGuiColorEditMode mode) except +  # note: obsoleted
+    ) except +
 
     # Widgets: plots
     void PlotLines(  # ✗
