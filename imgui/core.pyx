@@ -2252,9 +2252,9 @@ def begin_popup_context_item(str name, int mouse_button=1):
 
 
 def begin_popup_context_window(
-    bool also_over_items=True,
     str name=None,
-    int mouse_button=1
+    int mouse_button=1,
+    bool also_over_items=True
 ):
     """Helper function to open and begin popup when clicked on current window.
 
@@ -2286,22 +2286,22 @@ def begin_popup_context_window(
 
     .. wraps::
         bool BeginPopupContextWindow(
-            bool also_over_items = true,
             const char* str_id = NULL,
             int mouse_button = 1
+            bool also_over_items = true,
         )
     """
     if name is None:
         return cimgui.BeginPopupContextWindow(
-            also_over_items,
             NULL,
-            mouse_button
+            mouse_button,
+            also_over_items
         )
     else:
         return cimgui.BeginPopupContextWindow(
-            also_over_items,
             _bytes(name),
-            mouse_button
+            mouse_button,
+            also_over_items
         )
 
 

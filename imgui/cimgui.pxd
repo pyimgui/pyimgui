@@ -890,9 +890,9 @@ cdef extern from "imgui.h" namespace "ImGui":
             int mouse_button
     ) except +
     bool BeginPopupContextWindow(  # ✓
-            bool also_over_items, const char* str_id,
+            const char* str_id,
             # note: optional
-            int mouse_button
+            int mouse_button, bool also_over_items
     ) except +
     bool BeginPopupContextVoid(  # ✓
             # note: optional
