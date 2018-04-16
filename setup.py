@@ -132,7 +132,7 @@ EXTENSIONS = [
         extra_compile_args=os_specific_flags,
         define_macros=[
             # note: for raising custom exceptions directly in ImGui code
-            ('PYIMGUI_CUSTOM_EXCEPTION', None)
+            # ('PYIMGUI_CUSTOM_EXCEPTION', None)
         ] + os_specific_macros + general_macros,
         include_dirs=['imgui', 'config-cpp', 'imgui-cpp'],
     ),
