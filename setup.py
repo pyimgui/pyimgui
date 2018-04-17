@@ -82,7 +82,7 @@ else:
 
 
 def extension_sources(path):
-    sources = [path + ('.pyx' if USE_CYTHON else '.cpp')]
+    sources = ["{0}{1}".format(path, '.pyx' if USE_CYTHON else '.cpp')]
 
     if not USE_CYTHON:
         # note: Cython will pick these files automatically but when building
