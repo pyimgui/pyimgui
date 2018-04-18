@@ -24,20 +24,10 @@ if _CYTHONIZE_WITH_COVERAGE and not USE_CYTHON:
         "and coverage but Cython not available."
     )
 
-try:
-    from pypandoc import convert
 
-    def read_md(f):
-        return convert(f, 'rst')
-
-except ImportError:
-    convert = None
-    # note: this warning is only for package registration step
-    if 'register' in sys.argv:
-        print("warning: pypandoc not found, could not convert Markdown to RST")
-
-    def read_md(f):
-        return open(f, 'r').read()  # noqa
+def read(filename):
+    with open(filename, 'r') as file_handle:
+        return file_handle.read()
 
 
 def get_version(version_tuple):
@@ -141,7 +131,9 @@ setup(
     author_email='swistakm@gmail.com',
 
     description="Cython-based Python bindings for dear imgui",
-    long_description=read_md(README),
+    long_description=read(README),
+    long_description_content_type="text/markdown",
+
     url="https://github.com/swistakm/pyimgui",
 
     ext_modules=cythonize(
