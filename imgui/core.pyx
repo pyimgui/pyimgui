@@ -2591,7 +2591,7 @@ def invisible_button(str identifier, width, height):
     )
 
 def color_button(
-        desc_id,
+        str desc_id,
         float r, float g, float b, a=1.,
         cimgui.ImGuiColorEditFlags flags = 0,
         float width= 0.,
@@ -2604,10 +2604,10 @@ def color_button(
         :height: 150
 
         imgui.begin("Example: color button")
-        imgui.color_button('Red', 1, 0, 0, 1)
-        imgui.color_button('Green', 0, 1, 0, 1)
-        imgui.color_button('Blue', 0, 0, 1, 1)
-        imgui.color_button('Violet', 1, 0, 1, 1)
+        imgui.color_button("Red", 1, 0, 0, 1)
+        imgui.color_button("Green", 0, 1, 0, 1)
+        imgui.color_button("Blue", 0, 0, 1, 1)
+        imgui.color_button("Violet", 1, 0, 1, 1)
         imgui.end()
 
     Args:
@@ -2632,7 +2632,7 @@ def color_button(
         )
     """
     return cimgui.ColorButton(
-        "%s" % _bytes(desc_id),
+        _bytes(desc_id),
         _cast_args_ImVec4(r, g, b, a),
         flags,
         _cast_args_ImVec2(width, height),
