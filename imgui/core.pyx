@@ -583,8 +583,6 @@ cdef class _StaticGlyphRanges(object):
 
 
 cdef class _Font(object):
-    cdef cimgui.ImFont* _ptr
-
     @staticmethod
     cdef from_ptr(cimgui.ImFont* ptr):
         instance = _Font()
@@ -5389,16 +5387,26 @@ def end_group():
     """
     cimgui.EndGroup()
 
-# additional helpers
-# todo: move to separate extension module (extra?)
+
+# === Python/C++ cross API for error handling ===
+from cpython.exc cimport PyErr_NewException
+
+cdef public _ImGuiError "ImGuiError" = PyErr_NewException(
+    "imgui.core.ImGuiError", Exception, {}
+)
+
+ImGuiError = _ImGuiError # make visible to Python
+
+
+# === Extra utilities ====
 
 @contextmanager
-def font(_Font font):
+def _py_font(_Font font):
     """Use specified font in given context.
 
     Example:
 
-    .. code-block: python
+    .. code-block:: python
 
         ...
         font_extra = io.fonts.add_font_from_file_ttf(
@@ -5420,8 +5428,9 @@ def font(_Font font):
     yield
     pop_font()
 
+
 @contextmanager
-def styled(cimgui.ImGuiStyleVar variable, value):
+def _py_styled(cimgui.ImGuiStyleVar variable, value):
     # note: we treat bool value as integer to guess if we are required to pop
     #       anything because IMGUI may simply skip pushing
     count = push_style_var(variable, value)
@@ -5430,7 +5439,7 @@ def styled(cimgui.ImGuiStyleVar variable, value):
 
 
 @contextmanager
-def istyled(*variables_and_values):
+def _py_istyled(*variables_and_values):
     # todo: rename to nstyled?
     count = 0
     iterator = iter(variables_and_values)
@@ -5457,27 +5466,17 @@ def istyled(*variables_and_values):
         cimgui.PopStyleVar(count)
 
 
-def vertex_buffer_vertex_pos_offset():
+def _py_vertex_buffer_vertex_pos_offset():
     return <uintptr_t><size_t>&(<cimgui.ImDrawVert*>NULL).pos
 
-def vertex_buffer_vertex_uv_offset():
+def _py_vertex_buffer_vertex_uv_offset():
     return <uintptr_t><size_t>&(<cimgui.ImDrawVert*>NULL).uv
 
-def vertex_buffer_vertex_col_offset():
+def _py_vertex_buffer_vertex_col_offset():
     return <uintptr_t><size_t>&(<cimgui.ImDrawVert*>NULL).col
 
-def vertex_buffer_vertex_size():
+def _py_vertex_buffer_vertex_size():
     return sizeof(cimgui.ImDrawVert)
 
-def index_buffer_index_size():
+def _py_index_buffer_index_size():
     return sizeof(cimgui.ImDrawIdx)
-
-
-# === Python/C++ cross API for error handling ===
-from cpython.exc cimport PyErr_NewException
-
-cdef public _ImGuiError "ImGuiError" = PyErr_NewException(
-    "imgui.core.ImGuiError", Exception, {}
-)
-
-ImGuiError = _ImGuiError # make visible to Python
