@@ -44,10 +44,10 @@ cdef extern from "imgui.h":
     ctypedef int ImGuiStyleVar
     ctypedef int ImGuiKey
     ctypedef int ImGuiAlign
-    ctypedef int ImGuiColorEditMode
+    ctypedef int ImGuiColorEditFlags
     ctypedef int ImGuiMouseCursor
     ctypedef int ImGuiWindowFlags
-    ctypedef int ImGuiSetCond
+    ctypedef int ImGuiCond
     ctypedef int ImGuiInputTextFlags
     ctypedef int ImGuiSelectableFlags
     ctypedef int ImGuiTreeNodeFlags
@@ -313,16 +313,16 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetNextWindowPos(  # ✓ note: overrides ommited
             const ImVec2& pos,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetNextWindowPosCenter(  # ✓ note: overrides ommited
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetNextWindowSize(  # ✓ note: overrides ommited
             const ImVec2& size,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetNextWindowSizeConstraints(  # ✗
             const ImVec2& size_min,
@@ -335,38 +335,38 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetNextWindowCollapsed(  # ✓
             bool collapsed,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetNextWindowFocus() except +  # ✓
     void SetWindowPos(  # ✗
             const ImVec2& pos,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowSize(  # ✗
             const ImVec2& size,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowCollapsed(  # ✗
             bool collapsed,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowFocus() except +  # ✗
     void SetWindowPos(  # ✗
             const char* name, const ImVec2& pos,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowSize(  # ✗
-            const char* name, const ImVec2& size, ImGuiSetCond
+            const char* name, const ImVec2& size, ImGuiCond
             cond
     ) except +
     void SetWindowCollapsed(  # ✗
             const char* name, bool collapsed,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowFocus(const char* name) except +  # ✗
 
@@ -397,6 +397,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void PushFont(ImFont*) except +  # ✓
     void PopFont() except +  # ✓
     void PushStyleColor(ImGuiCol, const ImVec4&) except +  # ✓
+    # void PushStyleColor(ImGuiCol idx, ImU32 col) # ✗
     void PopStyleColor(int) except +  # ✓
     void PushStyleVar(ImGuiStyleVar, float) except +  # ✓
     void PushStyleVar(ImGuiStyleVar, const ImVec2&) except +  # ✓
@@ -507,12 +508,13 @@ cdef extern from "imgui.h" namespace "ImGui":
             const ImVec2& uv0, const ImVec2& uv1, int frame_padding,
             const ImVec4& bg_col, const ImVec4& tint_col
     ) except +
-    
-    bool ColorButton(  # ✓
-            const ImVec4& col,
-            # note: optional
-            bool small_height, bool outline_border
-    ) except +  # Widgets: images
+    bool ColorButton( # ✓
+        const char*, ImVec4 col,
+        # note: optional
+        ImGuiColorEditFlags flags, ImVec2 size
+    ) except +
+
+    # Widgets: images
     void Image(  # ✓
             ImTextureID user_texture_id, const ImVec2& size,
             # note: optional
@@ -552,8 +554,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool ColorEdit4(  # ✓
             const char* label, float col[4],
             # note: optional
-            bool show_alpha
-    ) except +  #void ColorEditMode(ImGuiColorEditMode mode) except +  # note: obsoleted
+            ImGuiColorEditFlags flags
+    ) except +
 
     # Widgets: plots
     void PlotLines(  # ✗
@@ -789,7 +791,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetNextTreeNodeOpen(  # ✗
             bool is_open,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     bool CollapsingHeader(  # ✓
             const char* label,
@@ -846,8 +848,6 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             const char* float_format
     ) except +
-    void ValueColor(const char* prefix, const ImVec4& v) except +  # ✗
-    void ValueColor(const char* prefix, unsigned int v) except +  # ✗
 
     # Tooltips
     void SetTooltip(const char* fmt, ...) except +  # ✓
@@ -890,9 +890,9 @@ cdef extern from "imgui.h" namespace "ImGui":
             int mouse_button
     ) except +
     bool BeginPopupContextWindow(  # ✓
-            bool also_over_items, const char* str_id,
+            const char* str_id,
             # note: optional
-            int mouse_button
+            int mouse_button, bool also_over_items
     ) except +
     bool BeginPopupContextVoid(  # ✓
             # note: optional
@@ -926,7 +926,7 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # Utilities
     bool IsItemHovered() except +  # ✓
-    bool IsItemHoveredRect() except +  # ✓
+    bool IsItemRectHovered() except +  # ✓
     bool IsItemActive() except +  # ✓
     bool IsItemClicked(  # ✓
             # note: optional
@@ -945,10 +945,9 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool IsRootWindowOrAnyChildFocused() except +  # ✓
     bool IsRootWindowOrAnyChildHovered() except +  # ✓
     bool IsRectVisible(const ImVec2& size) except +  # ✓
-    bool IsPosHoveringAnyWindow(const ImVec2& pos) except +  # ✓
     float GetTime() except +  # ✗
     int GetFrameCount() except +  # ✗
-    const char* GetStyleColName(ImGuiCol idx) except +  # ✗
+    const char* GetStyleColorName(ImGuiCol idx) except +  # ✗
     ImVec2 CalcItemRectClosestPoint(  # ✗
             const ImVec2& pos,
             # note: optional
@@ -992,8 +991,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     bool IsMouseDoubleClicked(int button) except +  # ✓
     bool IsMouseReleased(int button) except +  # ✗
-    bool IsMouseHoveringWindow() except +  # ✓
-    bool IsMouseHoveringAnyWindow() except +  # ✓
+    bool IsWindowRectHovered() except +  # ✓
+    bool IsAnyWindowHovered() except +  # ✓
     bool IsMouseHoveringRect(  # ✓
             const ImVec2& r_min, const ImVec2& r_max,
             # note: optional

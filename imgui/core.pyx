@@ -36,10 +36,10 @@ DEF TARGET_IMGUI_VERSION = (1, 49)
 cdef unsigned short* _LATIN_ALL = [0x0020, 0x024F , 0]
 
 # ==== Condition enum redefines ====
-ALWAYS = enums.ImGuiSetCond_Always
-ONCE = enums.ImGuiSetCond_Once
-FIRST_USE_EVER = enums.ImGuiSetCond_FirstUseEver
-APPEARING = enums.ImGuiSetCond_Appearing
+ALWAYS = enums.ImGuiCond_Always
+ONCE = enums.ImGuiCond_Once
+FIRST_USE_EVER = enums.ImGuiCond_FirstUseEver
+APPEARING = enums.ImGuiCond_Appearing
 
 # ==== Style var enum redefines ====
 STYLE_ALPHA = enums.ImGuiStyleVar_Alpha # float
@@ -113,6 +113,27 @@ TREE_NODE_COLLAPSING_HEADER = enums.ImGuiTreeNodeFlags_CollapsingHeader
 SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups
 SELECTABLE_SPAN_ALL_COLUMNS = enums.ImGuiSelectableFlags_SpanAllColumns
 SELECTABLE_ALLOW_DOUBLE_CLICK = enums.ImGuiSelectableFlags_AllowDoubleClick
+
+# ==== ColorEdit flags enum redefines ====
+COLOR_EDIT_NO_ALPHA = enums.ImGuiColorEditFlags_NoAlpha
+COLOR_EDIT_NO_PICKER = enums.ImGuiColorEditFlags_NoPicker
+COLOR_EDIT_NO_OPTIONS = enums.ImGuiColorEditFlags_NoOptions
+COLOR_EDIT_NO_SMALL_PREVIEW = enums.ImGuiColorEditFlags_NoSmallPreview
+COLOR_EDIT_NO_INPUTS = enums.ImGuiColorEditFlags_NoInputs
+COLOR_EDIT_NO_TOOLTIP = enums.ImGuiColorEditFlags_NoTooltip
+COLOR_EDIT_NO_LABEL = enums.ImGuiColorEditFlags_NoLabel
+COLOR_EDIT_NO_SIDE_PREVIEW = enums.ImGuiColorEditFlags_NoSidePreview
+COLOR_EDIT_ALPHA_BAR = enums.ImGuiColorEditFlags_AlphaBar
+COLOR_EDIT_ALPHA_PREVIEW = enums.ImGuiColorEditFlags_AlphaPreview
+COLOR_EDIT_ALPHA_PREVIEW_HALF = enums.ImGuiColorEditFlags_AlphaPreviewHalf
+COLOR_EDIT_HDR = enums.ImGuiColorEditFlags_HDR
+COLOR_EDIT_RGB = enums.ImGuiColorEditFlags_RGB
+COLOR_EDIT_HSV = enums.ImGuiColorEditFlags_HSV
+COLOR_EDIT_HEX = enums.ImGuiColorEditFlags_HEX
+COLOR_EDIT_UINT8 = enums.ImGuiColorEditFlags_Uint8
+COLOR_EDIT_FLOAT = enums.ImGuiColorEditFlags_Float
+COLOR_EDIT_PICKER_HUE_BAR = enums.ImGuiColorEditFlags_PickerHueBar
+COLOR_EDIT_PICKER_HUE_WHEEL = enums.ImGuiColorEditFlags_PickerHueWheel
 
 # ==== Mouse Cursors ====
 MOUSE_CURSOR_ARROW = enums.ImGuiMouseCursor_Arrow
@@ -1352,7 +1373,7 @@ def set_window_font_scale(float scale):
 
 
 def set_next_window_collapsed(
-    cimgui.bool collapsed, cimgui.ImGuiSetCond condition=ALWAYS
+    cimgui.bool collapsed, cimgui.ImGuiCond condition=ALWAYS
 ):
     """Set next window collapsed state.
 
@@ -1374,7 +1395,7 @@ def set_next_window_collapsed(
 
     .. wraps::
          void SetNextWindowCollapsed(
-             bool collapsed, ImGuiSetCond cond = 0
+             bool collapsed, ImGuiCond cond = 0
          )
 
     """
@@ -1442,7 +1463,7 @@ def get_window_height():
 
 
 def set_next_window_position(
-    float x, float y, cimgui.ImGuiSetCond condition=ALWAYS
+    float x, float y, cimgui.ImGuiCond condition=ALWAYS
 ):
     """Set next window position.
 
@@ -1466,13 +1487,13 @@ def set_next_window_position(
             imgui.end()
 
     .. wraps::
-        void SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond = 0)
+        void SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0)
 
     """
     cimgui.SetNextWindowPos(_cast_args_ImVec2(x, y), condition)
 
 
-def set_next_window_centered(cimgui.ImGuiSetCond condition=ALWAYS):
+def set_next_window_centered(cimgui.ImGuiCond condition=ALWAYS):
     """Set next window position to be centered on screen.
 
     Call before :func:`begin()`.
@@ -1493,13 +1514,13 @@ def set_next_window_centered(cimgui.ImGuiSetCond condition=ALWAYS):
 
 
     .. wraps::
-        void SetNextWindowPosCenter(ImGuiSetCond cond = 0)
+        void SetNextWindowPosCenter(ImGuiCond cond = 0)
     """
     cimgui.SetNextWindowPosCenter(condition)
 
 
 def set_next_window_size(
-    float width, float height, cimgui.ImGuiSetCond condition=ALWAYS
+    float width, float height, cimgui.ImGuiCond condition=ALWAYS
 ):
     """Set next window size.
 
@@ -1523,7 +1544,7 @@ def set_next_window_size(
 
     .. wraps::
         void SetNextWindowSize(
-            const ImVec2& size, ImGuiSetCond cond = 0
+            const ImVec2& size, ImGuiCond cond = 0
         )
     """
     cimgui.SetNextWindowSize(_cast_args_ImVec2(width, height), condition)
@@ -2250,9 +2271,9 @@ def begin_popup_context_item(str name, int mouse_button=1):
 
 
 def begin_popup_context_window(
-    bool also_over_items=True,
     str name=None,
-    int mouse_button=1
+    int mouse_button=1,
+    bool also_over_items=True
 ):
     """Helper function to open and begin popup when clicked on current window.
 
@@ -2284,22 +2305,22 @@ def begin_popup_context_window(
 
     .. wraps::
         bool BeginPopupContextWindow(
-            bool also_over_items = true,
             const char* str_id = NULL,
             int mouse_button = 1
+            bool also_over_items = true,
         )
     """
     if name is None:
         return cimgui.BeginPopupContextWindow(
-            also_over_items,
             NULL,
-            mouse_button
+            mouse_button,
+            also_over_items
         )
     else:
         return cimgui.BeginPopupContextWindow(
-            also_over_items,
             _bytes(name),
-            mouse_button
+            mouse_button,
+            also_over_items
         )
 
 
@@ -2567,11 +2588,12 @@ def invisible_button(str identifier, width, height):
         _cast_args_ImVec2(width, height)
     )
 
-
 def color_button(
+        str desc_id,
         float r, float g, float b, a=1.,
-        cimgui.bool small_height=False,
-        cimgui.bool outline_border=True,
+        cimgui.ImGuiColorEditFlags flags = 0,
+        float width= 0.,
+        float height=0.,
 ):
     """Display colored button.
 
@@ -2580,10 +2602,10 @@ def color_button(
         :height: 150
 
         imgui.begin("Example: color button")
-        imgui.color_button(1, 0, 0, 1, True, True)
-        imgui.color_button(0, 1, 0, 1, True, False)
-        imgui.color_button(0, 0, 1, 1, False, True)
-        imgui.color_button(1, 0, 1, 1, False, False)
+        imgui.color_button("Red", 1, 0, 0, 1)
+        imgui.color_button("Green", 0, 1, 0, 1)
+        imgui.color_button("Blue", 0, 0, 1, 1)
+        imgui.color_button("Violet", 1, 0, 1, 1)
         imgui.end()
 
     Args:
@@ -2591,23 +2613,28 @@ def color_button(
         g (float): green color intensity.
         b (float): blue color instensity.
         a (float): alpha intensity.
-        small_height (bool): Small height. Default to False
-        outline_border (bool): Diplay outline border. Defaults to True.
+        # note: optionals below
+        cimgui.ImGuiColorEditFlags flags,
+        float width,
+        float height,
 
     Returns:
         bool: True if button is clicked.
 
     .. wraps::
         bool ColorButton(
-            const ImVec4& col,
-            bool small_height = false,
-            bool outline_border = true
+            const char* desc_id,
+            ImVec4& col,
+            # note: optional
+            ImGuiColorEditFlags flags, ImVec2 size
         )
     """
     return cimgui.ColorButton(
-        _cast_args_ImVec4(r, g, b, a), small_height, outline_border
+        _bytes(desc_id),
+        _cast_args_ImVec4(r, g, b, a),
+        flags,
+        _cast_args_ImVec2(width, height),
     )
-
 
 def image_button(
     texture_id,
@@ -2919,7 +2946,7 @@ def color_edit3(str label, float r, float g, float b):
 
 
 def color_edit4(
-    str label, float r, float g, float b, float a, cimgui.bool show_alpha=True
+    str label, float r, float g, float b, float a, unsigned int flags=0
 ):
     """Display color edit widget for color with alpha value.
 
@@ -2928,11 +2955,12 @@ def color_edit4(
         :width: 400
 
         color = 1., .0, .5, 1.
+        flags = imgui.COLOR_EDIT_NO_ALPHA
 
         imgui.begin("Example: color edit with alpha")
 
-        _, color = imgui.color_edit4("Alpha", *color, show_alpha=True)
-        _, color = imgui.color_edit4("No alpha", *color, show_alpha=False)
+        _, color = imgui.color_edit4("Alpha", *color, flags=flags)
+        _, color = imgui.color_edit4("No alpha", *color, flags=0)
 
         imgui.end()
 
@@ -2942,7 +2970,7 @@ def color_edit4(
         g (float): green color intensity.
         b (float): blue color instensity.
         a (float): alpha intensity.
-        show_alpha (bool): if set to True wiget allows to modify alpha
+        flags (ImGuiColorEditFlags): Flags for the ColorEdit widget.
 
     Returns:
         tuple: a ``(changed, color)`` tuple that contains indicator of color
@@ -2950,13 +2978,13 @@ def color_edit4(
 
     .. wraps::
         ColorEdit4(
-            const char* label, float col[4], bool show_alpha = true
+            const char* label, float col[4], ImGuiColorEditFlags flags = 0
         )
     """
     cdef float[4] inout_color = [r, g, b, a]
 
     return cimgui.ColorEdit4(
-        _bytes(label), <float *>(&inout_color), show_alpha
+        _bytes(label), <float *>(&inout_color), flags
     ), (inout_color[0], inout_color[1], inout_color[2], inout_color[3])
 
 
@@ -4379,7 +4407,7 @@ def is_item_hovered():
     return cimgui.IsItemHovered()
 
 
-def is_item_hovered_rect():
+def is_item_rect_hovered():
     """Was the last item hovered by mouse? Even if
     another item is active or window is blocked by popup
     while we are hovering this.
@@ -4388,9 +4416,9 @@ def is_item_hovered_rect():
         bool: True if item is hovered by mouse, otherwise False.
 
     .. wraps::
-        bool IsItemHoveredRect()
+        bool IsItemRectHovered()
     """
-    return cimgui.IsItemHoveredRect()
+    return cimgui.IsItemRectHovered()
 
 
 def is_item_active():
@@ -4582,46 +4610,28 @@ def is_rect_visible(float size_width, float size_height):
     return cimgui.IsRectVisible(_cast_args_ImVec2(size_width, size_height))
 
 
-def is_pos_hovering_any_window(float position_x, float position_y):
-    """Test if position is hovering any active ImGui window.
-
-    Args:
-        position_x (float): width of the rect
-        position_y (float): height of the rect
-
-    Returns:
-        bool: True if rect is visible, otherwise False.
-
-    .. wraps::
-        bool IsPosHoveringAnyWindow(const ImVec2& size)
-    """
-    return cimgui.IsPosHoveringAnyWindow(
-        _cast_args_ImVec2(position_x, position_y)
-    )
-
-
-def is_mouse_hovering_window():
+def is_window_rect_hovered():
     """Test if mouse is hovering the current window.
 
     Returns:
         bool: True if the window is hovered, otherwise False.
 
     .. wraps::
-        bool IsMouseHoveringWindow()
+        bool IsWindowRectHovered()
     """
-    return cimgui.IsMouseHoveringWindow()
+    return cimgui.IsWindowRectHovered()
 
 
-def is_mouse_hovering_any_window():
+def is_any_window_hovered():
     """Test if mouse is hovering any visible window.
 
     Returns:
         bool: True if any item is hovered, otherwise False.
 
     .. wraps::
-        bool IsMouseHoveringAnyWindow()
+        bool IsAnyWindowHovered()
     """
-    return cimgui.IsMouseHoveringAnyWindow()
+    return cimgui.IsAnyWindowHovered()
 
 
 def is_mouse_hovering_rect(
