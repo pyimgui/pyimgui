@@ -4903,12 +4903,16 @@ cpdef push_id(object scope_id):
     the id stack will not collide with implicit IDs created while it is not.
     This is useful to avoid collisions with other widgets with the same
     implicit IDs (usually, same labels.) Pushes the address of the passed
-    object. Consider using the :func:`scope` context manager instead, as it
-    will create a temporary object for use as the scope id and handle cleaning
-    up.
+    object, unless it is an integer in which case the value is pushed. This
+    means that for the scope to correctly persist across frames you must pass
+    the same object (is-equality in python.) Consider using the :func:`scope` 
+    context manager instead to manage the push_id and pop_id pair.
     """
 
-    cimgui.PushID(<void*>scope_id)
+    if isinstance(scope_id, int):
+        cimgui.PushID(<void*><uintptr_t>scope_id)
+    else:
+        cimgui.PushID(<void*>scope_id)
 
 cpdef pop_id():
     """Pop an id scope.
