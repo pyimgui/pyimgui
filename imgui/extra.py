@@ -28,14 +28,11 @@ vertex_buffer_vertex_size = core._py_vertex_buffer_vertex_size
 index_buffer_index_size = core._py_index_buffer_index_size
 
 @contextmanager
-def scope(arg=None):
+def scope(arg):
     """
-    Push an id scope for the duration of the context manager. If given an
-    argument, that is pushed. Otherwise an anonymous object is used.
+    Push an id scope for the duration of the context manager. `arg` should be
+    something that will persist between ui draws.
     """
-
-    if arg is None:
-        arg=object()
     core.push_id(arg)
     yield
     core.pop_id()

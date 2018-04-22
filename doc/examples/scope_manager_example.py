@@ -34,7 +34,7 @@ def main():
 
         box1 = imgui.checkbox("Checkbox", box1)[1]
 
-        with imgui.scope():
+        with imgui.scope(2):
             imgui.new_line()
             imgui.text("Same name, different scope:")
             box2 = imgui.checkbox("Checkbox", box2)[1]
