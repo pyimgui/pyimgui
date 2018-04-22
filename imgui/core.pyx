@@ -4896,6 +4896,28 @@ cpdef pop_style_var(unsigned int count=1):
     """
     cimgui.PopStyleVar(count)
 
+cpdef push_id(object scope_id):
+    """Push an id scope.
+
+    This means that all implicit ids created while the scope is on the top of 
+    the id stack will not collide with implicit IDs created while it is not.
+    This is useful to avoid collisions with other widgets with the same
+    implicit IDs (usually, same labels.) Pushes the address of the passed
+    object. Consider using the :func:`scope` context manager instead, as it
+    will create a temporary object for use as the scope id and handle cleaning
+    up.
+    """
+
+    cimgui.PushID(<void*>scope_id)
+
+cpdef pop_id():
+    """Pop an id scope.
+
+    Undoes the work of :func:`push_id`.
+    """
+
+    cimgui.PopID()
+
 
 cpdef push_item_width(float item_width):
     """Push item width in the stack.
