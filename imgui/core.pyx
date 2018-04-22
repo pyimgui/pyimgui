@@ -4905,12 +4905,15 @@ cpdef push_id(object scope_id):
     implicit IDs (usually, same labels.) Pushes the address of the passed
     object, unless it is an integer in which case the value is pushed. This
     means that for the scope to correctly persist across frames you must pass
-    the same object (is-equality in python.) Consider using the :func:`scope` 
-    context manager instead to manage the push_id and pop_id pair.
+    the same object (is-equality in python) unless it is an integer or string.
+    Consider using the :func:`scope` context manager instead to manage the
+    push_id and pop_id pair.
     """
 
     if isinstance(scope_id, int):
         cimgui.PushID(<void*><uintptr_t>scope_id)
+    elif isinstance(scope_id, str):
+        cimgui.PushID(_bytes(scope_id))
     else:
         cimgui.PushID(<void*>scope_id)
 
