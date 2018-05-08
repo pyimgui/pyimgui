@@ -94,7 +94,7 @@ def impl_pysdl2_init():
 
     SDL_GL_MakeCurrent(window, gl_context)
     if SDL_GL_SetSwapInterval(1) > 0:
-        print("Warning: Unable to set VSync! SDL Error: " + SDL_GetError())
+        print("Warning: Unable to set VSync! SDL Error: ", SDL_GetError())
         exit(1)
 
     return window, gl_context
