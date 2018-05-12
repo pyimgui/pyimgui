@@ -36,17 +36,16 @@ DEF TARGET_IMGUI_VERSION = (1, 49)
 cdef unsigned short* _LATIN_ALL = [0x0020, 0x024F , 0]
 
 # ==== Condition enum redefines ====
-ALWAYS = enums.ImGuiSetCond_Always
-ONCE = enums.ImGuiSetCond_Once
-FIRST_USE_EVER = enums.ImGuiSetCond_FirstUseEver
-APPEARING = enums.ImGuiSetCond_Appearing
+ALWAYS = enums.ImGuiCond_Always
+ONCE = enums.ImGuiCond_Once
+FIRST_USE_EVER = enums.ImGuiCond_FirstUseEver
+APPEARING = enums.ImGuiCond_Appearing
 
 # ==== Style var enum redefines ====
 STYLE_ALPHA = enums.ImGuiStyleVar_Alpha # float
 STYLE_WINDOW_PADDING = enums.ImGuiStyleVar_WindowPadding  # Vec2
 STYLE_WINDOW_ROUNDING = enums.ImGuiStyleVar_WindowRounding  # float
 STYLE_WINDOW_MIN_SIZE = enums.ImGuiStyleVar_WindowMinSize  # Vec2
-STYLE_CHILD_WINDOW_ROUNDING = enums.ImGuiStyleVar_ChildWindowRounding # float
 STYLE_FRAME_PADDING = enums.ImGuiStyleVar_FramePadding # Vec2
 STYLE_FRAME_ROUNDING = enums.ImGuiStyleVar_FrameRounding # float
 STYLE_ITEM_SPACING = enums.ImGuiStyleVar_ItemSpacing # Vec2
@@ -85,7 +84,6 @@ WINDOW_NO_SCROLLBAR = enums.ImGuiWindowFlags_NoScrollbar
 WINDOW_NO_SCROLL_WITH_MOUSE = enums.ImGuiWindowFlags_NoScrollWithMouse
 WINDOW_NO_COLLAPSE = enums.ImGuiWindowFlags_NoCollapse
 WINDOW_ALWAYS_AUTO_RESIZE = enums.ImGuiWindowFlags_AlwaysAutoResize
-WINDOW_SHOW_BORDERS = enums.ImGuiWindowFlags_ShowBorders
 WINDOW_NO_SAVED_SETTINGS = enums.ImGuiWindowFlags_NoSavedSettings
 WINDOW_NO_INPUTS = enums.ImGuiWindowFlags_NoInputs
 WINDOW_MENU_BAR = enums.ImGuiWindowFlags_MenuBar
@@ -117,7 +115,6 @@ SELECTABLE_ALLOW_DOUBLE_CLICK = enums.ImGuiSelectableFlags_AllowDoubleClick
 # ==== Mouse Cursors ====
 MOUSE_CURSOR_ARROW = enums.ImGuiMouseCursor_Arrow
 MOUSE_CURSOR_TEXT_INPUT = enums.ImGuiMouseCursor_TextInput
-MOUSE_CURSOR_MOVE = enums.ImGuiMouseCursor_Move
 MOUSE_CURSOR_RESIZE_NS = enums.ImGuiMouseCursor_ResizeNS
 MOUSE_CURSOR_RESIZE_EW = enums.ImGuiMouseCursor_ResizeEW
 MOUSE_CURSOR_RESIZE_NESW = enums.ImGuiMouseCursor_ResizeNESW
@@ -142,7 +139,6 @@ COLOR_SCROLLBAR_BACKGROUND = enums.ImGuiCol_ScrollbarBg
 COLOR_SCROLLBAR_GRAB = enums.ImGuiCol_ScrollbarGrab
 COLOR_SCROLLBAR_GRAB_HOVERED = enums.ImGuiCol_ScrollbarGrabHovered
 COLOR_SCROLLBAR_GRAB_ACTIVE = enums.ImGuiCol_ScrollbarGrabActive
-COLOR_COMBO_BACKGROUND = enums.ImGuiCol_ComboBg
 COLOR_CHECK_MARK = enums.ImGuiCol_CheckMark
 COLOR_SLIDER_GRAB = enums.ImGuiCol_SliderGrab
 COLOR_SLIDER_GRAB_ACTIVE = enums.ImGuiCol_SliderGrabActive
@@ -158,9 +154,6 @@ COLOR_COLUMN_ACTIVE = enums.ImGuiCol_ColumnActive
 COLOR_RESIZE_GRIP = enums.ImGuiCol_ResizeGrip
 COLOR_RESIZE_GRIP_HOVERED = enums.ImGuiCol_ResizeGripHovered
 COLOR_RESIZE_GRIP_ACTIVE = enums.ImGuiCol_ResizeGripActive
-COLOR_CLOSE_BUTTON = enums.ImGuiCol_CloseButton
-COLOR_CLOSE_BUTTON_HOVERED = enums.ImGuiCol_CloseButtonHovered
-COLOR_CLOSE_BUTTON_ACTIVE = enums.ImGuiCol_CloseButtonActive
 COLOR_PLOT_LINES = enums.ImGuiCol_PlotLines
 COLOR_PLOT_LINES_HOVERED = enums.ImGuiCol_PlotLinesHovered
 COLOR_PLOT_HISTOGRAM = enums.ImGuiCol_PlotHistogram
@@ -244,6 +237,16 @@ cdef cimgui.ImVec4 _cast_args_ImVec4(float x, float y, float z, float w):  # noq
 
 cdef _cast_ImVec4_tuple(cimgui.ImVec4 vec):  # noqa
     return Vec4(vec.x, vec.y, vec.w, vec.z)
+
+
+cdef class _ImGuiContext(object):
+    cdef cimgui.ImGuiContext* _ptr
+
+    @staticmethod
+    cdef from_ptr(cimgui.ImGuiContext* ptr):
+        instance = _ImGuiContext()
+        instance._ptr = ptr
+        return instance
 
 
 cdef class _DrawCmd(object):
@@ -370,14 +373,6 @@ cdef class GuiStyle(object):
             self.ref.WindowTitleAlign = _cast_tuple_ImVec2(value)
 
     @property
-    def child_window_rounding(self):
-        return self.ref.ChildWindowRounding
-
-    @child_window_rounding.setter
-    def child_window_rounding(self, float value):
-        self.ref.ChildWindowRounding = value
-
-    @property
     def frame_padding(self):
         return _cast_ImVec2_tuple(self.ref.FramePadding)
 
@@ -501,12 +496,12 @@ cdef class GuiStyle(object):
         self.ref.AntiAliasedLines = value
 
     @property
-    def anti_aliased_shapes(self):
-        return self.ref.AntiAliasedShapes
+    def anti_aliased_fill(self):
+        return self.ref.AntiAliasedFill
 
-    @anti_aliased_shapes.setter
-    def anti_aliased_shapes(self, cimgui.bool value):
-        self.ref.AntiAliasedShapes = value
+    @anti_aliased_fill.setter
+    def anti_aliased_fill(self, cimgui.bool value):
+        self.ref.AntiAliasedFill = value
 
     @property
     def curve_tessellation_tolerance(self):
@@ -947,10 +942,6 @@ cdef class _IO(object):
         return self._ptr.Framerate
 
     @property
-    def metrics_allocs(self):
-        return self._ptr.MetricsAllocs
-
-    @property
     def metrics_render_vertices(self):
         return self._ptr.MetricsRenderVertices
 
@@ -991,6 +982,21 @@ def new_frame():
     cimgui.NewFrame()
 
 
+def end_frame():
+    """End a frame.
+
+    ends the ImGui frame. automatically called by Render(), so most likely
+    don't need to ever call that yourself directly. If you don't need to
+    render you may call end_frame() but you'll have wasted CPU already.
+    If you don't need to render, better to not create any imgui windows
+    instead!
+
+    .. wraps::
+        void ENdFrame()
+    """
+    cimgui.EndFrame()
+
+
 def render():
     """Finalize frame, set rendering data, and run render callback (if set).
 
@@ -998,15 +1004,6 @@ def render():
         void Render()
     """
     cimgui.Render()
-
-
-def shutdown():
-    """Shutdown ImGui context.
-
-    .. wraps::
-        Shutdown
-    """
-    cimgui.Shutdown()
 
 
 def show_user_guide():
@@ -1052,15 +1049,15 @@ def show_style_editor(GuiStyle style=None):
         cimgui.ShowStyleEditor()
 
 
-def show_test_window(closable=False):
-    """Show ImGui test window.
+def show_demo_window(closable=False):
+    """Show ImGui demo window.
 
     .. visual-example::
         :width: 700
         :height: 600
         :auto_layout:
 
-        imgui.show_test_window()
+        imgui.show_demo_window()
 
     Args:
         closable (bool): define if window is closable.
@@ -1069,16 +1066,32 @@ def show_test_window(closable=False):
         bool: True if window is not closed (False trigerred by close button).
 
     .. wraps::
-        void ShowTestWindow(bool* p_open = NULL)
+        void ShowDemoWindow(bool* p_open = NULL)
     """
     cdef cimgui.bool opened = True
 
     if closable:
-        cimgui.ShowTestWindow(&opened)
+        cimgui.ShowDemoWindow(&opened)
     else:
-        cimgui.ShowTestWindow()
+        cimgui.ShowDemoWindow()
 
     return opened
+
+
+def show_test_window():
+    """Show ImGui demo window.
+
+    .. visual-example::
+        :width: 700
+        :height: 600
+        :auto_layout:
+
+        imgui.show_test_window()
+
+    .. wraps::
+        void ShowDemoWindow()
+    """
+    cimgui.ShowDemoWindow()
 
 
 def show_metrics_window(closable=False):
@@ -1108,6 +1121,14 @@ def show_metrics_window(closable=False):
         cimgui.ShowMetricsWindow()
 
     return opened
+
+
+def show_style_selector(str label):
+    return cimgui.ShowStyleSelector(label)
+
+
+def show_font_selector(str label):
+    cimgui.ShowStyleSelector(label)
 
 
 def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
@@ -1216,14 +1237,14 @@ def begin_child(
             const char* str_id,
             const ImVec2& size = ImVec2(0,0),
             bool border = false,
-            ImGuiWindowFlags extra_flags = 0
+            ImGuiWindowFlags flags = 0
         )
 
         bool BeginChild(
             ImGuiID id,
             const ImVec2& size = ImVec2(0,0),
             bool border = false,
-            ImGuiWindowFlags extra_flags = 0
+            ImGuiWindowFlags flags = 0
         )
     """
     # note: we do not take advantage of C++ function overloading
@@ -1352,7 +1373,7 @@ def set_window_font_scale(float scale):
 
 
 def set_next_window_collapsed(
-    cimgui.bool collapsed, cimgui.ImGuiSetCond condition=ALWAYS
+    cimgui.bool collapsed, cimgui.ImGuiCond condition=ALWAYS
 ):
     """Set next window collapsed state.
 
@@ -1374,7 +1395,7 @@ def set_next_window_collapsed(
 
     .. wraps::
          void SetNextWindowCollapsed(
-             bool collapsed, ImGuiSetCond cond = 0
+             bool collapsed, ImGuiCond cond = 0
          )
 
     """
@@ -1442,7 +1463,7 @@ def get_window_height():
 
 
 def set_next_window_position(
-    float x, float y, cimgui.ImGuiSetCond condition=ALWAYS
+    float x, float y, cimgui.ImGuiCond condition=ALWAYS, float pivot_x=0, float pivot_y=0
 ):
     """Set next window position.
 
@@ -1453,6 +1474,8 @@ def set_next_window_position(
         y (float): y window coordinate
         condition (:ref:`condition flag <condition-options>`): defines on which
             condition value should be set. Defaults to :any:`imgui.ALWAYS`.
+        pivot_x (float): pivot x window coordinate
+        pivot_y (float): pivot y window coordinate
 
     .. visual-example::
         :title: window positioning
@@ -1466,13 +1489,13 @@ def set_next_window_position(
             imgui.end()
 
     .. wraps::
-        void SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond = 0)
+        void SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0, const ImVec2& pivot = ImVec2(0,0))
 
     """
-    cimgui.SetNextWindowPos(_cast_args_ImVec2(x, y), condition)
+    cimgui.SetNextWindowPos(_cast_args_ImVec2(x, y), condition, _cast_args_ImVec2(pivot_x, pivot_y))
 
 
-def set_next_window_centered(cimgui.ImGuiSetCond condition=ALWAYS):
+def set_next_window_centered(cimgui.ImGuiCond condition=ALWAYS):
     """Set next window position to be centered on screen.
 
     Call before :func:`begin()`.
@@ -1493,13 +1516,13 @@ def set_next_window_centered(cimgui.ImGuiSetCond condition=ALWAYS):
 
 
     .. wraps::
-        void SetNextWindowPosCenter(ImGuiSetCond cond = 0)
+        void SetNextWindowPosCenter(ImGuiCond cond = 0)
     """
     cimgui.SetNextWindowPosCenter(condition)
 
 
 def set_next_window_size(
-    float width, float height, cimgui.ImGuiSetCond condition=ALWAYS
+    float width, float height, cimgui.ImGuiCond condition=ALWAYS
 ):
     """Set next window size.
 
@@ -1523,7 +1546,7 @@ def set_next_window_size(
 
     .. wraps::
         void SetNextWindowSize(
-            const ImVec2& size, ImGuiSetCond cond = 0
+            const ImVec2& size, ImGuiCond cond = 0
         )
     """
     cimgui.SetNextWindowSize(_cast_args_ImVec2(width, height), condition)
@@ -1536,6 +1559,16 @@ def is_window_collapsed():
         bool: True if window is collapsed
     """
     return cimgui.IsWindowCollapsed()
+
+
+def is_window_appearing():
+    """Check if current window is appearing.
+
+    Returns:
+        bool: True if window is appearing
+    """
+    return cimgui.IsWindowAppearing()
+
 
 
 def tree_node(str text, cimgui.ImGuiTreeNodeFlags flags=0):
@@ -1739,12 +1772,13 @@ def listbox(
         bool ListBox(
             const char* label,
             int* current_item,
-            const char** items,
+            const char* items[],
             int items_count,
             int height_in_items = -1
         )
 
     """
+
     cdef int inout_current = current
     cdef const char** in_items = <const char**> malloc(len(items) * sizeof(char*))
 
@@ -2113,7 +2147,7 @@ def open_popup(str name):
     cimgui.OpenPopup(_bytes(name))
 
 
-def begin_popup(str name):
+def begin_popup(str name, cimgui.ImGuiWindowFlags flags=0):
     """Open a popup window.
 
     Returns ``True`` if the popup is open and you can start outputting
@@ -2151,10 +2185,11 @@ def begin_popup(str name):
 
     .. wraps::
         bool BeginPopup(
-            const char* str_id
+            const char* str_id,
+            ImGuiWindowFlags flags = 0
         )
     """
-    return cimgui.BeginPopup(_bytes(name))
+    return cimgui.BeginPopup(_bytes(name), flags)
 
 
 def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
@@ -2250,8 +2285,8 @@ def begin_popup_context_item(str name, int mouse_button=1):
 
 
 def begin_popup_context_window(
-    bool also_over_items=True,
     str name=None,
+    bool also_over_items=True,
     int mouse_button=1
 ):
     """Helper function to open and begin popup when clicked on current window.
@@ -2272,8 +2307,8 @@ def begin_popup_context_window(
         imgui.end()
 
     Args:
-        also_over_items (bool): display on top of widget.
         name (str): name of the window
+        also_over_items (bool): display on top of widget.
         mouse_button (int): mouse button identifier:
             0 - left button
             1 - right button
@@ -2284,21 +2319,21 @@ def begin_popup_context_window(
 
     .. wraps::
         bool BeginPopupContextWindow(
-            bool also_over_items = true,
             const char* str_id = NULL,
+            bool also_over_items = true,
             int mouse_button = 1
         )
     """
     if name is None:
         return cimgui.BeginPopupContextWindow(
-            also_over_items,
             NULL,
+            also_over_items,
             mouse_button
         )
     else:
         return cimgui.BeginPopupContextWindow(
-            also_over_items,
             _bytes(name),
+            also_over_items,
             mouse_button
         )
 
@@ -2569,9 +2604,10 @@ def invisible_button(str identifier, width, height):
 
 
 def color_button(
+        str desc_id,
         float r, float g, float b, a=1.,
-        cimgui.bool small_height=False,
-        cimgui.bool outline_border=True,
+        flags=0,
+        float width=0, float height=0,
 ):
     """Display colored button.
 
@@ -2579,33 +2615,34 @@ def color_button(
         :auto_layout:
         :height: 150
 
-        imgui.begin("Example: color button")
-        imgui.color_button(1, 0, 0, 1, True, True)
-        imgui.color_button(0, 1, 0, 1, True, False)
-        imgui.color_button(0, 0, 1, 1, False, True)
-        imgui.color_button(1, 0, 1, 1, False, False)
+        #imgui.begin("Example: color button")
+        #imgui.color_button(1, 0, 0, 1, True, True)
+        #imgui.color_button(0, 1, 0, 1, True, False)
+        #imgui.color_button(0, 0, 1, 1, False, True)
+        #imgui.color_button(1, 0, 1, 1, False, False)
         imgui.end()
 
     Args:
-        r (float): red color intensity.
-        g (float): green color intensity.
-        b (float): blue color instensity.
-        a (float): alpha intensity.
-        small_height (bool): Small height. Default to False
-        outline_border (bool): Diplay outline border. Defaults to True.
+        #r (float): red color intensity.
+        #g (float): green color intensity.
+        #b (float): blue color instensity.
+        #a (float): alpha intensity.
+        #small_height (bool): Small height. Default to False
+        #outline_border (bool): Diplay outline border. Defaults to True.
 
     Returns:
         bool: True if button is clicked.
 
     .. wraps::
         bool ColorButton(
+            const char* desc_id,
             const ImVec4& col,
-            bool small_height = false,
-            bool outline_border = true
+            ImGuiColorEditFlags flags,
+            ImVec2 size
         )
     """
     return cimgui.ColorButton(
-        _cast_args_ImVec4(r, g, b, a), small_height, outline_border
+        desc_id, _cast_args_ImVec4(r, g, b, a), flags, _cast_args_ImVec2(width, height)
     )
 
 
@@ -4738,6 +4775,20 @@ def set_mouse_cursor(cimgui.ImGuiMouseCursor mouse_cursor_type):
     return cimgui.SetMouseCursor(mouse_cursor_type)
 
 
+def set_scroll_here(float center_y_ratio = 0.5):
+    """Set scroll here.
+
+    adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
+
+    Args:
+        float center_y_ratio = 0.5f
+
+    .. wraps::
+        void SetScrollHere(float center_y_ratio = 0.5f)
+    """
+    return cimgui.SetScrollHere(center_y_ratio)
+
+
 def push_font(_Font font):
     """Push font on a stack.
 
@@ -5386,6 +5437,64 @@ def end_group():
         void EndGroup()
     """
     cimgui.EndGroup()
+
+
+def create_context(_FontAtlas shared_font_atlas = None):
+    """CreateContext
+
+    .. wraps::
+        ImGuiContext* CreateContext(
+                # note: optional
+                ImFontAtlas* shared_font_atlas = NULL);
+        )
+    """
+
+    cdef cimgui.ImGuiContext* _ptr
+
+    if (shared_font_atlas):
+        _ptr = cimgui.CreateContext(shared_font_atlas._ptr)
+    else:
+        _ptr = cimgui.CreateContext(NULL)
+
+    return _ImGuiContext.from_ptr(_ptr)
+
+
+def destroy_context(_ImGuiContext ctx = None):
+    """DestroyContext
+
+    .. wraps::
+        DestroyContext(
+                # note: optional
+                ImGuiContext* ctx = NULL);
+    """
+
+    if ctx:
+        cimgui.DestroyContext(ctx._ptr)
+    else:
+        cimgui.DestroyContext(NULL)
+
+
+
+def get_current_context():
+    """GetCurrentContext
+
+    .. wraps::
+        ImGuiContext* GetCurrentContext();
+    """
+
+    cdef cimgui.ImGuiContext* _ptr
+    _ptr = cimgui.GetCurrentContext()
+    return _ImGuiContext.from_ptr(_ptr)
+
+
+def set_current_context(_ImGuiContext ctx):
+    """SetCurrentContext
+
+    .. wraps::
+        SetCurrentContext(
+                ImGuiContext *ctx);
+    """
+    cimgui.SetCurrentContext(ctx._ptr)
 
 
 # === Python/C++ cross API for error handling ===

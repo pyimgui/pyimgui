@@ -41,7 +41,6 @@ cdef extern from "imgui.h":
         ImGuiCol_ScrollbarGrab
         ImGuiCol_ScrollbarGrabHovered
         ImGuiCol_ScrollbarGrabActive
-        ImGuiCol_ComboBg
         ImGuiCol_CheckMark
         ImGuiCol_SliderGrab
         ImGuiCol_SliderGrabActive
@@ -57,15 +56,15 @@ cdef extern from "imgui.h":
         ImGuiCol_ResizeGrip
         ImGuiCol_ResizeGripHovered
         ImGuiCol_ResizeGripActive
-        ImGuiCol_CloseButton
-        ImGuiCol_CloseButtonHovered
-        ImGuiCol_CloseButtonActive
         ImGuiCol_PlotLines
         ImGuiCol_PlotLinesHovered
         ImGuiCol_PlotHistogram
         ImGuiCol_PlotHistogramHovered
         ImGuiCol_TextSelectedBg
         ImGuiCol_ModalWindowDarkening  # Darken entire screen when a modal window is active
+        ImGuiCol_DragDropTarget
+        ImGuiCol_NavHighlight
+        ImGuiCol_NavWindowingHighlight
         ImGuiCol_COUNT
 
     ctypedef enum ImGuiStyleVar_:
@@ -73,13 +72,15 @@ cdef extern from "imgui.h":
         ImGuiStyleVar_WindowPadding       # ImVec2
         ImGuiStyleVar_WindowRounding      # float
         ImGuiStyleVar_WindowMinSize       # ImVec2
-        ImGuiStyleVar_ChildWindowRounding # float
         ImGuiStyleVar_FramePadding        # ImVec2
         ImGuiStyleVar_FrameRounding       # float
         ImGuiStyleVar_ItemSpacing         # ImVec2
         ImGuiStyleVar_ItemInnerSpacing    # ImVec2
         ImGuiStyleVar_IndentSpacing       # float
+        ImGuiStyleVar_ScrollbarSize       # float
+        ImGuiStyleVar_ScrollbarRounding   # float
         ImGuiStyleVar_GrabMinSize         # float
+        ImGuiStyleVar_GrabRounding        # float
         ImGuiStyleVar_ButtonTextAlign     # flags ImGuiAlign_*
         ImGuiStyleVar_Count_
 
@@ -91,11 +92,11 @@ cdef extern from "imgui.h":
         ImGuiAlign_VCenter
         ImGuiAlign_Default
 
-    ctypedef enum ImGuiSetCond_:
-        ImGuiSetCond_Always               # Set the variable
-        ImGuiSetCond_Once                 # Only set the variable on the first call per runtime session
-        ImGuiSetCond_FirstUseEver         # Only set the variable if the window doesn't exist in the .ini file
-        ImGuiSetCond_Appearing            # Only set the variable if the window is appearing after being inactive (or the first time)
+    ctypedef enum ImGuiCond_:
+        ImGuiCond_Always               # Set the variable
+        ImGuiCond_Once                 # Only set the variable on the first call per runtime session
+        ImGuiCond_FirstUseEver         # Only set the variable if the window doesn't exist in the .ini file
+        ImGuiCond_Appearing            # Only set the variable if the window is appearing after being inactive (or the first time)
 
     ctypedef enum ImGuiWindowFlags_:
         ImGuiWindowFlags_NoTitleBar                 # Disable title-bar
@@ -105,7 +106,6 @@ cdef extern from "imgui.h":
         ImGuiWindowFlags_NoScrollWithMouse          # Disable user vertically scrolling with mouse wheel
         ImGuiWindowFlags_NoCollapse                 # Disable user collapsing window by double-clicking on it
         ImGuiWindowFlags_AlwaysAutoResize           # Resize every window to its content every frame
-        ImGuiWindowFlags_ShowBorders                # Show borders around windows and items
         ImGuiWindowFlags_NoSavedSettings            # Never load/save settings in .ini file
         ImGuiWindowFlags_NoInputs                   # Disable catching mouse or keyboard inputs
         ImGuiWindowFlags_MenuBar                    # Has a menu-bar
@@ -115,6 +115,35 @@ cdef extern from "imgui.h":
         ImGuiWindowFlags_AlwaysVerticalScrollbar    # Always show vertical scrollbar (even if ContentSize.y < Size.y)
         ImGuiWindowFlags_AlwaysHorizontalScrollbar  # Always show horizontal scrollbar (even if ContentSize.x < Size.x)
         ImGuiWindowFlags_AlwaysUseWindowPadding     # Ensure child windows without border uses style.WindowPadding (ignored by default for non-bordered child windows, because more convenient)
+
+    ctypedef enum ImGuiColorEditFlags_:
+        ImGuiColorEditFlags_NoAlpha
+        ImGuiColorEditFlags_NoPicker               # ColorEdit: disable picker when clicking on colored square.
+        ImGuiColorEditFlags_NoOptions              # ColorEdit: disable toggling options menu when right-clicking on inputs/small preview.
+        ImGuiColorEditFlags_NoSmallPreview         # ColorEdit, ColorPicker: disable colored square preview next to the inputs. (e.g. to show only the inputs)
+        ImGuiColorEditFlags_NoInputs               # ColorEdit, ColorPicker: disable inputs sliders/text widgets (e.g. to show only the small preview colored square).
+        ImGuiColorEditFlags_NoTooltip              # ColorEdit, ColorPicker, ColorButton: disable tooltip when hovering the preview.
+        ImGuiColorEditFlags_NoLabel                # ColorEdit, ColorPicker: disable display of inline text label (the label is still forwarded to the tooltip and picker).
+        ImGuiColorEditFlags_NoSidePreview          # ColorPicker: disable bigger color preview on right side of the picker, use small colored square preview instead.
+        # User Options (right-click on widget to change some of them). You can set application defaults using SetColorEditOptions(). The idea is that you probably don't want to override them in most of your calls, let the user choose and/or call SetColorEditOptions() during startup.
+        ImGuiColorEditFlags_AlphaBar               # ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.
+        ImGuiColorEditFlags_AlphaPreview           # ColorEdit, ColorPicker, ColorButton: display preview as a transparent color over a checkerboard, instead of opaque.
+        ImGuiColorEditFlags_AlphaPreviewHalf       # ColorEdit, ColorPicker, ColorButton: display half opaque / half checkerboard, instead of opaque.
+        ImGuiColorEditFlags_HDR                    # (WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use ImGuiColorEditFlags_Float flag as well).
+        ImGuiColorEditFlags_RGB                    # ColorEdit: choose one among RGB/HSV/HEX. ColorPicker: choose any combination using RGB/HSV/HEX.
+        ImGuiColorEditFlags_HSV                    # "
+        ImGuiColorEditFlags_HEX                    # "
+        ImGuiColorEditFlags_Uint8                  # ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0..255.
+        ImGuiColorEditFlags_Float                  # ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers.
+        ImGuiColorEditFlags_PickerHueBar           # ColorPicker: bar for Hue, rectangle for Sat/Value.
+        ImGuiColorEditFlags_PickerHueWheel         # ColorPicker: wheel for Hue, triangle for Sat/Value.
+        # Internals/Masks
+        ImGuiColorEditFlags__InputsMask     = ImGuiColorEditFlags_RGB|ImGuiColorEditFlags_HSV|ImGuiColorEditFlags_HEX
+        ImGuiColorEditFlags__DataTypeMask   = ImGuiColorEditFlags_Uint8|ImGuiColorEditFlags_Float
+        ImGuiColorEditFlags__PickerMask     = ImGuiColorEditFlags_PickerHueWheel|ImGuiColorEditFlags_PickerHueBar
+        ImGuiColorEditFlags__OptionsDefault
+
+
 
     ctypedef enum ImGuiTreeNodeFlags_:
         ImGuiTreeNodeFlags_Selected             # Draw as selected
@@ -135,9 +164,10 @@ cdef extern from "imgui.h":
         ImGuiSelectableFlags_AllowDoubleClick   # Generate press events on double clicks too
 
     ctypedef enum ImGuiMouseCursor_:
+        ImGuiMouseCursor_None
         ImGuiMouseCursor_Arrow
         ImGuiMouseCursor_TextInput              # When hovering over InputText, etc.
-        ImGuiMouseCursor_Move                   # Unused
+        ImGuiMouseCursor_ResizeAll
         ImGuiMouseCursor_ResizeNS               # Unused
         ImGuiMouseCursor_ResizeEW               # When hovering over a column
         ImGuiMouseCursor_ResizeNESW             # Unused
