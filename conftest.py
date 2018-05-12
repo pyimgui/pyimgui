@@ -77,6 +77,7 @@ class DocItem(pytest.Item):
             raise
 
         imgui.render()
+        imgui.end_frame()
 
     @staticmethod
     def indent(text, width=4):

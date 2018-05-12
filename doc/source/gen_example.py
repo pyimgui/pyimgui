@@ -9,7 +9,7 @@ from PIL import Image
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 
-
+imgui.create_context()
 io = imgui.get_io()
 
 
