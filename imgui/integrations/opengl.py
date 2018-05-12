@@ -9,6 +9,7 @@ import ctypes
 
 class BaseOpenGLRenderer(object):
     def __init__(self):
+        imgui.create_context()
         self.io = imgui.get_io()
 
         self._font_texture = None
@@ -34,6 +35,7 @@ class BaseOpenGLRenderer(object):
         raise NotImplementedError
 
     def shutdown(self):
+        # TODO: imgui.destroy_context()
         self._invalidate_device_objects()
         imgui.shutdown()
 

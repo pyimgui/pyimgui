@@ -18,6 +18,7 @@ cdef extern from "imgui.h":
     ctypedef struct ImDrawCmd
     ctypedef struct ImDrawData
     ctypedef struct ImDrawList
+    ctypedef struct ImDrawListSharedData
     ctypedef struct ImDrawVert
     ctypedef struct ImFont
     ctypedef struct ImFontAtlas
@@ -30,8 +31,9 @@ cdef extern from "imgui.h":
     ctypedef struct ImGuiTextFilter
     ctypedef struct ImGuiTextBuffer
     ctypedef struct ImGuiTextEditCallbackData
-    ctypedef struct ImGuiSizeConstraintCallbackData
+    ctypedef struct ImGuiSizeCallbackData
     ctypedef struct ImGuiListClipper
+    ctypedef struct ImGuiPayload
     ctypedef struct ImGuiContext
 
     # ====
@@ -41,18 +43,28 @@ cdef extern from "imgui.h":
     ctypedef unsigned int ImGuiID
     ctypedef unsigned short ImWchar
     ctypedef int ImGuiCol
-    ctypedef int ImGuiStyleVar
+    ctypedef int ImGuiDir
+    ctypedef int ImGuiCond
     ctypedef int ImGuiKey
-    ctypedef int ImGuiAlign
-    ctypedef int ImGuiColorEditMode
+    ctypedef int ImGuiNavInput
     ctypedef int ImGuiMouseCursor
-    ctypedef int ImGuiWindowFlags
-    ctypedef int ImGuiSetCond
+    ctypedef int ImGuiStyleVar
+    ctypedef int ImDrawCornerFlags
+    ctypedef int ImFontAtlasFlags
+    ctypedef int ImGuiBackendFlags
+    ctypedef int ImGuiColorEditFlags
+    ctypedef int ImGuiColumnsFlags
+    ctypedef int ImGuiConfigFlags
+    ctypedef int ImGuiDragDropFlags
+    ctypedef int ImGuiComboFlags
+    ctypedef int ImGuiFocusedFlags
+    ctypedef int ImGuiHoeveredFlags
     ctypedef int ImGuiInputTextFlags
     ctypedef int ImGuiSelectableFlags
     ctypedef int ImGuiTreeNodeFlags
+    ctypedef int ImGuiWindowFlags
     ctypedef int (*ImGuiTextEditCallback)(ImGuiTextEditCallbackData *data);
-    ctypedef void (*ImGuiSizeConstraintCallback)(ImGuiSizeConstraintCallbackData* data);
+    ctypedef void (*ImGuiSizeCallback)(ImGuiSizeCallbackData* data);
 
     ctypedef struct ImVec2:
         float x
@@ -129,7 +141,6 @@ cdef extern from "imgui.h":
         bool        WantCaptureKeyboard  # ✓
         bool        WantTextInput  # ✓
         float       Framerate  # ✓
-        int         MetricsAllocs  # ✓
         int         MetricsRenderVertices  # ✓
         int         MetricsRenderIndices  # ✓
         int         MetricsActiveWindows  # ✓
@@ -236,7 +247,6 @@ cdef extern from "imgui.h":
         ImVec2      WindowMinSize  # ✓
         float       WindowRounding  # ✓
         ImVec2      WindowTitleAlign  # ✓
-        float       ChildWindowRounding  # ✓
         ImVec2      FramePadding  # ✓
         float       FrameRounding  # ✓
         ImVec2      ItemSpacing  # ✓
@@ -252,7 +262,7 @@ cdef extern from "imgui.h":
         ImVec2      DisplayWindowPadding  # ✓
         ImVec2      DisplaySafeAreaPadding  # ✓
         bool        AntiAliasedLines  # ✓
-        bool        AntiAliasedShapes  # ✓
+        bool        AntiAliasedFill  # ✓
         float       CurveTessellationTol  # ✓
 
         # note: originally Colors[ImGuiCol_COUNT]
@@ -265,21 +275,26 @@ cdef extern from "imgui.h":
 cdef extern from "imgui.h" namespace "ImGui":
     # ====
     # Main
-    ImGuiIO& GetIO()  # ✓
+    ImGuiIO& GetIO() except +  # ✓
     ImGuiStyle& GetStyle() except +  # ✗
     ImDrawData* GetDrawData() except +  # ✓
     void NewFrame() except +  # ✓
+    void EndFrame() except +  # ✓
     # note: Render runs callbacks that may be arbitrary Python code
     #       so we need to propagate exceptions from them
     void Render() except +  # ✓
-    void Shutdown() except +  # ✓
     void ShowUserGuide() except +  # ✓
     void ShowStyleEditor(ImGuiStyle*) except +  # ✓
     void ShowStyleEditor() except +  # ✓
-    void ShowTestWindow(bool*) except +  # ✓
-    void ShowTestWindow() except +  # ✓
+    void ShowDemoWindow(bool*) except +  # ✓
+    void ShowDemoWindow() except +  # ✓
     void ShowMetricsWindow(bool*) except +  # ✓
     void ShowMetricsWindow() except +  # ✓
+    bool ShowStyleSelector(const char*) except +  # ✓
+    void ShowFontSelector(const char*) except +  # ✓
+    void StyleColorsDark(ImGuiStyle* dst) except +  # ✓
+    void StyleColorsClassic(ImGuiStyle* dst) except +  # ✓
+    void StyleColorsLight(ImGuiStyle* dst) except +  # ✓
 
     # ====
     # Window
@@ -307,27 +322,29 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImVec2 GetWindowSize() except +  # ✓
     float GetWindowWidth() except +  # ✓
     float GetWindowHeight() except +  # ✓
+    bool IsWindowAppearing() except +  # ✓
     bool IsWindowCollapsed() except +  # ✓
     void SetWindowFontScale(float scale) except +  # ✓
 
     void SetNextWindowPos(  # ✓ note: overrides ommited
             const ImVec2& pos,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond,
+            const ImVec2& pivot
     ) except +
     void SetNextWindowPosCenter(  # ✓ note: overrides ommited
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetNextWindowSize(  # ✓ note: overrides ommited
             const ImVec2& size,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetNextWindowSizeConstraints(  # ✗
             const ImVec2& size_min,
             const ImVec2& size_max,
-            ImGuiSizeConstraintCallback custom_callback,
+            ImGuiSizeCallback custom_callback,
             void* custom_callback_data
     ) except +
     void SetNextWindowContentSize(const ImVec2& size) except +  # ✗
@@ -335,38 +352,38 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetNextWindowCollapsed(  # ✓
             bool collapsed,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetNextWindowFocus() except +  # ✓
     void SetWindowPos(  # ✗
             const ImVec2& pos,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowSize(  # ✗
             const ImVec2& size,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowCollapsed(  # ✗
             bool collapsed,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowFocus() except +  # ✗
     void SetWindowPos(  # ✗
             const char* name, const ImVec2& pos,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowSize(  # ✗
-            const char* name, const ImVec2& size, ImGuiSetCond
+            const char* name, const ImVec2& size, ImGuiCond
             cond
     ) except +
     void SetWindowCollapsed(  # ✗
             const char* name, bool collapsed,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     void SetWindowFocus(const char* name) except +  # ✗
 
@@ -500,6 +517,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool Button(const char*, const ImVec2& size) except +  # ✓
     bool Button(const char*) except +  # ✓
     bool SmallButton(const char*) except +  # ✓
+    bool ArrowButton(const char*, ImGuiDir) except +  # ✗
     bool InvisibleButton(const char*, const ImVec2& size) except +  # ✓
     bool ImageButton(  # ✓
             ImTextureID user_texture_id, const ImVec2& size,
@@ -507,11 +525,12 @@ cdef extern from "imgui.h" namespace "ImGui":
             const ImVec2& uv0, const ImVec2& uv1, int frame_padding,
             const ImVec4& bg_col, const ImVec4& tint_col
     ) except +
-    
     bool ColorButton(  # ✓
+            const char *desc_id,
             const ImVec4& col,
+            ImGuiColorEditFlags flags,
             # note: optional
-            bool small_height, bool outline_border
+            ImVec2 size
     ) except +  # Widgets: images
     void Image(  # ✓
             ImTextureID user_texture_id, const ImVec2& size,
@@ -789,7 +808,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetNextTreeNodeOpen(  # ✗
             bool is_open,
             # note: optional
-            ImGuiSetCond cond
+            ImGuiCond cond
     ) except +
     bool CollapsingHeader(  # ✓
             const char* label,
@@ -813,7 +832,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiSelectableFlags flags, const ImVec2& size
     ) except +
     bool ListBox(  # ✓
-            const char* label, int* current_item, const char** items,
+            const char* label, int* current_item, const char* items[],
             int items_count,
             # note: optional
             int height_in_items
@@ -878,7 +897,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             bool enabled
     ) except +  # Popups
     void OpenPopup(const char* str_id) except +  # ✓
-    bool BeginPopup(const char* str_id) except +  # ✓
+    bool BeginPopup(const char* str_id, ImGuiWindowFlags flags) except +  # ✓
     bool BeginPopupModal(  # ✓
             const char* name,
             # note: optional
@@ -890,9 +909,10 @@ cdef extern from "imgui.h" namespace "ImGui":
             int mouse_button
     ) except +
     bool BeginPopupContextWindow(  # ✓
-            bool also_over_items, const char* str_id,
+            const char* str_id,
+            int mouse_button,
             # note: optional
-            int mouse_button
+            bool also_over_items
     ) except +
     bool BeginPopupContextVoid(  # ✓
             # note: optional
@@ -1015,6 +1035,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     ImGuiMouseCursor GetMouseCursor() except +  # ✓
     void SetMouseCursor(ImGuiMouseCursor type) except +  # ✓
+    void SetScrollHere(float center_y_ratio) except +  # ✓
     void CaptureKeyboardFromApp(  # ✗
             # note: optional
             bool capture
@@ -1029,10 +1050,10 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # Internal context access - see: imgui.h
     const char*   GetVersion() except +  # ✗
-    ImGuiContext* CreateContext(  # ✗
+    ImGuiContext* CreateContext(  # ✓
             # note: optional
-            void* (*malloc_fn)(size_t), void (*free_fn)(void*)
+            ImFontAtlas* shared_font_atlas
     ) except +
-    void DestroyContext(ImGuiContext* ctx) except +  # ✗
-    ImGuiContext* GetCurrentContext() except +  # ✗
-    void SetCurrentContext(ImGuiContext* ctx) except +  # ✗
+    void DestroyContext(ImGuiContext* ctx) except +  # ✓
+    ImGuiContext* GetCurrentContext() except +  # ✓
+    void SetCurrentContext(ImGuiContext* ctx) except +  # ✓
