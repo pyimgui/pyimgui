@@ -2615,11 +2615,11 @@ def color_button(
         :auto_layout:
         :height: 150
 
-        #imgui.begin("Example: color button")
-        #imgui.color_button(1, 0, 0, 1, True, True)
-        #imgui.color_button(0, 1, 0, 1, True, False)
-        #imgui.color_button(0, 0, 1, 1, False, True)
-        #imgui.color_button(1, 0, 1, 1, False, False)
+        imgui.begin("Example: color button")
+        imgui.color_button("Button 1", 1, 0, 0, 1, 0, 10, 10)
+        imgui.color_button("Button 2", 0, 1, 0, 1, 0, 10, 10)
+        imgui.color_button("Wide Button", 0, 0, 1, 1, 0, 20, 10)
+        imgui.color_button("Tall Button", 1, 0, 1, 1, 0, 10, 20)
         imgui.end()
 
     Args:
@@ -2627,8 +2627,9 @@ def color_button(
         #g (float): green color intensity.
         #b (float): blue color instensity.
         #a (float): alpha intensity.
-        #small_height (bool): Small height. Default to False
-        #outline_border (bool): Diplay outline border. Defaults to True.
+        #ImGuiColorEditFlags: Color edit flags.  Zero for none.
+        #width (float): Width of the color button
+        #height (float): Height of the color button
 
     Returns:
         bool: True if button is clicked.
@@ -2642,7 +2643,7 @@ def color_button(
         )
     """
     return cimgui.ColorButton(
-        desc_id, _cast_args_ImVec4(r, g, b, a), flags, _cast_args_ImVec2(width, height)
+        _bytes(desc_id), _cast_args_ImVec4(r, g, b, a), flags, _cast_args_ImVec2(width, height)
     )
 
 
