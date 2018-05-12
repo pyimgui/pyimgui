@@ -51,10 +51,23 @@ class DocItem(pytest.Item):
         self.exec_snippet(self.code)
 
     def exec_snippet(self, source):
+
+        # Strip out new_frame/end_frame from source
+        lines = [
+            line
+            if all([
+                "imgui.new_frame()" not in line,
+                "imgui.render()" not in line,
+                "imgui.end_frame()" not in line
+            ]) else ""
+            for line in
+            source.split('\n')
+        ]
+        source = "\n".join(lines)
+
         code = compile(source, '<str>', 'exec')
         frameinfo = getframeinfo(currentframe())
 
-        imgui.create_context()
         io = imgui.get_io()
         io.render_callback = lambda *args, **kwargs: None
         io.delta_time = 1.0 / 60.0
@@ -74,10 +87,10 @@ class DocItem(pytest.Item):
             lines = source.split('\n')
             lines.insert(sys.exc_info()[2].tb_next.tb_lineno, "^^^")
             self.code = "\n".join(lines)
+            imgui.end_frame()
             raise
 
         imgui.render()
-        imgui.end_frame()
 
     @staticmethod
     def indent(text, width=4):
