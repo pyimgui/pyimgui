@@ -10,6 +10,7 @@ from imgui.integrations.sdl2 import SDL2Renderer
 def main():
     window, gl_context = impl_pysdl2_init()
     renderer = SDL2Renderer(window)
+    imgui.create_context()
 
     running = True
     event = SDL_Event()
@@ -36,7 +37,7 @@ def main():
                 imgui.end_menu()
             imgui.end_main_menu_bar()
 
-        imgui.show_test_window()
+        imgui.show_demo_window()
 
         imgui.begin("Custom window", True)
         imgui.text("Bar")
@@ -50,7 +51,7 @@ def main():
 
         SDL_GL_SwapWindow(window)
 
-    renderer.shutdown()
+    imgui.destroy_context()
     SDL_GL_DeleteContext(gl_context)
     SDL_DestroyWindow(window)
     SDL_Quit()
