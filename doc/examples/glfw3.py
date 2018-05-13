@@ -9,6 +9,7 @@ from imgui.integrations.glfw import GlfwRenderer
 def main():
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
+    imgui.create_context()
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
@@ -29,7 +30,7 @@ def main():
                 imgui.end_menu()
             imgui.end_main_menu_bar()
 
-        imgui.show_test_window()
+        imgui.show_demo_window()
 
         imgui.begin("Custom window", True)
         imgui.text("Bar")
@@ -43,7 +44,7 @@ def main():
         glfw.swap_buffers(window)
 
     impl.shutdown()
-    imgui.shutdown()
+    imgui.destroy_context()
     glfw.terminate()
 
 

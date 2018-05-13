@@ -35,9 +35,8 @@ class BaseOpenGLRenderer(object):
         raise NotImplementedError
 
     def shutdown(self):
-        imgui.destroy_context()
         self._invalidate_device_objects()
-        imgui.shutdown()
+        imgui.destroy_context()
 
 
 class ProgrammablePipelineRenderer(BaseOpenGLRenderer):

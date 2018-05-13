@@ -32,7 +32,7 @@ class HelloWorld(ImguiLayer):
                 imgui.end_menu()
             imgui.end_main_menu_bar()
 
-        imgui.show_test_window()
+        imgui.show_demo_window()
 
         imgui.begin("Custom window", True)
         imgui.text("Bar")
