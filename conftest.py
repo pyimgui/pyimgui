@@ -68,6 +68,7 @@ class DocItem(pytest.Item):
         code = compile(source, '<str>', 'exec')
         frameinfo = getframeinfo(currentframe())
 
+        imgui.create_context()
         io = imgui.get_io()
         io.render_callback = lambda *args, **kwargs: None
         io.delta_time = 1.0 / 60.0
