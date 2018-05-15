@@ -20,7 +20,7 @@ class BaseOpenGLRenderer(object):
         self.refresh_font_texture()
 
         # todo: add option to set new_frame callback/implementation
-        self.io.render_callback = self.render
+        #self.io.render_callback = self.render
 
     def render(self, draw_data):
         raise NotImplementedError
@@ -37,7 +37,7 @@ class BaseOpenGLRenderer(object):
     def shutdown(self):
         imgui.destroy_context()
         self._invalidate_device_objects()
-        imgui.shutdown()
+        #imgui.shutdown()
 
 
 class ProgrammablePipelineRenderer(BaseOpenGLRenderer):

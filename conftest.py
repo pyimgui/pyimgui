@@ -70,7 +70,6 @@ class DocItem(pytest.Item):
 
         imgui.create_context()
         io = imgui.get_io()
-        io.render_callback = lambda *args, **kwargs: None
         io.delta_time = 1.0 / 60.0
         io.display_size = 300, 300
 
