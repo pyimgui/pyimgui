@@ -356,6 +356,51 @@ cdef class GuiStyle(object):
     def window_rounding(self, float value):
         self.ref.WindowRounding = value
 
+    @property
+    def window_border_size(self):
+        return self.ref.WindowBorderSize
+
+    @window_border_size.setter
+    def window_border_size(self, float value):
+        self.ref.WindowBorderSize = value
+
+    @property
+    def child_rounding(self):
+        return self.ref.ChildRounding
+
+    @child_rounding.setter
+    def child_rounding(self, float value):
+        self.ref.ChildRounding = value
+
+    @property
+    def child_border_size(self):
+        return self.ref.ChildBorderSize
+
+    @child_border_size.setter
+    def child_border_size(self, float value):
+        self.ref.PopupBorderSize = value
+
+    @property
+    def popup_rounding(self):
+        return self.ref.PopupRounding
+
+    @popup_rounding.setter
+    def popup_rounding(self, float value):
+        self.ref.PopupRounding = value
+
+    @property
+    def popup_border_size(self):
+        return self.ref.PopupBorderSize
+
+    @child_border_size.setter
+    def child_border_size(self, float value):
+        self.ref.ChildBorderSize = value
+
+
+
+
+
+
     IF TARGET_IMGUI_VERSION > (1, 49):
         # note: not available as Vec2 in 1.49
         # todo: add support for old input type
@@ -382,6 +427,15 @@ cdef class GuiStyle(object):
     @frame_rounding.setter
     def frame_rounding(self, float value):
         self.ref.FrameRounding = value
+
+    @property
+    def frame_border_size(self):
+        return self.ref.FrameBorderSize
+
+    @frame_border_size.setter
+    def frame_border_size(self, float value):
+        self.ref.FrameBorderSize = value
+
 
     @property
     def item_spacing(self):
@@ -481,6 +535,14 @@ cdef class GuiStyle(object):
     @display_safe_area_padding.setter
     def display_safe_area_padding(self, value):
         self.ref.DisplaySafeAreaPadding = _cast_tuple_ImVec2(value)
+
+    @property
+    def mouse_cursor_scale(self):
+        return self.ref.MouseCursorScale
+
+    @mouse_cursor_scale.setter
+    def mouse_cursor_scale(self, value):
+        self.ref.MouseCursorScale = value
 
     @property
     def anti_aliased_lines(self):
@@ -946,6 +1008,14 @@ cdef class _IO(object):
         return self._ptr.WantSaveIniSettings
 
     @property
+    def nav_active(self):
+        return self._ptr.NavActive
+
+    @property
+    def nav_visible(self):
+        return self._ptr.NavVisible
+
+    @property
     def framerate(self):
         return self._ptr.Framerate
 
@@ -1346,6 +1416,81 @@ def get_window_content_region_width():
     return cimgui.GetWindowContentRegionWidth()
 
 
+def set_window_focus():
+    """Set window to be focused
+
+    .. wraps::
+        void SetWindowFlcus()
+    """
+    cimgui.SetWindowFocus()
+
+
+def get_scroll_x():
+    """get scrolling amount [0..GetScrollMaxX()]
+
+    Returns:
+        float: the current scroll X value
+
+    .. wraps::
+        int GetScrollX()
+    """
+    return cimgui.GetScrollX()
+
+
+def get_scroll_y():
+    """get scrolling amount [0..GetScrollMaxY()]
+
+    Returns:
+        float: the current scroll Y value
+
+    .. wraps::
+        int GetScrollY()
+    """
+    return cimgui.GetScrollY()
+
+
+def get_scroll_max_x():
+    """get maximum scrolling amount ~~ ContentSize.X - WindowSize.X
+
+    Returns:
+        float: the maximum scroll X amount
+
+    .. wraps::
+        int GetScrollMaxX()
+    """
+    return cimgui.GetScrollMaxX()
+
+
+def get_scroll_max_y():
+    """get maximum scrolling amount ~~ ContentSize.X - WindowSize.X
+
+    Returns:
+        float: the maximum scroll Y amount
+
+    .. wraps::
+        int GetScrollMaxY()
+    """
+    return cimgui.GetScrollMaxY()
+
+
+def set_scroll_x(float scroll_x):
+    """set scrolling amount [0..SetScrollMaxX()]
+
+    .. wraps::
+        int SetScrollX(float)
+    """
+    cimgui.SetScrollX(scroll_x)
+
+
+def set_scroll_y(float scroll_y):
+    """set scrolling amount [0..SetScrollMaxY()]
+
+    .. wraps::
+        int SetScrollY(flot)
+    """
+    return cimgui.SetScrollY(scroll_y)
+
+
 def set_window_font_scale(float scale):
     """Adjust per-window font scale for current window.
 
@@ -1409,6 +1554,15 @@ def set_next_window_focus():
         void SetNextWindowFocus()
     """
     cimgui.SetNextWindowFocus()
+
+
+def set_next_window_bg_alpha(float alpha):
+    """set next window background color alpha. helper to easily modify ImGuiCol_WindowBg/ChildBg/PopupBg.
+
+    .. wraps::
+        void SetNextWindowBgAlpha(float)
+    """
+    cimgui.SetNextWindowBgAlpha(alpha)
 
 
 def get_window_position():
@@ -4760,6 +4914,21 @@ def set_scroll_here(float center_y_ratio = 0.5):
     return cimgui.SetScrollHere(center_y_ratio)
 
 
+def set_scroll_from_pos_y(float pos_y, float center_y_ratio = 0.5):
+    """Set scroll from position Y
+
+    adjust scrolling amount to make given position valid. use GetCursorPos() or GetCursorStartPos()+offset to get valid positions.
+
+    Args:
+        float pos_y
+        float center_y_ratio = 0.5f
+
+    .. wraps::
+        void SetScrollFromPosY(float pos_y, float center_y_ratio = 0.5f)
+    """
+    return cimgui.SetScrollFromPosY(pos_y, center_y_ratio)
+
+
 def push_font(_Font font):
     """Push font on a stack.
 
@@ -4917,6 +5086,20 @@ cpdef pop_style_var(unsigned int count=1):
         void PopStyleVar(int count = 1)
     """
     cimgui.PopStyleVar(count)
+
+
+cpdef get_font_size():
+    """get current font size (= height in pixels) of current font with current scale applied
+
+    Returns:
+        float: current font size (height in pixels)
+
+    .. wraps::
+        float GetFontSize()
+    """
+    return cimgui.GetFontSize()
+
+
 
 
 cpdef push_item_width(float item_width):

@@ -148,8 +148,8 @@ cdef extern from "imgui.h":
         bool        WantTextInput  # ✓
         bool        WantSetMousePos  # ✓
         bool        WantSaveIniSettings  # ✓
-        bool        NavActive  # ✗
-        bool        NavVisible  # ✗
+        bool        NavActive  # ✓
+        bool        NavVisible  # ✓
         float       Framerate  # ✓
         int         MetricsRenderVertices  # ✓
         int         MetricsRenderIndices  # ✓
@@ -158,19 +158,19 @@ cdef extern from "imgui.h":
 
         # ====
         # source-note: [Internal] ImGui will maintain those fields for you
-        ImVec2      MousePosPrev  # ✗
-        ImVec2      MouseClickedPos[5]  # ✗
-        float       MouseClickedTime[5]  # ✗
-        bool        MouseClicked[5]  # ✗
-        bool        MouseDoubleClicked[5]  # ✗
-        bool        MouseReleased[5]  # ✗
-        bool        MouseDownOwned[5]  # ✗
-        float       MouseDownDuration[5]  # ✗
-        float       MouseDownDurationPrev[5]  # ✗
-        float       MouseDragMaxDistanceAbs[5]  # ✗
-        float       MouseDragMaxDistanceSqr[5]  # ✗
-        float       KeysDownDuration[512]  # ✗
-        float       KeysDownDurationPrev[512]  # ✗
+        #ImVec2      MousePosPrev  # ✗
+        #ImVec2      MouseClickedPos[5]  # ✗
+        #float       MouseClickedTime[5]  # ✗
+        #bool        MouseClicked[5]  # ✗
+        #bool        MouseDoubleClicked[5]  # ✗
+        #bool        MouseReleased[5]  # ✗
+        #bool        MouseDownOwned[5]  # ✗
+        #float       MouseDownDuration[5]  # ✗
+        #float       MouseDownDurationPrev[5]  # ✗
+        #float       MouseDragMaxDistanceAbs[5]  # ✗
+        #float       MouseDragMaxDistanceSqr[5]  # ✗
+        #float       KeysDownDuration[512]  # ✗
+        #float       KeysDownDurationPrev[512]  # ✗
         #float       NavInputsDownDuration[ImGuiNavInput_COUNT]   # ✗
         #float       NavInputsDownDurationPrev[ImGuiNavInput_COUNT] # ✗
 
@@ -258,16 +258,16 @@ cdef extern from "imgui.h":
         float       Alpha  # ✓
         ImVec2      WindowPadding  # ✓
         float       WindowRounding  # ✓
-        float       WindowBorderSize  # ✗
+        float       WindowBorderSize  # ✓
         ImVec2      WindowMinSize  # ✓
         ImVec2      WindowTitleAlign  # ✓
-        float       ChildRounding  # ✗
-        float       ChildBorderSize  # ✗
-        float       PopupRounding  # ✗
-        float       PopupBorderSize  # ✗
+        float       ChildRounding  # ✓
+        float       ChildBorderSize  # ✓
+        float       PopupRounding  # ✓
+        float       PopupBorderSize  # ✓
         ImVec2      FramePadding  # ✓
         float       FrameRounding  # ✓
-        float       FrameBorderSize  # ✗
+        float       FrameBorderSize  # ✓
         ImVec2      ItemSpacing  # ✓
         ImVec2      ItemInnerSpacing  # ✓
         ImVec2      TouchExtraPadding  # ✓
@@ -280,7 +280,7 @@ cdef extern from "imgui.h":
         ImVec2      ButtonTextAlign  # ✓
         ImVec2      DisplayWindowPadding  # ✓
         ImVec2      DisplaySafeAreaPadding  # ✓
-        float       MouseCursorSize   # ✗
+        float       MouseCursorScale   # ✓
         bool        AntiAliasedLines  # ✓
         bool        AntiAliasedFill  # ✓
         float       CurveTessellationTol  # ✓
@@ -393,7 +393,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiCond cond
     ) except +
     void SetNextWindowFocus() except +  # ✓
-    void SetNextWindowBgAlpha() except +  # ✗
+    void SetNextWindowBgAlpha(float alpha) except +  # ✓
     void SetWindowPos(  # ✗
             const ImVec2& pos,
             # note: optional
@@ -409,7 +409,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiCond cond
     ) except +
-    void SetWindowFocus() except +  # ✗
+    void SetWindowFocus() except +  # ✓
     void SetWindowFontScale(float scale) except +  # ✓
     void SetWindowPos(  # ✗
             const char* name, const ImVec2& pos,
@@ -427,17 +427,17 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void SetWindowFocus(const char* name) except +  # ✗
 
-    float GetScrollX() except +  # ✗
-    float GetScrollY() except +  # ✗
-    float GetScrollMaxX() except +  # ✗
-    float GetScrollMaxY() except +  # ✗
-    void SetScrollX(float scroll_x) except +  # ✗
-    void SetScrollY(float scroll_y) except +  # ✗
+    float GetScrollX() except +  # ✓
+    float GetScrollY() except +  # ✓
+    float GetScrollMaxX() except +  # ✓
+    float GetScrollMaxY() except +  # ✓
+    void SetScrollX(float scroll_x) except +  # ✓
+    void SetScrollY(float scroll_y) except +  # ✓
     void SetScrollHere(  # ✓
             # note: optional
             float center_y_ratio
     ) except +
-    void SetScrollFromPosY(  # ✗
+    void SetScrollFromPosY(  # ✓
             float pos_y,
             # note: optional
             float center_y_ratio
@@ -457,7 +457,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void PopStyleVar(int) except +  # ✓
     ImVec4& GetStyleColorVec4(ImGuiCol idx) except +  # ✗
     ImFont* GetFont() except +  # ✗
-    float GetFontSize() except +  # ✗
+    float GetFontSize() except +  # ✓
     ImVec2 GetFontTexUvWhitePixel() except +  # ✗
     ImU32 GetColorU32(ImGuiCol, float) except +  # ✗
     ImU32 GetColorU32(const ImVec4& col) except +  # ✗
