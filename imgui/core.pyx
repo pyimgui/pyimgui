@@ -45,13 +45,23 @@ APPEARING = enums.ImGuiCond_Appearing
 STYLE_ALPHA = enums.ImGuiStyleVar_Alpha # float
 STYLE_WINDOW_PADDING = enums.ImGuiStyleVar_WindowPadding  # Vec2
 STYLE_WINDOW_ROUNDING = enums.ImGuiStyleVar_WindowRounding  # float
+STYLE_WINDOW_BORDERSIZE = enums.ImGuiStyleVar_WindowBorderSize  # float
 STYLE_WINDOW_MIN_SIZE = enums.ImGuiStyleVar_WindowMinSize  # Vec2
+STYLE_WINDOW_TITLE_ALIGN = enums.ImGuiStyleVar_WindowTitleAlign  # Vec2
+STYLE_CHILD_ROUNDING = enums.ImGuiStyleVar_ChildRounding  # float
+STYLE_CHILD_BORDERSIZE = enums.ImGuiStyleVar_ChildBorderSize  # float
+STYLE_POPUP_ROUNDING = enums.ImGuiStyleVar_PopupRounding  # float
+STYLE_POPUP_BORDERSIZE = enums.ImGuiStyleVar_PopupBorderSize  # float
 STYLE_FRAME_PADDING = enums.ImGuiStyleVar_FramePadding # Vec2
 STYLE_FRAME_ROUNDING = enums.ImGuiStyleVar_FrameRounding # float
+STYLE_FRAME_BORDERSIZE = enums.ImGuiStyleVar_FrameBorderSize  # float
 STYLE_ITEM_SPACING = enums.ImGuiStyleVar_ItemSpacing # Vec2
 STYLE_ITEM_INNER_SPACING = enums.ImGuiStyleVar_ItemInnerSpacing # Vec2
 STYLE_INDENT_SPACING = enums.ImGuiStyleVar_IndentSpacing # float
+STYLE_SCROLLBAR_SIZE = enums.ImGuiStyleVar_ScrollbarSize # float
+STYLE_SCROLLBAR_ROUNDING = enums.ImGuiStyleVar_ScrollbarRounding # float
 STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
+STYLE_GRAB_ROUNDING = enums.ImGuiStyleVar_GrabRounding # float
 IF TARGET_IMGUI_VERSION > (1, 49):
     STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
 
@@ -65,8 +75,10 @@ KEY_PAGE_UP = enums.ImGuiKey_PageUp
 KEY_PAGE_DOWN = enums.ImGuiKey_PageDown
 KEY_HOME = enums.ImGuiKey_Home               # for text edit
 KEY_END = enums.ImGuiKey_End                 # for text edit
+KEY_INSERT = enums.ImGuiKey_Insert           # for text edit
 KEY_DELETE = enums.ImGuiKey_Delete           # for text edit
 KEY_BACKSPACE = enums.ImGuiKey_Backspace     # for text edit
+KEY_SPACE = enums.ImGuiKey_Space             # for text edit
 KEY_ENTER = enums.ImGuiKey_Enter             # for text edit
 KEY_ESCAPE = enums.ImGuiKey_Escape           # for text edit
 KEY_A = enums.ImGuiKey_A                     # for text edit CTRL+A: select all
@@ -93,10 +105,15 @@ WINDOW_NO_BRING_TO_FRONT_ON_FOCUS = enums.ImGuiWindowFlags_NoBringToFrontOnFocus
 WINDOW_ALWAYS_VERTICAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysVerticalScrollbar
 WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysHorizontalScrollbar
 WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
+WINDOW_RESIZE_FROM_ANY_SIDE = enums.ImGuiWindowFlags_ResizeFromAnySide
+WINDOW_NO_NAV_INPUTS = enums.ImGuiWindowFlags_NoNavInputs
+WINDOW_NO_NAV_FOCUS = enums.ImGuiWindowFlags_NoNavFocus
+WINDOW_NO_NAV = enums.ImGuiWindowFlags_NoNav
 
 # ==== TreeNode flags enum redefines ====
 TREE_NODE_SELECTED = enums.ImGuiTreeNodeFlags_Selected
 TREE_NODE_FRAMED = enums.ImGuiTreeNodeFlags_Framed
+TREE_NODE_ALLOW_ITEM_OVERLAP = enums.ImGuiTreeNodeFlags_AllowItemOverlap
 TREE_NODE_NO_TREE_PUSH_ON_OPEN = enums.ImGuiTreeNodeFlags_NoTreePushOnOpen
 TREE_NODE_NO_AUTO_OPEN_ON_LOG = enums.ImGuiTreeNodeFlags_NoAutoOpenOnLog
 TREE_NODE_DEFAULT_OPEN = enums.ImGuiTreeNodeFlags_DefaultOpen
@@ -104,6 +121,7 @@ TREE_NODE_OPEN_ON_DOUBLE_CLICK = enums.ImGuiTreeNodeFlags_OpenOnDoubleClick
 TREE_NODE_OPEN_ON_ARROW = enums.ImGuiTreeNodeFlags_OpenOnArrow
 TREE_NODE_LEAF = enums.ImGuiTreeNodeFlags_Leaf
 TREE_NODE_BULLET = enums.ImGuiTreeNodeFlags_Bullet
+TREE_NODE_FRAME_PADDING = enums.ImGuiTreeNodeFlags_FramePadding
 TREE_NODE_COLLAPSING_HEADER = enums.ImGuiTreeNodeFlags_CollapsingHeader
 
 # ==== Selectable flags enum redefines ====
@@ -111,9 +129,57 @@ SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups
 SELECTABLE_SPAN_ALL_COLUMNS = enums.ImGuiSelectableFlags_SpanAllColumns
 SELECTABLE_ALLOW_DOUBLE_CLICK = enums.ImGuiSelectableFlags_AllowDoubleClick
 
+# ==== Combo flags enum redefines ====
+
+COMBO_POPUP_ALIGN_LEFT = enums.ImGuiComboFlags_PopupAlignLeft
+COMBO_HEIGHT_SMALL = enums.ImGuiComboFlags_HeightSmall
+COMBO_HEIGHT_REGULAR = enums.ImGuiComboFlags_HeightRegular
+COMBO_HEIGHT_LARGE = enums.ImGuiComboFlags_HeightLarge
+COMBO_HEIGHT_LARGEST = enums.ImGuiComboFlags_HeightLargest
+COMBO_NO_ARROW_BUTTON = enums.ImGuiComboFlags_NoArrowButton
+COMBO_NO_PREVIEW = enums.ImGuiComboFlags_NoPreview
+COMBO_HEIGHT_MASK = enums.ImGuiComboFlags_HeightMask_
+
+# === Focus flag enum redefines ====
+FOCUS_CHILD_WINDOWS = enums.ImGuiFocusedFlags_ChildWindows
+FOCUS_ROOT_WINDOW = enums.ImGuiFocusedFlags_RootWindow
+FOCUS_ANY_WINDOW = enums.ImGuiFocusedFlags_AnyWindow
+FOCUS_ROOT_AND_CHILD_WINDOWS = enums.ImGuiFocusedFlags_RootAndChildWindows
+
+# === Hovered flag enum redefines ====
+HOVERED_DEFAULT = enums.ImGuiHoveredFlags_Default
+HOVERED_CHILD_WINDOWS = enums.ImGuiHoveredFlags_ChildWindows
+HOVERED_ROOT_WINDOW = enums.ImGuiHoveredFlags_RootWindow
+HOVERED_ANY_WINDOW = enums.ImGuiHoveredFlags_AnyWindow
+HOVERED_ALLOW_WHEN_BLOCKED_BY_POPUP = enums.ImGuiHoveredFlags_AllowWhenBlockedByPopup
+HOVERED_ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM = enums.ImGuiHoveredFlags_AllowWhenBlockedByActiveItem
+HOVERED_ALLOW_WHEN_OVERLAPPED = enums.ImGuiHoveredFlags_AllowWhenOverlapped
+HOVERED_RECT_ONLY = enums.ImGuiHoveredFlags_RectOnly
+HOVERED_ROOT_AND_CHILD_WINDOWS = enums.ImGuiHoveredFlags_RootAndChildWindows
+
+# === Drag Drop flag enum redefines ====
+DRAG_DROP_SOURCE_NO_PREVIEW_TOOLTIP = enums.ImGuiDragDropFlags_SourceNoPreviewTooltip
+DRAG_DROP_SOURCE_NO_DISABLE_HOVER = enums.ImGuiDragDropFlags_SourceNoDisableHover
+DRAG_DROP_SOURCE_NO_HOLD_TO_OPEN_OTHERS = enums.ImGuiDragDropFlags_SourceNoHoldToOpenOthers
+DRAG_DROP_SOURCE_ALLOW_NULL_ID = enums.ImGuiDragDropFlags_SourceAllowNullID
+DRAG_DROP_SOURCE_EXTERN = enums.ImGuiDragDropFlags_SourceExtern
+
+# === Accept Drag Drop Payload flag enum redefines ====
+DRAG_DROP_ACCEPT_BEFORE_DELIVERY = enums.ImGuiDragDropFlags_AcceptBeforeDelivery
+DRAG_DROP_ACCEPT_NO_DRAW_DEFAULT_RECT = enums.ImGuiDragDropFlags_AcceptNoDrawDefaultRect
+DRAG_DROP_ACCEPT_PEEK_ONLY = enums.ImGuiDragDropFlags_AcceptPeekOnly
+
+# === Cardinal Direction enum redefines ====
+DIRECTION_NONE = enums.ImGuiDir_None
+DIRECTION_LEFT = enums.ImGuiDir_Left
+DIRECTION_RIGHT = enums.ImGuiDir_Right
+DIRECTION_UP = enums.ImGuiDir_Up
+DIRECTION_DOWN = enums.ImGuiDir_Down
+
 # ==== Mouse Cursors ====
 MOUSE_CURSOR_ARROW = enums.ImGuiMouseCursor_Arrow
 MOUSE_CURSOR_TEXT_INPUT = enums.ImGuiMouseCursor_TextInput
+MOUSE_CURSOR_RESIZE_ALL = enums.ImGuiMouseCursor_ResizeAll
 MOUSE_CURSOR_RESIZE_NS = enums.ImGuiMouseCursor_ResizeNS
 MOUSE_CURSOR_RESIZE_EW = enums.ImGuiMouseCursor_ResizeEW
 MOUSE_CURSOR_RESIZE_NESW = enums.ImGuiMouseCursor_ResizeNESW
@@ -123,6 +189,7 @@ MOUSE_CURSOR_RESIZE_NWSE = enums.ImGuiMouseCursor_ResizeNWSE
 COLOR_TEXT = enums.ImGuiCol_Text
 COLOR_TEXT_DISABLED = enums.ImGuiCol_TextDisabled
 COLOR_WINDOW_BACKGROUND = enums.ImGuiCol_WindowBg
+COLOR_CHILD_BACKGROUND = enums.ImGuiCol_ChildBg
 COLOR_POPUP_BACKGROUND = enums.ImGuiCol_PopupBg
 COLOR_BORDER = enums.ImGuiCol_Border
 COLOR_BORDER_SHADOW = enums.ImGuiCol_BorderShadow
@@ -130,8 +197,8 @@ COLOR_FRAME_BACKGROUND = enums.ImGuiCol_FrameBg
 COLOR_FRAME_BACKGROUND_HOVERED = enums.ImGuiCol_FrameBgHovered
 COLOR_FRAME_BACKGROUND_ACTIVE = enums.ImGuiCol_FrameBgActive
 COLOR_TITLE_BACKGROUND = enums.ImGuiCol_TitleBg
-COLOR_TITLE_BACKGROUND_COLLAPSED = enums.ImGuiCol_TitleBgCollapsed
 COLOR_TITLE_BACKGROUND_ACTIVE = enums.ImGuiCol_TitleBgActive
+COLOR_TITLE_BACKGROUND_COLLAPSED = enums.ImGuiCol_TitleBgCollapsed
 COLOR_MENUBAR_BACKGROUND = enums.ImGuiCol_MenuBarBg
 COLOR_SCROLLBAR_BACKGROUND = enums.ImGuiCol_ScrollbarBg
 COLOR_SCROLLBAR_GRAB = enums.ImGuiCol_ScrollbarGrab
@@ -146,6 +213,9 @@ COLOR_BUTTON_ACTIVE = enums.ImGuiCol_ButtonActive
 COLOR_HEADER = enums.ImGuiCol_Header
 COLOR_HEADER_HOVERED = enums.ImGuiCol_HeaderHovered
 COLOR_HEADER_ACTIVE = enums.ImGuiCol_HeaderActive
+COLOR_SEPARATOR = enums.ImGuiCol_Separator
+COLOR_SEPARATOR_HOVERED = enums.ImGuiCol_SeparatorHovered
+COLOR_SEPARATOR_ACTIVE = enums.ImGuiCol_SeparatorActive
 COLOR_RESIZE_GRIP = enums.ImGuiCol_ResizeGrip
 COLOR_RESIZE_GRIP_HOVERED = enums.ImGuiCol_ResizeGripHovered
 COLOR_RESIZE_GRIP_ACTIVE = enums.ImGuiCol_ResizeGripActive
@@ -155,6 +225,9 @@ COLOR_PLOT_HISTOGRAM = enums.ImGuiCol_PlotHistogram
 COLOR_PLOT_HISTOGRAM_HOVERED = enums.ImGuiCol_PlotHistogramHovered
 COLOR_TEXT_SELECTED_BACKGROUND = enums.ImGuiCol_TextSelectedBg
 COLOR_MODAL_WINDOW_DARKENING = enums.ImGuiCol_ModalWindowDarkening
+COLOR_DRAG_DROP_TARGET = enums.ImGuiCol_DragDropTarget
+COLOR_NAV_HIGHLIGHT = enums.ImGuiCol_NavHighlight
+COLOR_NAV_WINDOWING_HIGHLIGHT = enums.ImGuiCol_NavWindowingHighlight
 COLOR_COUNT = enums.ImGuiCol_COUNT
 
 # ==== Text input flags ====
@@ -174,6 +247,7 @@ INPUT_TEXT_NO_HORIZONTAL_SCROLL = enums.ImGuiInputTextFlags_NoHorizontalScroll
 INPUT_TEXT_ALWAYS_INSERT_MODE = enums.ImGuiInputTextFlags_AlwaysInsertMode
 INPUT_TEXT_READ_ONLY = enums.ImGuiInputTextFlags_ReadOnly
 INPUT_TEXT_PASSWORD = enums.ImGuiInputTextFlags_Password
+INPUT_TEXT_NO_UNDO_REDO = enums.ImGuiInputTextFlags_NoUndoRedo
 
 
 Vec2 = namedtuple("Vec2", ['x', 'y'])
