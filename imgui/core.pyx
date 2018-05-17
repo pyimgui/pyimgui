@@ -396,11 +396,6 @@ cdef class GuiStyle(object):
     def child_border_size(self, float value):
         self.ref.ChildBorderSize = value
 
-
-
-
-
-
     IF TARGET_IMGUI_VERSION > (1, 49):
         # note: not available as Vec2 in 1.49
         # todo: add support for old input type
@@ -1063,7 +1058,7 @@ def end_frame():
     instead!
 
     .. wraps::
-        void ENdFrame()
+        void EndFrame()
     """
     cimgui.EndFrame()
 
@@ -3926,7 +3921,7 @@ def input_int(
 
         int_val = 3
         imgui.begin("Example: integer input")
-        changed, int_val = imgui.input_float('Type multiplier:', int_val)
+        changed, int_val = imgui.input_int('Type multiplier:', int_val)
         imgui.text('You wrote: %i' % int_val)
         imgui.end()
 
@@ -4099,10 +4094,10 @@ def input_double(
         :width: 400
         :height: 100
 
-        int_val = 3
+        double_val = 3.14159265358979323846
         imgui.begin("Example: integer input")
-        changed, int_val = imgui.input_float('Type multiplier:', int_val)
-        imgui.text('You wrote: %i' % int_val)
+        changed, double_val = imgui.input_double('Type multiplier:', double_val)
+        imgui.text('You wrote: %i' % double_val)
         imgui.end()
 
     Args:
@@ -4147,7 +4142,22 @@ def slider_float(
     """Display float slider widget.
     Use power different from 1.0 for logarithmic sliders.
 
-    For a float slider example see :func:`slider_float4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        value = 88.2
+
+        imgui.begin("Example: slider float")
+        changed, value = imgui.slider_float(
+            "slide floats", value,
+            min_value=0.0, max_value=100.0,
+            format="%.0f",
+            power=1.0
+        )
+        imgui.text("Changed: %s, Value: %s" % (changed, value))
+        imgui.end()
 
     Args:
         label (str): widget label.
@@ -4191,8 +4201,22 @@ def slider_float2(
     """Display float slider widget with 2 values.
     Use power different from 1.0 for logarithmic sliders.
 
-    For a float slider example see :func:`slider_float4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
 
+        values = 88.2, 42.6
+
+        imgui.begin("Example: slider float2")
+        changed, values = imgui.slider_float2(
+            "slide floats", *values,
+            min_value=0.0, max_value=100.0,
+            format="%.0f",
+            power=1.0
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
     Args:
         label (str): widget label.
         value0, value1 (float): slider values.
@@ -4235,7 +4259,22 @@ def slider_float3(
     """Display float slider widget with 3 values.
     Use power different from 1.0 for logarithmic sliders.
 
-    For a float slider example see :func:`slider_float4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88.2, 42.6, 69.1
+
+        imgui.begin("Example: slider float3")
+        changed, values = imgui.slider_float3(
+            "slide floats", *values,
+            min_value=0.0, max_value=100.0,
+            format="%.0f",
+            power=1.0
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
 
     Args:
         label (str): widget label.
@@ -4286,7 +4325,7 @@ def slider_float4(
 
         values = 88.2, 42.6, 69.1, 0.3
 
-        imgui.begin("Example: slider float")
+        imgui.begin("Example: slider float4")
         changed, values = imgui.slider_float4(
             "slide floats", *values,
             min_value=0.0, max_value=100.0,
@@ -4336,7 +4375,21 @@ def slider_int(
 ):
     """Display int slider widget
 
-    For a int slider example see :func:`slider_int4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        value = 88
+
+        imgui.begin("Example: slider int")
+        changed, values = imgui.slider_int(
+            "slide ints", value,
+            min_value=0, max_value=100,
+            format="%d"
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, value))
+        imgui.end()
 
     Args:
         label (str): widget label.
@@ -4376,7 +4429,21 @@ def slider_int2(
 ):
     """Display int slider widget with 2 values.
 
-    For a int slider example see :func:`slider_int4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88, 27
+
+        imgui.begin("Example: slider int2")
+        changed, values = imgui.slider_int2(
+            "slide ints2", *values,
+            min_value=0, max_value=100,
+            format="%d"
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
 
     Args:
         label (str): widget label.
@@ -4416,7 +4483,21 @@ def slider_int3(
 ):
     """Display int slider widget with 3 values.
 
-    For a int slider example see :func:`slider_int4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88, 27, 3
+
+        imgui.begin("Example: slider int3")
+        changed, values = imgui.slider_int3(
+            "slide ints3", *values,
+            min_value=0, max_value=100,
+            format="%d"
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
 
     Args:
         label (str): widget label.
@@ -4454,7 +4535,7 @@ def slider_int4(
     int max_value,
     str format = "%.f"
 ):
-    """Display float slider widget with 4 values.
+    """Display int slider widget with 4 values.
 
     .. visual-example::
         :auto_layout:
@@ -4463,10 +4544,10 @@ def slider_int4(
 
         values = 88, 42, 69, 0
 
-        imgui.begin("Example: slider int")
+        imgui.begin("Example: slider int4")
         changed, values = imgui.slider_int4(
             "slide ints", *values,
-            min_value=0, max_value=100, format="%.3f"
+            min_value=0, max_value=100, format="%d"
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -4513,7 +4594,24 @@ def v_slider_float(
     """Display vertical float slider widget with the specified width and
     height.
 
-    For a float slider example see :func:`slider_float4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        width = 20
+        height = 100
+        value = 88
+
+        imgui.begin("Example: vertical slider float")
+        changed, values = imgui.v_slider_float(
+            "vertical slider float",
+            width, height, value,
+            min_value=0, max_value=100,
+            format="%0.3f", power = 1.0
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
 
     Args:
         label (str): widget label.
@@ -4555,11 +4653,28 @@ def v_slider_int(
     int value,
     int min_value,
     int max_value,
-    str format = "%.f"
+    str format = "%d"
 ):
     """Display vertical int slider widget with the specified width and height.
 
-    For a int slider example see :func:`slider_int4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        width = 20
+        height = 100
+        value = 88
+
+        imgui.begin("Example: vertical slider int")
+        changed, values = imgui.v_slider_int(
+            "vertical slider int",
+            width, height, value,
+            min_value=0, max_value=100,
+            format="%d"
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
 
     Args:
         label (str): widget label.
@@ -5035,7 +5150,7 @@ cpdef push_style_color(
 ):
     """Push style color on stack.
 
-    **Note:** variables pushed on stack need to be poped using
+    **Note:** variables pushed on stack need to be popped using
     :func:`pop_style_color()` until the end of current frame. This
     implementation guards you from segfaults caused by redundant stack pops
     (raises exception if this happens) but generally it is safer and easier to
