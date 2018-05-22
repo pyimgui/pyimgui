@@ -40,6 +40,7 @@ def main():
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         imgui.render()
+        impl.render(imgui.get_draw_data())
         glfw.swap_buffers(window)
 
     impl.shutdown()

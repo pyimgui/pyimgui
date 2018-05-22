@@ -9,6 +9,7 @@ import ctypes
 
 class BaseOpenGLRenderer(object):
     def __init__(self):
+        imgui.create_context()
         self.io = imgui.get_io()
 
         self._font_texture = None
@@ -19,7 +20,7 @@ class BaseOpenGLRenderer(object):
         self.refresh_font_texture()
 
         # todo: add option to set new_frame callback/implementation
-        self.io.render_callback = self.render
+        #self.io.render_callback = self.render
 
     def render(self, draw_data):
         raise NotImplementedError
@@ -35,7 +36,7 @@ class BaseOpenGLRenderer(object):
 
     def shutdown(self):
         self._invalidate_device_objects()
-        imgui.shutdown()
+        imgui.destroy_context()
 
 
 class ProgrammablePipelineRenderer(BaseOpenGLRenderer):

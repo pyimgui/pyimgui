@@ -9,7 +9,7 @@ from PIL import Image
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 
-
+imgui.create_context()
 io = imgui.get_io()
 
 
@@ -70,7 +70,8 @@ def render_snippet(
         line
         if all([
             "imgui.new_frame()" not in line,
-            "imgui.render()" not in line
+            "imgui.render()" not in line,
+            "imgui.end_frame()" not in line
         ]) else ""
         for line in
         source.split('\n')
@@ -145,7 +146,7 @@ def render_snippet(
 
             if auto_layout:
                 imgui.set_next_window_size(width - 10, height - 10)
-                imgui.set_next_window_centered()
+                imgui.set_next_window_position(impl.io.DisplaySize.x * 0.5, implio.DisplaySize.y * 0.5, 1, pivot_x = 0.5, pivot_y = 0.5)
 
             exec(code, locals(), globals())
 

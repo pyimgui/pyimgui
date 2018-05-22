@@ -17,7 +17,7 @@ so many different flags can be joined together with ``|`` operator.
     imgui.set_next_window_position(10, 0)
     imgui.begin(
         "Custom window",
-        flags=imgui.WINDOW_MENU_BAR | imgui.WINDOW_SHOW_BORDERS
+        flags=imgui.WINDOW_MENU_BAR
     )
     imgui.text("Custom window with menu bar and borders")
     imgui.end()
@@ -56,23 +56,6 @@ Window flags are also available for new scrollable child regions created with
 
     imgui.end()
 
-Note that in case of scrollable regions it is possible to override the
-``border`` argument with the :any:`imgui.WINDOW_SHOW_BORDERS` flag.
-
-.. visual-example::
-    :width: 310
-    :height: 100
-    :title: Child region flags override border
-    :auto_layout:
-
-    imgui.begin("Region border override")
-    imgui.begin_child(
-        "Child region", border=False,
-        flags=imgui.WINDOW_SHOW_BORDERS
-    )
-    imgui.end_child()
-    imgui.end()
-
 List of all available window flags (click to see documentation):
 
 .. _window-flag-options:
@@ -84,7 +67,6 @@ List of all available window flags (click to see documentation):
 * :py:data:`imgui.WINDOW_NO_SCROLL_WITH_MOUSE` 
 * :py:data:`imgui.WINDOW_NO_COLLAPSE` 
 * :py:data:`imgui.WINDOW_ALWAYS_AUTO_RESIZE` 
-* :py:data:`imgui.WINDOW_SHOW_BORDERS` 
 * :py:data:`imgui.WINDOW_NO_SAVED_SETTINGS` 
 * :py:data:`imgui.WINDOW_NO_INPUTS` 
 * :py:data:`imgui.WINDOW_MENU_BAR` 

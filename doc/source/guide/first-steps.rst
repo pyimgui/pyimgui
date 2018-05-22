@@ -82,6 +82,7 @@ commands.
   # pass all drawing comands to the rendering pipeline
   # and close frame context
   imgui.render()
+  imgui.end_frame()
 
 
 Of course this is not enough to create fully working GUI application with

@@ -36,23 +36,32 @@ DEF TARGET_IMGUI_VERSION = (1, 49)
 cdef unsigned short* _LATIN_ALL = [0x0020, 0x024F , 0]
 
 # ==== Condition enum redefines ====
-ALWAYS = enums.ImGuiSetCond_Always
-ONCE = enums.ImGuiSetCond_Once
-FIRST_USE_EVER = enums.ImGuiSetCond_FirstUseEver
-APPEARING = enums.ImGuiSetCond_Appearing
+ALWAYS = enums.ImGuiCond_Always
+ONCE = enums.ImGuiCond_Once
+FIRST_USE_EVER = enums.ImGuiCond_FirstUseEver
+APPEARING = enums.ImGuiCond_Appearing
 
 # ==== Style var enum redefines ====
 STYLE_ALPHA = enums.ImGuiStyleVar_Alpha # float
 STYLE_WINDOW_PADDING = enums.ImGuiStyleVar_WindowPadding  # Vec2
 STYLE_WINDOW_ROUNDING = enums.ImGuiStyleVar_WindowRounding  # float
+STYLE_WINDOW_BORDERSIZE = enums.ImGuiStyleVar_WindowBorderSize  # float
 STYLE_WINDOW_MIN_SIZE = enums.ImGuiStyleVar_WindowMinSize  # Vec2
-STYLE_CHILD_WINDOW_ROUNDING = enums.ImGuiStyleVar_ChildWindowRounding # float
+STYLE_WINDOW_TITLE_ALIGN = enums.ImGuiStyleVar_WindowTitleAlign  # Vec2
+STYLE_CHILD_ROUNDING = enums.ImGuiStyleVar_ChildRounding  # float
+STYLE_CHILD_BORDERSIZE = enums.ImGuiStyleVar_ChildBorderSize  # float
+STYLE_POPUP_ROUNDING = enums.ImGuiStyleVar_PopupRounding  # float
+STYLE_POPUP_BORDERSIZE = enums.ImGuiStyleVar_PopupBorderSize  # float
 STYLE_FRAME_PADDING = enums.ImGuiStyleVar_FramePadding # Vec2
 STYLE_FRAME_ROUNDING = enums.ImGuiStyleVar_FrameRounding # float
+STYLE_FRAME_BORDERSIZE = enums.ImGuiStyleVar_FrameBorderSize  # float
 STYLE_ITEM_SPACING = enums.ImGuiStyleVar_ItemSpacing # Vec2
 STYLE_ITEM_INNER_SPACING = enums.ImGuiStyleVar_ItemInnerSpacing # Vec2
 STYLE_INDENT_SPACING = enums.ImGuiStyleVar_IndentSpacing # float
+STYLE_SCROLLBAR_SIZE = enums.ImGuiStyleVar_ScrollbarSize # float
+STYLE_SCROLLBAR_ROUNDING = enums.ImGuiStyleVar_ScrollbarRounding # float
 STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
+STYLE_GRAB_ROUNDING = enums.ImGuiStyleVar_GrabRounding # float
 IF TARGET_IMGUI_VERSION > (1, 49):
     STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
 
@@ -66,8 +75,10 @@ KEY_PAGE_UP = enums.ImGuiKey_PageUp
 KEY_PAGE_DOWN = enums.ImGuiKey_PageDown
 KEY_HOME = enums.ImGuiKey_Home               # for text edit
 KEY_END = enums.ImGuiKey_End                 # for text edit
+KEY_INSERT = enums.ImGuiKey_Insert           # for text edit
 KEY_DELETE = enums.ImGuiKey_Delete           # for text edit
 KEY_BACKSPACE = enums.ImGuiKey_Backspace     # for text edit
+KEY_SPACE = enums.ImGuiKey_Space             # for text edit
 KEY_ENTER = enums.ImGuiKey_Enter             # for text edit
 KEY_ESCAPE = enums.ImGuiKey_Escape           # for text edit
 KEY_A = enums.ImGuiKey_A                     # for text edit CTRL+A: select all
@@ -85,7 +96,6 @@ WINDOW_NO_SCROLLBAR = enums.ImGuiWindowFlags_NoScrollbar
 WINDOW_NO_SCROLL_WITH_MOUSE = enums.ImGuiWindowFlags_NoScrollWithMouse
 WINDOW_NO_COLLAPSE = enums.ImGuiWindowFlags_NoCollapse
 WINDOW_ALWAYS_AUTO_RESIZE = enums.ImGuiWindowFlags_AlwaysAutoResize
-WINDOW_SHOW_BORDERS = enums.ImGuiWindowFlags_ShowBorders
 WINDOW_NO_SAVED_SETTINGS = enums.ImGuiWindowFlags_NoSavedSettings
 WINDOW_NO_INPUTS = enums.ImGuiWindowFlags_NoInputs
 WINDOW_MENU_BAR = enums.ImGuiWindowFlags_MenuBar
@@ -95,11 +105,15 @@ WINDOW_NO_BRING_TO_FRONT_ON_FOCUS = enums.ImGuiWindowFlags_NoBringToFrontOnFocus
 WINDOW_ALWAYS_VERTICAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysVerticalScrollbar
 WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysHorizontalScrollbar
 WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
+WINDOW_RESIZE_FROM_ANY_SIDE = enums.ImGuiWindowFlags_ResizeFromAnySide
+WINDOW_NO_NAV_INPUTS = enums.ImGuiWindowFlags_NoNavInputs
+WINDOW_NO_NAV_FOCUS = enums.ImGuiWindowFlags_NoNavFocus
+WINDOW_NO_NAV = enums.ImGuiWindowFlags_NoNav
 
 # ==== TreeNode flags enum redefines ====
 TREE_NODE_SELECTED = enums.ImGuiTreeNodeFlags_Selected
 TREE_NODE_FRAMED = enums.ImGuiTreeNodeFlags_Framed
-TREE_NODE_ALLOW_OVERLAP_MODE = enums.ImGuiTreeNodeFlags_AllowOverlapMode
+TREE_NODE_ALLOW_ITEM_OVERLAP = enums.ImGuiTreeNodeFlags_AllowItemOverlap
 TREE_NODE_NO_TREE_PUSH_ON_OPEN = enums.ImGuiTreeNodeFlags_NoTreePushOnOpen
 TREE_NODE_NO_AUTO_OPEN_ON_LOG = enums.ImGuiTreeNodeFlags_NoAutoOpenOnLog
 TREE_NODE_DEFAULT_OPEN = enums.ImGuiTreeNodeFlags_DefaultOpen
@@ -107,6 +121,7 @@ TREE_NODE_OPEN_ON_DOUBLE_CLICK = enums.ImGuiTreeNodeFlags_OpenOnDoubleClick
 TREE_NODE_OPEN_ON_ARROW = enums.ImGuiTreeNodeFlags_OpenOnArrow
 TREE_NODE_LEAF = enums.ImGuiTreeNodeFlags_Leaf
 TREE_NODE_BULLET = enums.ImGuiTreeNodeFlags_Bullet
+TREE_NODE_FRAME_PADDING = enums.ImGuiTreeNodeFlags_FramePadding
 TREE_NODE_COLLAPSING_HEADER = enums.ImGuiTreeNodeFlags_CollapsingHeader
 
 # ==== Selectable flags enum redefines ====
@@ -114,10 +129,57 @@ SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups
 SELECTABLE_SPAN_ALL_COLUMNS = enums.ImGuiSelectableFlags_SpanAllColumns
 SELECTABLE_ALLOW_DOUBLE_CLICK = enums.ImGuiSelectableFlags_AllowDoubleClick
 
+# ==== Combo flags enum redefines ====
+
+COMBO_POPUP_ALIGN_LEFT = enums.ImGuiComboFlags_PopupAlignLeft
+COMBO_HEIGHT_SMALL = enums.ImGuiComboFlags_HeightSmall
+COMBO_HEIGHT_REGULAR = enums.ImGuiComboFlags_HeightRegular
+COMBO_HEIGHT_LARGE = enums.ImGuiComboFlags_HeightLarge
+COMBO_HEIGHT_LARGEST = enums.ImGuiComboFlags_HeightLargest
+COMBO_NO_ARROW_BUTTON = enums.ImGuiComboFlags_NoArrowButton
+COMBO_NO_PREVIEW = enums.ImGuiComboFlags_NoPreview
+COMBO_HEIGHT_MASK = enums.ImGuiComboFlags_HeightMask_
+
+# === Focus flag enum redefines ====
+FOCUS_CHILD_WINDOWS = enums.ImGuiFocusedFlags_ChildWindows
+FOCUS_ROOT_WINDOW = enums.ImGuiFocusedFlags_RootWindow
+FOCUS_ANY_WINDOW = enums.ImGuiFocusedFlags_AnyWindow
+FOCUS_ROOT_AND_CHILD_WINDOWS = enums.ImGuiFocusedFlags_RootAndChildWindows
+
+# === Hovered flag enum redefines ====
+HOVERED_DEFAULT = enums.ImGuiHoveredFlags_Default
+HOVERED_CHILD_WINDOWS = enums.ImGuiHoveredFlags_ChildWindows
+HOVERED_ROOT_WINDOW = enums.ImGuiHoveredFlags_RootWindow
+HOVERED_ANY_WINDOW = enums.ImGuiHoveredFlags_AnyWindow
+HOVERED_ALLOW_WHEN_BLOCKED_BY_POPUP = enums.ImGuiHoveredFlags_AllowWhenBlockedByPopup
+HOVERED_ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM = enums.ImGuiHoveredFlags_AllowWhenBlockedByActiveItem
+HOVERED_ALLOW_WHEN_OVERLAPPED = enums.ImGuiHoveredFlags_AllowWhenOverlapped
+HOVERED_RECT_ONLY = enums.ImGuiHoveredFlags_RectOnly
+HOVERED_ROOT_AND_CHILD_WINDOWS = enums.ImGuiHoveredFlags_RootAndChildWindows
+
+# === Drag Drop flag enum redefines ====
+DRAG_DROP_SOURCE_NO_PREVIEW_TOOLTIP = enums.ImGuiDragDropFlags_SourceNoPreviewTooltip
+DRAG_DROP_SOURCE_NO_DISABLE_HOVER = enums.ImGuiDragDropFlags_SourceNoDisableHover
+DRAG_DROP_SOURCE_NO_HOLD_TO_OPEN_OTHERS = enums.ImGuiDragDropFlags_SourceNoHoldToOpenOthers
+DRAG_DROP_SOURCE_ALLOW_NULL_ID = enums.ImGuiDragDropFlags_SourceAllowNullID
+DRAG_DROP_SOURCE_EXTERN = enums.ImGuiDragDropFlags_SourceExtern
+
+# === Accept Drag Drop Payload flag enum redefines ====
+DRAG_DROP_ACCEPT_BEFORE_DELIVERY = enums.ImGuiDragDropFlags_AcceptBeforeDelivery
+DRAG_DROP_ACCEPT_NO_DRAW_DEFAULT_RECT = enums.ImGuiDragDropFlags_AcceptNoDrawDefaultRect
+DRAG_DROP_ACCEPT_PEEK_ONLY = enums.ImGuiDragDropFlags_AcceptPeekOnly
+
+# === Cardinal Direction enum redefines ====
+DIRECTION_NONE = enums.ImGuiDir_None
+DIRECTION_LEFT = enums.ImGuiDir_Left
+DIRECTION_RIGHT = enums.ImGuiDir_Right
+DIRECTION_UP = enums.ImGuiDir_Up
+DIRECTION_DOWN = enums.ImGuiDir_Down
+
 # ==== Mouse Cursors ====
 MOUSE_CURSOR_ARROW = enums.ImGuiMouseCursor_Arrow
 MOUSE_CURSOR_TEXT_INPUT = enums.ImGuiMouseCursor_TextInput
-MOUSE_CURSOR_MOVE = enums.ImGuiMouseCursor_Move
+MOUSE_CURSOR_RESIZE_ALL = enums.ImGuiMouseCursor_ResizeAll
 MOUSE_CURSOR_RESIZE_NS = enums.ImGuiMouseCursor_ResizeNS
 MOUSE_CURSOR_RESIZE_EW = enums.ImGuiMouseCursor_ResizeEW
 MOUSE_CURSOR_RESIZE_NESW = enums.ImGuiMouseCursor_ResizeNESW
@@ -127,7 +189,7 @@ MOUSE_CURSOR_RESIZE_NWSE = enums.ImGuiMouseCursor_ResizeNWSE
 COLOR_TEXT = enums.ImGuiCol_Text
 COLOR_TEXT_DISABLED = enums.ImGuiCol_TextDisabled
 COLOR_WINDOW_BACKGROUND = enums.ImGuiCol_WindowBg
-COLOR_CHILD_WINDOW_BACKGROUND = enums.ImGuiCol_ChildWindowBg
+COLOR_CHILD_BACKGROUND = enums.ImGuiCol_ChildBg
 COLOR_POPUP_BACKGROUND = enums.ImGuiCol_PopupBg
 COLOR_BORDER = enums.ImGuiCol_Border
 COLOR_BORDER_SHADOW = enums.ImGuiCol_BorderShadow
@@ -135,14 +197,13 @@ COLOR_FRAME_BACKGROUND = enums.ImGuiCol_FrameBg
 COLOR_FRAME_BACKGROUND_HOVERED = enums.ImGuiCol_FrameBgHovered
 COLOR_FRAME_BACKGROUND_ACTIVE = enums.ImGuiCol_FrameBgActive
 COLOR_TITLE_BACKGROUND = enums.ImGuiCol_TitleBg
-COLOR_TITLE_BACKGROUND_COLLAPSED = enums.ImGuiCol_TitleBgCollapsed
 COLOR_TITLE_BACKGROUND_ACTIVE = enums.ImGuiCol_TitleBgActive
+COLOR_TITLE_BACKGROUND_COLLAPSED = enums.ImGuiCol_TitleBgCollapsed
 COLOR_MENUBAR_BACKGROUND = enums.ImGuiCol_MenuBarBg
 COLOR_SCROLLBAR_BACKGROUND = enums.ImGuiCol_ScrollbarBg
 COLOR_SCROLLBAR_GRAB = enums.ImGuiCol_ScrollbarGrab
 COLOR_SCROLLBAR_GRAB_HOVERED = enums.ImGuiCol_ScrollbarGrabHovered
 COLOR_SCROLLBAR_GRAB_ACTIVE = enums.ImGuiCol_ScrollbarGrabActive
-COLOR_COMBO_BACKGROUND = enums.ImGuiCol_ComboBg
 COLOR_CHECK_MARK = enums.ImGuiCol_CheckMark
 COLOR_SLIDER_GRAB = enums.ImGuiCol_SliderGrab
 COLOR_SLIDER_GRAB_ACTIVE = enums.ImGuiCol_SliderGrabActive
@@ -152,21 +213,21 @@ COLOR_BUTTON_ACTIVE = enums.ImGuiCol_ButtonActive
 COLOR_HEADER = enums.ImGuiCol_Header
 COLOR_HEADER_HOVERED = enums.ImGuiCol_HeaderHovered
 COLOR_HEADER_ACTIVE = enums.ImGuiCol_HeaderActive
-COLOR_COLUMN = enums.ImGuiCol_Column
-COLOR_COLUMN_HOVERED = enums.ImGuiCol_ColumnHovered
-COLOR_COLUMN_ACTIVE = enums.ImGuiCol_ColumnActive
+COLOR_SEPARATOR = enums.ImGuiCol_Separator
+COLOR_SEPARATOR_HOVERED = enums.ImGuiCol_SeparatorHovered
+COLOR_SEPARATOR_ACTIVE = enums.ImGuiCol_SeparatorActive
 COLOR_RESIZE_GRIP = enums.ImGuiCol_ResizeGrip
 COLOR_RESIZE_GRIP_HOVERED = enums.ImGuiCol_ResizeGripHovered
 COLOR_RESIZE_GRIP_ACTIVE = enums.ImGuiCol_ResizeGripActive
-COLOR_CLOSE_BUTTON = enums.ImGuiCol_CloseButton
-COLOR_CLOSE_BUTTON_HOVERED = enums.ImGuiCol_CloseButtonHovered
-COLOR_CLOSE_BUTTON_ACTIVE = enums.ImGuiCol_CloseButtonActive
 COLOR_PLOT_LINES = enums.ImGuiCol_PlotLines
 COLOR_PLOT_LINES_HOVERED = enums.ImGuiCol_PlotLinesHovered
 COLOR_PLOT_HISTOGRAM = enums.ImGuiCol_PlotHistogram
 COLOR_PLOT_HISTOGRAM_HOVERED = enums.ImGuiCol_PlotHistogramHovered
 COLOR_TEXT_SELECTED_BACKGROUND = enums.ImGuiCol_TextSelectedBg
 COLOR_MODAL_WINDOW_DARKENING = enums.ImGuiCol_ModalWindowDarkening
+COLOR_DRAG_DROP_TARGET = enums.ImGuiCol_DragDropTarget
+COLOR_NAV_HIGHLIGHT = enums.ImGuiCol_NavHighlight
+COLOR_NAV_WINDOWING_HIGHLIGHT = enums.ImGuiCol_NavWindowingHighlight
 COLOR_COUNT = enums.ImGuiCol_COUNT
 
 # ==== Text input flags ====
@@ -186,6 +247,7 @@ INPUT_TEXT_NO_HORIZONTAL_SCROLL = enums.ImGuiInputTextFlags_NoHorizontalScroll
 INPUT_TEXT_ALWAYS_INSERT_MODE = enums.ImGuiInputTextFlags_AlwaysInsertMode
 INPUT_TEXT_READ_ONLY = enums.ImGuiInputTextFlags_ReadOnly
 INPUT_TEXT_PASSWORD = enums.ImGuiInputTextFlags_Password
+INPUT_TEXT_NO_UNDO_REDO = enums.ImGuiInputTextFlags_NoUndoRedo
 
 
 Vec2 = namedtuple("Vec2", ['x', 'y'])
@@ -244,6 +306,16 @@ cdef cimgui.ImVec4 _cast_args_ImVec4(float x, float y, float z, float w):  # noq
 
 cdef _cast_ImVec4_tuple(cimgui.ImVec4 vec):  # noqa
     return Vec4(vec.x, vec.y, vec.w, vec.z)
+
+
+cdef class _ImGuiContext(object):
+    cdef cimgui.ImGuiContext* _ptr
+
+    @staticmethod
+    cdef from_ptr(cimgui.ImGuiContext* ptr):
+        instance = _ImGuiContext()
+        instance._ptr = ptr
+        return instance
 
 
 cdef class _DrawCmd(object):
@@ -358,6 +430,46 @@ cdef class GuiStyle(object):
     def window_rounding(self, float value):
         self.ref.WindowRounding = value
 
+    @property
+    def window_border_size(self):
+        return self.ref.WindowBorderSize
+
+    @window_border_size.setter
+    def window_border_size(self, float value):
+        self.ref.WindowBorderSize = value
+
+    @property
+    def child_rounding(self):
+        return self.ref.ChildRounding
+
+    @child_rounding.setter
+    def child_rounding(self, float value):
+        self.ref.ChildRounding = value
+
+    @property
+    def child_border_size(self):
+        return self.ref.ChildBorderSize
+
+    @child_border_size.setter
+    def child_border_size(self, float value):
+        self.ref.PopupBorderSize = value
+
+    @property
+    def popup_rounding(self):
+        return self.ref.PopupRounding
+
+    @popup_rounding.setter
+    def popup_rounding(self, float value):
+        self.ref.PopupRounding = value
+
+    @property
+    def popup_border_size(self):
+        return self.ref.PopupBorderSize
+
+    @child_border_size.setter
+    def child_border_size(self, float value):
+        self.ref.ChildBorderSize = value
+
     IF TARGET_IMGUI_VERSION > (1, 49):
         # note: not available as Vec2 in 1.49
         # todo: add support for old input type
@@ -368,14 +480,6 @@ cdef class GuiStyle(object):
         @window_title_align.setter
         def window_title_align(self, value):
             self.ref.WindowTitleAlign = _cast_tuple_ImVec2(value)
-
-    @property
-    def child_window_rounding(self):
-        return self.ref.ChildWindowRounding
-
-    @child_window_rounding.setter
-    def child_window_rounding(self, float value):
-        self.ref.ChildWindowRounding = value
 
     @property
     def frame_padding(self):
@@ -392,6 +496,15 @@ cdef class GuiStyle(object):
     @frame_rounding.setter
     def frame_rounding(self, float value):
         self.ref.FrameRounding = value
+
+    @property
+    def frame_border_size(self):
+        return self.ref.FrameBorderSize
+
+    @frame_border_size.setter
+    def frame_border_size(self, float value):
+        self.ref.FrameBorderSize = value
+
 
     @property
     def item_spacing(self):
@@ -493,6 +606,14 @@ cdef class GuiStyle(object):
         self.ref.DisplaySafeAreaPadding = _cast_tuple_ImVec2(value)
 
     @property
+    def mouse_cursor_scale(self):
+        return self.ref.MouseCursorScale
+
+    @mouse_cursor_scale.setter
+    def mouse_cursor_scale(self, value):
+        self.ref.MouseCursorScale = value
+
+    @property
     def anti_aliased_lines(self):
         return self.ref.AntiAliasedLines
 
@@ -501,12 +622,12 @@ cdef class GuiStyle(object):
         self.ref.AntiAliasedLines = value
 
     @property
-    def anti_aliased_shapes(self):
-        return self.ref.AntiAliasedShapes
+    def anti_aliased_fill(self):
+        return self.ref.AntiAliasedFill
 
-    @anti_aliased_shapes.setter
-    def anti_aliased_shapes(self, cimgui.bool value):
-        self.ref.AntiAliasedShapes = value
+    @anti_aliased_fill.setter
+    def anti_aliased_fill(self, cimgui.bool value):
+        self.ref.AntiAliasedFill = value
 
     @property
     def curve_tessellation_tolerance(self):
@@ -699,13 +820,11 @@ cdef class _FontAtlas(object):
 
 cdef class _IO(object):
     cdef cimgui.ImGuiIO* _ptr
-    cdef object _render_callback
     cdef object _fonts
 
     def __init__(self):
         self._ptr = &cimgui.GetIO()
         self._fonts = _FontAtlas.from_ptr(self._ptr.Fonts)
-        self._render_callback = None
 
     # ... maping of input properties ...
     @property
@@ -812,15 +931,6 @@ cdef class _IO(object):
         self._ptr.FontAllowUserScaling = value
 
     @property
-    def render_callback(self):
-        return self._render_callback
-
-    @render_callback.setter
-    def render_callback(self, object fn):
-        self._render_callback = fn
-        self._ptr.RenderDrawListsFn = self._io_render_callback
-
-    @property
     def display_fb_scale(self):
         return _cast_ImVec2_tuple(self._ptr.DisplayFramebufferScale)
 
@@ -843,6 +953,22 @@ cdef class _IO(object):
     @display_visible_max.setter
     def display_visible_max(self,  value):
         self._ptr.DisplayVisibleMax = _cast_tuple_ImVec2(value)
+
+    @property
+    def opt_mac_osx_behaviors(self):
+        return self._ptr.OptMacOSXBehaviors
+
+    @opt_mac_osx_behaviors.setter
+    def opt_mac_osx_behaviors(self, cimgui.bool value):
+        self._ptr.OptMacOSXBehaviors = value
+
+    @property
+    def opt_cursor_blink(self):
+        return self._ptr.OptCursorBlink
+
+    @opt_cursor_blink.setter
+    def opt_cursor_blink(self, cimgui.bool value):
+        self._ptr.OptCursorBlink = value
 
     @property
     def mouse_pos(self):
@@ -943,12 +1069,24 @@ cdef class _IO(object):
         return self._ptr.WantTextInput
 
     @property
-    def framerate(self):
-        return self._ptr.Framerate
+    def want_set_mouse_pos(self):
+        return self._ptr.WantSetMousePos
 
     @property
-    def metrics_allocs(self):
-        return self._ptr.MetricsAllocs
+    def want_save_ini_setting(self):
+        return self._ptr.WantSaveIniSettings
+
+    @property
+    def nav_active(self):
+        return self._ptr.NavActive
+
+    @property
+    def nav_visible(self):
+        return self._ptr.NavVisible
+
+    @property
+    def framerate(self):
+        return self._ptr.Framerate
 
     @property
     def metrics_render_vertices(self):
@@ -957,13 +1095,6 @@ cdef class _IO(object):
     @property
     def metrics_active_windows(self):
         return self._ptr.MetricsActiveWindows
-
-    @staticmethod
-    cdef void _io_render_callback(cimgui.ImDrawData* data) except +:
-        io = get_io()
-
-        if io.render_callback:
-            io.render_callback(_DrawData.from_ptr(data))
 
 
 _io = None
@@ -991,6 +1122,21 @@ def new_frame():
     cimgui.NewFrame()
 
 
+def end_frame():
+    """End a frame.
+
+    ends the ImGui frame. automatically called by Render(), so most likely
+    don't need to ever call that yourself directly. If you don't need to
+    render you may call end_frame() but you'll have wasted CPU already.
+    If you don't need to render, better to not create any imgui windows
+    instead!
+
+    .. wraps::
+        void EndFrame()
+    """
+    cimgui.EndFrame()
+
+
 def render():
     """Finalize frame, set rendering data, and run render callback (if set).
 
@@ -998,15 +1144,6 @@ def render():
         void Render()
     """
     cimgui.Render()
-
-
-def shutdown():
-    """Shutdown ImGui context.
-
-    .. wraps::
-        Shutdown
-    """
-    cimgui.Shutdown()
 
 
 def show_user_guide():
@@ -1052,15 +1189,15 @@ def show_style_editor(GuiStyle style=None):
         cimgui.ShowStyleEditor()
 
 
-def show_test_window(closable=False):
-    """Show ImGui test window.
+def show_demo_window(closable=False):
+    """Show ImGui demo window.
 
     .. visual-example::
         :width: 700
         :height: 600
         :auto_layout:
 
-        imgui.show_test_window()
+        imgui.show_demo_window()
 
     Args:
         closable (bool): define if window is closable.
@@ -1069,16 +1206,32 @@ def show_test_window(closable=False):
         bool: True if window is not closed (False trigerred by close button).
 
     .. wraps::
-        void ShowTestWindow(bool* p_open = NULL)
+        void ShowDemoWindow(bool* p_open = NULL)
     """
     cdef cimgui.bool opened = True
 
     if closable:
-        cimgui.ShowTestWindow(&opened)
+        cimgui.ShowDemoWindow(&opened)
     else:
-        cimgui.ShowTestWindow()
+        cimgui.ShowDemoWindow()
 
     return opened
+
+
+def show_test_window():
+    """Show ImGui demo window.
+
+    .. visual-example::
+        :width: 700
+        :height: 600
+        :auto_layout:
+
+        imgui.show_test_window()
+
+    .. wraps::
+        void ShowDemoWindow()
+    """
+    cimgui.ShowDemoWindow()
 
 
 def show_metrics_window(closable=False):
@@ -1108,6 +1261,14 @@ def show_metrics_window(closable=False):
         cimgui.ShowMetricsWindow()
 
     return opened
+
+
+def show_style_selector(str label):
+    return cimgui.ShowStyleSelector(label)
+
+
+def show_font_selector(str label):
+    cimgui.ShowStyleSelector(label)
 
 
 def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
@@ -1145,9 +1306,8 @@ def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
 def get_draw_data():
     """Get draw data.
 
-    Draw data value is same as passed to your ``io.render_callback()``
-    function. It is valid after :any:`render()` and until the next call
-    to :any:`new_frame()`
+    valid after :any:`render()` and until the next call
+    to :any:`new_frame()`.  This is what you have to render.
 
     Returns:
         _DrawData: draw data for all draw calls required to display gui
@@ -1216,14 +1376,14 @@ def begin_child(
             const char* str_id,
             const ImVec2& size = ImVec2(0,0),
             bool border = false,
-            ImGuiWindowFlags extra_flags = 0
+            ImGuiWindowFlags flags = 0
         )
 
         bool BeginChild(
             ImGuiID id,
             const ImVec2& size = ImVec2(0,0),
             bool border = false,
-            ImGuiWindowFlags extra_flags = 0
+            ImGuiWindowFlags flags = 0
         )
     """
     # note: we do not take advantage of C++ function overloading
@@ -1325,6 +1485,81 @@ def get_window_content_region_width():
     return cimgui.GetWindowContentRegionWidth()
 
 
+def set_window_focus():
+    """Set window to be focused
+
+    .. wraps::
+        void SetWindowFlcus()
+    """
+    cimgui.SetWindowFocus()
+
+
+def get_scroll_x():
+    """get scrolling amount [0..GetScrollMaxX()]
+
+    Returns:
+        float: the current scroll X value
+
+    .. wraps::
+        int GetScrollX()
+    """
+    return cimgui.GetScrollX()
+
+
+def get_scroll_y():
+    """get scrolling amount [0..GetScrollMaxY()]
+
+    Returns:
+        float: the current scroll Y value
+
+    .. wraps::
+        int GetScrollY()
+    """
+    return cimgui.GetScrollY()
+
+
+def get_scroll_max_x():
+    """get maximum scrolling amount ~~ ContentSize.X - WindowSize.X
+
+    Returns:
+        float: the maximum scroll X amount
+
+    .. wraps::
+        int GetScrollMaxX()
+    """
+    return cimgui.GetScrollMaxX()
+
+
+def get_scroll_max_y():
+    """get maximum scrolling amount ~~ ContentSize.X - WindowSize.X
+
+    Returns:
+        float: the maximum scroll Y amount
+
+    .. wraps::
+        int GetScrollMaxY()
+    """
+    return cimgui.GetScrollMaxY()
+
+
+def set_scroll_x(float scroll_x):
+    """set scrolling amount [0..SetScrollMaxX()]
+
+    .. wraps::
+        int SetScrollX(float)
+    """
+    cimgui.SetScrollX(scroll_x)
+
+
+def set_scroll_y(float scroll_y):
+    """set scrolling amount [0..SetScrollMaxY()]
+
+    .. wraps::
+        int SetScrollY(flot)
+    """
+    return cimgui.SetScrollY(scroll_y)
+
+
 def set_window_font_scale(float scale):
     """Adjust per-window font scale for current window.
 
@@ -1352,7 +1587,7 @@ def set_window_font_scale(float scale):
 
 
 def set_next_window_collapsed(
-    cimgui.bool collapsed, cimgui.ImGuiSetCond condition=ALWAYS
+    cimgui.bool collapsed, cimgui.ImGuiCond condition=ALWAYS
 ):
     """Set next window collapsed state.
 
@@ -1374,7 +1609,7 @@ def set_next_window_collapsed(
 
     .. wraps::
          void SetNextWindowCollapsed(
-             bool collapsed, ImGuiSetCond cond = 0
+             bool collapsed, ImGuiCond cond = 0
          )
 
     """
@@ -1388,6 +1623,15 @@ def set_next_window_focus():
         void SetNextWindowFocus()
     """
     cimgui.SetNextWindowFocus()
+
+
+def set_next_window_bg_alpha(float alpha):
+    """set next window background color alpha. helper to easily modify ImGuiCol_WindowBg/ChildBg/PopupBg.
+
+    .. wraps::
+        void SetNextWindowBgAlpha(float)
+    """
+    cimgui.SetNextWindowBgAlpha(alpha)
 
 
 def get_window_position():
@@ -1442,7 +1686,7 @@ def get_window_height():
 
 
 def set_next_window_position(
-    float x, float y, cimgui.ImGuiSetCond condition=ALWAYS
+    float x, float y, cimgui.ImGuiCond condition=ALWAYS, float pivot_x=0, float pivot_y=0
 ):
     """Set next window position.
 
@@ -1453,6 +1697,8 @@ def set_next_window_position(
         y (float): y window coordinate
         condition (:ref:`condition flag <condition-options>`): defines on which
             condition value should be set. Defaults to :any:`imgui.ALWAYS`.
+        pivot_x (float): pivot x window coordinate
+        pivot_y (float): pivot y window coordinate
 
     .. visual-example::
         :title: window positioning
@@ -1466,40 +1712,14 @@ def set_next_window_position(
             imgui.end()
 
     .. wraps::
-        void SetNextWindowPos(const ImVec2& pos, ImGuiSetCond cond = 0)
+        void SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0, const ImVec2& pivot = ImVec2(0,0))
 
     """
-    cimgui.SetNextWindowPos(_cast_args_ImVec2(x, y), condition)
-
-
-def set_next_window_centered(cimgui.ImGuiSetCond condition=ALWAYS):
-    """Set next window position to be centered on screen.
-
-    Call before :func:`begin()`.
-
-    Args:
-        condition (:ref:`condition flag <condition-options>`): defines on which
-            condition value should be set. Defaults to :any:`imgui.ALWAYS`.
-
-    .. visual-example::
-        :title: window centering
-        :height: 100
-        :width: 600
-
-        imgui.set_next_window_size(200, 50)
-        imgui.set_next_window_centered()
-        imgui.begin("Example: centered")
-        imgui.end()
-
-
-    .. wraps::
-        void SetNextWindowPosCenter(ImGuiSetCond cond = 0)
-    """
-    cimgui.SetNextWindowPosCenter(condition)
+    cimgui.SetNextWindowPos(_cast_args_ImVec2(x, y), condition, _cast_args_ImVec2(pivot_x, pivot_y))
 
 
 def set_next_window_size(
-    float width, float height, cimgui.ImGuiSetCond condition=ALWAYS
+    float width, float height, cimgui.ImGuiCond condition=ALWAYS
 ):
     """Set next window size.
 
@@ -1515,7 +1735,8 @@ def set_next_window_size(
         :title: window sizing
         :height: 200
 
-        imgui.set_next_window_centered()
+        imgui.set_next_window_position(io.display_size.x * 0.5, io.display_size.y * 0.5, 1, pivot_x = 0.5, pivot_y = 0.5)
+
         imgui.set_next_window_size(80, 180)
         imgui.begin("High")
         imgui.end()
@@ -1523,7 +1744,7 @@ def set_next_window_size(
 
     .. wraps::
         void SetNextWindowSize(
-            const ImVec2& size, ImGuiSetCond cond = 0
+            const ImVec2& size, ImGuiCond cond = 0
         )
     """
     cimgui.SetNextWindowSize(_cast_args_ImVec2(width, height), condition)
@@ -1536,6 +1757,16 @@ def is_window_collapsed():
         bool: True if window is collapsed
     """
     return cimgui.IsWindowCollapsed()
+
+
+def is_window_appearing():
+    """Check if current window is appearing.
+
+    Returns:
+        bool: True if window is appearing
+    """
+    return cimgui.IsWindowAppearing()
+
 
 
 def tree_node(str text, cimgui.ImGuiTreeNodeFlags flags=0):
@@ -1739,12 +1970,13 @@ def listbox(
         bool ListBox(
             const char* label,
             int* current_item,
-            const char** items,
+            const char* items[],
             int items_count,
             int height_in_items = -1
         )
 
     """
+
     cdef int inout_current = current
     cdef const char** in_items = <const char**> malloc(len(items) * sizeof(char*))
 
@@ -2113,7 +2345,7 @@ def open_popup(str name):
     cimgui.OpenPopup(_bytes(name))
 
 
-def begin_popup(str name):
+def begin_popup(str name, cimgui.ImGuiWindowFlags flags=0):
     """Open a popup window.
 
     Returns ``True`` if the popup is open and you can start outputting
@@ -2151,10 +2383,11 @@ def begin_popup(str name):
 
     .. wraps::
         bool BeginPopup(
-            const char* str_id
+            const char* str_id,
+            ImGuiWindowFlags flags = 0
         )
     """
-    return cimgui.BeginPopup(_bytes(name))
+    return cimgui.BeginPopup(_bytes(name), flags)
 
 
 def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
@@ -2213,7 +2446,7 @@ def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
     ), inout_visible
 
 
-def begin_popup_context_item(str name, int mouse_button=1):
+def begin_popup_context_item(str name = None, int mouse_button=1):
     """This is a helper function to handle the most simple case of associating
     one named popup to one given widget.
 
@@ -2242,16 +2475,19 @@ def begin_popup_context_item(str name, int mouse_button=1):
 
     .. wraps::
         bool BeginPopupContextItem(
-            const char* str_id,
+            const char* str_id = NULL,
             int mouse_button = 1
         )
     """
-    return cimgui.BeginPopupContextItem(_bytes(name), mouse_button)
+    if name is None:
+        return cimgui.BeginPopupContextItem(NULL, mouse_button)
+    else:
+        return cimgui.BeginPopupContextItem(_bytes(name), mouse_button)
 
 
 def begin_popup_context_window(
-    bool also_over_items=True,
     str name=None,
+    bool also_over_items=True,
     int mouse_button=1
 ):
     """Helper function to open and begin popup when clicked on current window.
@@ -2272,8 +2508,8 @@ def begin_popup_context_window(
         imgui.end()
 
     Args:
-        also_over_items (bool): display on top of widget.
         name (str): name of the window
+        also_over_items (bool): display on top of widget.
         mouse_button (int): mouse button identifier:
             0 - left button
             1 - right button
@@ -2284,21 +2520,21 @@ def begin_popup_context_window(
 
     .. wraps::
         bool BeginPopupContextWindow(
-            bool also_over_items = true,
             const char* str_id = NULL,
+            bool also_over_items = true,
             int mouse_button = 1
         )
     """
     if name is None:
         return cimgui.BeginPopupContextWindow(
-            also_over_items,
             NULL,
+            also_over_items,
             mouse_button
         )
     else:
         return cimgui.BeginPopupContextWindow(
-            also_over_items,
             _bytes(name),
+            also_over_items,
             mouse_button
         )
 
@@ -2569,9 +2805,10 @@ def invisible_button(str identifier, width, height):
 
 
 def color_button(
+        str desc_id,
         float r, float g, float b, a=1.,
-        cimgui.bool small_height=False,
-        cimgui.bool outline_border=True,
+        flags=0,
+        float width=0, float height=0,
 ):
     """Display colored button.
 
@@ -2580,32 +2817,34 @@ def color_button(
         :height: 150
 
         imgui.begin("Example: color button")
-        imgui.color_button(1, 0, 0, 1, True, True)
-        imgui.color_button(0, 1, 0, 1, True, False)
-        imgui.color_button(0, 0, 1, 1, False, True)
-        imgui.color_button(1, 0, 1, 1, False, False)
+        imgui.color_button("Button 1", 1, 0, 0, 1, 0, 10, 10)
+        imgui.color_button("Button 2", 0, 1, 0, 1, 0, 10, 10)
+        imgui.color_button("Wide Button", 0, 0, 1, 1, 0, 20, 10)
+        imgui.color_button("Tall Button", 1, 0, 1, 1, 0, 10, 20)
         imgui.end()
 
     Args:
-        r (float): red color intensity.
-        g (float): green color intensity.
-        b (float): blue color instensity.
-        a (float): alpha intensity.
-        small_height (bool): Small height. Default to False
-        outline_border (bool): Diplay outline border. Defaults to True.
+        #r (float): red color intensity.
+        #g (float): green color intensity.
+        #b (float): blue color instensity.
+        #a (float): alpha intensity.
+        #ImGuiColorEditFlags: Color edit flags.  Zero for none.
+        #width (float): Width of the color button
+        #height (float): Height of the color button
 
     Returns:
         bool: True if button is clicked.
 
     .. wraps::
         bool ColorButton(
+            const char* desc_id,
             const ImVec4& col,
-            bool small_height = false,
-            bool outline_border = true
+            ImGuiColorEditFlags flags,
+            ImVec2 size
         )
     """
     return cimgui.ColorButton(
-        _cast_args_ImVec4(r, g, b, a), small_height, outline_border
+        _bytes(desc_id), _cast_args_ImVec4(r, g, b, a), flags, _cast_args_ImVec2(width, height)
     )
 
 
@@ -2965,13 +3204,13 @@ def drag_float(
     float change_speed = 1.0,
     float min_value=0.0,
     float max_value=0.0,
-    str display_format = "%.3f",
+    str format = "%.3f",
     float power = 1.
 ):
     """Display float drag widget.
 
     .. todo::
-        Consider replacing ``display_format`` with something that allows
+        Consider replacing ``format`` with something that allows
         for safer way to specify display format without loosing the
         functionality of wrapped function.
 
@@ -2987,7 +3226,7 @@ def drag_float(
             "Default", value,
         )
         changed, value = imgui.drag_float(
-            "Less precise", value, display_format="%.1f"
+            "Less precise", value, format="%.1f"
         )
         imgui.text("Changed: %s, Value: %s" % (changed, value))
         imgui.end()
@@ -2998,7 +3237,7 @@ def drag_float(
         change_speed (float): how fast values change on drag.
         min_value (float): min value allowed by widget.
         max_value (float): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** Highly unsafe when used without care.
             May lead to segmentation faults and other memory violation issues.
         power (float): index of the power function applied to the value.
@@ -3014,7 +3253,7 @@ def drag_float(
             float v_speed = 1.0f,
             float v_min = 0.0f,
             float v_max = 0.0f,
-            const char* display_format = "%.3f",
+            const char* format = "%.3f",
             float power = 1.0f
         )
     """
@@ -3022,7 +3261,7 @@ def drag_float(
 
     return cimgui.DragFloat(
         _bytes(label), &inout_value,
-        change_speed, min_value, max_value, _bytes(display_format), power
+        change_speed, min_value, max_value, _bytes(format), power
     ), inout_value
 
 
@@ -3031,7 +3270,7 @@ def drag_float2(
     float change_speed = 1.0,
     float min_value=0.0,
     float max_value=0.0,
-    str display_format = "%.3f",
+    str format = "%.3f",
     float power = 1.
 ):
     """Display float drag widget with 2 values.
@@ -3048,7 +3287,7 @@ def drag_float2(
             "Default", *values
         )
         changed, values = imgui.drag_float2(
-            "Less precise", *values, display_format="%.1f"
+            "Less precise", *values, format="%.1f"
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -3059,7 +3298,7 @@ def drag_float2(
         change_speed (float): how fast values change on drag.
         min_value (float): min value allowed by widget.
         max_value (float): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_float()`.
         power (float): index of the power function applied to the value.
 
@@ -3074,14 +3313,14 @@ def drag_float2(
             float v_speed = 1.0f,
             float v_min = 0.0f,
             float v_max = 0.0f,
-            const char* display_format = "%.3f",
+            const char* format = "%.3f",
             float power = 1.0f
         )
     """
     cdef float[2] inout_values = [value0, value1]
     return cimgui.DragFloat2(
         _bytes(label), <float*>&inout_values,
-        change_speed, min_value, max_value, _bytes(display_format), power
+        change_speed, min_value, max_value, _bytes(format), power
     ), (inout_values[0], inout_values[1])
 
 
@@ -3090,7 +3329,7 @@ def drag_float3(
     float change_speed = 1.0,
     float min_value=0.0,
     float max_value=0.0,
-    str display_format = "%.3f",
+    str format = "%.3f",
     float power = 1.
 ):
     """Display float drag widget with 3 values.
@@ -3107,7 +3346,7 @@ def drag_float3(
             "Default", *values
         )
         changed, values = imgui.drag_float3(
-            "Less precise", *values, display_format="%.1f"
+            "Less precise", *values, format="%.1f"
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -3118,7 +3357,7 @@ def drag_float3(
         change_speed (float): how fast values change on drag.
         min_value (float): min value allowed by widget.
         max_value (float): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_float()`.
         power (float): index of the power function applied to the value.
 
@@ -3133,14 +3372,14 @@ def drag_float3(
             float v_speed = 1.0f,
             float v_min = 0.0f,
             float v_max = 0.0f,
-            const char* display_format = "%.3f",
+            const char* format = "%.3f",
             float power = 1.0f
         )
     """
     cdef float[3] inout_values = [value0, value1, value2]
     return cimgui.DragFloat3(
         _bytes(label), <float*>&inout_values,
-        change_speed, min_value, max_value, _bytes(display_format), power
+        change_speed, min_value, max_value, _bytes(format), power
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
@@ -3149,7 +3388,7 @@ def drag_float4(
     float change_speed = 1.0,
     float min_value=0.0,
     float max_value=0.0,
-    str display_format = "%.3f",
+    str format = "%.3f",
     float power = 1.
 ):
     """Display float drag widget with 4 values.
@@ -3166,7 +3405,7 @@ def drag_float4(
             "Default", *values
         )
         changed, values = imgui.drag_float4(
-            "Less precise", *values, display_format="%.1f"
+            "Less precise", *values, format="%.1f"
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -3177,7 +3416,7 @@ def drag_float4(
         change_speed (float): how fast values change on drag.
         min_value (float): min value allowed by widget.
         max_value (float): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_float()`.
         power (float): index of the power function applied to the value.
 
@@ -3192,14 +3431,14 @@ def drag_float4(
             float v_speed = 1.0f,
             float v_min = 0.0f,
             float v_max = 0.0f,
-            const char* display_format = "%.3f",
+            const char* format = "%.3f",
             float power = 1.0f
         )
     """
     cdef float[4] inout_values = [value0, value1, value2, value3]
     return cimgui.DragFloat4(
         _bytes(label), <float*>&inout_values,
-        change_speed, min_value, max_value, _bytes(display_format), power
+        change_speed, min_value, max_value, _bytes(format), power
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
@@ -3208,12 +3447,12 @@ def drag_int(
     float change_speed = 1.0,
     int min_value=0,
     int max_value=0,
-    str display_format = "%.f"
+    str format = "%d"
 ):
     """Display int drag widget.
 
     .. todo::
-        Consider replacing ``display_format`` with something that allows
+        Consider replacing ``format`` with something that allows
         for safer way to specify display format without loosing the
         functionality of wrapped function.
 
@@ -3235,7 +3474,7 @@ def drag_int(
         change_speed (float): how fast values change on drag.
         min_value (int): min value allowed by widget.
         max_value (int): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** Highly unsafe when used without care.
             May lead to segmentation faults and other memory violation issues.
 
@@ -3250,14 +3489,14 @@ def drag_int(
             float v_speed = 1.0f,
             int v_min = 0.0f,
             int v_max = 0.0f,
-            const char* display_format = "%.f",
+            const char* format = "%d",
         )
     """
     cdef int inout_value = value
 
     return cimgui.DragInt(
         _bytes(label), &inout_value,
-        change_speed, min_value, max_value, _bytes(display_format)
+        change_speed, min_value, max_value, _bytes(format)
     ), inout_value
 
 
@@ -3266,7 +3505,7 @@ def drag_int2(
     float change_speed = 1.0,
     int min_value=0,
     int max_value=0,
-    str display_format = "%.f"
+    str format = "%d"
 ):
     """Display int drag widget with 2 values.
 
@@ -3290,7 +3529,7 @@ def drag_int2(
         change_speed (float): how fast values change on drag.
         min_value (int): min value allowed by widget.
         max_value (int): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
 
     Returns:
@@ -3304,13 +3543,13 @@ def drag_int2(
             float v_speed = 1.0f,
             int v_min = 0.0f,
             int v_max = 0.0f,
-            const char* display_format = "%.f",
+            const char* format = "%d",
         )
     """
     cdef int[2] inout_values = [value0, value1]
     return cimgui.DragInt2(
         _bytes(label), <int*>&inout_values,
-        change_speed, min_value, max_value, _bytes(display_format),
+        change_speed, min_value, max_value, _bytes(format),
     ), (inout_values[0], inout_values[1])
 
 
@@ -3319,7 +3558,7 @@ def drag_int3(
     float change_speed = 1.0,
     int min_value=0,
     int max_value=0,
-    str display_format = "%.f"
+    str format = "%d"
 ):
     """Display int drag widget with 3 values.
 
@@ -3343,7 +3582,7 @@ def drag_int3(
         change_speed (float): how fast values change on drag.
         min_value (int): min value allowed by widget.
         max_value (int): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
 
     Returns:
@@ -3357,13 +3596,13 @@ def drag_int3(
             float v_speed = 1.0f,
             int v_min = 0.0f,
             int v_max = 0.0f,
-            const char* display_format = "%.f",
+            const char* format = "%d",
         )
     """
     cdef int[3] inout_values = [value0, value1, value2]
     return cimgui.DragInt3(
         _bytes(label), <int*>&inout_values,
-        change_speed, min_value, max_value, _bytes(display_format),
+        change_speed, min_value, max_value, _bytes(format),
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
@@ -3372,7 +3611,7 @@ def drag_int4(
     float change_speed = 1.0,
     int min_value=0,
     int max_value=0,
-    str display_format = "%.f"
+    str format = "%d"
 ):
     """Display int drag widget with 4 values.
 
@@ -3396,7 +3635,7 @@ def drag_int4(
         change_speed (float): how fast values change on drag.
         min_value (int): min value allowed by widget.
         max_value (int): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
 
     Returns:
@@ -3410,13 +3649,13 @@ def drag_int4(
             float v_speed = 1.0f,
             int v_min = 0.0f,
             int v_max = 0.0f,
-            const char* display_format = "%.f",
+            const char* format = "%d",
         )
     """
     cdef int[4] inout_values = [value0, value1, value2, value3]
     return cimgui.DragInt4(
         _bytes(label), <int*>&inout_values,
-        change_speed, min_value, max_value, _bytes(display_format),
+        change_speed, min_value, max_value, _bytes(format),
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
@@ -3555,7 +3794,7 @@ def input_float(
     float value,
     float step=0.0,
     float step_fast=0.0,
-    int decimal_precision=-1,
+    str format = "%.3f",
     cimgui.ImGuiInputTextFlags flags=0
 ):
     """Display float input widget.
@@ -3576,7 +3815,7 @@ def input_float(
         value (float): textbox value
         step (float): incremental step
         step_fast (float): fast incremental step
-        decimal_precision (int): float precision
+        format = (str): format string
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
 
@@ -3590,7 +3829,7 @@ def input_float(
             float* v,
             float step = 0.0f,
             float step_fast = 0.0f,
-            int decimal_precision = -1,
+            const char* format = "%.3f",
             ImGuiInputTextFlags extra_flags = 0
         )
     """
@@ -3598,14 +3837,14 @@ def input_float(
 
     return cimgui.InputFloat(
         _bytes(label), &inout_value, step,
-        step_fast, decimal_precision, flags
+        step_fast, _bytes(format), flags
     ), inout_value
 
 
 def input_float2(
     str label,
     float value0, float value1,
-    int decimal_precision=-1,
+    str format = "%.3f",
     cimgui.ImGuiInputTextFlags flags=0
 ):
     """Display two-float input widget.
@@ -3624,6 +3863,7 @@ def input_float2(
     Args:
         label (str): widget label.
         value0, value1 (float): input values.
+        format = (str): format string
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
 
@@ -3635,7 +3875,7 @@ def input_float2(
         bool InputFloat2(
             const char* label,
             float v[2],
-            int decimal_precision = -1,
+            const char* format = "%.3f",
             ImGuiInputTextFlags extra_flags = 0
         )
     """
@@ -3643,14 +3883,14 @@ def input_float2(
 
     return cimgui.InputFloat2(
         _bytes(label), <float*>&inout_values,
-        decimal_precision, flags
+        _bytes(format), flags
     ), (inout_values[0], inout_values[1])
 
 
 def input_float3(
     str label,
     float value0, float value1, float value2,
-    int decimal_precision=-1,
+    str format = "%.3f",
     cimgui.ImGuiInputTextFlags flags=0
 ):
     """Display three-float input widget.
@@ -3669,6 +3909,7 @@ def input_float3(
     Args:
         label (str): widget label.
         value0, value1, value2 (float): input values.
+        format = (str): format string
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
 
@@ -3680,7 +3921,7 @@ def input_float3(
         bool InputFloat3(
             const char* label,
             float v[3],
-            int decimal_precision = -1,
+            const char* format = "%.3f",
             ImGuiInputTextFlags extra_flags = 0
         )
     """
@@ -3688,14 +3929,14 @@ def input_float3(
 
     return cimgui.InputFloat3(
         _bytes(label), <float*>&inout_values,
-        decimal_precision, flags
+        _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
 def input_float4(
     str label,
     float value0, float value1, float value2, float value3,
-    int decimal_precision=-1,
+    str format = "%.3f",
     cimgui.ImGuiInputTextFlags flags=0
 ):
     """Display four-float input widget.
@@ -3714,6 +3955,7 @@ def input_float4(
     Args:
         label (str): widget label.
         value0, value1, value2, value3 (float): input values.
+        format = (str): format string
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
 
@@ -3725,7 +3967,7 @@ def input_float4(
         bool InputFloat4(
             const char* label,
             float v[4],
-            int decimal_precision = -1,
+            const char* format = "%.3f",
             ImGuiInputTextFlags extra_flags = 0
         )
     """
@@ -3733,7 +3975,7 @@ def input_float4(
 
     return cimgui.InputFloat4(
         _bytes(label), <float*>&inout_values,
-        decimal_precision, flags
+        _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
@@ -3753,7 +3995,7 @@ def input_int(
 
         int_val = 3
         imgui.begin("Example: integer input")
-        changed, int_val = imgui.input_float('Type multiplier:', int_val)
+        changed, int_val = imgui.input_int('Type multiplier:', int_val)
         imgui.text('You wrote: %i' % int_val)
         imgui.end()
 
@@ -3911,25 +4153,92 @@ def input_int4(
     ), [inout_values[0], inout_values[1], inout_values[2], inout_values[3]]
 
 
+def input_double(
+    str label,
+    int value,
+    int step=1,
+    int step_fast=100,
+    str format = "%.6f",
+    cimgui.ImGuiInputTextFlags flags=0
+):
+    """Display integer input widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 100
+
+        double_val = 3.14159265358979323846
+        imgui.begin("Example: integer input")
+        changed, double_val = imgui.input_double('Type multiplier:', double_val)
+        imgui.text('You wrote: %i' % double_val)
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (int): textbox value
+        step (int): incremental step
+        step_fast (int): fast incremental step
+        format = (str): format string
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current textbox content.
+
+    .. wraps::
+        bool InputInt(
+            const char* label,
+            int* v,
+            int step = 1,
+            int step_fast = 100,
+            _bytes(format),
+            ImGuiInputTextFlags extra_flags = 0
+        )
+    """
+    cdef int inout_value = value
+
+    return cimgui.InputInt(
+        _bytes(label), &inout_value, step, step_fast, flags
+    ), inout_value
+
+
+
 def slider_float(
     str label,
     float value,
     float min_value,
     float max_value,
-    str display_format = "%.3f",
+    str format = "%.3f",
     float power=1.0
 ):
     """Display float slider widget.
     Use power different from 1.0 for logarithmic sliders.
 
-    For a float slider example see :func:`slider_float4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        value = 88.2
+
+        imgui.begin("Example: slider float")
+        changed, value = imgui.slider_float(
+            "slide floats", value,
+            min_value=0.0, max_value=100.0,
+            format="%.0f",
+            power=1.0
+        )
+        imgui.text("Changed: %s, Value: %s" % (changed, value))
+        imgui.end()
 
     Args:
         label (str): widget label.
         value (float): slider values.
         min_value (float): min value allowed by widget.
         max_value (float): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_float()`.
         power (float): how fast values changes on slide.
@@ -3944,14 +4253,14 @@ def slider_float(
             float v,
             float v_min,
             float v_max,
-            const char* display_format = "%.3f",
+            const char* format = "%.3f",
             float power = 1.0f
         )
     """
     cdef float inout_value = value
     return cimgui.SliderFloat(
         _bytes(label), <float*>&inout_value,
-        min_value, max_value, _bytes(display_format), power
+        min_value, max_value, _bytes(format), power
     ), inout_value
 
 
@@ -3960,20 +4269,34 @@ def slider_float2(
     float value0, float value1,
     float min_value,
     float max_value,
-    str display_format = "%.3f",
+    str format = "%.3f",
     float power=1.0
 ):
     """Display float slider widget with 2 values.
     Use power different from 1.0 for logarithmic sliders.
 
-    For a float slider example see :func:`slider_float4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
 
+        values = 88.2, 42.6
+
+        imgui.begin("Example: slider float2")
+        changed, values = imgui.slider_float2(
+            "slide floats", *values,
+            min_value=0.0, max_value=100.0,
+            format="%.0f",
+            power=1.0
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
     Args:
         label (str): widget label.
         value0, value1 (float): slider values.
         min_value (float): min value allowed by widget.
         max_value (float): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_float()`.
         power (float): how fast values changes on slide.
@@ -3988,14 +4311,14 @@ def slider_float2(
             float v[2],
             float v_min,
             float v_max,
-            const char* display_format = "%.3f",
+            const char* format = "%.3f",
             float power = 1.0f
         )
     """
     cdef float[2] inout_values = [value0, value1]
     return cimgui.SliderFloat2(
         _bytes(label), <float*>&inout_values,
-        min_value, max_value, _bytes(display_format), power
+        min_value, max_value, _bytes(format), power
     ), (inout_values[0], inout_values[1])
 
 
@@ -4004,20 +4327,35 @@ def slider_float3(
     float value0, float value1, float value2,
     float min_value,
     float max_value,
-    str display_format = "%.3f",
+    str format = "%.3f",
     float power=1.0
 ):
     """Display float slider widget with 3 values.
     Use power different from 1.0 for logarithmic sliders.
 
-    For a float slider example see :func:`slider_float4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88.2, 42.6, 69.1
+
+        imgui.begin("Example: slider float3")
+        changed, values = imgui.slider_float3(
+            "slide floats", *values,
+            min_value=0.0, max_value=100.0,
+            format="%.0f",
+            power=1.0
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
 
     Args:
         label (str): widget label.
         value0, value1, value2 (float): slider values.
         min_value (float): min value allowed by widget.
         max_value (float): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_float()`.
         power (float): how fast values changes on slide.
@@ -4032,14 +4370,14 @@ def slider_float3(
             float v[3],
             float v_min,
             float v_max,
-            const char* display_format = "%.3f",
+            const char* format = "%.3f",
             float power = 1.0f
         )
     """
     cdef float[3] inout_values = [value0, value1, value2]
     return cimgui.SliderFloat3(
         _bytes(label), <float*>&inout_values,
-        min_value, max_value, _bytes(display_format), power
+        min_value, max_value, _bytes(format), power
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
@@ -4048,7 +4386,7 @@ def slider_float4(
     float value0, float value1, float value2, float value3,
     float min_value,
     float max_value,
-    str display_format = "%.3f",
+    str format = "%.3f",
     float power=1.0
 ):
     """Display float slider widget with 4 values.
@@ -4061,11 +4399,11 @@ def slider_float4(
 
         values = 88.2, 42.6, 69.1, 0.3
 
-        imgui.begin("Example: slider float")
+        imgui.begin("Example: slider float4")
         changed, values = imgui.slider_float4(
             "slide floats", *values,
             min_value=0.0, max_value=100.0,
-            display_format="%.0f",
+            format="%.0f",
             power=1.0
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
@@ -4076,7 +4414,7 @@ def slider_float4(
         value0, value1, value2, value3 (float): slider values.
         min_value (float): min value allowed by widget.
         max_value (float): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_float()`.
         power (float): how fast values changes on slide.
@@ -4091,14 +4429,14 @@ def slider_float4(
             float v[4],
             float v_min,
             float v_max,
-            const char* display_format = "%.3f",
+            const char* format = "%.3f",
             float power = 1.0f
         )
     """
     cdef float[4] inout_values = [value0, value1, value2, value3]
     return cimgui.SliderFloat4(
         _bytes(label), <float*>&inout_values,
-        min_value, max_value, _bytes(display_format), power
+        min_value, max_value, _bytes(format), power
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
@@ -4107,18 +4445,32 @@ def slider_int(
     int value,
     int min_value,
     int max_value,
-    str display_format = "%.f"
+    str format = "%.f"
 ):
     """Display int slider widget
 
-    For a int slider example see :func:`slider_int4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        value = 88
+
+        imgui.begin("Example: slider int")
+        changed, values = imgui.slider_int(
+            "slide ints", value,
+            min_value=0, max_value=100,
+            format="%d"
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, value))
+        imgui.end()
 
     Args:
         label (str): widget label.
         value (int): slider value.
         min_value (int): min value allowed by widget.
         max_value (int): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_int()`.
 
@@ -4132,13 +4484,13 @@ def slider_int(
             int v,
             int v_min,
             int v_max,
-            const char* display_format = "%.3f"
+            const char* format = "%.3f"
         )
     """
     cdef int inout_value = value
     return cimgui.SliderInt(
         _bytes(label), <int*>&inout_value,
-        min_value, max_value, _bytes(display_format)
+        min_value, max_value, _bytes(format)
     ), inout_value
 
 
@@ -4147,18 +4499,32 @@ def slider_int2(
     int value0, int value1,
     int min_value,
     int max_value,
-    str display_format = "%.f"
+    str format = "%.f"
 ):
     """Display int slider widget with 2 values.
 
-    For a int slider example see :func:`slider_int4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88, 27
+
+        imgui.begin("Example: slider int2")
+        changed, values = imgui.slider_int2(
+            "slide ints2", *values,
+            min_value=0, max_value=100,
+            format="%d"
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
 
     Args:
         label (str): widget label.
         value0, value1 (int): slider values.
         min_value (int): min value allowed by widget.
         max_value (int): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_int()`.
 
@@ -4172,13 +4538,13 @@ def slider_int2(
             int v[2],
             int v_min,
             int v_max,
-            const char* display_format = "%.3f"
+            const char* format = "%.3f"
         )
     """
     cdef int[2] inout_values = [value0, value1]
     return cimgui.SliderInt2(
         _bytes(label), <int*>&inout_values,
-        min_value, max_value, _bytes(display_format)
+        min_value, max_value, _bytes(format)
     ), (inout_values[0], inout_values[1])
 
 
@@ -4187,18 +4553,32 @@ def slider_int3(
     int value0, int value1, int value2,
     int min_value,
     int max_value,
-    str display_format = "%.f"
+    str format = "%.f"
 ):
     """Display int slider widget with 3 values.
 
-    For a int slider example see :func:`slider_int4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        values = 88, 27, 3
+
+        imgui.begin("Example: slider int3")
+        changed, values = imgui.slider_int3(
+            "slide ints3", *values,
+            min_value=0, max_value=100,
+            format="%d"
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
 
     Args:
         label (str): widget label.
         value0, value1, value2 (int): slider values.
         min_value (int): min value allowed by widget.
         max_value (int): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_int()`.
 
@@ -4212,13 +4592,13 @@ def slider_int3(
             int v[3],
             int v_min,
             int v_max,
-            const char* display_format = "%.3f"
+            const char* format = "%.3f"
         )
     """
     cdef int[3] inout_values = [value0, value1, value2]
     return cimgui.SliderInt3(
         _bytes(label), <int*>&inout_values,
-        min_value, max_value, _bytes(display_format)
+        min_value, max_value, _bytes(format)
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
@@ -4227,9 +4607,9 @@ def slider_int4(
     int value0, int value1, int value2, int value3,
     int min_value,
     int max_value,
-    str display_format = "%.f"
+    str format = "%.f"
 ):
-    """Display float slider widget with 4 values.
+    """Display int slider widget with 4 values.
 
     .. visual-example::
         :auto_layout:
@@ -4238,10 +4618,10 @@ def slider_int4(
 
         values = 88, 42, 69, 0
 
-        imgui.begin("Example: slider int")
+        imgui.begin("Example: slider int4")
         changed, values = imgui.slider_int4(
             "slide ints", *values,
-            min_value=0, max_value=100, display_format="%.3f"
+            min_value=0, max_value=100, format="%d"
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -4251,7 +4631,7 @@ def slider_int4(
         value0, value1, value2, value3 (int): slider values.
         min_value (int): min value allowed by widget.
         max_value (int): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_int()`.
 
@@ -4265,13 +4645,13 @@ def slider_int4(
             int v[4],
             int v_min,
             int v_max,
-            const char* display_format = "%.3f"
+            const char* format = "%.3f"
         )
     """
     cdef int[4] inout_values = [value0, value1, value2, value3]
     return cimgui.SliderInt4(
         _bytes(label), <int*>&inout_values,
-        min_value, max_value, _bytes(display_format)
+        min_value, max_value, _bytes(format)
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
@@ -4282,20 +4662,37 @@ def v_slider_float(
     float value,
     float min_value,
     float max_value,
-    str display_format = "%.f",
+    str format = "%.f",
     float power=0.0
 ):
     """Display vertical float slider widget with the specified width and
     height.
 
-    For a float slider example see :func:`slider_float4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        width = 20
+        height = 100
+        value = 88
+
+        imgui.begin("Example: vertical slider float")
+        changed, values = imgui.v_slider_float(
+            "vertical slider float",
+            width, height, value,
+            min_value=0, max_value=100,
+            format="%0.3f", power = 1.0
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
 
     Args:
         label (str): widget label.
         value (float): slider value.
         min_value (float): min value allowed by widget.
         max_value (float): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_float()`.
         power (float): how fast values changes on slide.
@@ -4311,7 +4708,7 @@ def v_slider_float(
             float v,
             float v_min,
             floatint v_max,
-            const char* display_format = "%.3f",
+            const char* format = "%.3f",
             float power=1.0
         )
     """
@@ -4319,7 +4716,7 @@ def v_slider_float(
     return cimgui.VSliderFloat(
         _bytes(label), _cast_args_ImVec2(width, height),
         <float*>&inout_value,
-        min_value, max_value, _bytes(display_format), power
+        min_value, max_value, _bytes(format), power
     ), inout_value
 
 
@@ -4330,18 +4727,35 @@ def v_slider_int(
     int value,
     int min_value,
     int max_value,
-    str display_format = "%.f"
+    str format = "%d"
 ):
     """Display vertical int slider widget with the specified width and height.
 
-    For a int slider example see :func:`slider_int4()`.
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        width = 20
+        height = 100
+        value = 88
+
+        imgui.begin("Example: vertical slider int")
+        changed, values = imgui.v_slider_int(
+            "vertical slider int",
+            width, height, value,
+            min_value=0, max_value=100,
+            format="%d"
+        )
+        imgui.text("Changed: %s, Values: %s" % (changed, values))
+        imgui.end()
 
     Args:
         label (str): widget label.
         value (int): slider value.
         min_value (int): min value allowed by widget.
         max_value (int): max value allowed by widget.
-        display_format (str): display format string as C-style ``printf``
+        format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_int()`.
 
@@ -4356,41 +4770,41 @@ def v_slider_int(
             int v,
             int v_min,
             int v_max,
-            const char* display_format = "%.3f"
+            const char* format = "%.3f"
         )
     """
     cdef int inout_value = value
     return cimgui.VSliderInt(
         _bytes(label), _cast_args_ImVec2(width, height),
         <int*>&inout_value,
-        min_value, max_value, _bytes(display_format)
+        min_value, max_value, _bytes(format)
     ), inout_value
 
 
-def is_item_hovered():
+def is_item_hovered(
+        cimgui.ImGuiHoveredFlags flags=0
+    ):
     """Check if the last item is hovered by mouse.
 
     Returns:
         bool: True if item is hovered by mouse, otherwise False.
 
     .. wraps::
-        bool IsItemHovered()
+        bool IsItemHovered(ImGuiHoveredFlags flags = 0)
     """
-    return cimgui.IsItemHovered()
+    return cimgui.IsItemHovered(flags)
 
 
-def is_item_hovered_rect():
-    """Was the last item hovered by mouse? Even if
-    another item is active or window is blocked by popup
-    while we are hovering this.
+def is_item_focused():
+    """Check if the last item is focused
 
     Returns:
-        bool: True if item is hovered by mouse, otherwise False.
+        bool: True if item is focused, otherwise False.
 
     .. wraps::
-        bool IsItemHoveredRect()
+        bool IsItemFocused()
     """
-    return cimgui.IsItemHoveredRect()
+    return cimgui.IsItemFocused()
 
 
 def is_item_active():
@@ -4456,6 +4870,18 @@ def is_any_item_active():
     return cimgui.IsAnyItemActive()
 
 
+def is_any_item_focused():
+    """Is any of the items focused.
+
+    Returns:
+        bool: True if any item is focused, otherwise False.
+
+    .. wraps::
+        bool IsAnyItemFocused()
+    """
+    return cimgui.IsAnyItemFocused()
+
+
 def get_item_rect_min():
     """Get bounding rect of the last item in screen space.
 
@@ -4503,7 +4929,9 @@ def set_item_allow_overlap():
     cimgui.SetItemAllowOverlap()
 
 
-def is_window_hovered():
+def is_window_hovered(
+        cimgui.ImGuiHoveredFlags flags=0
+    ):
     """Is current window hovered and hoverable (not blocked by a popup).
     Differentiate child windows from each others.
 
@@ -4511,58 +4939,23 @@ def is_window_hovered():
         bool: True if current window is hovered, otherwise False.
 
     .. wraps::
-        bool IsWindowHovered()
+        bool IsWindowHovered(ImGuiFocusedFlags flags = 0)
     """
-    return cimgui.IsWindowHovered()
+    return cimgui.IsWindowHovered(flags)
 
 
-def is_window_focused():
+def is_window_focused(
+        cimgui.ImGuiHoveredFlags flags=0
+    ):
     """Is current window focused.
 
     Returns:
         bool: True if current window is on focus, otherwise False.
 
     .. wraps::
-        bool IsWindowFocused()
+        bool IsWindowFocused(ImGuiFocusedFlags flags = 0)
     """
-    return cimgui.IsWindowFocused()
-
-
-def is_root_window_focused():
-    """Is root window focused.
-
-    Returns:
-        bool: True if root window is on focus, otherwise False.
-
-    .. wraps::
-        bool IsRootWindowFocused()
-    """
-    return cimgui.IsRootWindowFocused()
-
-
-def is_root_window_or_any_child_focused():
-    """Is the current root window or any of its children on focus.
-
-    Returns:
-        bool: True if any of the windows is on focus, otherwise False.
-
-    .. wraps::
-        bool IsRootWindowOrAnyChildFocused()
-    """
-    return cimgui.IsRootWindowOrAnyChildFocused()
-
-
-def is_root_window_or_any_child_hovered():
-    """Is the current root window or any of its children
-    hovered with the mouse.
-
-    Returns:
-        bool: True if any of the windows is hovered, otherwise False.
-
-    .. wraps::
-        bool IsRootWindowOrAnyChildHovered()
-    """
-    return cimgui.IsRootWindowOrAnyChildHovered()
+    return cimgui.IsWindowFocused(flags)
 
 
 def is_rect_visible(float size_width, float size_height):
@@ -4580,48 +4973,6 @@ def is_rect_visible(float size_width, float size_height):
         bool IsRectVisible(const ImVec2& size)
     """
     return cimgui.IsRectVisible(_cast_args_ImVec2(size_width, size_height))
-
-
-def is_pos_hovering_any_window(float position_x, float position_y):
-    """Test if position is hovering any active ImGui window.
-
-    Args:
-        position_x (float): width of the rect
-        position_y (float): height of the rect
-
-    Returns:
-        bool: True if rect is visible, otherwise False.
-
-    .. wraps::
-        bool IsPosHoveringAnyWindow(const ImVec2& size)
-    """
-    return cimgui.IsPosHoveringAnyWindow(
-        _cast_args_ImVec2(position_x, position_y)
-    )
-
-
-def is_mouse_hovering_window():
-    """Test if mouse is hovering the current window.
-
-    Returns:
-        bool: True if the window is hovered, otherwise False.
-
-    .. wraps::
-        bool IsMouseHoveringWindow()
-    """
-    return cimgui.IsMouseHoveringWindow()
-
-
-def is_mouse_hovering_any_window():
-    """Test if mouse is hovering any visible window.
-
-    Returns:
-        bool: True if any item is hovered, otherwise False.
-
-    .. wraps::
-        bool IsMouseHoveringAnyWindow()
-    """
-    return cimgui.IsMouseHoveringAnyWindow()
 
 
 def is_mouse_hovering_rect(
@@ -4738,6 +5089,35 @@ def set_mouse_cursor(cimgui.ImGuiMouseCursor mouse_cursor_type):
     return cimgui.SetMouseCursor(mouse_cursor_type)
 
 
+def set_scroll_here(float center_y_ratio = 0.5):
+    """Set scroll here.
+
+    adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
+
+    Args:
+        float center_y_ratio = 0.5f
+
+    .. wraps::
+        void SetScrollHere(float center_y_ratio = 0.5f)
+    """
+    return cimgui.SetScrollHere(center_y_ratio)
+
+
+def set_scroll_from_pos_y(float pos_y, float center_y_ratio = 0.5):
+    """Set scroll from position Y
+
+    adjust scrolling amount to make given position valid. use GetCursorPos() or GetCursorStartPos()+offset to get valid positions.
+
+    Args:
+        float pos_y
+        float center_y_ratio = 0.5f
+
+    .. wraps::
+        void SetScrollFromPosY(float pos_y, float center_y_ratio = 0.5f)
+    """
+    return cimgui.SetScrollFromPosY(pos_y, center_y_ratio)
+
+
 def push_font(_Font font):
     """Push font on a stack.
 
@@ -4844,7 +5224,7 @@ cpdef push_style_color(
 ):
     """Push style color on stack.
 
-    **Note:** variables pushed on stack need to be poped using
+    **Note:** variables pushed on stack need to be popped using
     :func:`pop_style_color()` until the end of current frame. This
     implementation guards you from segfaults caused by redundant stack pops
     (raises exception if this happens) but generally it is safer and easier to
@@ -4895,6 +5275,20 @@ cpdef pop_style_var(unsigned int count=1):
         void PopStyleVar(int count = 1)
     """
     cimgui.PopStyleVar(count)
+
+
+cpdef get_font_size():
+    """get current font size (= height in pixels) of current font with current scale applied
+
+    Returns:
+        float: current font size (height in pixels)
+
+    .. wraps::
+        float GetFontSize()
+    """
+    return cimgui.GetFontSize()
+
+
 
 
 cpdef push_item_width(float item_width):
@@ -5330,6 +5724,22 @@ def get_column_width(int column_index=-1):
     cimgui.GetColumnWidth(column_index)
 
 
+def set_column_width(int column_index, float width):
+    """Set the position of column line (in pixels, from the left side of the
+    contents region). Pass -1 to use current column.
+
+    For a complete example see :func:`columns()`.
+
+    Args:
+        column_index (int): index of the column to set the width for.
+        width (float): width in pixels.
+
+    .. wraps::
+        void SetColumnWidth(int column_index, float width)
+    """
+    cimgui.SetColumnWidth(column_index, width)
+
+
 def get_columns_count():
     """Get count of the columns in the current table.
 
@@ -5386,6 +5796,64 @@ def end_group():
         void EndGroup()
     """
     cimgui.EndGroup()
+
+
+def create_context(_FontAtlas shared_font_atlas = None):
+    """CreateContext
+
+    .. wraps::
+        ImGuiContext* CreateContext(
+                # note: optional
+                ImFontAtlas* shared_font_atlas = NULL);
+        )
+    """
+
+    cdef cimgui.ImGuiContext* _ptr
+
+    if (shared_font_atlas):
+        _ptr = cimgui.CreateContext(shared_font_atlas._ptr)
+    else:
+        _ptr = cimgui.CreateContext(NULL)
+
+    return _ImGuiContext.from_ptr(_ptr)
+
+
+def destroy_context(_ImGuiContext ctx = None):
+    """DestroyContext
+
+    .. wraps::
+        DestroyContext(
+                # note: optional
+                ImGuiContext* ctx = NULL);
+    """
+
+    if ctx:
+        cimgui.DestroyContext(ctx._ptr)
+    else:
+        cimgui.DestroyContext(NULL)
+
+
+
+def get_current_context():
+    """GetCurrentContext
+
+    .. wraps::
+        ImGuiContext* GetCurrentContext();
+    """
+
+    cdef cimgui.ImGuiContext* _ptr
+    _ptr = cimgui.GetCurrentContext()
+    return _ImGuiContext.from_ptr(_ptr)
+
+
+def set_current_context(_ImGuiContext ctx):
+    """SetCurrentContext
+
+    .. wraps::
+        SetCurrentContext(
+                ImGuiContext *ctx);
+    """
+    cimgui.SetCurrentContext(ctx._ptr)
 
 
 # === Python/C++ cross API for error handling ===
