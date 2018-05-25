@@ -1243,9 +1243,6 @@ def style_colors_classic(GuiStyle dst = None):
 
 
 
-# TODO: These style_colors_x functions don't currently return anything
-#       We need to ensure the dst is being set correctly
-
 def style_colors_light(GuiStyle dst = None):
     """Set the style to Light.
 
@@ -4890,6 +4887,26 @@ def v_slider_int(
         <int*>&inout_value,
         min_value, max_value, _bytes(format)
     ), inout_value
+
+
+def set_item_default_focus():
+    """Make last item the default focused item of a window.
+    Please use instead of "if (is_window_appearing()) set_scroll_here()" to signify "default item".
+
+    .. wraps::
+        void SetItemDefaultFocus()
+    """
+    cimgui.SetItemDefaultFocus()
+
+
+def set_keyboard_focus_here(int offset = 0):
+    """Focus keyboard on the next widget.
+    Use positive 'offset' to access sub components of a multiple component widget. Use -1 to access previous widget.
+
+    .. wraps::
+        void SetKeyboardFocusHere(int offset = 0)
+    """
+    return cimgui.SetKeyboardFocusHere(offset)
 
 
 def is_item_hovered(
