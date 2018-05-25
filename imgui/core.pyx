@@ -1214,6 +1214,51 @@ def get_version():
     return c_string.decode("utf-8")
 
 
+def style_colors_dark(GuiStyle dst = None):
+    """Set the style to Dark.
+
+       new, recommended style (default)
+
+    .. wraps::
+        void StyleColorsDark(ImGuiStyle* dst = NULL)
+    """
+    if dst:
+        cimgui.StyleColorsDark(&dst.ref)
+    else:
+        cimgui.StyleColorsDark(NULL)
+
+
+def style_colors_classic(GuiStyle dst = None):
+    """Set the style to Classic.
+
+       classic imgui style.
+
+    .. wraps::
+        void StyleColorsClassic(ImGuiStyle* dst = NULL)
+    """
+    if dst:
+        cimgui.StyleColorsClassic(&dst.ref)
+    else:
+        cimgui.StyleColorsClassic(NULL)
+
+
+
+# TODO: These style_colors_x functions don't currently return anything
+#       We need to ensure the dst is being set correctly
+
+def style_colors_light(GuiStyle dst = None):
+    """Set the style to Light.
+
+       best used with borders and a custom, thicker font
+
+    .. wraps::
+        void StyleColorsLight(ImGuiStyle* dst = NULL)
+    """
+    if dst:
+        cimgui.StyleColorsLight(&dst.ref)
+    else:
+        cimgui.StyleColorsLight(NULL)
+
 
 def show_style_editor(GuiStyle style=None):
     """Show ImGui style editor.
