@@ -5369,7 +5369,7 @@ cpdef get_font_size():
 
 # TODO: Can we implement function overloading? Prefer these are all named 'get_color_u32' with different signatures
 # https://www.python.org/dev/peps/pep-0443/
-
+# Neither singledispatch nor multipledispatch seems to be available in Cython :-/
 
 cpdef get_color_u32_idx(cimgui.ImGuiCol idx, float alpha_mul = 1.0):
     """ retrieve given style color with style alpha applied and optional extra alpha multiplier
