@@ -201,11 +201,18 @@ cdef extern from "imgui.h":
 
 
     ctypedef struct ImDrawList:
-        # we mapp only buffer vectors since everything else is internal
+        # we map only buffer vectors since everything else is internal
         # and right now we dont want to suport it.
         ImVector[ImDrawCmd]  CmdBuffer  # ✓
         ImVector[ImDrawIdx]  IdxBuffer  # ✓
         ImVector[ImDrawVert] VtxBuffer  # ✓
+
+        void  AddRectFilled(
+                   const ImVec2&, 
+                   const ImVec2&, 
+                   ImU32,
+                   # note: optional
+                   float, int) except +  # ✓
 
 
     ctypedef struct ImDrawData:  # ✓
@@ -326,7 +333,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool ShowStyleSelector(const char*) except +  # ✓
     void ShowFontSelector(const char*) except +  # ✓
     void ShowUserGuide() except +  # ✓
-    const char*   GetVersion() except +  # ✗
+    const char* GetVersion() except +  # ✓
 
     void StyleColorsDark(ImGuiStyle* dst) except +  # ✓
     void StyleColorsClassic(ImGuiStyle* dst) except +  # ✓
@@ -459,9 +466,9 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImFont* GetFont() except +  # ✗
     float GetFontSize() except +  # ✓
     ImVec2 GetFontTexUvWhitePixel() except +  # ✗
-    ImU32 GetColorU32(ImGuiCol, float) except +  # ✗
-    ImU32 GetColorU32(const ImVec4& col) except +  # ✗
-    ImU32 GetColorU32(ImU32 col) except +  # ✗
+    ImU32 GetColorU32(ImGuiCol, float) except +  # ✓
+    ImU32 GetColorU32(const ImVec4& col) except +  # ✓
+    ImU32 GetColorU32(ImU32 col) except +  # ✓
 
     # ====
     # Parameters stacks (current window)
@@ -500,14 +507,14 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetCursorPos(const ImVec2& local_pos) except +  # ✗
     void SetCursorPosX(float x) except +  # ✗
     void SetCursorPosY(float y) except +  # ✗
-    ImVec2 GetCursorStartPos() except +  # ✗
-    ImVec2 GetCursorScreenPos() except +  # ✗
+    ImVec2 GetCursorStartPos() except +  # ✓
+    ImVec2 GetCursorScreenPos() except +  # ✓
     void SetCursorScreenPos(const ImVec2& screen_pos) except +  # ✗
     void AlignTextToFramePadding() except +  # ✗
-    float GetTextLineHeight() except +  # ✗
-    float GetTextLineHeightWithSpacing() except +  # ✗
-    float GetFrameHeight() except +  # ✗
-    float GetFrameHeightWithSpacing() except +  # ✗
+    float GetTextLineHeight() except +  # ✓
+    float GetTextLineHeightWithSpacing() except +  # ✓
+    float GetFrameHeight() except +  # ✓
+    float GetFrameHeightWithSpacing() except +  # ✓
 
     # ====
     # ID scopes
@@ -1085,7 +1092,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImDrawList* GetOverlayDrawList() except +  # ✗
     ImDrawListSharedData* GetDrawListSharedData() except +  # ✗
 
-    const char* GetStyleColName(ImGuiCol idx) except +  # ✗
+    const char* GetStyleColorName(ImGuiCol idx) except +  # ✓
 
     void SetStateStorage(ImGuiStorage* storage) except +  # ✗
     ImGuiStorage* GetStateStorage() except +  # ✗
