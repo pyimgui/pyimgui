@@ -339,8 +339,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     void StyleColorsClassic(ImGuiStyle* dst) except +  # ✓
     void StyleColorsLight(ImGuiStyle* dst) except +  # ✓
 
-    void SetItemDefaultFocus() except +  # ✗
-    void SetKeyboardFocusHere(int offset) except +  # ✗
+    void SetItemDefaultFocus() except +  # ✓
+    void SetKeyboardFocusHere(int offset) except +  # ✓
 
 
     # ====
