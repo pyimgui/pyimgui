@@ -375,6 +375,44 @@ cdef class _DrawList(object):
     def idx_buffer_data(self):
         return <uintptr_t>self._ptr.IdxBuffer.Data
 
+    def add_rect_filled(self,
+        float upper_left_x, float upper_left_y,
+        float lower_right_x, float lower_right_y,
+        cimgui.ImU32 col,
+        # note: optional
+        float rounding = 0.0, cimgui.ImGuiWindowFlags rounding_corners_flags = 0xF):
+
+        """AddRectFilled() primitive for ImDrawList()
+
+    Args:
+        closable (bool): define if window is closable.
+        upper_left_x (float): X coordinate of top-left
+        upper_left_y (float): Y coordinate of top-left
+        lower_right_x (float): X coordinate of lower-right
+        lower_right_y (float): Y coordinate of lower-right
+        col (ImU32): RGBA color specification
+        # note: optional
+        rounding (float): Degree of rounding, defaults to 0.0
+        rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
+
+    .. wraps::
+        void  AddRectFilled(
+                   const ImVec2&,
+                   const ImVec2&,
+                   ImU32,
+                   # note: optional
+                   float, int)
+    """
+        #_DrawList.from_ptr(self._ptr).AddRectFilled(
+        self._ptr.AddRectFilled(
+            _cast_args_ImVec2(upper_left_x, upper_left_y),
+            _cast_args_ImVec2(lower_right_x, lower_right_y),
+            col,
+            rounding,
+            rounding_corners_flags
+        )
+
+
     @property
     def commands(self):
         return [
@@ -1165,6 +1203,60 @@ def show_user_guide():
     cimgui.ShowUserGuide()
 
 
+def get_version():
+    """Get the version of Dear ImGui.
+
+    .. wraps::
+        void GetVersion()
+    """
+    cdef const char* c_string = cimgui.GetVersion()
+    cdef bytes py_string = c_string
+    return c_string.decode("utf-8")
+
+
+def style_colors_dark(GuiStyle dst = None):
+    """Set the style to Dark.
+
+       new, recommended style (default)
+
+    .. wraps::
+        void StyleColorsDark(ImGuiStyle* dst = NULL)
+    """
+    if dst:
+        cimgui.StyleColorsDark(&dst.ref)
+    else:
+        cimgui.StyleColorsDark(NULL)
+
+
+def style_colors_classic(GuiStyle dst = None):
+    """Set the style to Classic.
+
+       classic imgui style.
+
+    .. wraps::
+        void StyleColorsClassic(ImGuiStyle* dst = NULL)
+    """
+    if dst:
+        cimgui.StyleColorsClassic(&dst.ref)
+    else:
+        cimgui.StyleColorsClassic(NULL)
+
+
+
+def style_colors_light(GuiStyle dst = None):
+    """Set the style to Light.
+
+       best used with borders and a custom, thicker font
+
+    .. wraps::
+        void StyleColorsLight(ImGuiStyle* dst = NULL)
+    """
+    if dst:
+        cimgui.StyleColorsLight(&dst.ref)
+    else:
+        cimgui.StyleColorsLight(NULL)
+
+
 def show_style_editor(GuiStyle style=None):
     """Show ImGui style editor.
 
@@ -1232,6 +1324,7 @@ def show_test_window():
         void ShowDemoWindow()
     """
     cimgui.ShowDemoWindow()
+
 
 
 def show_metrics_window(closable=False):
@@ -1632,6 +1725,44 @@ def set_next_window_bg_alpha(float alpha):
         void SetNextWindowBgAlpha(float)
     """
     cimgui.SetNextWindowBgAlpha(alpha)
+
+
+def get_window_draw_list():
+    """Get the draw list associated with the window, to append your own drawing primitives
+
+    It may be useful if you want to do your own drawing via the DrawList
+    api.
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+        :width: 200
+        :click: 10 10
+
+
+        pos_x = 10
+        pos_y = 10
+        sz = 20
+
+        draw_list = imgui.get_window_draw_list()
+
+        for i in range(0, imgui.COLOR_COUNT):
+            name = imgui.get_style_color_name(i);
+            draw_list.add_rect_filled(pos_x, pos_y, pos_x+sz, pos_y+sz, imgui.get_color_u32_idx(i));
+            imgui.dummy(sz, sz);
+            imgui.same_line();
+
+        rgba_color = imgui.get_color_u32_rgba(1, 1, 0, 1);
+        draw_list.add_rect_filled(pos_x, pos_y, pos_x+sz, pos_y+sz, rgba_color);
+
+
+    Returns:
+        ImDrawList*
+
+    .. wraps::
+        ImDrawList* GetWindowDrawList()
+    """
+    return _DrawList.from_ptr(cimgui.GetWindowDrawList())
 
 
 def get_window_position():
@@ -4781,6 +4912,26 @@ def v_slider_int(
     ), inout_value
 
 
+def set_item_default_focus():
+    """Make last item the default focused item of a window.
+    Please use instead of "if (is_window_appearing()) set_scroll_here()" to signify "default item".
+
+    .. wraps::
+        void SetItemDefaultFocus()
+    """
+    cimgui.SetItemDefaultFocus()
+
+
+def set_keyboard_focus_here(int offset = 0):
+    """Focus keyboard on the next widget.
+    Use positive 'offset' to access sub components of a multiple component widget. Use -1 to access previous widget.
+
+    .. wraps::
+        void SetKeyboardFocusHere(int offset = 0)
+    """
+    return cimgui.SetKeyboardFocusHere(offset)
+
+
 def is_item_hovered(
         cimgui.ImGuiHoveredFlags flags=0
     ):
@@ -4973,6 +5124,17 @@ def is_rect_visible(float size_width, float size_height):
         bool IsRectVisible(const ImVec2& size)
     """
     return cimgui.IsRectVisible(_cast_args_ImVec2(size_width, size_height))
+
+
+def get_style_color_name(int index):
+    """Get the style color name for a given ImGuiCol index.
+
+    .. wraps::
+        const char* GetStyleColorName(ImGuiCol idx) except +  # ✓
+    """
+    cdef const char* c_string = cimgui.GetStyleColorName(index)
+    cdef bytes py_string = c_string
+    return c_string.decode("utf-8")
 
 
 def is_mouse_hovering_rect(
@@ -5288,6 +5450,46 @@ cpdef get_font_size():
     """
     return cimgui.GetFontSize()
 
+
+
+# TODO: Can we implement function overloading? Prefer these are all named 'get_color_u32' with different signatures
+# https://www.python.org/dev/peps/pep-0443/
+# Neither singledispatch nor multipledispatch seems to be available in Cython :-/
+
+cpdef get_color_u32_idx(cimgui.ImGuiCol idx, float alpha_mul = 1.0):
+    """ retrieve given style color with style alpha applied and optional extra alpha multiplier
+
+    Returns:
+        ImU32: 32-bit RGBA color
+
+    .. wraps::
+        ImU32 GetColorU32(ImGuiCol idx, alpha_mul)
+    """
+    return cimgui.GetColorU32(idx, alpha_mul)
+
+
+cpdef get_color_u32_rgba(float r, float g, float b, float a):
+    """ retrieve given color with style alpha applied
+
+    Returns:
+        ImU32: 32-bit RGBA color
+
+    .. wraps::
+        ImU32 GetColorU32(const ImVec4& col)
+    """
+    return cimgui.GetColorU32( _cast_args_ImVec4(r, g, b, a) )
+
+
+cpdef get_color_u32(cimgui.ImU32 col):
+    """retrieve given style color with style alpha applied and optional extra alpha multiplier
+
+    Returns:
+        ImU32: 32-bit RGBA color
+
+    .. wraps::
+        ImU32 GetColorU32(ImU32 col)
+    """
+    return cimgui.GetColorU32(col)
 
 
 
@@ -5796,6 +5998,67 @@ def end_group():
         void EndGroup()
     """
     cimgui.EndGroup()
+
+
+def get_cursor_start_pos():
+    """Get the initial cursor position.
+
+    .. wraps::
+        ImVec2 GetCursorStartPos()
+    """
+    return _cast_ImVec2_tuple(cimgui.GetCursorStartPos())
+
+
+def get_cursor_screen_pos():
+    """Get the cursor position in absolute screen coordinates [0..io.DisplaySize] (useful to work with ImDrawList API)
+
+    .. wraps::
+        ImVec2 GetCursorScreenPos()
+    """
+    return _cast_ImVec2_tuple(cimgui.GetCursorScreenPos())
+
+
+def get_text_line_height():
+    """Get text line height.
+
+    Returns:
+        int: text line height.
+
+    .. wraps::
+        void GetTextLineHeight()
+    """
+    return cimgui.GetTextLineHeight()
+
+
+def get_text_line_height_with_spacing():
+    """Get text line height, with spacing.
+
+    Returns:
+        int: text line height, with spacing.
+
+    .. wraps::
+        void GetTextLineHeightWithSpacing()
+    """
+    return cimgui.GetTextLineHeightWithSpacing()
+
+
+def get_frame_height():
+    """~ FontSize + style.FramePadding.y * 2
+
+    .. wraps::
+        float GetFrameHeight()
+    float GetFrameHeightWithSpacing() except +  # ✗
+    """
+    return cimgui.GetFrameHeight()
+
+
+def get_frame_height_with_spacing():
+    """~ FontSize + style.FramePadding.y * 2 + style.ItemSpacing.y (distance in pixels between 2 consecutive lines of framed widgets)
+
+    .. wraps::
+        float GetFrameHeightWithSpacing()
+    """
+    return cimgui.GetFrameHeightWithSpacing()
 
 
 def create_context(_FontAtlas shared_font_atlas = None):
