@@ -38,7 +38,7 @@ KEY_TAB = core.KEY_TAB
 #: for text edit
 KEY_LEFT_ARROW = core.KEY_LEFT_ARROW
 #: for text edit
-KEY_RIGHT_ARROW = core.KEY_UP_ARROW
+KEY_RIGHT_ARROW = core.KEY_RIGHT_ARROW
 #: for text edit
 KEY_UP_ARROW = core.KEY_UP_ARROW
 #: for text edit
