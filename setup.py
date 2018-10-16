@@ -82,6 +82,7 @@ def extension_sources(path):
             'imgui-cpp/imgui.cpp',
             'imgui-cpp/imgui_draw.cpp',
             'imgui-cpp/imgui_demo.cpp',
+            'imgui-cpp/imgui_widgets.cpp',
             'config-cpp/py_imconfig.cpp'
         ]
 

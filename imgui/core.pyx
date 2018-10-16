@@ -1,5 +1,5 @@
 # distutils: language = c++
-# distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp config-cpp/py_imconfig.cpp
+# distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp imgui-cpp/imgui_widgets.cpp config-cpp/py_imconfig.cpp
 # distutils: include_dirs = imgui-cpp
 # cython: embedsignature=True
 """
@@ -105,7 +105,6 @@ WINDOW_NO_BRING_TO_FRONT_ON_FOCUS = enums.ImGuiWindowFlags_NoBringToFrontOnFocus
 WINDOW_ALWAYS_VERTICAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysVerticalScrollbar
 WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysHorizontalScrollbar
 WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
-WINDOW_RESIZE_FROM_ANY_SIDE = enums.ImGuiWindowFlags_ResizeFromAnySide
 WINDOW_NO_NAV_INPUTS = enums.ImGuiWindowFlags_NoNavInputs
 WINDOW_NO_NAV_FOCUS = enums.ImGuiWindowFlags_NoNavFocus
 WINDOW_NO_NAV = enums.ImGuiWindowFlags_NoNav
@@ -147,7 +146,7 @@ FOCUS_ANY_WINDOW = enums.ImGuiFocusedFlags_AnyWindow
 FOCUS_ROOT_AND_CHILD_WINDOWS = enums.ImGuiFocusedFlags_RootAndChildWindows
 
 # === Hovered flag enum redefines ====
-HOVERED_DEFAULT = enums.ImGuiHoveredFlags_Default
+HOVERED_NONE = enums.ImGuiHoveredFlags_None
 HOVERED_CHILD_WINDOWS = enums.ImGuiHoveredFlags_ChildWindows
 HOVERED_ROOT_WINDOW = enums.ImGuiHoveredFlags_RootWindow
 HOVERED_ANY_WINDOW = enums.ImGuiHoveredFlags_AnyWindow
@@ -163,10 +162,12 @@ DRAG_DROP_SOURCE_NO_DISABLE_HOVER = enums.ImGuiDragDropFlags_SourceNoDisableHove
 DRAG_DROP_SOURCE_NO_HOLD_TO_OPEN_OTHERS = enums.ImGuiDragDropFlags_SourceNoHoldToOpenOthers
 DRAG_DROP_SOURCE_ALLOW_NULL_ID = enums.ImGuiDragDropFlags_SourceAllowNullID
 DRAG_DROP_SOURCE_EXTERN = enums.ImGuiDragDropFlags_SourceExtern
+DRAG_DROP_SOURCE_AUTO_EXPIRE_PAYLOAD = enums.ImGuiDragDropFlags_SourceAutoExpirePayload
 
 # === Accept Drag Drop Payload flag enum redefines ====
 DRAG_DROP_ACCEPT_BEFORE_DELIVERY = enums.ImGuiDragDropFlags_AcceptBeforeDelivery
 DRAG_DROP_ACCEPT_NO_DRAW_DEFAULT_RECT = enums.ImGuiDragDropFlags_AcceptNoDrawDefaultRect
+DRAG_DROP_ACCEPT_NO_PREVIEW_TOOLTIP = enums.ImGuiDragDropFlags_AcceptNoPreviewTooltip
 DRAG_DROP_ACCEPT_PEEK_ONLY = enums.ImGuiDragDropFlags_AcceptPeekOnly
 
 # === Cardinal Direction enum redefines ====
@@ -224,10 +225,11 @@ COLOR_PLOT_LINES_HOVERED = enums.ImGuiCol_PlotLinesHovered
 COLOR_PLOT_HISTOGRAM = enums.ImGuiCol_PlotHistogram
 COLOR_PLOT_HISTOGRAM_HOVERED = enums.ImGuiCol_PlotHistogramHovered
 COLOR_TEXT_SELECTED_BACKGROUND = enums.ImGuiCol_TextSelectedBg
-COLOR_MODAL_WINDOW_DARKENING = enums.ImGuiCol_ModalWindowDarkening
 COLOR_DRAG_DROP_TARGET = enums.ImGuiCol_DragDropTarget
 COLOR_NAV_HIGHLIGHT = enums.ImGuiCol_NavHighlight
 COLOR_NAV_WINDOWING_HIGHLIGHT = enums.ImGuiCol_NavWindowingHighlight
+COLOR_NAV_WINDOWING_DIM_BACKGROUND = enums.ImGuiCol_NavWindowingDimBg
+COLOR_MODAL_WINDOW_DIM_BACKGROUND = enums.ImGuiCol_ModalWindowDimBg
 COLOR_COUNT = enums.ImGuiCol_COUNT
 
 # ==== Text input flags ====
@@ -809,8 +811,11 @@ cdef class _FontAtlas(object):
     def get_glyph_ranges_japanese(self):
         return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesJapanese())
 
+    def get_glyph_ranges_chinese_full(self):
+        return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesChineseFull())
+
     def get_glyph_ranges_chinese(self):
-        return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesChinese())
+        return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesChineseSimplifiedCommon())
 
     def get_glyph_ranges_cyrillic(self):
         return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesCyrillic())
@@ -993,20 +998,28 @@ cdef class _IO(object):
         self._ptr.DisplayVisibleMax = _cast_tuple_ImVec2(value)
 
     @property
-    def opt_mac_osx_behaviors(self):
-        return self._ptr.OptMacOSXBehaviors
+    def config_mac_osx_behaviors(self):
+        return self._ptr.ConfigMacOSXBehaviors
 
-    @opt_mac_osx_behaviors.setter
-    def opt_mac_osx_behaviors(self, cimgui.bool value):
-        self._ptr.OptMacOSXBehaviors = value
+    @config_mac_osx_behaviors.setter
+    def config_mac_osx_behaviors(self, cimgui.bool value):
+        self._ptr.ConfigMacOSXBehaviors = value
 
     @property
-    def opt_cursor_blink(self):
-        return self._ptr.OptCursorBlink
+    def config_cursor_blink(self):
+        return self._ptr.ConfigInputTextCursorBlink
 
-    @opt_cursor_blink.setter
-    def opt_cursor_blink(self, cimgui.bool value):
-        self._ptr.OptCursorBlink = value
+    @config_cursor_blink.setter
+    def config_cursor_blink(self, cimgui.bool value):
+        self._ptr.ConfigInputTextCursorBlink = value
+
+    @property
+    def config_resize_windows_from_edges(self):
+        return self._ptr.ConfigResizeWindowsFromEdges
+
+    @config_resize_windows_from_edges.setter
+    def config_resize_windows_from_edges(self, cimgui.bool value):
+        self._ptr.ConfigResizeWindowsFromEdges = value
 
     @property
     def mouse_pos(self):
@@ -3834,7 +3847,7 @@ def input_text(
             char* buf,
             size_t buf_size,
             ImGuiInputTextFlags flags = 0,
-            ImGuiTextEditCallback callback = NULL,
+            ImGuiInputTextCallback callback = NULL,
             void* user_data = NULL
         )
     """
@@ -3901,7 +3914,7 @@ def input_text_multiline(
             size_t buf_size,
             const ImVec2& size = ImVec2(0,0),
             ImGuiInputTextFlags flags = 0,
-            ImGuiTextEditCallback callback = NULL,
+            ImGuiInputTextCallback callback = NULL,
             void* user_data = NULL
         )
     """
