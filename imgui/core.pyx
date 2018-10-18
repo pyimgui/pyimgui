@@ -5696,6 +5696,7 @@ cpdef push_text_wrap_pos(float wrap_pos_x = 0.0):
     """
     cimgui.PushTextWrapPos(wrap_pos_x)
 
+push_text_wrap_position = push_text_wrap_pos
 
 cpdef pop_text_wrap_pos():
     """Pop the text wrapping position from the stack.
@@ -5709,6 +5710,8 @@ cpdef pop_text_wrap_pos():
         void PopTextWrapPos()
     """
     cimgui.PopTextWrapPos()
+
+pop_text_wrap_position = pop_text_wrap_pos
 
 
 cpdef pop_style_color(unsigned int count=1):
@@ -6162,6 +6165,13 @@ def set_cursor_screen_pos(screen_pos):
         ImVec2 SetCursorScreenPos(const ImVec2& screen_pos)
     """
     cimgui.SetCursorScreenPos(_cast_tuple_ImVec2(screen_pos))
+
+
+get_cursor_position = get_cursor_pos
+set_cursor_position = set_cursor_pos
+get_cursor_start_position = get_cursor_start_pos
+get_cursor_screen_position = get_cursor_screen_pos
+set_cursor_screen_position = set_cursor_screen_pos
 
 
 def get_text_line_height():
