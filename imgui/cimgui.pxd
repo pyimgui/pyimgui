@@ -1118,7 +1118,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImVec2 GetItemRectSize() except +  # ✓
     void SetItemAllowOverlap() except +  # ✓
     bool IsRectVisible(const ImVec2& size) except +  # ✓
-    double GetTime() except +  # ✗
+    double GetTime() except +  # ✓
     int GetFrameCount() except +  # ✗
     ImDrawList* GetOverlayDrawList() except +  # ✗
     ImDrawListSharedData* GetDrawListSharedData() except +  # ✗

@@ -5256,6 +5256,18 @@ def get_style_color_name(int index):
     return c_string.decode("utf-8")
 
 
+def get_time():
+    """Seconds since program start.
+
+    Returns:
+        float: the time (seconds since program start)
+
+    .. wraps::
+        float GetTime()
+    """
+    return cimgui.GetTime()
+
+
 def is_mouse_hovering_rect(
     float r_min_x, float r_min_y,
     float r_max_x, float r_max_y,
