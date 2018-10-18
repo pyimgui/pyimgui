@@ -1884,6 +1884,20 @@ def get_window_draw_list():
     return _DrawList.from_ptr(cimgui.GetWindowDrawList())
 
 
+def get_overlay_draw_list():
+    """Get a special draw list that will be drawn last (over all windows).
+
+    Useful for drawing overlays.
+
+    Returns:
+        ImDrawList*
+
+    .. wraps::
+        ImDrawList* GetWindowDrawList()
+    """
+    return _DrawList.from_ptr(cimgui.GetOverlayDrawList())
+
+
 def get_window_position():
     """Get current window position.
 

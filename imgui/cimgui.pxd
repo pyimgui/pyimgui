@@ -397,6 +397,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool IsWindowFocused(ImGuiFocusedFlags flags) except +  # ✓
     bool IsWindowHovered(ImGuiFocusedFlags flags) except +  # ✓
     ImDrawList* GetWindowDrawList() except +  # ✓
+    ImDrawList* GetOverlayDrawList() except + # ✓
     ImVec2 GetWindowPos() except +  # ✓
     ImVec2 GetWindowSize() except +  # ✓
     float GetWindowWidth() except +  # ✓
