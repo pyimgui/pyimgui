@@ -166,7 +166,7 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         # perf: local for faster access
         io = self.io
 
-        display_width, display_height = self.io.display_size
+        display_width, display_height = io.display_size
         fb_width = int(display_width * io.display_fb_scale[0])
         fb_height = int(display_height * io.display_fb_scale[1])
 
@@ -325,7 +325,7 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
         # perf: local for faster access
         io = self.io
 
-        display_width, display_height = self.io.display_size
+        display_width, display_height = io.display_size
         fb_width = int(display_width * io.display_fb_scale[0])
         fb_height = int(display_height * io.display_fb_scale[1])
 
