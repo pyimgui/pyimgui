@@ -6119,6 +6119,24 @@ def end_group():
     cimgui.EndGroup()
 
 
+def get_cursor_pos():
+    """Get the cursor position.
+
+    .. wraps::
+        ImVec2 GetCursorPos()
+    """
+    return _cast_ImVec2_tuple(cimgui.GetCursorPos())
+
+
+def set_cursor_pos(local_pos):
+    """Set the cursor position in local coordinates [0..<window size>] (useful to work with ImDrawList API)
+
+    .. wraps::
+        ImVec2 SetCursorScreenPos(const ImVec2& screen_pos)
+    """
+    cimgui.SetCursorPos(_cast_tuple_ImVec2(local_pos))
+
+
 def get_cursor_start_pos():
     """Get the initial cursor position.
 
@@ -6135,6 +6153,15 @@ def get_cursor_screen_pos():
         ImVec2 GetCursorScreenPos()
     """
     return _cast_ImVec2_tuple(cimgui.GetCursorScreenPos())
+
+
+def set_cursor_screen_pos(screen_pos):
+    """Set the cursor position in absolute screen coordinates [0..io.DisplaySize] (useful to work with ImDrawList API)
+
+    .. wraps::
+        ImVec2 SetCursorScreenPos(const ImVec2& screen_pos)
+    """
+    cimgui.SetCursorScreenPos(_cast_tuple_ImVec2(screen_pos))
 
 
 def get_text_line_height():
