@@ -1159,15 +1159,15 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     bool IsKeyReleased(int key_index) except +  # ✓
     int GetKeyPressedAmount(int key_index, float repeat_delay, float rate) except +  # ✗
-    bool IsMouseDown(int button) except +  # ✗
+    bool IsMouseDown(int button) except +  # ✓
     bool IsAnyMouseDown() except +  # ✗
-    bool IsMouseClicked(  # ✗
+    bool IsMouseClicked(  # ✓
             int button,
             # note: optional
             bool repeat
     ) except +
     bool IsMouseDoubleClicked(int button) except +  # ✓
-    bool IsMouseReleased(int button) except +  # ✗
+    bool IsMouseReleased(int button) except +  # ✓
     bool IsMouseHoveringRect(  # ✓
             const ImVec2& r_min, const ImVec2& r_max,
             # note: optional
@@ -1178,7 +1178,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             int button, float lock_threshold
     ) except +
-    ImVec2 GetMousePos() except +  # ✗
+    ImVec2 GetMousePos() except +  # ✓
     ImVec2 GetMousePosOnOpeningCurrentPopup() except +  # ✗
     ImVec2 GetMouseDragDelta(  # ✓
             # note: optional
