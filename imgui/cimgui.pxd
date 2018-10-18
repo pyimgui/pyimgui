@@ -345,7 +345,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     # ====
     # Main
     ImGuiIO& GetIO() except +  # ✓
-    ImGuiStyle& GetStyle() except +  # ✗
+    ImGuiStyle& GetStyle() except +  # ✓
     void ScaleAllSizes(float scale_factor) except +  # ✗
 
     void NewFrame() except +  # ✓

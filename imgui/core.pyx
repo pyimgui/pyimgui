@@ -524,6 +524,12 @@ cdef class GuiStyle(object):
     """
     cdef cimgui.ImGuiStyle ref
 
+    @staticmethod
+    cdef from_ref(cimgui.ImGuiStyle& ref):
+        instance = GuiStyle()
+        instance.ref = ref
+        return instance
+
     @property
     def alpha(self):
         """Global alpha blending parameter for windows
@@ -767,6 +773,15 @@ cdef class GuiStyle(object):
     @curve_tessellation_tolerance.setter
     def curve_tessellation_tolerance(self, float value):
         self.ref.CurveTessellationTol = value
+
+    def color(self, cimgui.ImGuiCol variable):
+        IF TARGET_IMGUI_VERSION > (1, 49):
+            # note: this check is not available on imgui<=1.49
+            if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
+                raise ValueError("Unknown style variable: {}".format(variable))
+
+        cdef int ix = variable
+        return _cast_ImVec4_tuple(self.ref.Colors[ix])
 
 
 cdef class _DrawData(object):
@@ -1249,7 +1264,7 @@ def get_io():
     return _io
 
 def get_style():
-    raise NotImplementedError
+    return GuiStyle.from_ref(cimgui.GetStyle())
 
 
 def new_frame():
