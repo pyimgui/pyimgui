@@ -377,41 +377,108 @@ cdef class _DrawList(object):
     def idx_buffer_data(self):
         return <uintptr_t>self._ptr.IdxBuffer.Data
 
-    def add_rect_filled(self,
-        float upper_left_x, float upper_left_y,
-        float lower_right_x, float lower_right_y,
-        cimgui.ImU32 col,
-        # note: optional
-        float rounding = 0.0, cimgui.ImGuiWindowFlags rounding_corners_flags = 0xF):
 
-        """AddRectFilled() primitive for ImDrawList()
+    def add_rect_filled(
+            self,
+            float upper_left_x, float upper_left_y,
+            float lower_right_x, float lower_right_y,
+            cimgui.ImU32 col,
+            # note: optional
+            float rounding = 0.0,
+            cimgui.ImGuiWindowFlags rounding_corners_flags = 0xF,
+        ):
+        """Add a filled rectangle to the draw list.
+        Args:
+            upper_left_x (float): X coordinate of top-left
+            upper_left_y (float): Y coordinate of top-left
+            lower_right_x (float): X coordinate of lower-right
+            lower_right_y (float): Y coordinate of lower-right
+            col (ImU32): RGBA color specification
+            # note: optional
+            rounding (float): Degree of rounding, defaults to 0.0
+            rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
 
-    Args:
-        closable (bool): define if window is closable.
-        upper_left_x (float): X coordinate of top-left
-        upper_left_y (float): Y coordinate of top-left
-        lower_right_x (float): X coordinate of lower-right
-        lower_right_y (float): Y coordinate of lower-right
-        col (ImU32): RGBA color specification
-        # note: optional
-        rounding (float): Degree of rounding, defaults to 0.0
-        rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
-
-    .. wraps::
-        void  AddRectFilled(
-                   const ImVec2&,
-                   const ImVec2&,
-                   ImU32,
-                   # note: optional
-                   float, int)
-    """
+        .. wraps::
+            void ImDrawList::AddRectFilled(
+                const ImVec2&,
+                const ImVec2&,
+                ImU32,
+                # note: optional
+                float, int
+            )
+        """
         #_DrawList.from_ptr(self._ptr).AddRectFilled(
         self._ptr.AddRectFilled(
             _cast_args_ImVec2(upper_left_x, upper_left_y),
             _cast_args_ImVec2(lower_right_x, lower_right_y),
             col,
             rounding,
-            rounding_corners_flags
+            rounding_corners_flags,
+        )
+
+
+    def add_line(
+            self,
+            float start_x, float start_y,
+            float end_x, float end_y,
+            cimgui.ImU32 col,
+            # note: optional
+            float thickness=1.0,
+        ):
+        """Add a straight line to the draw list.
+
+        .. wraps::
+            void ImDrawList::AddLine(const ImVec2& a, const ImVec2& b, ImU32 col, float thickness = 1.0f)
+
+        """
+        self._ptr.AddLine(
+            _cast_args_ImVec2(start_x, start_y),
+            _cast_args_ImVec2(end_x, end_y),
+            col,
+            thickness,
+        )
+
+
+    def add_rect(
+            self,
+            float upper_left_x, float upper_left_y,
+            float lower_right_x, float lower_right_y,
+            cimgui.ImU32 col,
+            # note: optional
+            float rounding = 0.0,
+            cimgui.ImGuiWindowFlags rounding_corners_flags = 0xF,
+            float thickness = 1.0,
+        ):
+        """Add a rectangle outline to the draw list.
+
+        Args:
+            upper_left_x (float): X coordinate of top-left
+            upper_left_y (float): Y coordinate of top-left
+            lower_right_x (float): X coordinate of lower-right
+            lower_right_y (float): Y coordinate of lower-right
+            col (ImU32): RGBA color specification
+            # note: optional
+            rounding (float): Degree of rounding, defaults to 0.0
+            rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
+            thickness (float): Line thickness, defaults to 1.0
+
+        .. wraps::
+            void ImDrawList::AddRect(
+                const ImVec2& a,
+                const ImVec2& b,
+                ImU32 col,
+                float rounding = 0.0f,
+                int rounding_corners_flags = ImDrawCornerFlags_All,
+                float thickness = 1.0f
+            )
+        """
+        self._ptr.AddRect(
+            _cast_args_ImVec2(upper_left_x, upper_left_y),
+            _cast_args_ImVec2(lower_right_x, lower_right_y),
+            col,
+            rounding,
+            rounding_corners_flags,
+            thickness,
         )
 
 

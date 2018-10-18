@@ -208,12 +208,36 @@ cdef extern from "imgui.h":
         ImVector[ImDrawIdx]  IdxBuffer  # ✓
         ImVector[ImDrawVert] VtxBuffer  # ✓
 
-        void  AddRectFilled(
-                   const ImVec2&, 
-                   const ImVec2&, 
-                   ImU32,
-                   # note: optional
-                   float, int) except +  # ✓
+
+        void AddLine(
+            const ImVec2& a,
+            const ImVec2& b,
+            ImU32 col,
+            # note: optional
+            float thickness # = 1.0f
+        ) except +  # ✓
+
+
+        void AddRect(
+            const ImVec2& a,
+            const ImVec2& b,
+            ImU32 col,
+            # note: optional
+            float rounding,             # = 0.0f,
+            int rounding_corners_flags, # = ImDrawCornerFlags_All, 
+            float thickness             # = 1.0f
+        ) except +  # ✓
+
+
+        void AddRectFilled(
+            const ImVec2& a, 
+            const ImVec2& b, 
+            ImU32 col,
+            # note: optional
+            float rounding,            # = 0.0f
+            int rounding_corners_flags # = ImDrawCornerFlags_All
+        ) except +  # ✓
+         
 
 
     ctypedef struct ImDrawData:  # ✓
