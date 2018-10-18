@@ -482,6 +482,30 @@ cdef class _DrawList(object):
         )
 
 
+
+    # channels
+
+    def channels_split(self, int channels_count):
+        """
+        Warning - be careful with using channels as "layers".
+        Child windows are always drawn after their parent, so they will
+        paint over its channels.
+        To paint over child windows, use `OverlayDrawList`.
+        """
+        # TODO: document
+        self._ptr.ChannelsSplit(channels_count)
+
+
+    def channels_set_current(self, int idx):
+        # TODO: document
+        self._ptr.ChannelsSetCurrent(idx)
+
+
+    def channels_merge(self):
+        # TODO: document
+        self._ptr.ChannelsMerge()
+
+
     @property
     def commands(self):
         return [

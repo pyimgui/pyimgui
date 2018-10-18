@@ -239,6 +239,11 @@ cdef extern from "imgui.h":
         ) except +  # ✓
          
 
+        void ChannelsSplit(int channels_count) except + # ✓
+        void ChannelsMerge() except + # ✓
+        void ChannelsSetCurrent(int idx) except + # ✓
+
+
 
     ctypedef struct ImDrawData:  # ✓
         bool            Valid  # ✓
