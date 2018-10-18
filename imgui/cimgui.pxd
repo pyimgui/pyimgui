@@ -634,18 +634,15 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +  #void ColorEditMode(ImGuiColorEditMode mode) except +  # note: obsoleted
 
     # Widgets: plots
-    void PlotLines(  # ✗
+    void PlotLines( # ✓
             const char* label, const float* values, int values_count,
             # note: optional
-            int values_offset, const char* overlay_text,
-            float scale_min, float scale_max, ImVec2 graph_size, int stride
-    ) except +
-    void PlotLines(  # ✗
-            const char* label, float (*values_getter)(void* data, int idx),
-            void* data, int values_count,
-            # note: optional
-            int values_offset, const char* overlay_text, float scale_min,
-            float scale_max, ImVec2 graph_size
+            int values_offset,        # = 0
+            const char* overlay_text, # = NULL
+            float scale_min,          # = FLT_MAX
+            float scale_max,          # = FLT_MAX
+            ImVec2 graph_size,        # = ImVec2(0,0)
+            int stride                # = sizeof(float))
     ) except +
 
     void PlotHistogram(  # ✗

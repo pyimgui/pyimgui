@@ -23,6 +23,7 @@ from libc.stdlib cimport malloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
 from libc.string cimport strncpy
+from libc.float  cimport FLT_MAX
 from libcpp cimport bool
 
 cimport cimgui
@@ -5043,6 +5044,80 @@ def v_slider_int(
         <int*>&inout_value,
         min_value, max_value, _bytes(format)
     ), inout_value
+
+
+def plot_lines(
+        str label not None,
+        const float[:] values not None,
+        int values_count  = -1,
+        int values_offset = 0,
+        str overlay_text = None,
+        float scale_min = FLT_MAX,
+        float scale_max = FLT_MAX,
+        graph_size = (0, 0),
+        int stride = sizeof(float),
+    ):
+
+    """
+    Plot a 1D array of float values.
+    Args:
+        label (str): A plot label that will be displayed on the plot's right side.
+            Note: If you want the label to be visible, add "##" before the label's text:
+                "my_label" -> "##my_label"
+        values (array of floats): the y-values.
+            It must be a type that supports Cython's Memoryviews,
+            (See: http://docs.cython.org/en/latest/src/userguide/memoryviews.html)
+            for example a numpy array.
+
+        overlay_text (str or None, optional): Overlay text.
+
+        scale_min (float, optional): y-value at the bottom of the plot.
+        scale_max (float, optional): y-value at the top of the plot.
+
+        graph_size (tuple of two floats, optional): plot size in pixels.
+            Note: In ImGui 1.49, (-1,-1) will NOT auto-size the plot.
+            To do that, use :func:`get_content_region_available` and pass in the right size.
+
+        Note: These low-level parameters are exposed if needed for performance.
+        values_offset (int): Index of first element to display
+        values_count (int): Number of values to display. -1 will use the entire array.
+        stride (int): Number of bytes to move to read next element.
+
+
+    .. wraps::
+            void PlotLines(
+                const char* label, const float* values, int values_count,
+
+                int values_offset = 0,
+                const char* overlay_text = NULL,
+                float scale_min = FLT_MAX,
+                float scale_max = FLT_MAX,
+                ImVec2 graph_size = ImVec2(0,0),
+                int stride = sizeof(float)
+            )
+
+    """
+
+    if values_count == -1:
+        values_count = values.shape[0]
+
+    # Would be nicer as something like
+    #   _bytes(overlay_text) if overlay_text is not None else NULL
+    # but then Cython complains about either types or pointers to temporary references.
+    cdef const char* overlay_text_ptr = NULL
+    cdef bytes overlay_text_b
+    if overlay_text is not None:
+        overlay_text_b = _bytes(overlay_text) # must be assigned to a variable
+        overlay_text_ptr = overlay_text_b # auto-convert bytes to char*
+
+    cimgui.PlotLines(
+        _bytes(label), &values[0], values_count,
+        values_offset,
+        overlay_text_ptr,
+        scale_min, scale_max,
+        _cast_tuple_ImVec2(graph_size),
+        stride
+    )
 
 
 def set_item_default_focus():
