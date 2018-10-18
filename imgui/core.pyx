@@ -5269,7 +5269,7 @@ def is_mouse_hovering_rect(
     )
 
 
-def is_mouse_double_clicked(int button):
+def is_mouse_double_clicked(int button = 0):
     """Return True if mouse was double-clicked.
 
     **Note:** A double-click returns false in IsMouseClicked().
