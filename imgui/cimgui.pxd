@@ -30,7 +30,7 @@ cdef extern from "imgui.h":
     # ctypedef struct ImGuiStyle  # declared later
     ctypedef struct ImGuiTextFilter
     ctypedef struct ImGuiTextBuffer
-    ctypedef struct ImGuiTextEditCallbackData
+    ctypedef struct ImGuiInputTextCallbackData
     ctypedef struct ImGuiSizeCallbackData
     ctypedef struct ImGuiListClipper
     ctypedef struct ImGuiPayload
@@ -65,7 +65,7 @@ cdef extern from "imgui.h":
     ctypedef int ImGuiSelectableFlags
     ctypedef int ImGuiTreeNodeFlags
     ctypedef int ImGuiWindowFlags
-    ctypedef int (*ImGuiTextEditCallback)(ImGuiTextEditCallbackData *data);
+    ctypedef int (*ImGuiInputTextCallback)(ImGuiInputTextCallbackData *data);
     ctypedef void (*ImGuiSizeCallback)(ImGuiSizeCallbackData* data);
 
     ctypedef struct ImVec2:
@@ -105,8 +105,9 @@ cdef extern from "imgui.h":
         ImVec2        DisplayFramebufferScale  # ✓
         ImVec2        DisplayVisibleMin  # ✓
         ImVec2        DisplayVisibleMax  # ✓
-        bool          OptMacOSXBehaviors  # ✓
-        bool          OptCursorBlink  # ✓
+        bool          ConfigMacOSXBehaviors  # ✓
+        bool          ConfigInputTextCursorBlink  # ✓
+        bool          ConfigResizeWindowsFromEdges  # ✓
 
         # ====
         # source-note: User Functions
@@ -254,7 +255,8 @@ cdef extern from "imgui.h":
         const ImWchar* GetGlyphRangesDefault() except +  # ✓
         const ImWchar* GetGlyphRangesKorean() except +  # ✓
         const ImWchar* GetGlyphRangesJapanese() except +  # ✓
-        const ImWchar* GetGlyphRangesChinese() except +  # ✓
+        const ImWchar* GetGlyphRangesChineseFull() except +  # ✓
+        const ImWchar* GetGlyphRangesChineseSimplifiedCommon() except +  # ✓
         const ImWchar* GetGlyphRangesCyrillic() except +  # ✓
 
 
@@ -724,13 +726,13 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* label, char* buf, size_t buf_size,
             # note: optional
             ImGuiInputTextFlags flags,
-            ImGuiTextEditCallback callback, void* user_data
+            ImGuiInputTextCallback callback, void* user_data
     ) except +
     bool InputTextMultiline(  # ✓
             const char* label, char* buf, size_t buf_size,
             # note: optional
             const ImVec2& size, ImGuiInputTextFlags flags,
-            ImGuiTextEditCallback callback, void* user_data
+            ImGuiInputTextCallback callback, void* user_data
     ) except +
     bool InputFloat(  # ✓
             const char* label, float* v,
@@ -1087,7 +1089,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImVec2 GetItemRectSize() except +  # ✓
     void SetItemAllowOverlap() except +  # ✓
     bool IsRectVisible(const ImVec2& size) except +  # ✓
-    float GetTime() except +  # ✗
+    double GetTime() except +  # ✗
     int GetFrameCount() except +  # ✗
     ImDrawList* GetOverlayDrawList() except +  # ✗
     ImDrawListSharedData* GetDrawListSharedData() except +  # ✗

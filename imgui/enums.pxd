@@ -102,10 +102,11 @@ cdef extern from "imgui.h":
         ImGuiCol_PlotHistogram
         ImGuiCol_PlotHistogramHovered
         ImGuiCol_TextSelectedBg
-        ImGuiCol_ModalWindowDarkening  # Darken entire screen when a modal window is active
         ImGuiCol_DragDropTarget
-        ImGuiCol_NavHighlight
-        ImGuiCol_NavWindowingHighlight
+        ImGuiCol_NavHighlight,          # Gamepad/keyboard: current highlighted item
+        ImGuiCol_NavWindowingHighlight, # Highlight window when using CTRL+TAB
+        ImGuiCol_NavWindowingDimBg,     # Darken/colorize entire screen behind the CTRL+TAB window list, when active
+        ImGuiCol_ModalWindowDimBg,      # Darken/colorize entire screen behind a modal window, when one is active
         ImGuiCol_COUNT
 
     ctypedef enum ImGuiDataType_:
@@ -172,7 +173,6 @@ cdef extern from "imgui.h":
         ImGuiWindowFlags_AlwaysVerticalScrollbar    # Always show vertical scrollbar (even if ContentSize.y < Size.y)
         ImGuiWindowFlags_AlwaysHorizontalScrollbar  # Always show horizontal scrollbar (even if ContentSize.x < Size.x)
         ImGuiWindowFlags_AlwaysUseWindowPadding     # Ensure child windows without border uses style.WindowPadding (ignored by default for non-bordered child windows, because more convenient)
-        ImGuiWindowFlags_ResizeFromAnySide          # [BETA] Enable resize from any corners and borders. Your back-end needs to honor the different values of io.MouseCursor set by imgui.
         ImGuiWindowFlags_NoNavInputs                # No gamepad/keyboard navigation within the window
         ImGuiWindowFlags_NoNavFocus                 # No focusing toward this window with gamepad/keyboard navigation (e.g. skipped by CTRL+TAB)
         ImGuiWindowFlags_NoNav = ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoNavFocus 
@@ -243,7 +243,7 @@ cdef extern from "imgui.h":
         ImGuiFocusedFlags_RootAndChildWindows   # ImGuiFocusedFlags_RootWindow | ImGuiFocusedFlags_ChildWindows
 
     ctypedef enum ImGuiHoveredFlags_:
-        ImGuiHoveredFlags_Default                       # Return true if directly over the item/window, not obstructed by another window, not obstructed by an active popup or modal blocking inputs under them.
+        ImGuiHoveredFlags_None                          # Return true if directly over the item/window, not obstructed by another window, not obstructed by an active popup or modal blocking inputs under them.
         ImGuiHoveredFlags_ChildWindows                  # IsWindowHovered() only: Return true if any children of the window is hovered
         ImGuiHoveredFlags_RootWindow                    # IsWindowHovered() only: Test from root window (top most parent of the current hierarchy)
         ImGuiHoveredFlags_AnyWindow
@@ -260,9 +260,11 @@ cdef extern from "imgui.h":
         ImGuiDragDropFlags_SourceNoHoldToOpenOthers     # Disable the behavior that allows to open tree nodes and collapsing header by holding over them while dragging a source item.
         ImGuiDragDropFlags_SourceAllowNullID            # Allow items such as Text(), Image() that have no unique identifier to be used as drag source, by manufacturing a temporary identifier based on their window-relative position. This is extremely unusual within the dear imgui ecosystem and so we made it explicit.
         ImGuiDragDropFlags_SourceExtern                 # External source (from outside of imgui), won't attempt to read current item/window info. Will always return true. Only one Extern source can be active simultaneously.
+        ImGuiDragDropFlags_SourceAutoExpirePayload      # Automatically expire the payload if the source cease to be submitted (otherwise payloads are persisting while being dragged)
         # AcceptDragDropPayload() flags
         ImGuiDragDropFlags_AcceptBeforeDelivery         # AcceptDragDropPayload() will returns true even before the mouse button is released. You can then call IsDelivery() to test if the payload needs to be delivered.
         ImGuiDragDropFlags_AcceptNoDrawDefaultRect      # Do not draw the default highlight rectangle when hovering over target.
+        ImGuiDragDropFlags_AcceptNoPreviewTooltip       # Request hiding the BeginDragDropSource tooltip from the BeginDragDropTarget site.
         ImGuiDragDropFlags_AcceptPeekOnly = ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect
 
     ctypedef enum ImGuiDir_:

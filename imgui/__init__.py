@@ -38,7 +38,7 @@ KEY_TAB = core.KEY_TAB
 #: for text edit
 KEY_LEFT_ARROW = core.KEY_LEFT_ARROW
 #: for text edit
-KEY_RIGHT_ARROW = core.KEY_UP_ARROW
+KEY_RIGHT_ARROW = core.KEY_RIGHT_ARROW
 #: for text edit
 KEY_UP_ARROW = core.KEY_UP_ARROW
 #: for text edit
@@ -155,9 +155,6 @@ WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = core.WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR
 #: Ensure child windows without border uses style.WindowPadding (ignored by
 #: default for non-bordered child windows, because more convenient).
 WINDOW_ALWAYS_USE_WINDOW_PADDING = core.WINDOW_ALWAYS_USE_WINDOW_PADDING
-#: Enable resize from any borners and borders. Your back-end needs to honour
-# the different values of io.MouseCursor set by imgui.
-WINDOW_RESIZE_FROM_ANY_SIDE = core.WINDOW_RESIZE_FROM_ANY_SIDE
 # No gamepad/keyboard navigation within the window
 WINDOW_NO_NAV_INPUTS = core.WINDOW_NO_NAV_INPUTS
 # No focusing toward this window with gamepad/keyboard navigation
@@ -237,10 +234,11 @@ COLOR_PLOT_LINES_HOVERED = core.COLOR_PLOT_LINES_HOVERED
 COLOR_PLOT_HISTOGRAM = core.COLOR_PLOT_HISTOGRAM
 COLOR_PLOT_HISTOGRAM_HOVERED = core.COLOR_PLOT_HISTOGRAM_HOVERED
 COLOR_TEXT_SELECTED_BACKGROUND = core.COLOR_TEXT_SELECTED_BACKGROUND
-COLOR_MODAL_WINDOW_DARKENING = core.COLOR_MODAL_WINDOW_DARKENING
 COLOR_DRAG_DROP_TARGET = core.COLOR_DRAG_DROP_TARGET
 COLOR_NAV_HIGHLIGHT = core.COLOR_NAV_HIGHLIGHT
 COLOR_NAV_WINDOWING_HIGHLIGHT = core.COLOR_NAV_WINDOWING_HIGHLIGHT
+COLOR_NAV_WINDOWING_DIM_BACKGROUND = core.COLOR_NAV_WINDOWING_DIM_BACKGROUND
+COLOR_MODAL_WINDOW_DIM_BACKGROUND = core.COLOR_MODAL_WINDOW_DIM_BACKGROUND
 COLOR_COUNT = core.COLOR_COUNT
 
 # === Selectable flag constants (redefines for autodoc)
@@ -286,7 +284,7 @@ FOCUS_ROOT_AND_CHILD_WINDOWS = core.FOCUS_CHILD_WINDOWS | core.FOCUS_ROOT_WINDOW
 #: Return true if directly over the item/window, not obstructed by
 #: another window, not obstructed by an active popup or modal
 #: blocking inputs under them.
-HOVERED_DEFAULT = core.HOVERED_DEFAULT
+HOVERED_NONE = core.HOVERED_NONE
 #: IsWindowHovered() only: Return true if any children of the window is hovered
 HOVERED_CHILD_WINDOWS = core.HOVERED_CHILD_WINDOWS
 #: IsWindowHovered() only: Test from root window (top most parent of the current hierarchy)
@@ -326,6 +324,9 @@ DRAG_DROP_SOURCE_ALLOW_NULL_ID = core.DRAG_DROP_SOURCE_ALLOW_NULL_ID
 #: item/window info. Will always return true. Only one Extern source can
 #: be active simultaneously.
 DRAG_DROP_SOURCE_EXTERN = core.DRAG_DROP_SOURCE_EXTERN
+#: Automatically expire the payload if the source cease to be submitted
+#: (otherwise payloads are persisting while being dragged)
+DRAG_DROP_SOURCE_AUTO_EXPIRE_PAYLOAD = core.DRAG_DROP_SOURCE_AUTO_EXPIRE_PAYLOAD
 
 # === Accept Drag Drop Payload flag constants (redefines for autodoc)
 #: AcceptDragDropPayload() will returns true even before the mouse button
