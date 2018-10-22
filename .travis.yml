@@ -48,6 +48,7 @@ before_install:
 
   # note: there is cython issue when python2.7 is installed using pyenv
   # note: but it is required to run everything in virtualenv
+  - if [[ "$PY_VERSION" == "2.7" ]]; then pip install virtualenv; fi
   - if [[ "$PY_VERSION" == "2.7" ]]; then virtualenv build-env; fi
   - if [[ "$PY_VERSION" == "2.7" ]]; then source build-env/bin/activate; fi
 
