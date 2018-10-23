@@ -208,12 +208,41 @@ cdef extern from "imgui.h":
         ImVector[ImDrawIdx]  IdxBuffer  # ✓
         ImVector[ImDrawVert] VtxBuffer  # ✓
 
-        void  AddRectFilled(
-                   const ImVec2&, 
-                   const ImVec2&, 
-                   ImU32,
-                   # note: optional
-                   float, int) except +  # ✓
+
+        void AddLine(
+            const ImVec2& a,
+            const ImVec2& b,
+            ImU32 col,
+            # note: optional
+            float thickness # = 1.0f
+        ) except +  # ✓
+
+
+        void AddRect(
+            const ImVec2& a,
+            const ImVec2& b,
+            ImU32 col,
+            # note: optional
+            float rounding,             # = 0.0f,
+            int rounding_corners_flags, # = ImDrawCornerFlags_All, 
+            float thickness             # = 1.0f
+        ) except +  # ✓
+
+
+        void AddRectFilled(
+            const ImVec2& a, 
+            const ImVec2& b, 
+            ImU32 col,
+            # note: optional
+            float rounding,            # = 0.0f
+            int rounding_corners_flags # = ImDrawCornerFlags_All
+        ) except +  # ✓
+         
+
+        void ChannelsSplit(int channels_count) except + # ✓
+        void ChannelsMerge() except + # ✓
+        void ChannelsSetCurrent(int idx) except + # ✓
+
 
 
     ctypedef struct ImDrawData:  # ✓
@@ -316,7 +345,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     # ====
     # Main
     ImGuiIO& GetIO() except +  # ✓
-    ImGuiStyle& GetStyle() except +  # ✗
+    ImGuiStyle& GetStyle() except +  # ✓
     void ScaleAllSizes(float scale_factor) except +  # ✗
 
     void NewFrame() except +  # ✓
@@ -368,6 +397,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool IsWindowFocused(ImGuiFocusedFlags flags) except +  # ✓
     bool IsWindowHovered(ImGuiFocusedFlags flags) except +  # ✓
     ImDrawList* GetWindowDrawList() except +  # ✓
+    ImDrawList* GetOverlayDrawList() except + # ✓
     ImVec2 GetWindowPos() except +  # ✓
     ImVec2 GetWindowSize() except +  # ✓
     float GetWindowWidth() except +  # ✓
@@ -503,15 +533,15 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void BeginGroup() except +  # ✓
     void EndGroup() except +  # ✓
-    ImVec2 GetCursorPos() except +  # ✗
+    ImVec2 GetCursorPos() except +  # ✓
     float GetCursorPosX() except +  # ✗
     float GetCursorPosY() except +  # ✗
-    void SetCursorPos(const ImVec2& local_pos) except +  # ✗
+    void SetCursorPos(const ImVec2& local_pos) except +  # ✓
     void SetCursorPosX(float x) except +  # ✗
     void SetCursorPosY(float y) except +  # ✗
     ImVec2 GetCursorStartPos() except +  # ✓
     ImVec2 GetCursorScreenPos() except +  # ✓
-    void SetCursorScreenPos(const ImVec2& screen_pos) except +  # ✗
+    void SetCursorScreenPos(const ImVec2& screen_pos) except +  # ✓
     void AlignTextToFramePadding() except +  # ✗
     float GetTextLineHeight() except +  # ✓
     float GetTextLineHeightWithSpacing() except +  # ✓
@@ -604,18 +634,15 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +  #void ColorEditMode(ImGuiColorEditMode mode) except +  # note: obsoleted
 
     # Widgets: plots
-    void PlotLines(  # ✗
+    void PlotLines( # ✓
             const char* label, const float* values, int values_count,
             # note: optional
-            int values_offset, const char* overlay_text,
-            float scale_min, float scale_max, ImVec2 graph_size, int stride
-    ) except +
-    void PlotLines(  # ✗
-            const char* label, float (*values_getter)(void* data, int idx),
-            void* data, int values_count,
-            # note: optional
-            int values_offset, const char* overlay_text, float scale_min,
-            float scale_max, ImVec2 graph_size
+            int values_offset,        # = 0
+            const char* overlay_text, # = NULL
+            float scale_min,          # = FLT_MAX
+            float scale_max,          # = FLT_MAX
+            ImVec2 graph_size,        # = ImVec2(0,0)
+            int stride                # = sizeof(float))
     ) except +
 
     void PlotHistogram(  # ✗
@@ -1089,7 +1116,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImVec2 GetItemRectSize() except +  # ✓
     void SetItemAllowOverlap() except +  # ✓
     bool IsRectVisible(const ImVec2& size) except +  # ✓
-    double GetTime() except +  # ✗
+    double GetTime() except +  # ✓
     int GetFrameCount() except +  # ✗
     ImDrawList* GetOverlayDrawList() except +  # ✗
     ImDrawListSharedData* GetDrawListSharedData() except +  # ✗
@@ -1130,15 +1157,15 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     bool IsKeyReleased(int key_index) except +  # ✓
     int GetKeyPressedAmount(int key_index, float repeat_delay, float rate) except +  # ✗
-    bool IsMouseDown(int button) except +  # ✗
+    bool IsMouseDown(int button) except +  # ✓
     bool IsAnyMouseDown() except +  # ✗
-    bool IsMouseClicked(  # ✗
+    bool IsMouseClicked(  # ✓
             int button,
             # note: optional
             bool repeat
     ) except +
     bool IsMouseDoubleClicked(int button) except +  # ✓
-    bool IsMouseReleased(int button) except +  # ✗
+    bool IsMouseReleased(int button) except +  # ✓
     bool IsMouseHoveringRect(  # ✓
             const ImVec2& r_min, const ImVec2& r_max,
             # note: optional
@@ -1149,7 +1176,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             int button, float lock_threshold
     ) except +
-    ImVec2 GetMousePos() except +  # ✗
+    ImVec2 GetMousePos() except +  # ✓
     ImVec2 GetMousePosOnOpeningCurrentPopup() except +  # ✗
     ImVec2 GetMouseDragDelta(  # ✓
             # note: optional

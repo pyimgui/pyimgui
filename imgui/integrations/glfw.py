@@ -99,7 +99,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         dw, dh = glfw.get_framebuffer_size(self.window)
 
         io.display_size = w, h
-        io.display_fb_scale = float(dw)/w, float(dh)/h
+        if w != 0 and h != 0:
+            io.display_fb_scale = float(dw)/w, float(dh)/h # else?
 
         io.delta_time = 1.0/60
 

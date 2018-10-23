@@ -23,6 +23,7 @@ from libc.stdlib cimport malloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
 from libc.string cimport strncpy
+from libc.float  cimport FLT_MAX
 from libcpp cimport bool
 
 cimport cimgui
@@ -307,7 +308,7 @@ cdef cimgui.ImVec4 _cast_args_ImVec4(float x, float y, float z, float w):  # noq
 
 
 cdef _cast_ImVec4_tuple(cimgui.ImVec4 vec):  # noqa
-    return Vec4(vec.x, vec.y, vec.w, vec.z)
+    return Vec4(vec.x, vec.y, vec.z, vec.w)
 
 
 cdef class _ImGuiContext(object):
@@ -377,42 +378,133 @@ cdef class _DrawList(object):
     def idx_buffer_data(self):
         return <uintptr_t>self._ptr.IdxBuffer.Data
 
-    def add_rect_filled(self,
-        float upper_left_x, float upper_left_y,
-        float lower_right_x, float lower_right_y,
-        cimgui.ImU32 col,
-        # note: optional
-        float rounding = 0.0, cimgui.ImGuiWindowFlags rounding_corners_flags = 0xF):
 
-        """AddRectFilled() primitive for ImDrawList()
+    def add_rect_filled(
+            self,
+            float upper_left_x, float upper_left_y,
+            float lower_right_x, float lower_right_y,
+            cimgui.ImU32 col,
+            # note: optional
+            float rounding = 0.0,
+            cimgui.ImGuiWindowFlags rounding_corners_flags = 0xF,
+        ):
+        """Add a filled rectangle to the draw list.
+        Args:
+            upper_left_x (float): X coordinate of top-left
+            upper_left_y (float): Y coordinate of top-left
+            lower_right_x (float): X coordinate of lower-right
+            lower_right_y (float): Y coordinate of lower-right
+            col (ImU32): RGBA color specification
+            # note: optional
+            rounding (float): Degree of rounding, defaults to 0.0
+            rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
 
-    Args:
-        closable (bool): define if window is closable.
-        upper_left_x (float): X coordinate of top-left
-        upper_left_y (float): Y coordinate of top-left
-        lower_right_x (float): X coordinate of lower-right
-        lower_right_y (float): Y coordinate of lower-right
-        col (ImU32): RGBA color specification
-        # note: optional
-        rounding (float): Degree of rounding, defaults to 0.0
-        rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
-
-    .. wraps::
-        void  AddRectFilled(
-                   const ImVec2&,
-                   const ImVec2&,
-                   ImU32,
-                   # note: optional
-                   float, int)
-    """
+        .. wraps::
+            void ImDrawList::AddRectFilled(
+                const ImVec2&,
+                const ImVec2&,
+                ImU32,
+                # note: optional
+                float, int
+            )
+        """
         #_DrawList.from_ptr(self._ptr).AddRectFilled(
         self._ptr.AddRectFilled(
             _cast_args_ImVec2(upper_left_x, upper_left_y),
             _cast_args_ImVec2(lower_right_x, lower_right_y),
             col,
             rounding,
-            rounding_corners_flags
+            rounding_corners_flags,
         )
+
+
+    def add_line(
+            self,
+            float start_x, float start_y,
+            float end_x, float end_y,
+            cimgui.ImU32 col,
+            # note: optional
+            float thickness=1.0,
+        ):
+        """Add a straight line to the draw list.
+
+        .. wraps::
+            void ImDrawList::AddLine(const ImVec2& a, const ImVec2& b, ImU32 col, float thickness = 1.0f)
+
+        """
+        self._ptr.AddLine(
+            _cast_args_ImVec2(start_x, start_y),
+            _cast_args_ImVec2(end_x, end_y),
+            col,
+            thickness,
+        )
+
+
+    def add_rect(
+            self,
+            float upper_left_x, float upper_left_y,
+            float lower_right_x, float lower_right_y,
+            cimgui.ImU32 col,
+            # note: optional
+            float rounding = 0.0,
+            cimgui.ImGuiWindowFlags rounding_corners_flags = 0xF,
+            float thickness = 1.0,
+        ):
+        """Add a rectangle outline to the draw list.
+
+        Args:
+            upper_left_x (float): X coordinate of top-left
+            upper_left_y (float): Y coordinate of top-left
+            lower_right_x (float): X coordinate of lower-right
+            lower_right_y (float): Y coordinate of lower-right
+            col (ImU32): RGBA color specification
+            # note: optional
+            rounding (float): Degree of rounding, defaults to 0.0
+            rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
+            thickness (float): Line thickness, defaults to 1.0
+
+        .. wraps::
+            void ImDrawList::AddRect(
+                const ImVec2& a,
+                const ImVec2& b,
+                ImU32 col,
+                float rounding = 0.0f,
+                int rounding_corners_flags = ImDrawCornerFlags_All,
+                float thickness = 1.0f
+            )
+        """
+        self._ptr.AddRect(
+            _cast_args_ImVec2(upper_left_x, upper_left_y),
+            _cast_args_ImVec2(lower_right_x, lower_right_y),
+            col,
+            rounding,
+            rounding_corners_flags,
+            thickness,
+        )
+
+
+
+    # channels
+
+    def channels_split(self, int channels_count):
+        """
+        Warning - be careful with using channels as "layers".
+        Child windows are always drawn after their parent, so they will
+        paint over its channels.
+        To paint over child windows, use `OverlayDrawList`.
+        """
+        # TODO: document
+        self._ptr.ChannelsSplit(channels_count)
+
+
+    def channels_set_current(self, int idx):
+        # TODO: document
+        self._ptr.ChannelsSetCurrent(idx)
+
+
+    def channels_merge(self):
+        # TODO: document
+        self._ptr.ChannelsMerge()
 
 
     @property
@@ -432,6 +524,12 @@ cdef class GuiStyle(object):
 
     """
     cdef cimgui.ImGuiStyle ref
+
+    @staticmethod
+    cdef from_ref(cimgui.ImGuiStyle& ref):
+        instance = GuiStyle()
+        instance.ref = ref
+        return instance
 
     @property
     def alpha(self):
@@ -676,6 +774,15 @@ cdef class GuiStyle(object):
     @curve_tessellation_tolerance.setter
     def curve_tessellation_tolerance(self, float value):
         self.ref.CurveTessellationTol = value
+
+    def color(self, cimgui.ImGuiCol variable):
+        IF TARGET_IMGUI_VERSION > (1, 49):
+            # note: this check is not available on imgui<=1.49
+            if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
+                raise ValueError("Unknown style variable: {}".format(variable))
+
+        cdef int ix = variable
+        return _cast_ImVec4_tuple(self.ref.Colors[ix])
 
 
 cdef class _DrawData(object):
@@ -1158,7 +1265,7 @@ def get_io():
     return _io
 
 def get_style():
-    raise NotImplementedError
+    return GuiStyle.from_ref(cimgui.GetStyle())
 
 
 def new_frame():
@@ -1776,6 +1883,20 @@ def get_window_draw_list():
         ImDrawList* GetWindowDrawList()
     """
     return _DrawList.from_ptr(cimgui.GetWindowDrawList())
+
+
+def get_overlay_draw_list():
+    """Get a special draw list that will be drawn last (over all windows).
+
+    Useful for drawing overlays.
+
+    Returns:
+        ImDrawList*
+
+    .. wraps::
+        ImDrawList* GetWindowDrawList()
+    """
+    return _DrawList.from_ptr(cimgui.GetOverlayDrawList())
 
 
 def get_window_position():
@@ -4925,6 +5046,80 @@ def v_slider_int(
     ), inout_value
 
 
+def plot_lines(
+        str label not None,
+        const float[:] values not None,
+        int values_count  = -1,
+        int values_offset = 0,
+        str overlay_text = None,
+        float scale_min = FLT_MAX,
+        float scale_max = FLT_MAX,
+        graph_size = (0, 0),
+        int stride = sizeof(float),
+    ):
+
+    """
+    Plot a 1D array of float values.
+    Args:
+        label (str): A plot label that will be displayed on the plot's right side.
+            Note: If you want the label to be visible, add "##" before the label's text:
+                "my_label" -> "##my_label"
+        values (array of floats): the y-values.
+            It must be a type that supports Cython's Memoryviews,
+            (See: http://docs.cython.org/en/latest/src/userguide/memoryviews.html)
+            for example a numpy array.
+
+        overlay_text (str or None, optional): Overlay text.
+
+        scale_min (float, optional): y-value at the bottom of the plot.
+        scale_max (float, optional): y-value at the top of the plot.
+
+        graph_size (tuple of two floats, optional): plot size in pixels.
+            Note: In ImGui 1.49, (-1,-1) will NOT auto-size the plot.
+            To do that, use :func:`get_content_region_available` and pass in the right size.
+
+        Note: These low-level parameters are exposed if needed for performance.
+        values_offset (int): Index of first element to display
+        values_count (int): Number of values to display. -1 will use the entire array.
+        stride (int): Number of bytes to move to read next element.
+
+
+    .. wraps::
+            void PlotLines(
+                const char* label, const float* values, int values_count,
+
+                int values_offset = 0,
+                const char* overlay_text = NULL,
+                float scale_min = FLT_MAX,
+                float scale_max = FLT_MAX,
+                ImVec2 graph_size = ImVec2(0,0),
+                int stride = sizeof(float)
+            )
+
+    """
+
+    if values_count == -1:
+        values_count = values.shape[0]
+
+    # Would be nicer as something like
+    #   _bytes(overlay_text) if overlay_text is not None else NULL
+    # but then Cython complains about either types or pointers to temporary references.
+    cdef const char* overlay_text_ptr = NULL
+    cdef bytes overlay_text_b
+    if overlay_text is not None:
+        overlay_text_b = _bytes(overlay_text) # must be assigned to a variable
+        overlay_text_ptr = overlay_text_b # auto-convert bytes to char*
+
+    cimgui.PlotLines(
+        _bytes(label), &values[0], values_count,
+        values_offset,
+        overlay_text_ptr,
+        scale_min, scale_max,
+        _cast_tuple_ImVec2(graph_size),
+        stride
+    )
+
+
 def set_item_default_focus():
     """Make last item the default focused item of a window.
     Please use instead of "if (is_window_appearing()) set_scroll_here()" to signify "default item".
@@ -5150,6 +5345,18 @@ def get_style_color_name(int index):
     return c_string.decode("utf-8")
 
 
+def get_time():
+    """Seconds since program start.
+
+    Returns:
+        float: the time (seconds since program start)
+
+    .. wraps::
+        float GetTime()
+    """
+    return cimgui.GetTime()
+
+
 def is_mouse_hovering_rect(
     float r_min_x, float r_min_y,
     float r_max_x, float r_max_y,
@@ -5178,7 +5385,7 @@ def is_mouse_hovering_rect(
     )
 
 
-def is_mouse_double_clicked(int button):
+def is_mouse_double_clicked(int button = 0):
     """Return True if mouse was double-clicked.
 
     **Note:** A double-click returns false in IsMouseClicked().
@@ -5193,6 +5400,52 @@ def is_mouse_double_clicked(int button):
          bool IsMouseDoubleClicked(int button);
     """
     return cimgui.IsMouseDoubleClicked(button)
+
+
+def is_mouse_clicked(int button = 0, bool repeat = False):
+    """Returns if the mouse was clicked this frame.
+
+    Args:
+        button (int): mouse button index.
+        repeat (float): 
+
+    Returns:
+        bool: if the mouse was clicked this frame.
+
+    .. wraps::
+        bool IsMouseClicked(int button, bool repeat = false)
+    """
+    return cimgui.IsMouseClicked(button, repeat)
+
+
+def is_mouse_released(int button = 0):
+    """Returns if the mouse was released this frame.
+
+    Args:
+        button (int): mouse button index.
+
+    Returns:
+        bool: if the mouse was released this frame.
+
+    .. wraps::
+        bool IsMouseReleased(int button)
+    """
+    return cimgui.IsMouseReleased(button)
+
+
+def is_mouse_down(int button = 0):
+    """Returns if the mouse is down.
+
+    Args:
+        button (int): mouse button index.
+
+    Returns:
+        bool: if the mouse is down.
+
+    .. wraps::
+        bool IsMouseDown(int button)
+    """
+    return cimgui.IsMouseDown(button)
 
 
 def is_mouse_dragging(int button = 0, float lock_threshold = -1.0):
@@ -5229,6 +5482,22 @@ def get_mouse_drag_delta(int button=0, float lock_threshold = -1.0):
     return _cast_ImVec2_tuple(
         cimgui.GetMouseDragDelta(button, lock_threshold)
     )
+
+
+def get_mouse_pos():
+    """Current mouse position.
+
+    Returns:
+        Vec2: mouse position two-tuple ``(x, y)``
+
+    .. wraps::
+        ImVec2 GetMousePos()
+    """
+    return _cast_ImVec2_tuple(
+        cimgui.GetMousePos()
+    )
+
+get_mouse_position = get_mouse_pos
 
 
 def reset_mouse_drag_delta(int button = 0):
@@ -5590,6 +5859,7 @@ cpdef push_text_wrap_pos(float wrap_pos_x = 0.0):
     """
     cimgui.PushTextWrapPos(wrap_pos_x)
 
+push_text_wrap_position = push_text_wrap_pos
 
 cpdef pop_text_wrap_pos():
     """Pop the text wrapping position from the stack.
@@ -5603,6 +5873,8 @@ cpdef pop_text_wrap_pos():
         void PopTextWrapPos()
     """
     cimgui.PopTextWrapPos()
+
+pop_text_wrap_position = pop_text_wrap_pos
 
 
 cpdef pop_style_color(unsigned int count=1):
@@ -6013,6 +6285,24 @@ def end_group():
     cimgui.EndGroup()
 
 
+def get_cursor_pos():
+    """Get the cursor position.
+
+    .. wraps::
+        ImVec2 GetCursorPos()
+    """
+    return _cast_ImVec2_tuple(cimgui.GetCursorPos())
+
+
+def set_cursor_pos(local_pos):
+    """Set the cursor position in local coordinates [0..<window size>] (useful to work with ImDrawList API)
+
+    .. wraps::
+        ImVec2 SetCursorScreenPos(const ImVec2& screen_pos)
+    """
+    cimgui.SetCursorPos(_cast_tuple_ImVec2(local_pos))
+
+
 def get_cursor_start_pos():
     """Get the initial cursor position.
 
@@ -6029,6 +6319,22 @@ def get_cursor_screen_pos():
         ImVec2 GetCursorScreenPos()
     """
     return _cast_ImVec2_tuple(cimgui.GetCursorScreenPos())
+
+
+def set_cursor_screen_pos(screen_pos):
+    """Set the cursor position in absolute screen coordinates [0..io.DisplaySize] (useful to work with ImDrawList API)
+
+    .. wraps::
+        ImVec2 SetCursorScreenPos(const ImVec2& screen_pos)
+    """
+    cimgui.SetCursorScreenPos(_cast_tuple_ImVec2(screen_pos))
+
+
+get_cursor_position = get_cursor_pos
+set_cursor_position = set_cursor_pos
+get_cursor_start_position = get_cursor_start_pos
+get_cursor_screen_position = get_cursor_screen_pos
+set_cursor_screen_position = set_cursor_screen_pos
 
 
 def get_text_line_height():

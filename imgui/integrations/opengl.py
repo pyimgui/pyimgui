@@ -166,7 +166,7 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         # perf: local for faster access
         io = self.io
 
-        display_width, display_height = self.io.display_size
+        display_width, display_height = io.display_size
         fb_width = int(display_width * io.display_fb_scale[0])
         fb_height = int(display_height * io.display_fb_scale[1])
 
@@ -232,7 +232,7 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
                 gl.glBindTexture(gl.GL_TEXTURE_2D, command.texture_id)
 
                 # todo: use named tuple
-                x, y, w, z = command.clip_rect
+                x, y, z, w = command.clip_rect
                 gl.glScissor(int(x), int(fb_height - w), int(z - x), int(w - y))
 
                 if imgui.INDEX_SIZE == 2:
@@ -325,7 +325,7 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
         # perf: local for faster access
         io = self.io
 
-        display_width, display_height = self.io.display_size
+        display_width, display_height = io.display_size
         fb_width = int(display_width * io.display_fb_scale[0])
         fb_height = int(display_height * io.display_fb_scale[1])
 
@@ -380,7 +380,7 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
             for command in commands.commands:
                 gl.glBindTexture(gl.GL_TEXTURE_2D, command.texture_id)
 
-                x, y, w, z = command.clip_rect
+                x, y, z, w = command.clip_rect
                 gl.glScissor(int(x), int(fb_height - w), int(z - x), int(w - y))
 
                 if imgui.INDEX_SIZE == 2:
