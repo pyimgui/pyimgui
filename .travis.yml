@@ -39,7 +39,7 @@ matrix:
       # note: this is only to properly annotate coverage build in the matrix
       env: COVERAGE=1
       language: python
-      python: '3.5'
+      python: '3.7'
 
 cache:
   pip: true
