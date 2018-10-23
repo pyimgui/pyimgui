@@ -5,18 +5,19 @@ from docutils.parsers.rst import directives
 import os
 import re
 from hashlib import sha1
-import traceback
 
 from sphinx.builders import Builder
 from sphinx.ext.autodoc import AutodocReporter
-from sphinx.util.console import bold
-
-import imgui
 
 try:
     from gen_example import render_snippet
-except ImportError:
+except ImportError as error:
     render_snippet = None
+    print (
+        "Could not import snippet renderer. "
+        "Will use static resources. Import error: %s" %
+        error
+    )
 
 
 VISUAL_EXAMPLES_DIR = "visual_examples"

@@ -146,7 +146,12 @@ def render_snippet(
 
             if auto_layout:
                 imgui.set_next_window_size(width - 10, height - 10)
-                imgui.set_next_window_position(impl.io.DisplaySize.x * 0.5, implio.DisplaySize.y * 0.5, 1, pivot_x = 0.5, pivot_y = 0.5)
+                imgui.set_next_window_position(
+                    impl.io.display_size.x * 0.5,
+                    impl.io.display_size.y * 0.5,
+                    pivot_x=0.5,
+                    pivot_y=0.5
+                )
 
             exec(code, locals(), globals())
 
@@ -156,6 +161,7 @@ def render_snippet(
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         imgui.render()
+        impl.render(imgui.get_draw_data())
 
     # retrieve pixels from framebuffer and write to file
     pixels = gl.glReadPixels(0, 0, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE)
