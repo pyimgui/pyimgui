@@ -1,8 +1,10 @@
 Cython>=0.24,<=0.28.2
 click
 wheel
-# note: sphinx and docutils are for collecting tests
+# note: Sphinx and docutils are for collecting tests
 Sphinx==1.4.8
+# note: Colorama is dependency of Sphinx but latest version will fail to
+#       install on Python 3.3
 colorama<0.4; sys.platform == 'win32'
 docutils<0.13.1
 mock
