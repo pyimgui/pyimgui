@@ -15,7 +15,9 @@ if [[ $TRAVIS_OS_NAME == "osx" ]]; then
     python --version
     python -m pip freeze
 
+    travis_fold start pip-install
     python -m pip install -r doc/requirements-test.txt
+    travis_fold end pip-install
 
     travis_fold start pip-build
     python -m pip wheel . -w dist/

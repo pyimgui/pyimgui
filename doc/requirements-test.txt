@@ -1,8 +1,13 @@
 Cython>=0.24,<=0.28.2
 click
 wheel
+
 # note: Sphinx and docutils are for collecting tests
-Sphinx==1.4.8
+# note: Newer Sphinx versions won't work on Python 2.7 and Python 3.3
+Sphinx==1.6.7; python_version < '3.7.0'
+# note: But older versions wont collect tests on Python 3.7
+Sphinx==1.8.1; python_version >= '3.7.0'
+
 # note: Colorama is dependency of Sphinx but latest version will fail to
 #       install on Python 3.3
 colorama<0.4; sys.platform == 'win32'
