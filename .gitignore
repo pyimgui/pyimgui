@@ -114,3 +114,6 @@ ENV/
 
 # Bootstrap marker
 .bootstrapped
+
+# Fonts
+*.ttf
