@@ -44,7 +44,6 @@ def main():
         glfw.swap_buffers(window)
 
     impl.shutdown()
-    imgui.shutdown()
     glfw.terminate()
 
 
