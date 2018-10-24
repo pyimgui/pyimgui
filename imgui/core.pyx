@@ -1977,7 +1977,11 @@ def set_next_window_position(
             imgui.end()
 
     .. wraps::
-        void SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0, const ImVec2& pivot = ImVec2(0,0))
+        void SetNextWindowPos(
+            const ImVec2& pos,
+            ImGuiCond cond = 0,
+            const ImVec2& pivot = ImVec2(0,0)
+        )
 
     """
     cimgui.SetNextWindowPos(_cast_args_ImVec2(x, y), condition, _cast_args_ImVec2(pivot_x, pivot_y))
@@ -5060,10 +5064,12 @@ def plot_lines(
 
     """
     Plot a 1D array of float values.
+
     Args:
-        label (str): A plot label that will be displayed on the plot's right side.
-            Note: If you want the label to be visible, add "##" before the label's text:
-                "my_label" -> "##my_label"
+        label (str): A plot label that will be displayed on the plot's right
+            side. If you want the label to be visible, add :code:`"##"`
+            before the label's text: :code:`"my_label" -> "##my_label"`
+
         values (array of floats): the y-values.
             It must be a type that supports Cython's Memoryviews,
             (See: http://docs.cython.org/en/latest/src/userguide/memoryviews.html)
@@ -5075,14 +5081,17 @@ def plot_lines(
         scale_max (float, optional): y-value at the top of the plot.
 
         graph_size (tuple of two floats, optional): plot size in pixels.
-            Note: In ImGui 1.49, (-1,-1) will NOT auto-size the plot.
-            To do that, use :func:`get_content_region_available` and pass in the right size.
+            **Note:** In ImGui 1.49, (-1,-1) will NOT auto-size the plot.
+            To do that, use :func:`get_content_region_available` and pass
+            in the right size.
 
-        Note: These low-level parameters are exposed if needed for performance.
-        values_offset (int): Index of first element to display
-        values_count (int): Number of values to display. -1 will use the entire array.
-        stride (int): Number of bytes to move to read next element.
+    **Note:** These low-level parameters are exposed if needed for
+    performance:
 
+    * **values_offset** (*int*): Index of first element to display
+    * **values_count** (*int*): Number of values to display. -1 will use the
+        entire array.
+    * **stride** (*int*): Number of bytes to move to read next element.
 
     .. wraps::
             void PlotLines(
@@ -5095,9 +5104,7 @@ def plot_lines(
                 ImVec2 graph_size = ImVec2(0,0),
                 int stride = sizeof(float)
             )
-
     """
-
     if values_count == -1:
         values_count = values.shape[0]
 
@@ -5338,7 +5345,7 @@ def get_style_color_name(int index):
     """Get the style color name for a given ImGuiCol index.
 
     .. wraps::
-        const char* GetStyleColorName(ImGuiCol idx) except +  # ✓
+        const char* GetStyleColorName(ImGuiCol idx)
     """
     cdef const char* c_string = cimgui.GetStyleColorName(index)
     cdef bytes py_string = c_string
@@ -5407,7 +5414,7 @@ def is_mouse_clicked(int button = 0, bool repeat = False):
 
     Args:
         button (int): mouse button index.
-        repeat (float): 
+        repeat (float):
 
     Returns:
         bool: if the mouse was clicked this frame.
