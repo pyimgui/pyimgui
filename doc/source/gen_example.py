@@ -128,7 +128,7 @@ def render_snippet(
     #       * 3rd in the same position with button pressed still to finally
     #         trigger the "clicked" state.
     # note: If clicking simulation is not required we draw only one frame.
-    for m_state in ([None] if not click else [False, True, True]):
+    for m_state in ([None, None, None] if not click else [False, True, True]):
 
         # note: Mouse click MUST be simulated before new_frame call!
         if click:
