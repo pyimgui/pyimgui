@@ -3332,6 +3332,8 @@ def radio_button(str label, cimgui.bool active):
         :auto_layout:
         :height: 100
 
+        # note: the variable that contains the state of the radio_button, should be initialized 
+        #       outside of the main interaction loop
         radio_active = True
 
         imgui.begin("Example: radio buttons")
@@ -3405,12 +3407,17 @@ def color_edit3(str label, float r, float g, float b):
     .. visual-example::
         :auto_layout:
         :width: 300
-
+        
+        # note: the variable that contains the color data, should be initialized 
+        #       outside of the main interaction loop
         color_1 = 1., .0, .5
         color_2 = 0., .8, .3
 
         imgui.begin("Example: color edit without alpha")
 
+        # note: first element of return two-tuple notifies if the color was changed
+        #       in currently processed frame and second element is current value 
+        #       of color
         changed, color_1 = imgui.color_edit3("Color 1", *color_1)
         changed, color_2 = imgui.color_edit3("Color 2", *color_2)
 
@@ -3423,7 +3430,7 @@ def color_edit3(str label, float r, float g, float b):
         b (float): blue color instensity.
 
     Returns:
-        tuple: a ``(changed, color)`` tuple that contains indicator of color
+        tuple: a ``(bool changed, float color[3])`` tuple that contains indicator of color
         change and current value of color
 
     .. wraps::
@@ -3446,10 +3453,15 @@ def color_edit4(
         :auto_layout:
         :width: 400
 
+        # note: the variable that contains the color data, should be initialized 
+        #       outside of the main interaction loop
         color = 1., .0, .5, 1.
 
         imgui.begin("Example: color edit with alpha")
 
+        # note: first element of return two-tuple notifies if the color was changed
+        #       in currently processed frame and second element is current value 
+        #       of color and alpha
         _, color = imgui.color_edit4("Alpha", *color, show_alpha=True)
         _, color = imgui.color_edit4("No alpha", *color, show_alpha=False)
 
@@ -3464,8 +3476,8 @@ def color_edit4(
         show_alpha (bool): if set to True wiget allows to modify alpha
 
     Returns:
-        tuple: a ``(changed, color)`` tuple that contains indicator of color
-        change and current value of color
+        tuple: a ``(bool changed, float color[4])`` tuple that contains indicator of color
+        change and current value of color and alpha
 
     .. wraps::
         ColorEdit4(
