@@ -3230,15 +3230,26 @@ def checkbox(str label, cimgui.bool state):
         :auto_layout:
         :width: 400
 
+
+        # note: these should be initialized outside of the main interaction
+        #       loop
+        checkbox1_enabled = True
+        checkbox2_enabled = False
+
+        imgui.new_frame()
         imgui.begin("Example: checkboxes")
 
-        c1_output = imgui.checkbox("Checkbox 1", True)
-        c2_output = imgui.checkbox("Checkbox 2", False)
+        # note: first element of return two-tuple notifies if there was a click
+        #       event in currently processed frame and second element is actual
+        #       checkbox state.
+        _, checkbox1_enabled = imgui.checkbox("Checkbox 1", checkbox1_enabled)
+        _, checkbox2_enabled = imgui.checkbox("Checkbox 2", checkbox2_enabled)
 
-        imgui.text("Checkbox 1 return value: {}".format(c1_output))
-        imgui.text("Checkbox 2 return value: {}".format(c2_output))
+        imgui.text("Checkbox 1 state value: {}".format(checkbox1_enabled))
+        imgui.text("Checkbox 2 state value: {}".format(checkbox2_enabled))
 
         imgui.end()
+
 
     Args:
         label (str): text label for checkbox widget.
