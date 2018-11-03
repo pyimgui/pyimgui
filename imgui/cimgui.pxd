@@ -438,7 +438,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiCond cond
     ) except +
-    void SetWindowSize(  # ✗
+    void SetWindowSize(  # ✓
             const ImVec2& size,
             # note: optional
             ImGuiCond cond
