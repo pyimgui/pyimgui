@@ -1800,7 +1800,7 @@ def set_window_font_scale(float scale):
 
 
 def set_next_window_collapsed(
-    cimgui.bool collapsed, cimgui.ImGuiCond condition=ALWAYS
+    cimgui.bool collapsed, cimgui.ImGuiCond condition=ONCE
 ):
     """Set next window collapsed state.
 
@@ -1811,6 +1811,7 @@ def set_next_window_collapsed(
 
         imgui.set_next_window_collapsed(True)
         imgui.begin("Example: collapsed window")
+        imgui.text("This window is collapsed at the beginning.")
         imgui.end()
 
 
@@ -1818,7 +1819,7 @@ def set_next_window_collapsed(
         collapsed (bool): set to True if window has to be collapsed.
         condition (:ref:`condition flag <condition-options>`): defines on
             which condition value should be set. Defaults to
-            :any:`imgui.ALWAYS`.
+            :any:`imgui.ONCE`.
 
     .. wraps::
          void SetNextWindowCollapsed(
