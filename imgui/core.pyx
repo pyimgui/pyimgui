@@ -1702,7 +1702,7 @@ def set_window_focus():
     """Set window to be focused
 
     .. wraps::
-        void SetWindowFlcus()
+        void SetWindowFocus()
     """
     cimgui.SetWindowFocus()
 
@@ -4955,7 +4955,7 @@ def v_slider_float(
     float min_value,
     float max_value,
     str format = "%.f",
-    float power=0.0
+    float power=1.0
 ):
     """Display vertical float slider widget with the specified width and
     height.
@@ -6412,6 +6412,9 @@ def get_frame_height_with_spacing():
 
 def create_context(_FontAtlas shared_font_atlas = None):
     """CreateContext
+    
+    .. todo::
+        Add an example 
 
     .. wraps::
         ImGuiContext* CreateContext(
