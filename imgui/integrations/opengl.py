@@ -5,6 +5,7 @@ import OpenGL.GL as gl
 
 import imgui
 import ctypes
+from _private.statemanager import statecontext,makeShaderProgram
 
 
 class BaseOpenGLRenderer(object):
@@ -86,191 +87,127 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         super(ProgrammablePipelineRenderer, self).__init__()
 
     def refresh_font_texture(self):
-        # save texture state
-        last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
+        with statecontext() as s:
+            width, height, pixels = self.io.fonts.get_tex_data_as_rgba32()
 
-        width, height, pixels = self.io.fonts.get_tex_data_as_rgba32()
+            if self._font_texture is not None:
+                gl.glDeleteTextures([self._font_texture])
 
-        if self._font_texture is not None:
-            gl.glDeleteTextures([self._font_texture])
+            self._font_texture = gl.glGenTextures(1)
 
-        self._font_texture = gl.glGenTextures(1)
+            s.texture2d = self._font_texture  # gl.glBindTexture(gl.GL_TEXTURE_2D, self._font_texture)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+            gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, width, height, 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, pixels)
 
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self._font_texture)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, width, height, 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, pixels)
-
-        self.io.fonts.texture_id = self._font_texture
-        gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
+            self.io.fonts.texture_id = self._font_texture
         self.io.fonts.clear_tex_data()
 
     def _create_device_objects(self):
-        # save state
-        last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
-        last_array_buffer = gl.glGetIntegerv(gl.GL_ARRAY_BUFFER_BINDING)
+        with statecontext() as s:
+            # save state
+            last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
 
-        last_vertex_array = gl.glGetIntegerv(gl.GL_VERTEX_ARRAY_BINDING)
+            self._shader_handle = makeShaderProgram(
+                self.VERTEX_SHADER_SRC,
+                self.FRAGMENT_SHADER_SRC)
 
-        self._shader_handle = gl.glCreateProgram()
-        # note: no need to store shader parts handles after linking
-        vertex_shader = gl.glCreateShader(gl.GL_VERTEX_SHADER)
-        fragment_shader = gl.glCreateShader(gl.GL_FRAGMENT_SHADER)
+            self._attrib_location_tex = gl.glGetUniformLocation(self._shader_handle, "Texture")
+            self._attrib_proj_mtx = gl.glGetUniformLocation(self._shader_handle, "ProjMtx")
+            self._attrib_location_position = gl.glGetAttribLocation(self._shader_handle, "Position")
+            self._attrib_location_uv = gl.glGetAttribLocation(self._shader_handle, "UV")
+            self._attrib_location_color = gl.glGetAttribLocation(self._shader_handle, "Color")
 
-        gl.glShaderSource(vertex_shader, self.VERTEX_SHADER_SRC)
-        gl.glShaderSource(fragment_shader, self.FRAGMENT_SHADER_SRC)
-        gl.glCompileShader(vertex_shader)
-        gl.glCompileShader(fragment_shader)
+            self._vbo_handle = gl.glGenBuffers(1)
+            self._elements_handle = gl.glGenBuffers(1)
 
-        gl.glAttachShader(self._shader_handle, vertex_shader)
-        gl.glAttachShader(self._shader_handle, fragment_shader)
+            self._vao_handle = gl.glGenVertexArrays(1)
+            s.vertexarray = self._vao_handle  # gl.glBindVertexArray(self._vao_handle)
+            s.arraybuffer = self._vbo_handle  # gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._vbo_handle)
 
-        gl.glLinkProgram(self._shader_handle)
+            gl.glEnableVertexAttribArray(self._attrib_location_position)
+            gl.glEnableVertexAttribArray(self._attrib_location_uv)
+            gl.glEnableVertexAttribArray(self._attrib_location_color)
 
-        # note: after linking shaders can be removed
-        gl.glDeleteShader(vertex_shader)
-        gl.glDeleteShader(fragment_shader)
+            gl.glVertexAttribPointer(self._attrib_location_position, 2, gl.GL_FLOAT, gl.GL_FALSE, imgui.VERTEX_SIZE,
+                                     ctypes.c_void_p(imgui.VERTEX_BUFFER_POS_OFFSET))
+            gl.glVertexAttribPointer(self._attrib_location_uv, 2, gl.GL_FLOAT, gl.GL_FALSE, imgui.VERTEX_SIZE,
+                                     ctypes.c_void_p(imgui.VERTEX_BUFFER_UV_OFFSET))
+            gl.glVertexAttribPointer(self._attrib_location_color, 4, gl.GL_UNSIGNED_BYTE, gl.GL_TRUE, imgui.VERTEX_SIZE,
+                                     ctypes.c_void_p(imgui.VERTEX_BUFFER_COL_OFFSET))
 
-        self._attrib_location_tex = gl.glGetUniformLocation(self._shader_handle, "Texture")
-        self._attrib_proj_mtx = gl.glGetUniformLocation(self._shader_handle, "ProjMtx")
-        self._attrib_location_position = gl.glGetAttribLocation(self._shader_handle, "Position")
-        self._attrib_location_uv = gl.glGetAttribLocation(self._shader_handle, "UV")
-        self._attrib_location_color = gl.glGetAttribLocation(self._shader_handle, "Color")
-
-        self._vbo_handle = gl.glGenBuffers(1)
-        self._elements_handle = gl.glGenBuffers(1)
-
-        self._vao_handle = gl.glGenVertexArrays(1)
-        gl.glBindVertexArray(self._vao_handle)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._vbo_handle)
-
-        gl.glEnableVertexAttribArray(self._attrib_location_position)
-        gl.glEnableVertexAttribArray(self._attrib_location_uv)
-        gl.glEnableVertexAttribArray(self._attrib_location_color)
-
-        gl.glVertexAttribPointer(self._attrib_location_position, 2, gl.GL_FLOAT, gl.GL_FALSE, imgui.VERTEX_SIZE, ctypes.c_void_p(imgui.VERTEX_BUFFER_POS_OFFSET))
-        gl.glVertexAttribPointer(self._attrib_location_uv, 2, gl.GL_FLOAT, gl.GL_FALSE, imgui.VERTEX_SIZE, ctypes.c_void_p(imgui.VERTEX_BUFFER_UV_OFFSET))
-        gl.glVertexAttribPointer(self._attrib_location_color, 4, gl.GL_UNSIGNED_BYTE, gl.GL_TRUE, imgui.VERTEX_SIZE, ctypes.c_void_p(imgui.VERTEX_BUFFER_COL_OFFSET))
-
-        # restore state
-        gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, last_array_buffer)
-        gl.glBindVertexArray(last_vertex_array)
+            # restore state
+            gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
 
     def render(self, draw_data):
-        # perf: local for faster access
-        io = self.io
+        with statecontext() as s:
+            # perf: local for faster access
+            io = self.io
 
-        display_width, display_height = io.display_size
-        fb_width = int(display_width * io.display_fb_scale[0])
-        fb_height = int(display_height * io.display_fb_scale[1])
+            display_width, display_height = self.io.display_size
+            fb_width = int(display_width * io.display_fb_scale[0])
+            fb_height = int(display_height * io.display_fb_scale[1])
 
-        if fb_width == 0 or fb_height == 0:
-            return
+            if fb_width == 0 or fb_height == 0:
+                return
 
-        draw_data.scale_clip_rects(*io.display_fb_scale)
+            draw_data.scale_clip_rects(*io.display_fb_scale)
 
-        # backup GL state
-        # todo: provide cleaner version of this backup-restore code
-        last_program = gl.glGetIntegerv(gl.GL_CURRENT_PROGRAM)
-        last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
-        last_active_texture = gl.glGetIntegerv(gl.GL_ACTIVE_TEXTURE)
-        last_array_buffer = gl.glGetIntegerv(gl.GL_ARRAY_BUFFER_BINDING)
-        last_element_array_buffer = gl.glGetIntegerv(gl.GL_ELEMENT_ARRAY_BUFFER_BINDING)
-        last_vertex_array = gl.glGetIntegerv(gl.GL_VERTEX_ARRAY_BINDING)
-        last_blend_src = gl.glGetIntegerv(gl.GL_BLEND_SRC)
-        last_blend_dst = gl.glGetIntegerv(gl.GL_BLEND_DST)
-        last_blend_equation_rgb = gl. glGetIntegerv(gl.GL_BLEND_EQUATION_RGB)
-        last_blend_equation_alpha = gl.glGetIntegerv(gl.GL_BLEND_EQUATION_ALPHA)
-        last_viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
-        last_scissor_box = gl.glGetIntegerv(gl.GL_SCISSOR_BOX)
-        last_enable_blend = gl.glIsEnabled(gl.GL_BLEND)
-        last_enable_cull_face = gl.glIsEnabled(gl.GL_CULL_FACE)
-        last_enable_depth_test = gl.glIsEnabled(gl.GL_DEPTH_TEST)
-        last_enable_scissor_test = gl.glIsEnabled(gl.GL_SCISSOR_TEST)
+            s.blend = True  # gl.glEnable(gl.GL_BLEND)
+            s.blendequation = gl.GL_FUNC_ADD  # gl.glBlendEquation(gl.GL_FUNC_ADD)
+            s.blendfunc = (
+                gl.GL_SRC_ALPHA,
+                gl.GL_ONE_MINUS_SRC_ALPHA)  # gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+            s.cull_face = False  # gl.glDisable(gl.GL_CULL_FACE)
+            s.depth_test = False  # gl.glDisable(gl.GL_DEPTH_TEST)
+            s.scissor_test = True  # gl.glEnable(gl.GL_SCISSOR_TEST)
+            s.activetexture = gl.GL_TEXTURE0  # gl.glActiveTexture(gl.GL_TEXTURE0)
 
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendEquation(gl.GL_FUNC_ADD)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-        gl.glDisable(gl.GL_CULL_FACE)
-        gl.glDisable(gl.GL_DEPTH_TEST)
-        gl.glEnable(gl.GL_SCISSOR_TEST)
-        gl.glActiveTexture(gl.GL_TEXTURE0)
+            s.viewport = (0, 0, int(fb_width), int(fb_height))  # gl.glViewport(0, 0, int(fb_width), int(fb_height))
 
-        gl.glViewport(0, 0, int(fb_width), int(fb_height))
+            ortho_projection = [
+                [2.0 / display_width, 0.0, 0.0, 0.0],
+                [0.0, 2.0 / -display_height, 0.0, 0.0],
+                [0.0, 0.0, -1.0, 0.0],
+                [-1.0, 1.0, 0.0, 1.0]
+            ]
 
-        ortho_projection = [
-            [ 2.0/display_width, 0.0,                   0.0, 0.0],
-            [ 0.0,               2.0/-display_height,   0.0, 0.0],
-            [ 0.0,               0.0,                  -1.0, 0.0],
-            [-1.0,               1.0,                   0.0, 1.0]
-        ]
+            s.program = self._shader_handle  # gl.glUseProgram(self._shader_handle)
+            gl.glUniform1i(self._attrib_location_tex, 0)
+            gl.glUniformMatrix4fv(self._attrib_proj_mtx, 1, gl.GL_FALSE, ortho_projection)
+            s.vertexarray = self._vao_handle  # gl.glBindVertexArray(self._vao_handle)
 
-        gl.glUseProgram(self._shader_handle)
-        gl.glUniform1i(self._attrib_location_tex, 0)
-        gl.glUniformMatrix4fv(self._attrib_proj_mtx, 1, gl.GL_FALSE, ortho_projection)
-        gl.glBindVertexArray(self._vao_handle)
+            for commands in draw_data.commands_lists:
+                idx_buffer_offset = 0
 
-        for commands in draw_data.commands_lists:
-            idx_buffer_offset = 0
+                s.arraybuffer = self._vbo_handle  # gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._vbo_handle)
+                # todo: check this (sizes)
+                gl.glBufferData(gl.GL_ARRAY_BUFFER, commands.vtx_buffer_size * imgui.VERTEX_SIZE,
+                                ctypes.c_void_p(commands.vtx_buffer_data), gl.GL_STREAM_DRAW)
 
-            gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._vbo_handle)
-            # todo: check this (sizes)
-            gl.glBufferData(gl.GL_ARRAY_BUFFER, commands.vtx_buffer_size * imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer_data), gl.GL_STREAM_DRAW)
+                s.elementarraybuffer = self._elements_handle
+                # gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._elements_handle)
+                # todo: check this (sizes)
+                gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, commands.idx_buffer_size * imgui.INDEX_SIZE,
+                                ctypes.c_void_p(commands.idx_buffer_data), gl.GL_STREAM_DRAW)
 
-            gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._elements_handle)
-            # todo: check this (sizes)
-            gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, commands.idx_buffer_size * imgui.INDEX_SIZE, ctypes.c_void_p(commands.idx_buffer_data), gl.GL_STREAM_DRAW)
+                # todo: allow to iterate over _CmdList
+                for command in commands.commands:
+                    s.texture2d = command.texture_id  # gl.glBindTexture(gl.GL_TEXTURE_2D, command.texture_id)
 
-            # todo: allow to iterate over _CmdList
-            for command in commands.commands:
-                gl.glBindTexture(gl.GL_TEXTURE_2D, command.texture_id)
+                    # todo: use named tuple
+                    x, y, w, z = command.clip_rect
+                    s.scissor_box = (int(x), int(fb_height - w), int(z - x), int(w - y))  # gl.glScissor(int(x),
+                    # int(fb_height - w), int(z - x), int(w - y))
 
-                # todo: use named tuple
-                x, y, z, w = command.clip_rect
-                gl.glScissor(int(x), int(fb_height - w), int(z - x), int(w - y))
+                    if imgui.INDEX_SIZE == 2:
+                        gltype = gl.GL_UNSIGNED_SHORT
+                    else:
+                        gltype = gl.GL_UNSIGNED_INT
 
-                if imgui.INDEX_SIZE == 2:
-                    gltype = gl.GL_UNSIGNED_SHORT
-                else:
-                    gltype = gl.GL_UNSIGNED_INT
+                    gl.glDrawElements(gl.GL_TRIANGLES, command.elem_count, gltype, ctypes.c_void_p(idx_buffer_offset))
 
-                gl.glDrawElements(gl.GL_TRIANGLES, command.elem_count, gltype, ctypes.c_void_p(idx_buffer_offset))
-
-                idx_buffer_offset += command.elem_count * imgui.INDEX_SIZE
-
-        # restore modified GL state
-        gl.glUseProgram(last_program)
-        gl.glActiveTexture(last_active_texture)
-        gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
-        gl.glBindVertexArray(last_vertex_array)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, last_array_buffer)
-        gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, last_element_array_buffer)
-        gl.glBlendEquationSeparate(last_blend_equation_rgb, last_blend_equation_alpha)
-        gl.glBlendFunc(last_blend_src, last_blend_dst)
-
-        if last_enable_blend:
-            gl.glEnable(gl.GL_BLEND)
-        else:
-            gl.glDisable(gl.GL_BLEND)
-
-        if last_enable_cull_face:
-            gl.glEnable(gl.GL_CULL_FACE)
-        else:
-            gl.glDisable(gl.GL_CULL_FACE)
-
-        if last_enable_depth_test:
-            gl.glEnable(gl.GL_DEPTH_TEST)
-        else:
-            gl.glDisable(gl.GL_DEPTH_TEST)
-
-        if last_enable_scissor_test:
-            gl.glEnable(gl.GL_SCISSOR_TEST)
-        else:
-            gl.glDisable(gl.GL_SCISSOR_TEST)
-
-        gl.glViewport(last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3])
-        gl.glScissor(last_scissor_box[0], last_scissor_box[1], last_scissor_box[2], last_scissor_box[3])
+                    idx_buffer_offset += command.elem_count * imgui.INDEX_SIZE
 
     def _invalidate_device_objects(self):
         if self._vao_handle > -1:
