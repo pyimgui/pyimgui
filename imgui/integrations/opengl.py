@@ -43,14 +43,12 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
     """Basic OpenGL integration base class."""
 
     VERTEX_SHADER_SRC = """
-    #version 330
-
     uniform mat4 ProjMtx;
-    in vec2 Position;
-    in vec2 UV;
-    in vec4 Color;
-    out vec2 Frag_UV;
-    out vec4 Frag_Color;
+    attribute vec2 Position;
+    attribute vec2 UV;
+    attribute vec4 Color;
+    varying vec2 Frag_UV;
+    varying vec4 Frag_Color;
 
     void main() {
         Frag_UV = UV;
@@ -61,15 +59,12 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
     """
 
     FRAGMENT_SHADER_SRC = """
-    #version 330
-
     uniform sampler2D Texture;
-    in vec2 Frag_UV;
-    in vec4 Frag_Color;
-    out vec4 Out_Color;
+    varying vec2 Frag_UV;
+    varying vec4 Frag_Color;
 
     void main() {
-        Out_Color = Frag_Color * texture(Texture, Frag_UV.st);
+        gl_FragColor = Frag_Color * texture2D(Texture, Frag_UV.st);
     }
     """
 
