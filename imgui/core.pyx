@@ -1484,7 +1484,7 @@ def show_font_selector(str label):
     cimgui.ShowStyleSelector(label)
 
 
-def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
+def begin(str label, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """Begin a window.
 
     .. visual-example::
@@ -1494,6 +1494,7 @@ def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
         imgui.end()
 
     Args:
+        label (str): label of the window.
         closable (bool): define if window is closable.
         flags: Window flags. See:
             :ref:`list of available flags <window-flag-options>`.
@@ -2525,7 +2526,7 @@ def end_menu():
 
 
 def menu_item(
-    str name, str shortcut=None, cimgui.bool selected=False, enabled=True
+    str label, str shortcut=None, cimgui.bool selected=False, enabled=True
 ):
     """Create a menu item.
 
@@ -2577,7 +2578,7 @@ def menu_item(
     return clicked, inout_selected
 
 
-def open_popup(str name):
+def open_popup(str label):
     """Open a popup window.
 
     Marks a popup window as open. Popups are closed when user click outside,
@@ -2604,7 +2605,7 @@ def open_popup(str name):
         imgui.end()
 
     Args:
-        name (str): label of the modal window.
+        label (str): label of the modal window.
 
     .. wraps::
         void OpenPopup(
@@ -2614,7 +2615,7 @@ def open_popup(str name):
     cimgui.OpenPopup(_bytes(name))
 
 
-def begin_popup(str name, cimgui.ImGuiWindowFlags flags=0):
+def begin_popup(str label, cimgui.ImGuiWindowFlags flags=0):
     """Open a popup window.
 
     Returns ``True`` if the popup is open and you can start outputting
@@ -2645,7 +2646,7 @@ def begin_popup(str name, cimgui.ImGuiWindowFlags flags=0):
         imgui.end()
 
     Args:
-        name (str): label of the modal window.
+        label (str): label of the modal window.
 
     Returns:
         opened (bool): True if popup is opened.
@@ -2715,7 +2716,7 @@ def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
     ), inout_visible
 
 
-def begin_popup_context_item(str name = None, int mouse_button=1):
+def begin_popup_context_item(str label = None, int mouse_button=1):
     """This is a helper function to handle the most simple case of associating
     one named popup to one given widget.
 
@@ -2734,7 +2735,7 @@ def begin_popup_context_item(str name = None, int mouse_button=1):
         imgui.end()
 
     Args:
-        name (str): label of item.
+        label (str): label of item.
         mouse_button (int): mouse button identifier: 0 - left button,
             1 - right button, 2 - middle button
 
@@ -2755,7 +2756,7 @@ def begin_popup_context_item(str name = None, int mouse_button=1):
 
 
 def begin_popup_context_window(
-    str name=None,
+    str label=None,
     bool also_over_items=True,
     int mouse_button=1
 ):
@@ -2777,7 +2778,7 @@ def begin_popup_context_window(
         imgui.end()
 
     Args:
-        name (str): name of the window
+        label (str): label of the window
         also_over_items (bool): display on top of widget.
         mouse_button (int): mouse button identifier:
             0 - left button
