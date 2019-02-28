@@ -10,10 +10,11 @@ Builds:
 
 # pyimgui
 
-**pyimgui** is a Cython-based binding for the amazing 
+Python bindings for the amazing
 [dear imgui](https://github.com/ocornut/imgui) C++ library - a Bloat-free
 Immediate Mode Graphical User Interface.
 
+Documentation: [pyimgui.readthedocs.io](https://pyimgui.readthedocs.io/en/latest/index.html)
 
 # Installation
 
