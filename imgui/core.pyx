@@ -1484,7 +1484,7 @@ def show_font_selector(str label):
     cimgui.ShowStyleSelector(label)
 
 
-def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
+def begin(str label, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """Begin a window.
 
     .. visual-example::
@@ -1494,6 +1494,7 @@ def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
         imgui.end()
 
     Args:
+        label (str): label of the window.
         closable (bool): define if window is closable.
         flags: Window flags. See:
             :ref:`list of available flags <window-flag-options>`.
@@ -1513,7 +1514,7 @@ def begin(str name, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """
     cdef cimgui.bool opened = True
 
-    return cimgui.Begin(_bytes(name), &opened if closable else NULL, flags), opened
+    return cimgui.Begin(_bytes(label), &opened if closable else NULL, flags), opened
 
 
 def get_draw_data():
@@ -1549,8 +1550,8 @@ ctypedef fused child_id:
 
 
 def begin_child(
-    child_id name, float width=0, float height=0, bool border=False,
-    cimgui.ImGuiWindowFlags flags=0
+    child_id label, float width = 0, float height = 0, bool border = False,
+    cimgui.ImGuiWindowFlags flags = 0
 ):
     """Begin a scrolling region.
 
@@ -1574,7 +1575,7 @@ def begin_child(
         imgui.end()
 
     Args:
-        name (str or int): Child region identifier.
+        label (str or int): Child region identifier.
         width (float): Region width. See note about sizing.
         height (float): Region height. See note about sizing.
         border (bool): True if should display border. Defaults to False.
@@ -1602,7 +1603,7 @@ def begin_child(
     # note: we do not take advantage of C++ function overloading
     #       in order to take adventage of Python keyword arguments
     return cimgui.BeginChild(
-        _bytes(name), _cast_args_ImVec2(width, height), border, flags
+        _bytes(label), _cast_args_ImVec2(width, height), border, flags
     )
 
 def end_child():
@@ -2525,7 +2526,7 @@ def end_menu():
 
 
 def menu_item(
-    str name, str shortcut=None, cimgui.bool selected=False, enabled=True
+    str label, str shortcut=None, cimgui.bool selected=False, enabled=True
 ):
     """Create a menu item.
 
@@ -2562,14 +2563,14 @@ def menu_item(
     #       of empty strings.
     if shortcut is None:
         clicked = cimgui.MenuItem(
-            _bytes(name),
+            _bytes(label),
             NULL,
             &inout_selected,
             <bool>enabled
         )
     else:
         clicked = cimgui.MenuItem(
-            _bytes(name),
+            _bytes(label),
             _bytes(shortcut),
             &inout_selected,
             <bool>enabled
@@ -2577,7 +2578,7 @@ def menu_item(
     return clicked, inout_selected
 
 
-def open_popup(str name):
+def open_popup(str label):
     """Open a popup window.
 
     Marks a popup window as open. Popups are closed when user click outside,
@@ -2604,17 +2605,17 @@ def open_popup(str name):
         imgui.end()
 
     Args:
-        name (str): label of the modal window.
+        label (str): label of the modal window.
 
     .. wraps::
         void OpenPopup(
             const char* str_id
         )
     """
-    cimgui.OpenPopup(_bytes(name))
+    cimgui.OpenPopup(_bytes(label))
 
 
-def begin_popup(str name, cimgui.ImGuiWindowFlags flags=0):
+def begin_popup(str label, cimgui.ImGuiWindowFlags flags=0):
     """Open a popup window.
 
     Returns ``True`` if the popup is open and you can start outputting
@@ -2645,7 +2646,7 @@ def begin_popup(str name, cimgui.ImGuiWindowFlags flags=0):
         imgui.end()
 
     Args:
-        name (str): label of the modal window.
+        label (str): label of the modal window.
 
     Returns:
         opened (bool): True if popup is opened.
@@ -2656,7 +2657,7 @@ def begin_popup(str name, cimgui.ImGuiWindowFlags flags=0):
             ImGuiWindowFlags flags = 0
         )
     """
-    return cimgui.BeginPopup(_bytes(name), flags)
+    return cimgui.BeginPopup(_bytes(label), flags)
 
 
 def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
@@ -2715,7 +2716,7 @@ def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
     ), inout_visible
 
 
-def begin_popup_context_item(str name = None, int mouse_button=1):
+def begin_popup_context_item(str label = None, int mouse_button = 1):
     """This is a helper function to handle the most simple case of associating
     one named popup to one given widget.
 
@@ -2734,7 +2735,7 @@ def begin_popup_context_item(str name = None, int mouse_button=1):
         imgui.end()
 
     Args:
-        name (str): label of item.
+        label (str): label of item.
         mouse_button (int): mouse button identifier: 0 - left button,
             1 - right button, 2 - middle button
 
@@ -2748,16 +2749,16 @@ def begin_popup_context_item(str name = None, int mouse_button=1):
             int mouse_button = 1
         )
     """
-    if name is None:
+    if label is None:
         return cimgui.BeginPopupContextItem(NULL, mouse_button)
     else:
-        return cimgui.BeginPopupContextItem(_bytes(name), mouse_button)
+        return cimgui.BeginPopupContextItem(_bytes(label), mouse_button)
 
 
 def begin_popup_context_window(
-    str name=None,
-    bool also_over_items=True,
-    int mouse_button=1
+    str label = None,
+    bool also_over_items = True,
+    int mouse_button = 1
 ):
     """Helper function to open and begin popup when clicked on current window.
 
@@ -2777,7 +2778,7 @@ def begin_popup_context_window(
         imgui.end()
 
     Args:
-        name (str): name of the window
+        label (str): label of the window
         also_over_items (bool): display on top of widget.
         mouse_button (int): mouse button identifier:
             0 - left button
@@ -2794,7 +2795,7 @@ def begin_popup_context_window(
             int mouse_button = 1
         )
     """
-    if name is None:
+    if label is None:
         return cimgui.BeginPopupContextWindow(
             NULL,
             also_over_items,
@@ -2802,7 +2803,7 @@ def begin_popup_context_window(
         )
     else:
         return cimgui.BeginPopupContextWindow(
-            _bytes(name),
+            _bytes(label),
             also_over_items,
             mouse_button
         )
