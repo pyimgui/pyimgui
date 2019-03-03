@@ -31,6 +31,9 @@ cimport enums
 
 from cpython.version cimport PY_MAJOR_VERSION
 
+from .inout import allow_inout
+
+
 # todo: find a way to cimport this directly from imgui.h
 DEF TARGET_IMGUI_VERSION = (1, 49)
 
@@ -2138,6 +2141,7 @@ def collapsing_header(
     return clicked, None if visible is None else inout_opened
 
 
+@allow_inout(1, 'selected', 1)
 def selectable(
     str label,
     selected=False,
@@ -2202,6 +2206,7 @@ def selectable(
         _cast_args_ImVec2(width, height)), inout_selected
 
 
+@allow_inout(1, 'current', 1)
 def listbox(
     str label,
     int current,
@@ -2524,6 +2529,7 @@ def end_menu():
     cimgui.EndMenu()
 
 
+@allow_inout(2, 'selected', 1)
 def menu_item(
     str name, str shortcut=None, cimgui.bool selected=False, enabled=True
 ):
@@ -3223,6 +3229,7 @@ def image(
     )
 
 
+@allow_inout(1, 'state', 1)
 def checkbox(str label, cimgui.bool state):
     """Display checkbox widget.
 
@@ -3268,6 +3275,7 @@ def checkbox(str label, cimgui.bool state):
     return cimgui.Checkbox(_bytes(label), &inout_state), inout_state
 
 
+@allow_inout(1, 'flags', 1)
 def checkbox_flags(str label, unsigned int flags, unsigned int flags_value):
     """Display checkbox widget that handle integer flags (bit fields).
 
@@ -3332,7 +3340,7 @@ def radio_button(str label, cimgui.bool active):
         :auto_layout:
         :height: 100
 
-        # note: the variable that contains the state of the radio_button, should be initialized 
+        # note: the variable that contains the state of the radio_button, should be initialized
         #       outside of the main interaction loop
         radio_active = True
 
@@ -3356,6 +3364,7 @@ def radio_button(str label, cimgui.bool active):
     return cimgui.RadioButton(_bytes(label), active)
 
 
+@allow_inout(1, 'current', 1)
 def combo(str label, int current, list items, int height_in_items=-1):
     """Display combo widget.
 
@@ -3401,14 +3410,15 @@ def combo(str label, int current, list items, int height_in_items=-1):
     ), inout_current
 
 
+
 def color_edit3(str label, float r, float g, float b):
     """Display color edit widget for color without alpha value.
 
     .. visual-example::
         :auto_layout:
         :width: 300
-        
-        # note: the variable that contains the color data, should be initialized 
+
+        # note: the variable that contains the color data, should be initialized
         #       outside of the main interaction loop
         color_1 = 1., .0, .5
         color_2 = 0., .8, .3
@@ -3416,7 +3426,7 @@ def color_edit3(str label, float r, float g, float b):
         imgui.begin("Example: color edit without alpha")
 
         # note: first element of return two-tuple notifies if the color was changed
-        #       in currently processed frame and second element is current value 
+        #       in currently processed frame and second element is current value
         #       of color
         changed, color_1 = imgui.color_edit3("Color 1", *color_1)
         changed, color_2 = imgui.color_edit3("Color 2", *color_2)
@@ -3453,14 +3463,14 @@ def color_edit4(
         :auto_layout:
         :width: 400
 
-        # note: the variable that contains the color data, should be initialized 
+        # note: the variable that contains the color data, should be initialized
         #       outside of the main interaction loop
         color = 1., .0, .5, 1.
 
         imgui.begin("Example: color edit with alpha")
 
         # note: first element of return two-tuple notifies if the color was changed
-        #       in currently processed frame and second element is current value 
+        #       in currently processed frame and second element is current value
         #       of color and alpha
         _, color = imgui.color_edit4("Alpha", *color, show_alpha=True)
         _, color = imgui.color_edit4("No alpha", *color, show_alpha=False)
@@ -6412,9 +6422,9 @@ def get_frame_height_with_spacing():
 
 def create_context(_FontAtlas shared_font_atlas = None):
     """CreateContext
-    
+
     .. todo::
-        Add an example 
+        Add an example
 
     .. wraps::
         ImGuiContext* CreateContext(
