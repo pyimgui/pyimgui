@@ -12,7 +12,7 @@ def main():
 
     window = pyglet.window.Window(width=800, height=600, resizable=True)
     gl.glClearColor(1, 1, 1, 1)
-    impl = PygletRenderer(window)
+    renderer = PygletRenderer(window)
 
     def update(dt):
         imgui.new_frame()
@@ -41,10 +41,10 @@ def main():
         update(1/60.0)
         window.clear()
         imgui.render()
-        impl.render(imgui.get_draw_data())
+        renderer.render(imgui.get_draw_data())
 
     pyglet.app.run()
-    impl.shutdown()
+    renderer.shutdown()
 
 
 if __name__ == "__main__":
