@@ -1514,7 +1514,7 @@ def begin(str label, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """
     cdef cimgui.bool opened = True
 
-    return cimgui.Begin(_bytes(name), &opened if closable else NULL, flags), opened
+    return cimgui.Begin(_bytes(label), &opened if closable else NULL, flags), opened
 
 
 def get_draw_data():
