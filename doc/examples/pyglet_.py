@@ -10,7 +10,7 @@ from imgui.integrations.pyglet import PygletRenderer
 
 def main():
 
-    window = pyglet.window.Window(width=800, height=600, resizable=True)
+    window = pyglet.window.Window(width=1280, height=720, resizable=True)
     gl.glClearColor(1, 1, 1, 1)
     renderer = PygletRenderer(window)
 
