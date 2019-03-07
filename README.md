@@ -1,4 +1,4 @@
-[![completion](https://img.shields.io/badge/completion-72%25%20%28326%20of%20450%29-blue.svg)](https://github.com/swistakm/pyimgui)
+[![completion](https://img.shields.io/badge/completion-73%25%20%28335%20of%20453%29-blue.svg)](https://github.com/swistakm/pyimgui)
 [![Coverage Status](https://coveralls.io/repos/github/swistakm/pyimgui/badge.svg?branch=master)](https://coveralls.io/github/swistakm/pyimgui?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=latest)](https://pyimgui.readthedocs.io/en/latest/?badge=latest)
 
@@ -19,7 +19,7 @@ Documentation: [pyimgui.readthedocs.io](https://pyimgui.readthedocs.io/en/latest
 # Installation
 
 **pyimgui** is available on PyPI so you can easily install it with `pip`:
- 
+
     pip install imgui[full]
 
 Above command will install `imgui` package with additional dependencies for all
@@ -48,7 +48,7 @@ ImGui library. The *completion badge* shows up-to-date status of that goal.
 
 # Project distribution
 
-This project has working build pipeline on Appveyor and Travis and builds 
+This project has working build pipeline on Appveyor and Travis and builds
 succesfully for all major operating systems with different architectures:
 
 * Windows (32bit & 64bit)
@@ -91,8 +91,8 @@ activated virtual environment using `virtualenv` or `python -m venv` (for newer
 Python releases). Then you can just run:
 
     make build
-    
-This command will bootstrap whole environment (pull git submodules, install 
+
+This command will bootstrap whole environment (pull git submodules, install
 dev requirements etc.) and build the project. `make` will automatically install
 `imgui` in the *development/editable* mode. Then you can run some examples
 found in the `doc/examples` directory in order to verify if project is working.

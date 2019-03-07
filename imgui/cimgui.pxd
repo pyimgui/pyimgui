@@ -155,7 +155,7 @@ cdef extern from "imgui.h":
         int         MetricsRenderVertices  # ✓
         int         MetricsRenderIndices  # ✓
         int         MetricsActiveWindows  # ✓
-        ImVec2      MouseDelta  # ✗
+        ImVec2      MouseDelta  # ✓
 
         # ====
         # source-note: [Internal] ImGui will maintain those fields for you
@@ -224,25 +224,48 @@ cdef extern from "imgui.h":
             ImU32 col,
             # note: optional
             float rounding,             # = 0.0f,
-            int rounding_corners_flags, # = ImDrawCornerFlags_All, 
+            int rounding_corners_flags, # = ImDrawCornerFlags_All,
             float thickness             # = 1.0f
         ) except +  # ✓
 
 
         void AddRectFilled(
-            const ImVec2& a, 
-            const ImVec2& b, 
+            const ImVec2& a,
+            const ImVec2& b,
             ImU32 col,
             # note: optional
             float rounding,            # = 0.0f
             int rounding_corners_flags # = ImDrawCornerFlags_All
         ) except +  # ✓
-         
+
 
         void ChannelsSplit(int channels_count) except + # ✓
         void ChannelsMerge() except + # ✓
         void ChannelsSetCurrent(int idx) except + # ✓
 
+
+        void AddCircleFilled(
+                   const ImVec2&,
+                   float,
+                   ImU32,
+                   # note:optional
+                   ImU32) except +  # ✓
+
+        void AddText(
+                   const ImVec2&,
+                   ImU32,
+                   const char*,
+                   # note:optional
+                   const char*) except +  # ✓
+
+        void AddImage(
+                   ImTextureID,
+                   const ImVec2&,
+                   const ImVec2&,
+                   # note:optional
+                   const ImVec2&,
+                   const ImVec2&,
+                   ImU32) except +  # ✓
 
 
     ctypedef struct ImDrawData:  # ✓
@@ -553,8 +576,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     void PushID(const char* str_id) except +  # ✗
     void PushID(const char* str_id_begin, const char* str_id_end) except +  # ✗
     void PushID(const void* ptr_id) except +  # ✗
-    void PushID(int int_id) except +  # ✗
-    void PopID() except +  # ✗
+    void PushID(int int_id) except +  # ✓
+    void PopID() except +  # ✓
     ImGuiID GetID(const char* str_id) except +  # ✗
     ImGuiID GetID(const char* str_id_begin, const char* str_id_end) except +  # ✗
     ImGuiID GetID(const void* ptr_id) except +  # ✗
@@ -901,12 +924,12 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format
     ) except +  # Widgets: Trees
     bool VSliderScalar(  # ✗
-            const char* label, const ImVec2& size, ImGuiDataType data_type, void* v, const void* v_min, const void* v_max, 
+            const char* label, const ImVec2& size, ImGuiDataType data_type, void* v, const void* v_min, const void* v_max,
             # note: optional
             const char* format,
             float power
     ) except +
-   
+
     bool TreeNode(const char* label) except +  # ✓
     # bool TreeNode(const char* str_id, const char* fmt, ...) except +  # ✗
     # bool TreeNode(const void* ptr_id, const char* fmt, ...) except +  # ✗
@@ -1096,8 +1119,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     void EndDragDropTarget() except +  # ✗
 
     # Clipping
-    void PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect) except +  # ✗
-    void PopClipRect() except +  # ✗
+    void PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect) except +  # ✓
+    void PopClipRect() except +  # ✓
 
     # Utilities
     bool IsItemHovered(ImGuiHoveredFlags flags) except +  # ✓
@@ -1158,7 +1181,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool IsKeyReleased(int key_index) except +  # ✓
     int GetKeyPressedAmount(int key_index, float repeat_delay, float rate) except +  # ✗
     bool IsMouseDown(int button) except +  # ✓
-    bool IsAnyMouseDown() except +  # ✗
+    bool IsAnyMouseDown() except +  # ✓
     bool IsMouseClicked(  # ✓
             int button,
             # note: optional
@@ -1218,4 +1241,3 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             size_t* out_ini_size
     ) except +
-

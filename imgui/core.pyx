@@ -417,6 +417,104 @@ cdef class _DrawList(object):
             rounding_corners_flags,
         )
 
+    def add_circle_filled(self,
+        float centre_x, float centre_y,
+        float radius,
+        cimgui.ImU32 col,
+        # note: optional
+        cimgui.ImU32 num_segments=12):
+
+        """AddCircleFilled() primitive for ImDrawList()
+
+    Args:
+        centre_x (float): circle centre coordinates
+        centre_y (float): circle centre coordinates
+        radius (float): circle radius
+        col (ImU32): RGBA color specification
+        # note: optional
+        num_segments (ImU32): Number of segments, defaults to 12
+
+    .. wraps::
+        void AddCircleFilled(
+                    const ImVec2& centre,
+                    float radius,
+                    ImU32 col,
+                    # note: optional
+                    int num_segments = 12);
+    """
+        self._ptr.AddCircleFilled(
+            _cast_args_ImVec2(centre_x, centre_y),
+            radius,
+            col,
+            num_segments
+        )
+
+    def add_line(self,
+        float ax, float ay, float bx, float by,
+        cimgui.ImU32 col, float thickness=1.0):
+
+        """AddLine() primitive for ImDrawList()
+
+    Args:
+        ax (float): line start x-coordinate
+        ay (float): line start y-coordinate
+        bx (float): line end x-coordinate
+        by (float): line end y-coordinate
+        col (ImU32): RGBA color specification
+        # note: optional
+        thickness (float): line thickness, defaults to 1.0
+
+    .. wraps::
+         void AddLine(
+                    const ImVec2&,
+                    const ImVec2&,
+                    ImU32,
+                    # note:optional
+                    float);
+    """
+        self._ptr.AddLine(
+            _cast_args_ImVec2(ax, ay),
+            _cast_args_ImVec2(bx, by),
+            col,
+            thickness
+        )
+
+    def add_image(self,
+        texture_id,
+        tuple a,
+        tuple b,
+        tuple uv_a=(0,0),
+        tuple uv_b=(1,1),
+        cimgui.ImU32 col=0xffffffff):
+
+        """AddImage() primitive for ImDrawList()
+
+    Args:
+        texture_id (object):
+        a (tuple): top-left image corner on-screen,
+        b (tuple): bottom-right image corner on-screen,
+        uv_a (tuple): UV coordinates of the top-left corner, defaults to (0, 0)
+        uv_b (tuple): UV coordinates of the bottom-right corner, defaults to (1, 1)
+        col (ImU32): tint color, defaults to 0xffffffff (no tint)
+
+    .. wraps::
+        void AddImage(
+                   ImTextureID,
+                   const ImVec2&,
+                   const ImVec2&,
+                   # note:optional
+                   const ImVec2&,
+                   const ImVec2&,
+                   ImU32);
+    """
+        self._ptr.AddImage(
+            <void*>texture_id,
+            _cast_tuple_ImVec2(a),
+            _cast_tuple_ImVec2(b),
+            _cast_tuple_ImVec2(uv_a),
+            _cast_tuple_ImVec2(uv_b),
+            col
+        )
 
     def add_line(
             self,
@@ -1253,6 +1351,10 @@ cdef class _IO(object):
     @property
     def metrics_active_windows(self):
         return self._ptr.MetricsActiveWindows
+
+    @property
+    def mouse_delta(self):
+        return _cast_ImVec2_tuple(self._ptr.MouseDelta)
 
 
 _io = None
@@ -3333,7 +3435,7 @@ def radio_button(str label, cimgui.bool active):
         :auto_layout:
         :height: 100
 
-        # note: the variable that contains the state of the radio_button, should be initialized 
+        # note: the variable that contains the state of the radio_button, should be initialized
         #       outside of the main interaction loop
         radio_active = True
 
@@ -3408,8 +3510,8 @@ def color_edit3(str label, float r, float g, float b):
     .. visual-example::
         :auto_layout:
         :width: 300
-        
-        # note: the variable that contains the color data, should be initialized 
+
+        # note: the variable that contains the color data, should be initialized
         #       outside of the main interaction loop
         color_1 = 1., .0, .5
         color_2 = 0., .8, .3
@@ -3417,7 +3519,7 @@ def color_edit3(str label, float r, float g, float b):
         imgui.begin("Example: color edit without alpha")
 
         # note: first element of return two-tuple notifies if the color was changed
-        #       in currently processed frame and second element is current value 
+        #       in currently processed frame and second element is current value
         #       of color
         changed, color_1 = imgui.color_edit3("Color 1", *color_1)
         changed, color_2 = imgui.color_edit3("Color 2", *color_2)
@@ -3454,14 +3556,14 @@ def color_edit4(
         :auto_layout:
         :width: 400
 
-        # note: the variable that contains the color data, should be initialized 
+        # note: the variable that contains the color data, should be initialized
         #       outside of the main interaction loop
         color = 1., .0, .5, 1.
 
         imgui.begin("Example: color edit with alpha")
 
         # note: first element of return two-tuple notifies if the color was changed
-        #       in currently processed frame and second element is current value 
+        #       in currently processed frame and second element is current value
         #       of color and alpha
         _, color = imgui.color_edit4("Alpha", *color, show_alpha=True)
         _, color = imgui.color_edit4("No alpha", *color, show_alpha=False)
@@ -5171,6 +5273,33 @@ def set_keyboard_focus_here(int offset = 0):
     return cimgui.SetKeyboardFocusHere(offset)
 
 
+def push_clip_rect(float clip_rect_min_x, float clip_rect_min_y, float clip_rect_max_x, float clip_rect_max_y, bool intersect_with_current_clip_rect):
+    """ Push a new clipping rectangle onto the clip stack.
+
+    Args:
+        clip_rect_min_x (float): clip rectangle min-x
+        clip_rect_min_y (float): clip rectangle min-y
+        clip_rect_max_x (float): clip rectangle max-x
+        clip_rect_max_y (float): clip rectangle max-y
+        intersect_with_current_clip_rect (bool): intersect with current clip rectangle
+
+    .. wraps::
+        void PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect)
+    """
+    cimgui.PushClipRect(_cast_args_ImVec2(clip_rect_min_x, clip_rect_min_y),
+                        _cast_args_ImVec2(clip_rect_max_x, clip_rect_max_y),
+                        intersect_with_current_clip_rect)
+
+
+def pop_clip_rect():
+    """ Pop a clipping rectangle from the clip stack.
+
+    .. wraps::
+        void PopClipRect()
+    """
+    cimgui.PopClipRect()
+
+
 def is_item_hovered(
         cimgui.ImGuiHoveredFlags flags=0
     ):
@@ -5414,6 +5543,18 @@ def is_mouse_hovering_rect(
         _cast_args_ImVec2(r_max_x, r_max_y),
         clip
     )
+
+
+def is_any_mouse_down():
+    """Returns True if any mouse button is pressed down.
+
+    Returns:
+        bool: if any mouse button is down.
+
+    .. wraps::
+         bool IsAnyMouseDown();
+    """
+    return cimgui.IsAnyMouseDown()
 
 
 def is_mouse_double_clicked(int button = 0):
@@ -5926,7 +6067,7 @@ cpdef pop_style_color(unsigned int count=1):
 
 
 def separator():
-    """Add vertical line as a separator beween elements.
+    """Add horizontal line as a separator beween elements.
 
     .. visual-example::
         :auto_layout:
@@ -6411,11 +6552,34 @@ def get_frame_height_with_spacing():
     return cimgui.GetFrameHeightWithSpacing()
 
 
+def push_id(int int_id):
+    """ Push identifier into the ID stack
+
+    Read the Imgui FAQ for more details about how ID are handled in dear imgui.
+
+    Args:
+        int_id (int): integer identifier
+
+    .. wraps::
+        void PushID(int int_id)
+    """
+    cimgui.PushID(int_id)
+
+
+def pop_id():
+    """ Pop identifier from the ID stack
+
+    .. wraps::
+        void PopID()
+    """
+    cimgui.PopID()
+
+
 def create_context(_FontAtlas shared_font_atlas = None):
     """CreateContext
-    
+
     .. todo::
-        Add an example 
+        Add an example
 
     .. wraps::
         ImGuiContext* CreateContext(
