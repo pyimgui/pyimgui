@@ -25,12 +25,13 @@ Documentation: [pyimgui.readthedocs.io](https://pyimgui.readthedocs.io/en/latest
 Above command will install `imgui` package with additional dependencies for all
 built-in rendering backend integrations (pygame, cocos2d, etc.). If you don't
 want to install all additional dependencies you can always use bare
-`pip instal imgui` command or select a specific set of extra requirements:
+`pip install imgui` command or select a specific set of extra requirements:
 
 * for pygame backend use `pip install imgui[pygame]`
 * for GLFW3 backend use `pip install imgui[glfw]`
 * for SDL2 backend use `pip install imgui[sdl2]`
 * for Cocos2d backend use `pip install imgui[cocos2d]`
+* for pyglet backend use `pip install imgui[pyglet]`
 
 Package is distributed in form of *built wheels* so it does not require
 compilation on most operating systems. For more details about compatibility
