@@ -482,6 +482,76 @@ cdef class _DrawList(object):
             thickness,
         )
 
+    def add_circle(
+            self,
+            float center_x, float center_y,
+            float radius,
+            cimgui.ImU32 col,
+            # note: optional
+            int num_segments = 12,
+            float thickness = 1.0
+        ):
+        """Add a circle outline to the draw list.
+
+        Args:
+            center_x (float): X coordinate of center
+            center_y (float): Y coordinate of center
+            radius (float): radius
+            col (ImU32): RGBA color specification
+            # note: optional
+            num_segments (int): Number of line segments used to draw the circle, defaults to 12
+            thickness (float): Line thickness, defaults to 1.0
+
+        .. wraps::
+            void ImDrawList::AddCircle(
+                const ImVec2& center,
+                float radius,
+                ImU32 col,
+                int num_segments = 12,
+                float thickness = 1.0f
+            )
+        """
+        self._ptr.AddCircle(
+            _cast_args_ImVec2(center_x, center_y),
+            radius,
+            col,
+            num_segments,
+            thickness
+        )
+
+    def add_circle_filled(
+            self,
+            float center_x, float center_y,
+            float radius,
+            cimgui.ImU32 col,
+            # note: optional
+            int num_segments = 12
+        ):
+        """Add a circle outline to the draw list.
+
+        Args:
+            center_x (float): X coordinate of center
+            center_y (float): Y coordinate of center
+            radius (float): radius
+            col (ImU32): RGBA color specification
+            # note: optional
+            num_segments (int): Number of line segments used to draw the circle, defaults to 12
+
+        .. wraps::
+            void ImDrawList::AddCircleFilled(
+                const ImVec2& center,
+                float radius,
+                ImU32 col,
+                int num_segments = 12
+            )
+        """
+        self._ptr.AddCircleFilled(
+            _cast_args_ImVec2(center_x, center_y),
+            radius,
+            col,
+            num_segments
+        )
+
 
 
     # channels

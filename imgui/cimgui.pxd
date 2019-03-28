@@ -237,6 +237,23 @@ cdef extern from "imgui.h":
             float rounding,            # = 0.0f
             int rounding_corners_flags # = ImDrawCornerFlags_All
         ) except +  # ✓
+
+        void AddCircle(
+            const ImVec2& centre,
+            float radius,
+            ImU32 col,
+            # note: optional
+            int num_segments,          # = 12
+            float thickness            # = 1.0f
+        ) except +  # ✓
+
+        void AddCircleFilled(
+            const ImVec2& centre,
+            float radius,
+            ImU32 col,
+            # note: optional
+            int num_segments           # = 12
+        ) except +  # ✓
          
 
         void ChannelsSplit(int channels_count) except + # ✓
@@ -550,11 +567,11 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # ====
     # ID scopes
-    void PushID(const char* str_id) except +  # ✗
+    void PushID(const char* str_id) except +  # ✓
     void PushID(const char* str_id_begin, const char* str_id_end) except +  # ✗
     void PushID(const void* ptr_id) except +  # ✗
     void PushID(int int_id) except +  # ✗
-    void PopID() except +  # ✗
+    void PopID() except +  # ✓
     ImGuiID GetID(const char* str_id) except +  # ✗
     ImGuiID GetID(const char* str_id_begin, const char* str_id_end) except +  # ✗
     ImGuiID GetID(const void* ptr_id) except +  # ✗
