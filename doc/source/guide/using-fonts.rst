@@ -133,4 +133,7 @@ one of possible examples for glfw::
     font_scaling_factor = max(float(fb_w) / win_w, float(fb_h) / win_h)
 
 
-If you set global scaling factor then you should probably do is to clear
+If you set global scaling factor then you should also probably clear whole
+font atlas before adding any font atlas using :meth:`_FontAtlas.clear`.
+Otherwise default built in font that is loaded on imgui startpup will be too
+small to read. Its place will be taken by first font you add to the atlas.
