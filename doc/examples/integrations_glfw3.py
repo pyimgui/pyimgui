@@ -75,5 +75,6 @@ def impl_glfw_init():
 
     return window
 
+
 if __name__ == "__main__":
     main()
