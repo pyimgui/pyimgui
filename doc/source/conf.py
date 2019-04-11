@@ -424,4 +424,4 @@ napoleon_use_rtype = False
 
 autodoc_member_order = 'bysource'
 # this is in order to support GlfwImpl documentation on RTD
-autodoc_mock_imports = ['glfw']
+autodoc_mock_imports = ['cocos', 'glfw',  'OpenGL', 'pygame', 'pyglet', 'sdl2']
