@@ -859,6 +859,20 @@ cdef class _Font(object):
 
 
 cdef class _FontAtlas(object):
+    """Font atlas object responsible for controling and loading fonts.
+
+    This class is not intended to be instantiated by user (thus `_`
+    name prefix). It should be accessed through :any:`_IO.fonts` attribute
+    of :class:`_IO` obtained with :func:`get_io` function.
+
+    Example::
+
+        import imgui
+
+        io = imgui.get_io()
+        io.fonts.add_font_default()
+
+    """
     cdef cimgui.ImFontAtlas* _ptr
 
     def __init__(self):
@@ -969,6 +983,19 @@ cdef class _FontAtlas(object):
 
 
 cdef class _IO(object):
+    """Main ImGui I/O context class used for ImGui configuration.
+
+    This class is not intended to be instantiated by user (thus `_`
+    name prefix). It should be accessed through obtained with :func:`get_io`
+    function.
+
+    Example::
+
+        import imgui
+
+        io = imgui.get_io()
+    """
+
     cdef cimgui.ImGuiIO* _ptr
     cdef object _fonts
 
@@ -3333,7 +3360,7 @@ def radio_button(str label, cimgui.bool active):
         :auto_layout:
         :height: 100
 
-        # note: the variable that contains the state of the radio_button, should be initialized 
+        # note: the variable that contains the state of the radio_button, should be initialized
         #       outside of the main interaction loop
         radio_active = True
 
@@ -3408,8 +3435,8 @@ def color_edit3(str label, float r, float g, float b):
     .. visual-example::
         :auto_layout:
         :width: 300
-        
-        # note: the variable that contains the color data, should be initialized 
+
+        # note: the variable that contains the color data, should be initialized
         #       outside of the main interaction loop
         color_1 = 1., .0, .5
         color_2 = 0., .8, .3
@@ -3417,7 +3444,7 @@ def color_edit3(str label, float r, float g, float b):
         imgui.begin("Example: color edit without alpha")
 
         # note: first element of return two-tuple notifies if the color was changed
-        #       in currently processed frame and second element is current value 
+        #       in currently processed frame and second element is current value
         #       of color
         changed, color_1 = imgui.color_edit3("Color 1", *color_1)
         changed, color_2 = imgui.color_edit3("Color 2", *color_2)
@@ -3454,14 +3481,14 @@ def color_edit4(
         :auto_layout:
         :width: 400
 
-        # note: the variable that contains the color data, should be initialized 
+        # note: the variable that contains the color data, should be initialized
         #       outside of the main interaction loop
         color = 1., .0, .5, 1.
 
         imgui.begin("Example: color edit with alpha")
 
         # note: first element of return two-tuple notifies if the color was changed
-        #       in currently processed frame and second element is current value 
+        #       in currently processed frame and second element is current value
         #       of color and alpha
         _, color = imgui.color_edit4("Alpha", *color, show_alpha=True)
         _, color = imgui.color_edit4("No alpha", *color, show_alpha=False)
@@ -5596,22 +5623,29 @@ def set_scroll_from_pos_y(float pos_y, float center_y_ratio = 0.5):
 def push_font(_Font font):
     """Push font on a stack.
 
-    Example:
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+        :width: 320
 
-    .. code-block: python
+        io = imgui.get_io()
 
-        ...
-        font_extra = io.fonts.add_font_from_file_ttf(
-            "CODE2000.TTF", 30, io.fonts.get_glyph_ranges_latin()
+        new_font = io.fonts.add_font_from_file_ttf(
+            "DroidSans.ttf", 20,
         )
-        ...
+        impl.refresh_font_texture()
 
-        # later in application loop
-        while True:
-            ...
-            imgui.push_font(font_extra)
-            imgui.text("My text with custom font")
-            imgui.pop_font()
+        # later in frame code
+
+        imgui.begin("Default Window")
+
+        imgui.text("Text displayed using default font")
+
+        imgui.push_font(new_font)
+        imgui.text("Text displayed using custom font")
+        imgui.pop_font()
+
+        imgui.end()
 
     **Note:** Pushed fonts should be poped with :func:`pop_font()` within the
     same frame. In order to avoid manual push/pop functions you can use the
@@ -6413,9 +6447,9 @@ def get_frame_height_with_spacing():
 
 def create_context(_FontAtlas shared_font_atlas = None):
     """CreateContext
-    
+
     .. todo::
-        Add an example 
+        Add an example
 
     .. wraps::
         ImGuiContext* CreateContext(
@@ -6488,22 +6522,25 @@ ImGuiError = _ImGuiError # make visible to Python
 def _py_font(_Font font):
     """Use specified font in given context.
 
-    Example:
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+        :width: 320
 
-    .. code-block:: python
+        io = imgui.get_io()
 
-        ...
-        font_extra = io.fonts.add_font_from_file_ttf(
-            "CODE2000.TTF", 30, io.fonts.get_glyph_ranges_latin()
-        )
-        ...
+        new_font = io.fonts.add_font_from_file_ttf("DroidSans.ttf", 20)
+        impl.refresh_font_texture()
 
-        # later in application loop
-        while True:
-            ...
-            with imgui.font(font_extra):
-                imgui.text("My text with custom font")
-            ...
+        # later in frame code
+
+        imgui.begin("Default Window")
+
+        imgui.text("Text displayed using default font")
+        with imgui.font(new_font):
+            imgui.text("Text displayed using custom font")
+
+        imgui.end()
 
     Args:
         font (_Font): font object retrieved from :any:`add_font_from_file_ttf`.
