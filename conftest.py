@@ -4,6 +4,8 @@ import sys
 
 import pytest
 from inspect import currentframe, getframeinfo
+
+from _pytest.outcomes import Skipped
 from sphinx.application import Sphinx
 
 import imgui
@@ -53,6 +55,9 @@ class DocItem(pytest.Item):
     def exec_snippet(self, source):
 
         # Strip out new_frame/end_frame from source
+        if "# later" in source:
+            raise Skipped(msg="multi-stage snippet, can't comprehend")
+
         lines = [
             line
             if all([
