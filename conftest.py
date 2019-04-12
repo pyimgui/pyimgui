@@ -4,6 +4,8 @@ import sys
 
 import pytest
 from inspect import currentframe, getframeinfo
+
+from _pytest.outcomes import Skipped
 from sphinx.application import Sphinx
 
 import imgui
@@ -36,8 +38,11 @@ class SphinxDoc(pytest.File):
     def collect(self):
         # build only specified file
         sphinx.build(filenames=[self.fspath.relto(project_path())])
+        for (name, code) in sphinx.builder.snippets:
+            print("snippet", name)
+
         return [
-            DocItem(name, self, code)
+            DocItem(name or "anonymous", self, code)
             for (name, code) in sphinx.builder.snippets
         ]
 
@@ -53,6 +58,9 @@ class DocItem(pytest.Item):
     def exec_snippet(self, source):
 
         # Strip out new_frame/end_frame from source
+        if "# later" in source:
+            raise Skipped(msg="multi-stage snippet, can't comprehend")
+
         lines = [
             line
             if all([

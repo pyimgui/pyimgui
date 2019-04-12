@@ -8,6 +8,7 @@ Usage guide
    :maxdepth: 5
 
    first-steps
+   using-fonts
    conditions
    window-flags
    treenode-flags
