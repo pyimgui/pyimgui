@@ -7,6 +7,7 @@ from imgui.integrations.glfw import GlfwRenderer
 
 
 def main():
+    imgui.create_context()
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
 

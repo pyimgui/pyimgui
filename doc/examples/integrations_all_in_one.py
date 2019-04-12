@@ -167,7 +167,7 @@ def main_cocos2d():
             gl.glClearColor(1., 1., 1., 1)
             gl.glClear(gl.GL_COLOR_BUFFER_BIT)
             imgui.render()
-    
+
     director.init(width=800, height=600, resizable=True)
     hello_layer = HelloWorld()
     main_scene = cocos.scene.Scene(hello_layer)
@@ -193,6 +193,9 @@ def on_frame():
 
 
 if __name__ == "__main__":
+    imgui.create_context()
+    io = imgui.get_io()
+
     if backend == "sdl2":
         main_sdl2()
     elif backend == "pygame":

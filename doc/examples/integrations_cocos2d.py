@@ -43,10 +43,12 @@ class HelloWorld(ImguiLayer):
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         imgui.render()
+        self.renderer.render(imgui.get_draw_data())
 
 
 def main():
     director.init(width=800, height=600, resizable=True)
+    imgui.create_context()
 
     hello_layer = HelloWorld()
     main_scene = cocos.scene.Scene(hello_layer)

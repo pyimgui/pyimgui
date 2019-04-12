@@ -14,14 +14,6 @@ class ImguiLayer(PygletMixin, cocos.layer.Layer):
     def __init__(self):
         super(ImguiLayer, self).__init__()
 
-        self.renderer = None
+        self.renderer = FixedPipelineRenderer()
         self.io = imgui.get_io()
-
         self._map_keys()
-
-    def on_enter(self):
-        super(ImguiLayer, self).on_enter()
-
-        if self.renderer is None:
-            self.io.display_size = cocos.director.director.get_window_size()
-            self.renderer = FixedPipelineRenderer()
