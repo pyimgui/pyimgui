@@ -316,9 +316,15 @@ cdef class _ImGuiContext(object):
 
     @staticmethod
     cdef from_ptr(cimgui.ImGuiContext* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _ImGuiContext()
         instance._ptr = ptr
         return instance
+
+    def __eq__(_ImGuiContext self, _ImGuiContext other):
+        return other._ptr == self._ptr
 
 
 cdef class _DrawCmd(object):
@@ -328,6 +334,9 @@ cdef class _DrawCmd(object):
     #       see: http://cython.readthedocs.io/en/latest/src/userguide/extension_types.html#fast-instantiation
     @staticmethod
     cdef from_ptr(cimgui.ImDrawCmd* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _DrawCmd()
         instance._ptr = ptr
         return instance
@@ -350,6 +359,9 @@ cdef class _DrawList(object):
 
     @staticmethod
     cdef from_ptr(cimgui.ImDrawList* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _DrawList()
         instance._ptr = ptr
         return instance
@@ -799,6 +811,9 @@ cdef class _DrawData(object):
 
     @staticmethod
     cdef from_ptr(cimgui.ImDrawData* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _DrawData()
         instance._ptr = ptr
         return instance
@@ -845,6 +860,9 @@ cdef class _StaticGlyphRanges(object):
 
     @staticmethod
     cdef from_ptr(const cimgui.ImWchar* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _StaticGlyphRanges()
         instance.ranges_ptr = ptr
         return instance
@@ -853,6 +871,9 @@ cdef class _StaticGlyphRanges(object):
 cdef class _Font(object):
     @staticmethod
     cdef from_ptr(cimgui.ImFont* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _Font()
         instance._ptr = ptr
         return instance
@@ -880,6 +901,9 @@ cdef class _FontAtlas(object):
 
     @staticmethod
     cdef from_ptr(cimgui.ImFontAtlas* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _FontAtlas()
         instance._ptr = ptr
         return instance
@@ -6431,7 +6455,7 @@ def get_frame_height():
 
     .. wraps::
         float GetFrameHeight()
-    float GetFrameHeightWithSpacing() except +  # ✗
+    float GetFrameHeightWithSpacing() except +
     """
     return cimgui.GetFrameHeight()
 
@@ -6477,11 +6501,11 @@ def destroy_context(_ImGuiContext ctx = None):
                 ImGuiContext* ctx = NULL);
     """
 
-    if ctx:
+    if ctx and ctx._ptr != NULL:
         cimgui.DestroyContext(ctx._ptr)
+        ctx._ptr = NULL
     else:
-        cimgui.DestroyContext(NULL)
-
+        raise RuntimeError("Context invalid (None or destroyed)")
 
 
 def get_current_context():
