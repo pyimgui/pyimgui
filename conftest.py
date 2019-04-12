@@ -38,8 +38,6 @@ class SphinxDoc(pytest.File):
     def collect(self):
         # build only specified file
         sphinx.build(filenames=[self.fspath.relto(project_path())])
-        for (name, code) in sphinx.builder.snippets:
-            print("snippet", name)
 
         return [
             DocItem(name or "anonymous", self, code)
