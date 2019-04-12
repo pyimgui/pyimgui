@@ -48,9 +48,10 @@ class HelloWorld(ImguiLayer):
 
 def main():
     director.init(width=800, height=600, resizable=True)
-    imgui.create_context()
 
+    imgui.create_context()
     hello_layer = HelloWorld()
+
     main_scene = cocos.scene.Scene(hello_layer)
     director.run(main_scene)
 

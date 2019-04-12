@@ -5,6 +5,7 @@ from pyglet.window import key, mouse
 
 import imgui
 
+from . import compute_fb_scale
 from .opengl import FixedPipelineRenderer
 
 
@@ -102,7 +103,12 @@ class PygletMixin(object):
 class PygletRenderer(PygletMixin, FixedPipelineRenderer):
     def __init__(self, window, attach_callbacks=True):
         super(PygletRenderer, self).__init__()
-        self.io.display_size = window.width, window.height
+        window_size = window.get_size()
+        viewport_size = window.get_viewport_size()
+
+        self.io.display_size = window_size
+        self.io.display_fb_scale = compute_fb_scale(window_size, viewport_size)
+
         self._map_keys()
 
         if attach_callbacks:
