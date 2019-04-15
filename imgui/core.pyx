@@ -33,7 +33,7 @@ cimport enums
 from cpython.version cimport PY_MAJOR_VERSION
 
 # todo: find a way to cimport this directly from imgui.h
-DEF TARGET_IMGUI_VERSION = (1, 49)
+DEF TARGET_IMGUI_VERSION = (1, 65)
 
 cdef unsigned short* _LATIN_ALL = [0x0020, 0x024F , 0]
 
@@ -64,8 +64,7 @@ STYLE_SCROLLBAR_SIZE = enums.ImGuiStyleVar_ScrollbarSize # float
 STYLE_SCROLLBAR_ROUNDING = enums.ImGuiStyleVar_ScrollbarRounding # float
 STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
 STYLE_GRAB_ROUNDING = enums.ImGuiStyleVar_GrabRounding # float
-IF TARGET_IMGUI_VERSION > (1, 49):
-    STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
+STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
 
 # ==== Key map enum redefines ====
 KEY_TAB = enums.ImGuiKey_Tab                 # for tabbing through fields
@@ -663,23 +662,20 @@ cdef class GuiStyle(object):
         self._check_ptr()
         return self._ptr.PopupBorderSize
 
-    @child_border_size.setter
-    def child_border_size(self, float value):
+    @popup_border_size.setter
+    def popup_border_size(self, float value):
         self._check_ptr()
         self._ptr.ChildBorderSize = value
 
-    IF TARGET_IMGUI_VERSION > (1, 49):
-        # note: not available as Vec2 in 1.49
-        # todo: add support for old input type
-        @property
-        def window_title_align(self):
-            self._check_ptr()
-            return _cast_ImVec2_tuple(self._ptr.WindowTitleAlign)
+    @property
+    def window_title_align(self):
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.WindowTitleAlign)
 
-        @window_title_align.setter
-        def window_title_align(self, value):
-            self._check_ptr()
-            self._ptr.WindowTitleAlign = _cast_tuple_ImVec2(value)
+    @window_title_align.setter
+    def window_title_align(self, value):
+        self._check_ptr()
+        self._ptr.WindowTitleAlign = _cast_tuple_ImVec2(value)
 
     @property
     def frame_padding(self):
@@ -710,7 +706,6 @@ cdef class GuiStyle(object):
     def frame_border_size(self, float value):
         self._check_ptr()
         self._ptr.FrameBorderSize = value
-
 
     @property
     def item_spacing(self):
@@ -802,18 +797,15 @@ cdef class GuiStyle(object):
         self._check_ptr()
         self._ptr.GrabRounding = value
 
-    IF TARGET_IMGUI_VERSION > (1, 49):
-        # note: not available as Vec2 in 1.49
-        # todo: add support for old input type
-        @property
-        def button_text_align(self):
-            self._check_ptr()
-            return _cast_ImVec2_tuple(self._ptr.ButtonTextAlign)
+    @property
+    def button_text_align(self):
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.ButtonTextAlign)
 
-        @button_text_align.setter
-        def button_text_align(self, value):
-            self._check_ptr()
-            self._ptr.ButtonTextAlign = _cast_tuple_ImVec2(value)
+    @button_text_align.setter
+    def button_text_align(self, value):
+        self._check_ptr()
+        self._ptr.ButtonTextAlign = _cast_tuple_ImVec2(value)
 
     @property
     def display_window_padding(self):
@@ -876,10 +868,8 @@ cdef class GuiStyle(object):
         self._ptr.CurveTessellationTol = value
 
     def color(self, cimgui.ImGuiCol variable):
-        IF TARGET_IMGUI_VERSION > (1, 49):
-            # note: this check is not available on imgui<=1.49
-            if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
-                raise ValueError("Unknown style variable: {}".format(variable))
+        if not (0 <= variable < enums.ImGuiStyleVar_Count_):
+            raise ValueError("Unknown style variable: {}".format(variable))
 
         self._check_ptr()
         cdef int ix = variable
@@ -5818,11 +5808,9 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     .. wraps::
         PushStyleVar(ImGuiStyleVar idx, float val)
     """
-    IF TARGET_IMGUI_VERSION > (1, 49):
-        # note: this check is not available on imgui<=1.49
-        if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
-            warnings.warn("Unknown style variable: {}".format(variable))
-            return False
+    if not (0 <= variable < enums.ImGuiStyleVar_Count_):
+        warnings.warn("Unknown style variable: {}".format(variable))
+        return False
 
     try:
         if isinstance(value, (tuple, list)):
@@ -5873,11 +5861,9 @@ cpdef push_style_color(
     .. wraps::
         PushStyleColor(ImGuiCol idx, const ImVec4& col)
     """
-    IF TARGET_IMGUI_VERSION > (1, 49):
-        # note: this check is not available on imgui<=1.49
-        if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
-            warnings.warn("Unknown style variable: {}".format(variable))
-            return False
+    if not (0 <= variable < enums.ImGuiStyleVar_Count_):
+        warnings.warn("Unknown style variable: {}".format(variable))
+        return False
 
     cimgui.PushStyleColor(variable, _cast_args_ImVec4(r, g, b, a))
 
