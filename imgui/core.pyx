@@ -555,6 +555,9 @@ cdef class GuiStyle(object):
                 "GuiStyle.created() to obtain style classes"
             )
 
+    def __eq__(GuiStyle self, GuiStyle other):
+        return other._ptr == self._ptr
+
     @staticmethod
     def create():
         return GuiStyle._create()
@@ -645,7 +648,7 @@ cdef class GuiStyle(object):
     @child_border_size.setter
     def child_border_size(self, float value):
         self._check_ptr()
-        self._ptr.PopupBorderSize = value
+        self._ptr.ChildBorderSize = value
 
     @property
     def popup_rounding(self):
