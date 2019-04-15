@@ -11,23 +11,22 @@ import imgui
 
 def main():
     pygame.init()
-
     size = 800, 600
 
     pygame.display.set_mode(size, pygame.DOUBLEBUF | pygame.OPENGL)
 
-    io = imgui.get_io()
-    io.fonts.add_font_default()
-    io.display_size = size
+    imgui.create_context()
+    impl = PygameRenderer()
 
-    renderer = PygameRenderer()
+    io = imgui.get_io()
+    io.display_size = size
 
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
 
-            renderer.process_event(event)
+            impl.process_event(event)
 
         imgui.new_frame()
 
@@ -56,8 +55,10 @@ def main():
         gl.glClearColor(1, 1, 1, 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
         imgui.render()
+        impl.render(imgui.get_draw_data())
 
         pygame.display.flip()
+
 
 if __name__ == "__main__":
     main()

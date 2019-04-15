@@ -9,7 +9,11 @@ import ctypes
 
 class BaseOpenGLRenderer(object):
     def __init__(self):
-        imgui.create_context()
+        if not imgui.get_current_context():
+            raise RuntimeError(
+                "No valid ImGui context. Use imgui.create_context() first and/or "
+                "imgui.set_current_context()."
+            )
         self.io = imgui.get_io()
 
         self._font_texture = None
@@ -18,9 +22,6 @@ class BaseOpenGLRenderer(object):
 
         self._create_device_objects()
         self.refresh_font_texture()
-
-        # todo: add option to set new_frame callback/implementation
-        #self.io.render_callback = self.render
 
     def render(self, draw_data):
         raise NotImplementedError
@@ -36,7 +37,6 @@ class BaseOpenGLRenderer(object):
 
     def shutdown(self):
         self._invalidate_device_objects()
-        imgui.destroy_context()
 
 
 class ProgrammablePipelineRenderer(BaseOpenGLRenderer):

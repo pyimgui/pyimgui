@@ -9,7 +9,8 @@ from imgui.integrations.sdl2 import SDL2Renderer
 
 def main():
     window, gl_context = impl_pysdl2_init()
-    renderer = SDL2Renderer(window)
+    imgui.create_context()
+    impl = SDL2Renderer(window)
 
     running = True
     event = SDL_Event()
@@ -18,8 +19,8 @@ def main():
             if event.type == SDL_QUIT:
                 running = False
                 break
-            renderer.process_event(event)
-        renderer.process_inputs()
+            impl.process_event(event)
+        impl.process_inputs()
 
         imgui.new_frame()
 
@@ -47,10 +48,10 @@ def main():
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         imgui.render()
-
+        impl.render(imgui.get_draw_data())
         SDL_GL_SwapWindow(window)
 
-    renderer.shutdown()
+    impl.shutdown()
     SDL_GL_DeleteContext(gl_context)
     SDL_DestroyWindow(window)
     SDL_Quit()
@@ -98,6 +99,7 @@ def impl_pysdl2_init():
         exit(1)
 
     return window, gl_context
+
 
 if __name__ == "__main__":
     main()
