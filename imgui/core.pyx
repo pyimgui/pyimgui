@@ -10,6 +10,7 @@
 
 import cython
 from cython.view cimport array as cvarray
+from cython.operator cimport dereference as deref
 
 from collections import namedtuple
 import warnings
@@ -535,12 +536,41 @@ cdef class GuiStyle(object):
     Container for ImGui style information
 
     """
-    cdef cimgui.ImGuiStyle ref
+    cdef cimgui.ImGuiStyle* _ptr
+    cdef bool _owner
+
+    def __cinit__(self):
+        self._ptr = NULL
+        self._owner = False
+
+    def __dealloc__(self):
+        if self._owner:
+            del self._ptr
+            self._ptr = NULL
+
+
+    cdef inline _check_ptr(self):
+        if self._ptr is NULL:
+            raise RuntimeError(
+                "Improperly initialized, use imgui.get_style() or "
+                "GuiStyle.created() to obtain style classes"
+            )
 
     @staticmethod
-    cdef from_ref(cimgui.ImGuiStyle& ref):
-        instance = GuiStyle()
-        instance.ref = ref
+    def create():
+        return GuiStyle._create()
+
+    @staticmethod
+    cdef GuiStyle from_ref(cimgui.ImGuiStyle& ref):
+        cdef GuiStyle instance = GuiStyle()
+        instance._ptr = &ref
+        return instance
+
+    @staticmethod
+    cdef GuiStyle _create():
+        cdef cimgui.ImGuiStyle* _ptr = new cimgui.ImGuiStyle()
+        cdef GuiStyle instance = GuiStyle.from_ref(deref(_ptr))
+        instance._owner = True
         return instance
 
     @property
@@ -550,242 +580,300 @@ cdef class GuiStyle(object):
         Returns:
             float
         """
-        return self.ref.Alpha
+        self._check_ptr()
+        return self._ptr.Alpha
 
     @alpha.setter
     def alpha(self, float value):
-        self.ref.Alpha = value
+        self._check_ptr()
+        self._ptr.Alpha = value
 
     @property
     def window_padding(self):
-        return _cast_ImVec2_tuple(self.ref.WindowPadding)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.WindowPadding)
 
     @window_padding.setter
     def window_padding(self, value):
-        self.ref.WindowPadding = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.WindowPadding = _cast_tuple_ImVec2(value)
 
     @property
     def window_min_size(self):
-        return _cast_ImVec2_tuple(self.ref.WindowMinSize)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.WindowMinSize)
 
     @window_min_size.setter
     def window_min_size(self, value):
-        self.ref.WindowMinSize = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.WindowMinSize = _cast_tuple_ImVec2(value)
 
     @property
     def window_rounding(self):
-        return self.ref.WindowRounding
+        self._check_ptr()
+        return self._ptr.WindowRounding
 
     @window_rounding.setter
     def window_rounding(self, float value):
-        self.ref.WindowRounding = value
+        self._check_ptr()
+        self._ptr.WindowRounding = value
 
     @property
     def window_border_size(self):
-        return self.ref.WindowBorderSize
+        self._check_ptr()
+        return self._ptr.WindowBorderSize
 
     @window_border_size.setter
     def window_border_size(self, float value):
-        self.ref.WindowBorderSize = value
+        self._check_ptr()
+        self._ptr.WindowBorderSize = value
 
     @property
     def child_rounding(self):
-        return self.ref.ChildRounding
+        self._check_ptr()
+        return self._ptr.ChildRounding
 
     @child_rounding.setter
     def child_rounding(self, float value):
-        self.ref.ChildRounding = value
+        self._check_ptr()
+        self._ptr.ChildRounding = value
 
     @property
     def child_border_size(self):
-        return self.ref.ChildBorderSize
+        self._check_ptr()
+        return self._ptr.ChildBorderSize
 
     @child_border_size.setter
     def child_border_size(self, float value):
-        self.ref.PopupBorderSize = value
+        self._check_ptr()
+        self._ptr.PopupBorderSize = value
 
     @property
     def popup_rounding(self):
-        return self.ref.PopupRounding
+        self._check_ptr()
+        return self._ptr.PopupRounding
 
     @popup_rounding.setter
     def popup_rounding(self, float value):
-        self.ref.PopupRounding = value
+        self._check_ptr()
+        self._ptr.PopupRounding = value
 
     @property
     def popup_border_size(self):
-        return self.ref.PopupBorderSize
+        self._check_ptr()
+        return self._ptr.PopupBorderSize
 
     @child_border_size.setter
     def child_border_size(self, float value):
-        self.ref.ChildBorderSize = value
+        self._check_ptr()
+        self._ptr.ChildBorderSize = value
 
     IF TARGET_IMGUI_VERSION > (1, 49):
         # note: not available as Vec2 in 1.49
         # todo: add support for old input type
         @property
         def window_title_align(self):
-            return _cast_ImVec2_tuple(self.ref.WindowTitleAlign)
+            self._check_ptr()
+            return _cast_ImVec2_tuple(self._ptr.WindowTitleAlign)
 
         @window_title_align.setter
         def window_title_align(self, value):
-            self.ref.WindowTitleAlign = _cast_tuple_ImVec2(value)
+            self._check_ptr()
+            self._ptr.WindowTitleAlign = _cast_tuple_ImVec2(value)
 
     @property
     def frame_padding(self):
-        return _cast_ImVec2_tuple(self.ref.FramePadding)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.FramePadding)
 
     @frame_padding.setter
     def frame_padding(self, value):
-        self.ref.FramePadding = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.FramePadding = _cast_tuple_ImVec2(value)
 
     @property
     def frame_rounding(self):
-        return self.ref.FrameRounding
+        self._check_ptr()
+        return self._ptr.FrameRounding
 
     @frame_rounding.setter
     def frame_rounding(self, float value):
-        self.ref.FrameRounding = value
+        self._check_ptr()
+        self._ptr.FrameRounding = value
 
     @property
     def frame_border_size(self):
-        return self.ref.FrameBorderSize
+        self._check_ptr()
+        return self._ptr.FrameBorderSize
 
     @frame_border_size.setter
     def frame_border_size(self, float value):
-        self.ref.FrameBorderSize = value
+        self._check_ptr()
+        self._ptr.FrameBorderSize = value
 
 
     @property
     def item_spacing(self):
-        return _cast_ImVec2_tuple(self.ref.ItemSpacing)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.ItemSpacing)
 
     @item_spacing.setter
     def item_spacing(self, value):
-        self.ref.ItemSpacing = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.ItemSpacing = _cast_tuple_ImVec2(value)
 
     @property
     def item_inner_spacing(self):
-        return _cast_ImVec2_tuple(self.ref.ItemInnerSpacing)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.ItemInnerSpacing)
 
     @item_inner_spacing.setter
     def item_inner_spacing(self, value):
-        self.ref.ItemInnerSpacing = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.ItemInnerSpacing = _cast_tuple_ImVec2(value)
 
     @property
     def touch_extra_padding(self):
-        return _cast_ImVec2_tuple(self.ref.TouchExtraPadding)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.TouchExtraPadding)
 
     @touch_extra_padding.setter
     def touch_extra_padding(self, value):
-        self.ref.TouchExtraPadding = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.TouchExtraPadding = _cast_tuple_ImVec2(value)
 
     @property
     def indent_spacing(self):
-        return self.ref.IndentSpacing
+        self._check_ptr()
+        return self._ptr.IndentSpacing
 
     @indent_spacing.setter
     def indent_spacing(self, float value):
-        self.ref.IndentSpacing = value
+        self._check_ptr()
+        self._ptr.IndentSpacing = value
 
     @property
     def columns_min_spacing(self):
-        return self.ref.ColumnsMinSpacing
+        self._check_ptr()
+        return self._ptr.ColumnsMinSpacing
 
     @columns_min_spacing.setter
     def columns_min_spacing(self, float value):
-        self.ref.ColumnsMinSpacing = value
+        self._check_ptr()
+        self._ptr.ColumnsMinSpacing = value
 
     @property
     def scrollbar_size(self):
-        return self.ref.ScrollbarSize
+        self._check_ptr()
+        return self._ptr.ScrollbarSize
 
     @scrollbar_size.setter
     def scrollbar_size(self, float value):
-        self.ref.ScrollbarSize = value
+        self._check_ptr()
+        self._ptr.ScrollbarSize = value
 
     @property
     def scrollbar_rounding(self):
-        return self.ref.ScrollbarRounding
+        self._check_ptr()
+        return self._ptr.ScrollbarRounding
 
     @scrollbar_rounding.setter
     def scrollbar_rounding(self, float value):
-        self.ref.ScrollbarRounding = value
+        self._check_ptr()
+        self._ptr.ScrollbarRounding = value
 
     @property
     def grab_min_size(self):
-        return self.ref.GrabMinSize
+        self._check_ptr()
+        return self._ptr.GrabMinSize
 
     @grab_min_size.setter
     def grab_min_size(self, float value):
-        self.ref.GrabMinSize = value
+        self._check_ptr()
+        self._ptr.GrabMinSize = value
 
     @property
     def grab_rounding(self):
-        return self.ref.GrabRounding
+        self._check_ptr()
+        return self._ptr.GrabRounding
 
     @grab_rounding.setter
     def grab_rounding(self, float value):
-        self.ref.GrabRounding = value
+        self._check_ptr()
+        self._ptr.GrabRounding = value
 
     IF TARGET_IMGUI_VERSION > (1, 49):
         # note: not available as Vec2 in 1.49
         # todo: add support for old input type
         @property
         def button_text_align(self):
-            return _cast_ImVec2_tuple(self.ref.ButtonTextAlign)
+            self._check_ptr()
+            return _cast_ImVec2_tuple(self._ptr.ButtonTextAlign)
 
         @button_text_align.setter
         def button_text_align(self, value):
-            self.ref.ButtonTextAlign = _cast_tuple_ImVec2(value)
+            self._check_ptr()
+            self._ptr.ButtonTextAlign = _cast_tuple_ImVec2(value)
 
     @property
     def display_window_padding(self):
-        return _cast_ImVec2_tuple(self.ref.DisplayWindowPadding)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.DisplayWindowPadding)
 
     @display_window_padding.setter
     def display_window_padding(self, value):
-        self.ref.DisplayWindowPadding = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.DisplayWindowPadding = _cast_tuple_ImVec2(value)
 
     @property
     def display_safe_area_padding(self):
-        return _cast_ImVec2_tuple(self.ref.DisplaySafeAreaPadding)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.DisplaySafeAreaPadding)
 
     @display_safe_area_padding.setter
     def display_safe_area_padding(self, value):
-        self.ref.DisplaySafeAreaPadding = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.DisplaySafeAreaPadding = _cast_tuple_ImVec2(value)
 
     @property
     def mouse_cursor_scale(self):
-        return self.ref.MouseCursorScale
+        self._check_ptr()
+        return self._ptr.MouseCursorScale
 
     @mouse_cursor_scale.setter
     def mouse_cursor_scale(self, value):
-        self.ref.MouseCursorScale = value
+        self._check_ptr()
+        self._ptr.MouseCursorScale = value
 
     @property
     def anti_aliased_lines(self):
-        return self.ref.AntiAliasedLines
+        self._check_ptr()
+        return self._ptr.AntiAliasedLines
 
     @anti_aliased_lines.setter
     def anti_aliased_lines(self, cimgui.bool value):
-        self.ref.AntiAliasedLines = value
+        self._check_ptr()
+        self._ptr.AntiAliasedLines = value
 
     @property
     def anti_aliased_fill(self):
-        return self.ref.AntiAliasedFill
+        self._check_ptr()
+        return self._ptr.AntiAliasedFill
 
     @anti_aliased_fill.setter
     def anti_aliased_fill(self, cimgui.bool value):
-        self.ref.AntiAliasedFill = value
+        self._check_ptr()
+        self._ptr.AntiAliasedFill = value
 
     @property
     def curve_tessellation_tolerance(self):
-        return self.ref.CurveTessellationTol
+        self._check_ptr()
+        return self._ptr.CurveTessellationTol
 
     @curve_tessellation_tolerance.setter
     def curve_tessellation_tolerance(self, float value):
-        self.ref.CurveTessellationTol = value
+        self._check_ptr()
+        self._ptr.CurveTessellationTol = value
 
     def color(self, cimgui.ImGuiCol variable):
         IF TARGET_IMGUI_VERSION > (1, 49):
@@ -793,8 +881,9 @@ cdef class GuiStyle(object):
             if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
                 raise ValueError("Unknown style variable: {}".format(variable))
 
+        self._check_ptr()
         cdef int ix = variable
-        return _cast_ImVec4_tuple(self.ref.Colors[ix])
+        return _cast_ImVec4_tuple(self._ptr.Colors[ix])
 
 
 cdef class _DrawData(object):
@@ -1394,7 +1483,7 @@ def style_colors_dark(GuiStyle dst = None):
         void StyleColorsDark(ImGuiStyle* dst = NULL)
     """
     if dst:
-        cimgui.StyleColorsDark(&dst.ref)
+        cimgui.StyleColorsDark(dst._ptr)
     else:
         cimgui.StyleColorsDark(NULL)
 
@@ -1408,7 +1497,7 @@ def style_colors_classic(GuiStyle dst = None):
         void StyleColorsClassic(ImGuiStyle* dst = NULL)
     """
     if dst:
-        cimgui.StyleColorsClassic(&dst.ref)
+        cimgui.StyleColorsClassic(dst._ptr)
     else:
         cimgui.StyleColorsClassic(NULL)
 
@@ -1423,7 +1512,7 @@ def style_colors_light(GuiStyle dst = None):
         void StyleColorsLight(ImGuiStyle* dst = NULL)
     """
     if dst:
-        cimgui.StyleColorsLight(&dst.ref)
+        cimgui.StyleColorsLight(dst._ptr)
     else:
         cimgui.StyleColorsLight(NULL)
 
@@ -1447,7 +1536,7 @@ def show_style_editor(GuiStyle style=None):
         void ShowStyleEditor(ImGuiStyle* ref = NULL)
     """
     if style:
-        cimgui.ShowStyleEditor(&style.ref)
+        cimgui.ShowStyleEditor(style._ptr)
     else:
         cimgui.ShowStyleEditor()
 
