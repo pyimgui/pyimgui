@@ -116,9 +116,8 @@ STYLE_SCROLLBAR_ROUNDING = core.STYLE_SCROLLBAR_ROUNDING
 STYLE_GRAB_MIN_SIZE = core.STYLE_GRAB_MIN_SIZE
 #: associated type: ``float``.
 STYLE_GRAB_ROUNDING = core.STYLE_GRAB_ROUNDING
-if hasattr(core, 'STYLE_BUTTON_TEXT_ALIGN'):
-    #: associated type: flags ImGuiAlign_*.
-    STYLE_BUTTON_TEXT_ALIGN = core.STYLE_BUTTON_TEXT_ALIGN
+#: associated type: flags ImGuiAlign_*.
+STYLE_BUTTON_TEXT_ALIGN = core.STYLE_BUTTON_TEXT_ALIGN
 
 # === Window flag constants (redefines for autodoc)
 #: Disable title-bar.
@@ -406,6 +405,7 @@ INPUT_TEXT_PASSWORD = core.INPUT_TEXT_PASSWORD
 #: active, if you want to provide your own undo/redo stack you need
 #: e.g. to call clear_active_id().
 INPUT_TEXT_NO_UNDO_REDO = core.INPUT_TEXT_NO_UNDO_REDO
+
 
 # extra aliases for backwards compatibility
 def _core_to_extra_deprecated(fn):
