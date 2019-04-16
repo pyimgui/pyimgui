@@ -74,6 +74,13 @@ def filter_source_lines(source_lines):
     ]
 
 
+def _ns(locals_, globals_):
+    ns = {}
+    ns.update(locals_)
+    ns.update(globals_)
+    return ns
+
+
 def split_sources(source):
     source_lines = filter_source_lines(source.split("\n"))
 
@@ -131,8 +138,10 @@ def render_snippet(
 
     impl = GlfwRenderer(window)
 
+    exec_ns = _ns(globals(), locals())
+
     if init_source:
-        exec(init_code, locals(), globals())
+        exec(init_code, exec_ns)
 
     glfw.poll_events()
 
@@ -181,8 +190,7 @@ def render_snippet(
                     pivot_x=0.5,
                     pivot_y=0.5
                 )
-
-            exec(frame_code, locals(), globals())
+            exec(frame_code, exec_ns)
 
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, offscreen_fb)
 
