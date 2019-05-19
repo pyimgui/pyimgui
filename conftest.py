@@ -82,10 +82,9 @@ class DocItem(pytest.Item):
         if (
             "import array" in source
             and sys.version_info < (3, 0)
-            and sys.platform == "win32"
         ):
             pytest.skip(
-                "array.array does not work properly under win32 as memory view"
+                "array.array does not work properly under py27 as memory view"
             )
 
         code = compile(source, '<str>', 'exec')
