@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+from traceback import print_exc
 
 import pytest
 from inspect import currentframe, getframeinfo
@@ -90,6 +91,7 @@ class DocItem(pytest.Item):
             exec(code, locals(), globals())
         except Exception as err:
             # note: quick and dirty way to annotate sources with error marker
+            print_exc()
             lines = source.split('\n')
             lines.insert(sys.exc_info()[2].tb_next.tb_lineno, "^^^")
             self.code = "\n".join(lines)
