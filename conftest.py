@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+from traceback import print_exc
 
 import pytest
 from inspect import currentframe, getframeinfo
@@ -16,6 +17,13 @@ sphinx = None
 
 def project_path(*paths):
     return os.path.join(PROJECT_ROOT_DIR, *paths)
+
+
+def _ns(locals_, globals_):
+    ns = {}
+    ns.update(locals_)
+    ns.update(globals_)
+    return ns
 
 
 class SphinxDoc(pytest.File):
@@ -71,6 +79,15 @@ class DocItem(pytest.Item):
         ]
         source = "\n".join(lines)
 
+        if (
+            "import array" in source
+            and sys.version_info < (3, 0)
+            and sys.platform == "win32"
+        ):
+            pytest.skip(
+                "array.array does not work properly under win32 as memory view"
+            )
+
         code = compile(source, '<str>', 'exec')
         frameinfo = getframeinfo(currentframe())
 
@@ -86,10 +103,13 @@ class DocItem(pytest.Item):
 
         imgui.new_frame()
 
+        exec_ns = _ns(locals(), globals())
+
         try:
-            exec(code, locals(), globals())
+            exec(code, exec_ns, exec_ns)
         except Exception as err:
             # note: quick and dirty way to annotate sources with error marker
+            print_exc()
             lines = source.split('\n')
             lines.insert(sys.exc_info()[2].tb_next.tb_lineno, "^^^")
             self.code = "\n".join(lines)
