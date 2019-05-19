@@ -18,13 +18,6 @@ def project_path(*paths):
     return os.path.join(PROJECT_ROOT_DIR, *paths)
 
 
-def _ns(locals_, globals_):
-    ns = {}
-    ns.update(locals_)
-    ns.update(globals_)
-    return ns
-
-
 class SphinxDoc(pytest.File):
     def __init__(self, path, parent):
         # yuck!
@@ -93,10 +86,8 @@ class DocItem(pytest.Item):
 
         imgui.new_frame()
 
-        exec_ns = _ns(locals(), globals())
-
         try:
-            exec(code, exec_ns, exec_ns)
+            exec(code, locals(), globals())
         except Exception as err:
             # note: quick and dirty way to annotate sources with error marker
             lines = source.split('\n')

@@ -5258,7 +5258,10 @@ def plot_lines(
         from array import array
         from math import sin
 
-        plot_values = array('f', [sin(x * 0.1) for x in range(100)])
+        plot_values = array('f')
+        for x in range(100):
+            plot_values.append(sin(x * 0.1))
+
 
         imgui.begin("Plot example")
         imgui.plot_lines("Sin(t)", plot_values)
@@ -5348,7 +5351,9 @@ def plot_histogram(
         from array import array
         from random import random
 
-        histogram_values = array('f', [random() for _ in range(20)])
+        histogram_values = array('f')
+        for _ in range(20):
+            histogram_values.append(random())
 
         imgui.begin("Plot example")
         imgui.plot_histogram("histogram(random())", histogram_values)
