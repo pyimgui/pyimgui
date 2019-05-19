@@ -72,6 +72,15 @@ class DocItem(pytest.Item):
         ]
         source = "\n".join(lines)
 
+        if (
+            "import array" in source
+            and sys.version_info < (3, 0)
+            and sys.platform == "win32"
+        ):
+            pytest.skip(
+                "array.array does not work properly under win32 as memory view"
+            )
+
         code = compile(source, '<str>', 'exec')
         frameinfo = getframeinfo(currentframe())
 
