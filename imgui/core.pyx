@@ -5257,7 +5257,8 @@ def plot_lines(
 
         from array import array
         from math import sin
-
+        # NOTE: this example will not work under py27 due do incompatible
+        # implementation of array and memmory view (at least under win)
         plot_values = array('f', [sin(x * 0.1) for x in range(100)])
 
         imgui.begin("Plot example")
@@ -5348,6 +5349,8 @@ def plot_histogram(
         from array import array
         from random import random
 
+        # NOTE: this example will not work under py27 due do incompatible
+        # implementation of array and memmory view (at least under win)
         histogram_values = array('f', [random() for _ in range(20)])
 
         imgui.begin("Plot example")
