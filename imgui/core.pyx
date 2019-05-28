@@ -5972,7 +5972,7 @@ cpdef push_style_color(
     .. wraps::
         PushStyleColor(ImGuiCol idx, const ImVec4& col)
     """
-    if not (0 <= variable < enums.ImGuiStyleVar_Count_):
+    if not (0 <= variable < enums.ImGuiCol_COUNT):
         warnings.warn("Unknown style variable: {}".format(variable))
         return False
 
