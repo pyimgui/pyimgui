@@ -98,6 +98,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.napoleon',
     'custom_directives',
+    'sphinx_rtd_theme',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -190,9 +191,9 @@ suppress_warnings = ['image.nonlocal_uri']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-# html_theme = 'sphinx_rtd_theme'
+html_theme = 'sphinx_rtd_theme'
 
-html_theme = 'alabaster'
+#html_theme = 'alabaster'
 
 html_sidebars = {
     '**': [
@@ -202,16 +203,6 @@ html_sidebars = {
         'searchbox.html',
         'support.html',
     ]
-}
-
-html_theme_options = {
-    'github_user': 'swistakm',
-    'github_repo': 'pyimgui',
-    'github_button': True,
-    'github_type': 'star',
-    'fixed_sidebar': True,
-    'sidebar_includehidden': True,
-    'description': "Python wrapper for dear ImGui",
 }
 
 # Theme options are theme-specific and customize the look and feel of a theme
