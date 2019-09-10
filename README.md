@@ -84,7 +84,7 @@ commands:
 
 
 # Development tips
-We have tried hard to make the process of bootstraping this project as simple
+We have tried hard to make the process of bootstrapping this project as simple
 as possible.
 
 In order to build and install project locally ,ake sure you have created and
