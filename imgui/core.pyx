@@ -562,12 +562,12 @@ cdef class GuiStyle(object):
     """
     cdef cimgui.ImGuiStyle* _ptr
     cdef bool _owner
-    cdef public Colors colors
+    cdef Colors _colors
 
     def __cinit__(self):
         self._ptr = NULL
         self._owner = False
-        self.colors = None
+        self._colors = None
 
     def __dealloc__(self):
         if self._owner:
@@ -593,7 +593,7 @@ cdef class GuiStyle(object):
     cdef GuiStyle from_ref(cimgui.ImGuiStyle& ref):
         cdef GuiStyle instance = GuiStyle()
         instance._ptr = &ref
-        instance.colors = Colors(instance)
+        instance._colors = Colors(instance)
         return instance
 
     @staticmethod
@@ -601,7 +601,7 @@ cdef class GuiStyle(object):
         cdef cimgui.ImGuiStyle* _ptr = new cimgui.ImGuiStyle()
         cdef GuiStyle instance = GuiStyle.from_ref(deref(_ptr))
         instance._owner = True
-        instance.colors = Colors(instance)
+        instance._colors = Colors(instance)
         return instance
 
     @property
@@ -906,6 +906,11 @@ cdef class GuiStyle(object):
         self._check_ptr()
         cdef int ix = variable
         return _cast_ImVec4_tuple(self._ptr.Colors[ix])
+
+    @property
+    def colors(self):
+        self._check_ptr()
+        return self._colors
 
 
 cdef class _DrawData(object):
