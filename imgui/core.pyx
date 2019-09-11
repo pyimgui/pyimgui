@@ -529,7 +529,7 @@ cdef class _DrawList(object):
             for idx in xrange(self._ptr.CmdBuffer.Size)
         ]
 
-cdef class Color(object):
+cdef class Colors(object):
     cdef GuiStyle _style
 
     def __cinit__(self):
@@ -562,12 +562,12 @@ cdef class GuiStyle(object):
     """
     cdef cimgui.ImGuiStyle* _ptr
     cdef bool _owner
-    cdef public Color color
+    cdef public Colors colors
 
     def __cinit__(self):
         self._ptr = NULL
         self._owner = False
-        self.color = None
+        self.colors = None
 
     def __dealloc__(self):
         if self._owner:
@@ -593,7 +593,7 @@ cdef class GuiStyle(object):
     cdef GuiStyle from_ref(cimgui.ImGuiStyle& ref):
         cdef GuiStyle instance = GuiStyle()
         instance._ptr = &ref
-        instance.color = Color(instance)
+        instance.colors = Colors(instance)
         return instance
 
     @staticmethod
@@ -601,7 +601,7 @@ cdef class GuiStyle(object):
         cdef cimgui.ImGuiStyle* _ptr = new cimgui.ImGuiStyle()
         cdef GuiStyle instance = GuiStyle.from_ref(deref(_ptr))
         instance._owner = True
-        instance.color = Color(instance)
+        instance.colors = Colors(instance)
         return instance
 
     @property
