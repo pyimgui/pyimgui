@@ -97,4 +97,18 @@ class PygameRenderer(FixedPipelineRenderer):
             )
 
         if event.type == pygame.VIDEORESIZE:
+            surface = pygame.display.get_surface()
+            # note: pygame does not modify existing surface upon resize,
+            #       we need to to it ourselves.
+            pygame.display.set_mode(
+                (event.w, event.h),
+                flags=surface.get_flags(),
+            )
+            # existing font texure is no longer valid, so we need to refresh it
+            self.refresh_font_texture()
+
+            # notify imgui about new window size
             io.display_size = event.size
+
+            # delete old surface, it is no longer needed
+            del surface

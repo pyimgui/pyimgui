@@ -13,7 +13,7 @@ def main():
     pygame.init()
     size = 800, 600
 
-    pygame.display.set_mode(size, pygame.DOUBLEBUF | pygame.OPENGL)
+    pygame.display.set_mode(size, pygame.DOUBLEBUF | pygame.OPENGL | pygame.RESIZABLE)
 
     imgui.create_context()
     impl = PygameRenderer()
