@@ -899,6 +899,14 @@ cdef class GuiStyle(object):
         self._check_ptr()
         self._ptr.CurveTessellationTol = value
 
+    def color(self, cimgui.ImGuiCol variable):
+        if not (0 <= variable < enums.ImGuiCol_COUNT):
+            raise ValueError("Unknown style variable: {}".format(variable))
+
+        self._check_ptr()
+        cdef int ix = variable
+        return _cast_ImVec4_tuple(self._ptr.Colors[ix])
+
 
 cdef class _DrawData(object):
     cdef cimgui.ImDrawData* _ptr
