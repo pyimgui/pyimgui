@@ -72,7 +72,8 @@ class DocItem(pytest.Item):
             if all([
                 "imgui.new_frame()" not in line,
                 "imgui.render()" not in line,
-                "imgui.end_frame()" not in line
+                "imgui.end_frame()" not in line,
+                "fonts.get_tex_data_as_rgba32()" not in line,
             ]) else ""
             for line in
             source.split('\n')
