@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-VERSION = (1, 0, 0, 'a2')  # PEP 386
+VERSION = (1, 0, 0)  # PEP 386
 __version__ = ".".join([str(x) for x in VERSION])
 
 from imgui.core import *  # noqa
@@ -116,9 +116,8 @@ STYLE_SCROLLBAR_ROUNDING = core.STYLE_SCROLLBAR_ROUNDING
 STYLE_GRAB_MIN_SIZE = core.STYLE_GRAB_MIN_SIZE
 #: associated type: ``float``.
 STYLE_GRAB_ROUNDING = core.STYLE_GRAB_ROUNDING
-if hasattr(core, 'STYLE_BUTTON_TEXT_ALIGN'):
-    #: associated type: flags ImGuiAlign_*.
-    STYLE_BUTTON_TEXT_ALIGN = core.STYLE_BUTTON_TEXT_ALIGN
+#: associated type: flags ImGuiAlign_*.
+STYLE_BUTTON_TEXT_ALIGN = core.STYLE_BUTTON_TEXT_ALIGN
 
 # === Window flag constants (redefines for autodoc)
 #: Disable title-bar.
@@ -406,23 +405,3 @@ INPUT_TEXT_PASSWORD = core.INPUT_TEXT_PASSWORD
 #: active, if you want to provide your own undo/redo stack you need
 #: e.g. to call clear_active_id().
 INPUT_TEXT_NO_UNDO_REDO = core.INPUT_TEXT_NO_UNDO_REDO
-
-# extra aliases for backwards compatibility
-def _core_to_extra_deprecated(fn):
-    return _compat.deprecated("""
-        The imgui.core.{0}() is deprecated
-        and will be removed in 1.0.0 version of pyimgui.
-        Please use imgui.extra.{0}()
-        or imgui.{0}() instead.
-        """.format(fn.__name__)
-    )(fn)
-
-
-core.font = _core_to_extra_deprecated(extra.font)
-core.styled = _core_to_extra_deprecated(extra.styled)
-core.istyled = _core_to_extra_deprecated(extra.istyled)
-core.vertex_buffer_vertex_pos_offset = _core_to_extra_deprecated(extra.vertex_buffer_vertex_pos_offset)  # noqa
-core.vertex_buffer_vertex_uv_offset = _core_to_extra_deprecated(extra.vertex_buffer_vertex_uv_offset)  # noqa
-core.vertex_buffer_vertex_col_offset = _core_to_extra_deprecated(extra.vertex_buffer_vertex_col_offset)  # noqa
-core.vertex_buffer_vertex_size = _core_to_extra_deprecated(extra.vertex_buffer_vertex_size)  # noqa
-core.index_buffer_index_size = _core_to_extra_deprecated(extra.index_buffer_index_size)  # noqa

@@ -10,6 +10,7 @@
 
 import cython
 from cython.view cimport array as cvarray
+from cython.operator cimport dereference as deref
 
 from collections import namedtuple
 import warnings
@@ -32,7 +33,7 @@ cimport enums
 from cpython.version cimport PY_MAJOR_VERSION
 
 # todo: find a way to cimport this directly from imgui.h
-DEF TARGET_IMGUI_VERSION = (1, 49)
+DEF TARGET_IMGUI_VERSION = (1, 65)
 
 cdef unsigned short* _LATIN_ALL = [0x0020, 0x024F , 0]
 
@@ -63,8 +64,7 @@ STYLE_SCROLLBAR_SIZE = enums.ImGuiStyleVar_ScrollbarSize # float
 STYLE_SCROLLBAR_ROUNDING = enums.ImGuiStyleVar_ScrollbarRounding # float
 STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
 STYLE_GRAB_ROUNDING = enums.ImGuiStyleVar_GrabRounding # float
-IF TARGET_IMGUI_VERSION > (1, 49):
-    STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
+STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
 
 # ==== Key map enum redefines ====
 KEY_TAB = enums.ImGuiKey_Tab                 # for tabbing through fields
@@ -316,9 +316,15 @@ cdef class _ImGuiContext(object):
 
     @staticmethod
     cdef from_ptr(cimgui.ImGuiContext* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _ImGuiContext()
         instance._ptr = ptr
         return instance
+
+    def __eq__(_ImGuiContext self, _ImGuiContext other):
+        return other._ptr == self._ptr
 
 
 cdef class _DrawCmd(object):
@@ -328,6 +334,9 @@ cdef class _DrawCmd(object):
     #       see: http://cython.readthedocs.io/en/latest/src/userguide/extension_types.html#fast-instantiation
     @staticmethod
     cdef from_ptr(cimgui.ImDrawCmd* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _DrawCmd()
         instance._ptr = ptr
         return instance
@@ -350,6 +359,9 @@ cdef class _DrawList(object):
 
     @staticmethod
     cdef from_ptr(cimgui.ImDrawList* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _DrawList()
         instance._ptr = ptr
         return instance
@@ -593,12 +605,44 @@ cdef class GuiStyle(object):
     Container for ImGui style information
 
     """
-    cdef cimgui.ImGuiStyle ref
+    cdef cimgui.ImGuiStyle* _ptr
+    cdef bool _owner
+
+    def __cinit__(self):
+        self._ptr = NULL
+        self._owner = False
+
+    def __dealloc__(self):
+        if self._owner:
+            del self._ptr
+            self._ptr = NULL
+
+
+    cdef inline _check_ptr(self):
+        if self._ptr is NULL:
+            raise RuntimeError(
+                "Improperly initialized, use imgui.get_style() or "
+                "GuiStyle.created() to obtain style classes"
+            )
+
+    def __eq__(GuiStyle self, GuiStyle other):
+        return other._ptr == self._ptr
 
     @staticmethod
-    cdef from_ref(cimgui.ImGuiStyle& ref):
-        instance = GuiStyle()
-        instance.ref = ref
+    def create():
+        return GuiStyle._create()
+
+    @staticmethod
+    cdef GuiStyle from_ref(cimgui.ImGuiStyle& ref):
+        cdef GuiStyle instance = GuiStyle()
+        instance._ptr = &ref
+        return instance
+
+    @staticmethod
+    cdef GuiStyle _create():
+        cdef cimgui.ImGuiStyle* _ptr = new cimgui.ImGuiStyle()
+        cdef GuiStyle instance = GuiStyle.from_ref(deref(_ptr))
+        instance._owner = True
         return instance
 
     @property
@@ -608,251 +652,301 @@ cdef class GuiStyle(object):
         Returns:
             float
         """
-        return self.ref.Alpha
+        self._check_ptr()
+        return self._ptr.Alpha
 
     @alpha.setter
     def alpha(self, float value):
-        self.ref.Alpha = value
+        self._check_ptr()
+        self._ptr.Alpha = value
 
     @property
     def window_padding(self):
-        return _cast_ImVec2_tuple(self.ref.WindowPadding)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.WindowPadding)
 
     @window_padding.setter
     def window_padding(self, value):
-        self.ref.WindowPadding = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.WindowPadding = _cast_tuple_ImVec2(value)
 
     @property
     def window_min_size(self):
-        return _cast_ImVec2_tuple(self.ref.WindowMinSize)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.WindowMinSize)
 
     @window_min_size.setter
     def window_min_size(self, value):
-        self.ref.WindowMinSize = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.WindowMinSize = _cast_tuple_ImVec2(value)
 
     @property
     def window_rounding(self):
-        return self.ref.WindowRounding
+        self._check_ptr()
+        return self._ptr.WindowRounding
 
     @window_rounding.setter
     def window_rounding(self, float value):
-        self.ref.WindowRounding = value
+        self._check_ptr()
+        self._ptr.WindowRounding = value
 
     @property
     def window_border_size(self):
-        return self.ref.WindowBorderSize
+        self._check_ptr()
+        return self._ptr.WindowBorderSize
 
     @window_border_size.setter
     def window_border_size(self, float value):
-        self.ref.WindowBorderSize = value
+        self._check_ptr()
+        self._ptr.WindowBorderSize = value
 
     @property
     def child_rounding(self):
-        return self.ref.ChildRounding
+        self._check_ptr()
+        return self._ptr.ChildRounding
 
     @child_rounding.setter
     def child_rounding(self, float value):
-        self.ref.ChildRounding = value
+        self._check_ptr()
+        self._ptr.ChildRounding = value
 
     @property
     def child_border_size(self):
-        return self.ref.ChildBorderSize
+        self._check_ptr()
+        return self._ptr.ChildBorderSize
 
     @child_border_size.setter
     def child_border_size(self, float value):
-        self.ref.PopupBorderSize = value
+        self._check_ptr()
+        self._ptr.ChildBorderSize = value
 
     @property
     def popup_rounding(self):
-        return self.ref.PopupRounding
+        self._check_ptr()
+        return self._ptr.PopupRounding
 
     @popup_rounding.setter
     def popup_rounding(self, float value):
-        self.ref.PopupRounding = value
+        self._check_ptr()
+        self._ptr.PopupRounding = value
 
     @property
     def popup_border_size(self):
-        return self.ref.PopupBorderSize
+        self._check_ptr()
+        return self._ptr.PopupBorderSize
 
-    @child_border_size.setter
-    def child_border_size(self, float value):
-        self.ref.ChildBorderSize = value
+    @popup_border_size.setter
+    def popup_border_size(self, float value):
+        self._check_ptr()
+        self._ptr.ChildBorderSize = value
 
-    IF TARGET_IMGUI_VERSION > (1, 49):
-        # note: not available as Vec2 in 1.49
-        # todo: add support for old input type
-        @property
-        def window_title_align(self):
-            return _cast_ImVec2_tuple(self.ref.WindowTitleAlign)
+    @property
+    def window_title_align(self):
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.WindowTitleAlign)
 
-        @window_title_align.setter
-        def window_title_align(self, value):
-            self.ref.WindowTitleAlign = _cast_tuple_ImVec2(value)
+    @window_title_align.setter
+    def window_title_align(self, value):
+        self._check_ptr()
+        self._ptr.WindowTitleAlign = _cast_tuple_ImVec2(value)
 
     @property
     def frame_padding(self):
-        return _cast_ImVec2_tuple(self.ref.FramePadding)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.FramePadding)
 
     @frame_padding.setter
     def frame_padding(self, value):
-        self.ref.FramePadding = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.FramePadding = _cast_tuple_ImVec2(value)
 
     @property
     def frame_rounding(self):
-        return self.ref.FrameRounding
+        self._check_ptr()
+        return self._ptr.FrameRounding
 
     @frame_rounding.setter
     def frame_rounding(self, float value):
-        self.ref.FrameRounding = value
+        self._check_ptr()
+        self._ptr.FrameRounding = value
 
     @property
     def frame_border_size(self):
-        return self.ref.FrameBorderSize
+        self._check_ptr()
+        return self._ptr.FrameBorderSize
 
     @frame_border_size.setter
     def frame_border_size(self, float value):
-        self.ref.FrameBorderSize = value
-
+        self._check_ptr()
+        self._ptr.FrameBorderSize = value
 
     @property
     def item_spacing(self):
-        return _cast_ImVec2_tuple(self.ref.ItemSpacing)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.ItemSpacing)
 
     @item_spacing.setter
     def item_spacing(self, value):
-        self.ref.ItemSpacing = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.ItemSpacing = _cast_tuple_ImVec2(value)
 
     @property
     def item_inner_spacing(self):
-        return _cast_ImVec2_tuple(self.ref.ItemInnerSpacing)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.ItemInnerSpacing)
 
     @item_inner_spacing.setter
     def item_inner_spacing(self, value):
-        self.ref.ItemInnerSpacing = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.ItemInnerSpacing = _cast_tuple_ImVec2(value)
 
     @property
     def touch_extra_padding(self):
-        return _cast_ImVec2_tuple(self.ref.TouchExtraPadding)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.TouchExtraPadding)
 
     @touch_extra_padding.setter
     def touch_extra_padding(self, value):
-        self.ref.TouchExtraPadding = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.TouchExtraPadding = _cast_tuple_ImVec2(value)
 
     @property
     def indent_spacing(self):
-        return self.ref.IndentSpacing
+        self._check_ptr()
+        return self._ptr.IndentSpacing
 
     @indent_spacing.setter
     def indent_spacing(self, float value):
-        self.ref.IndentSpacing = value
+        self._check_ptr()
+        self._ptr.IndentSpacing = value
 
     @property
     def columns_min_spacing(self):
-        return self.ref.ColumnsMinSpacing
+        self._check_ptr()
+        return self._ptr.ColumnsMinSpacing
 
     @columns_min_spacing.setter
     def columns_min_spacing(self, float value):
-        self.ref.ColumnsMinSpacing = value
+        self._check_ptr()
+        self._ptr.ColumnsMinSpacing = value
 
     @property
     def scrollbar_size(self):
-        return self.ref.ScrollbarSize
+        self._check_ptr()
+        return self._ptr.ScrollbarSize
 
     @scrollbar_size.setter
     def scrollbar_size(self, float value):
-        self.ref.ScrollbarSize = value
+        self._check_ptr()
+        self._ptr.ScrollbarSize = value
 
     @property
     def scrollbar_rounding(self):
-        return self.ref.ScrollbarRounding
+        self._check_ptr()
+        return self._ptr.ScrollbarRounding
 
     @scrollbar_rounding.setter
     def scrollbar_rounding(self, float value):
-        self.ref.ScrollbarRounding = value
+        self._check_ptr()
+        self._ptr.ScrollbarRounding = value
 
     @property
     def grab_min_size(self):
-        return self.ref.GrabMinSize
+        self._check_ptr()
+        return self._ptr.GrabMinSize
 
     @grab_min_size.setter
     def grab_min_size(self, float value):
-        self.ref.GrabMinSize = value
+        self._check_ptr()
+        self._ptr.GrabMinSize = value
 
     @property
     def grab_rounding(self):
-        return self.ref.GrabRounding
+        self._check_ptr()
+        return self._ptr.GrabRounding
 
     @grab_rounding.setter
     def grab_rounding(self, float value):
-        self.ref.GrabRounding = value
+        self._check_ptr()
+        self._ptr.GrabRounding = value
 
-    IF TARGET_IMGUI_VERSION > (1, 49):
-        # note: not available as Vec2 in 1.49
-        # todo: add support for old input type
-        @property
-        def button_text_align(self):
-            return _cast_ImVec2_tuple(self.ref.ButtonTextAlign)
+    @property
+    def button_text_align(self):
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.ButtonTextAlign)
 
-        @button_text_align.setter
-        def button_text_align(self, value):
-            self.ref.ButtonTextAlign = _cast_tuple_ImVec2(value)
+    @button_text_align.setter
+    def button_text_align(self, value):
+        self._check_ptr()
+        self._ptr.ButtonTextAlign = _cast_tuple_ImVec2(value)
 
     @property
     def display_window_padding(self):
-        return _cast_ImVec2_tuple(self.ref.DisplayWindowPadding)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.DisplayWindowPadding)
 
     @display_window_padding.setter
     def display_window_padding(self, value):
-        self.ref.DisplayWindowPadding = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.DisplayWindowPadding = _cast_tuple_ImVec2(value)
 
     @property
     def display_safe_area_padding(self):
-        return _cast_ImVec2_tuple(self.ref.DisplaySafeAreaPadding)
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.DisplaySafeAreaPadding)
 
     @display_safe_area_padding.setter
     def display_safe_area_padding(self, value):
-        self.ref.DisplaySafeAreaPadding = _cast_tuple_ImVec2(value)
+        self._check_ptr()
+        self._ptr.DisplaySafeAreaPadding = _cast_tuple_ImVec2(value)
 
     @property
     def mouse_cursor_scale(self):
-        return self.ref.MouseCursorScale
+        self._check_ptr()
+        return self._ptr.MouseCursorScale
 
     @mouse_cursor_scale.setter
     def mouse_cursor_scale(self, value):
-        self.ref.MouseCursorScale = value
+        self._check_ptr()
+        self._ptr.MouseCursorScale = value
 
     @property
     def anti_aliased_lines(self):
-        return self.ref.AntiAliasedLines
+        self._check_ptr()
+        return self._ptr.AntiAliasedLines
 
     @anti_aliased_lines.setter
     def anti_aliased_lines(self, cimgui.bool value):
-        self.ref.AntiAliasedLines = value
+        self._check_ptr()
+        self._ptr.AntiAliasedLines = value
 
     @property
     def anti_aliased_fill(self):
-        return self.ref.AntiAliasedFill
+        self._check_ptr()
+        return self._ptr.AntiAliasedFill
 
     @anti_aliased_fill.setter
     def anti_aliased_fill(self, cimgui.bool value):
-        self.ref.AntiAliasedFill = value
+        self._check_ptr()
+        self._ptr.AntiAliasedFill = value
 
     @property
     def curve_tessellation_tolerance(self):
-        return self.ref.CurveTessellationTol
+        self._check_ptr()
+        return self._ptr.CurveTessellationTol
 
     @curve_tessellation_tolerance.setter
     def curve_tessellation_tolerance(self, float value):
-        self.ref.CurveTessellationTol = value
+        self._check_ptr()
+        self._ptr.CurveTessellationTol = value
 
     def color(self, cimgui.ImGuiCol variable):
-        IF TARGET_IMGUI_VERSION > (1, 49):
-            # note: this check is not available on imgui<=1.49
-            if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
-                raise ValueError("Unknown style variable: {}".format(variable))
+        if not (0 <= variable < enums.ImGuiStyleVar_Count_):
+            raise ValueError("Unknown style variable: {}".format(variable))
 
+        self._check_ptr()
         cdef int ix = variable
-        return _cast_ImVec4_tuple(self.ref.Colors[ix])
+        return _cast_ImVec4_tuple(self._ptr.Colors[ix])
 
 
 cdef class _DrawData(object):
@@ -869,6 +963,9 @@ cdef class _DrawData(object):
 
     @staticmethod
     cdef from_ptr(cimgui.ImDrawData* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _DrawData()
         instance._ptr = ptr
         return instance
@@ -915,6 +1012,9 @@ cdef class _StaticGlyphRanges(object):
 
     @staticmethod
     cdef from_ptr(const cimgui.ImWchar* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _StaticGlyphRanges()
         instance.ranges_ptr = ptr
         return instance
@@ -923,12 +1023,29 @@ cdef class _StaticGlyphRanges(object):
 cdef class _Font(object):
     @staticmethod
     cdef from_ptr(cimgui.ImFont* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _Font()
         instance._ptr = ptr
         return instance
 
 
 cdef class _FontAtlas(object):
+    """Font atlas object responsible for controling and loading fonts.
+
+    This class is not intended to be instantiated by user (thus `_`
+    name prefix). It should be accessed through :any:`_IO.fonts` attribute
+    of :class:`_IO` obtained with :func:`get_io` function.
+
+    Example::
+
+        import imgui
+
+        io = imgui.get_io()
+        io.fonts.add_font_default()
+
+    """
     cdef cimgui.ImFontAtlas* _ptr
 
     def __init__(self):
@@ -936,6 +1053,9 @@ cdef class _FontAtlas(object):
 
     @staticmethod
     cdef from_ptr(cimgui.ImFontAtlas* ptr):
+        if ptr == NULL:
+            return None
+
         instance = _FontAtlas()
         instance._ptr = ptr
         return instance
@@ -1039,6 +1159,19 @@ cdef class _FontAtlas(object):
 
 
 cdef class _IO(object):
+    """Main ImGui I/O context class used for ImGui configuration.
+
+    This class is not intended to be instantiated by user (thus `_`
+    name prefix). It should be accessed through obtained with :func:`get_io`
+    function.
+
+    Example::
+
+        import imgui
+
+        io = imgui.get_io()
+    """
+
     cdef cimgui.ImGuiIO* _ptr
     cdef object _fonts
 
@@ -1413,7 +1546,7 @@ def style_colors_dark(GuiStyle dst = None):
         void StyleColorsDark(ImGuiStyle* dst = NULL)
     """
     if dst:
-        cimgui.StyleColorsDark(&dst.ref)
+        cimgui.StyleColorsDark(dst._ptr)
     else:
         cimgui.StyleColorsDark(NULL)
 
@@ -1427,7 +1560,7 @@ def style_colors_classic(GuiStyle dst = None):
         void StyleColorsClassic(ImGuiStyle* dst = NULL)
     """
     if dst:
-        cimgui.StyleColorsClassic(&dst.ref)
+        cimgui.StyleColorsClassic(dst._ptr)
     else:
         cimgui.StyleColorsClassic(NULL)
 
@@ -1442,7 +1575,7 @@ def style_colors_light(GuiStyle dst = None):
         void StyleColorsLight(ImGuiStyle* dst = NULL)
     """
     if dst:
-        cimgui.StyleColorsLight(&dst.ref)
+        cimgui.StyleColorsLight(dst._ptr)
     else:
         cimgui.StyleColorsLight(NULL)
 
@@ -1466,7 +1599,7 @@ def show_style_editor(GuiStyle style=None):
         void ShowStyleEditor(ImGuiStyle* ref = NULL)
     """
     if style:
-        cimgui.ShowStyleEditor(&style.ref)
+        cimgui.ShowStyleEditor(style._ptr)
     else:
         cimgui.ShowStyleEditor()
 
@@ -3403,7 +3536,7 @@ def radio_button(str label, cimgui.bool active):
         :auto_layout:
         :height: 100
 
-        # note: the variable that contains the state of the radio_button, should be initialized 
+        # note: the variable that contains the state of the radio_button, should be initialized
         #       outside of the main interaction loop
         radio_active = True
 
@@ -3478,8 +3611,8 @@ def color_edit3(str label, float r, float g, float b):
     .. visual-example::
         :auto_layout:
         :width: 300
-        
-        # note: the variable that contains the color data, should be initialized 
+
+        # note: the variable that contains the color data, should be initialized
         #       outside of the main interaction loop
         color_1 = 1., .0, .5
         color_2 = 0., .8, .3
@@ -3487,7 +3620,7 @@ def color_edit3(str label, float r, float g, float b):
         imgui.begin("Example: color edit without alpha")
 
         # note: first element of return two-tuple notifies if the color was changed
-        #       in currently processed frame and second element is current value 
+        #       in currently processed frame and second element is current value
         #       of color
         changed, color_1 = imgui.color_edit3("Color 1", *color_1)
         changed, color_2 = imgui.color_edit3("Color 2", *color_2)
@@ -3524,14 +3657,14 @@ def color_edit4(
         :auto_layout:
         :width: 400
 
-        # note: the variable that contains the color data, should be initialized 
+        # note: the variable that contains the color data, should be initialized
         #       outside of the main interaction loop
         color = 1., .0, .5, 1.
 
         imgui.begin("Example: color edit with alpha")
 
         # note: first element of return two-tuple notifies if the color was changed
-        #       in currently processed frame and second element is current value 
+        #       in currently processed frame and second element is current value
         #       of color and alpha
         _, color = imgui.color_edit4("Alpha", *color, show_alpha=True)
         _, color = imgui.color_edit4("No alpha", *color, show_alpha=False)
@@ -5161,7 +5294,7 @@ def plot_lines(
 
     Args:
         label (str): A plot label that will be displayed on the plot's right
-            side. If you want the label to be visible, add :code:`"##"`
+            side. If you want the label to be invisible, add :code:`"##"`
             before the label's text: :code:`"my_label" -> "##my_label"`
 
         values (array of floats): the y-values.
@@ -5186,6 +5319,21 @@ def plot_lines(
     * **values_count** (*int*): Number of values to display. -1 will use the
         entire array.
     * **stride** (*int*): Number of bytes to move to read next element.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        from array import array
+        from math import sin
+        # NOTE: this example will not work under py27 due do incompatible
+        # implementation of array and memoryview().
+        plot_values = array('f', [sin(x * 0.1) for x in range(100)])
+
+        imgui.begin("Plot example")
+        imgui.plot_lines("Sin(t)", plot_values)
+        imgui.end()
 
     .. wraps::
             void PlotLines(
@@ -5212,6 +5360,99 @@ def plot_lines(
         overlay_text_ptr = overlay_text_b # auto-convert bytes to char*
 
     cimgui.PlotLines(
+        _bytes(label), &values[0], values_count,
+        values_offset,
+        overlay_text_ptr,
+        scale_min, scale_max,
+        _cast_tuple_ImVec2(graph_size),
+        stride
+    )
+
+
+def plot_histogram(
+        str label not None,
+        const float[:] values not None,
+        int values_count  = -1,
+        int values_offset = 0,
+        str overlay_text = None,
+        float scale_min = FLT_MAX,
+        float scale_max = FLT_MAX,
+        graph_size = (0, 0),
+        int stride = sizeof(float),
+    ):
+    """
+    Plot a histogram of float values.
+
+    Args:
+        label (str): A plot label that will be displayed on the plot's right
+            side. If you want the label to be invisible, add :code:`"##"`
+            before the label's text: :code:`"my_label" -> "##my_label"`
+
+        values (array of floats): the y-values.
+            It must be a type that supports Cython's Memoryviews,
+            (See: http://docs.cython.org/en/latest/src/userguide/memoryviews.html)
+            for example a numpy array.
+
+        overlay_text (str or None, optional): Overlay text.
+
+        scale_min (float, optional): y-value at the bottom of the plot.
+        scale_max (float, optional): y-value at the top of the plot.
+
+        graph_size (tuple of two floats, optional): plot size in pixels.
+            **Note:** In ImGui 1.49, (-1,-1) will NOT auto-size the plot.
+            To do that, use :func:`get_content_region_available` and pass
+            in the right size.
+
+    **Note:** These low-level parameters are exposed if needed for
+    performance:
+
+    * **values_offset** (*int*): Index of first element to display
+    * **values_count** (*int*): Number of values to display. -1 will use the
+        entire array.
+    * **stride** (*int*): Number of bytes to move to read next element.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        from array import array
+        from random import random
+
+        # NOTE: this example will not work under py27 due do incompatible
+        # implementation of array and memoryview().
+        histogram_values = array('f', [random() for _ in range(20)])
+
+        imgui.begin("Plot example")
+        imgui.plot_histogram("histogram(random())", histogram_values)
+        imgui.end()
+
+    .. wraps::
+            void PlotHistogram(
+                const char* label, const float* values, int values_count,
+                # note: optional
+                int values_offset,
+                const char* overlay_text,
+                float scale_min,
+                float scale_max,
+                ImVec2 graph_size,
+                int stride
+            )
+    """
+    if values_count == -1:
+        values_count = values.shape[0]
+
+    # Would be nicer as something like
+    #   _bytes(overlay_text) if overlay_text is not None else NULL
+    # but then Cython complains about either types or pointers to temporary references.
+    cdef const char* overlay_text_ptr = NULL
+    cdef bytes overlay_text_b
+
+    if overlay_text is not None:
+        overlay_text_b = _bytes(overlay_text) # must be assigned to a variable
+        overlay_text_ptr = overlay_text_b # auto-convert bytes to char*
+
+    cimgui.PlotHistogram(
         _bytes(label), &values[0], values_count,
         values_offset,
         overlay_text_ptr,
@@ -5666,22 +5907,29 @@ def set_scroll_from_pos_y(float pos_y, float center_y_ratio = 0.5):
 def push_font(_Font font):
     """Push font on a stack.
 
-    Example:
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+        :width: 320
 
-    .. code-block: python
+        io = imgui.get_io()
 
-        ...
-        font_extra = io.fonts.add_font_from_file_ttf(
-            "CODE2000.TTF", 30, io.fonts.get_glyph_ranges_latin()
+        new_font = io.fonts.add_font_from_file_ttf(
+            "DroidSans.ttf", 20,
         )
-        ...
+        impl.refresh_font_texture()
 
-        # later in application loop
-        while True:
-            ...
-            imgui.push_font(font_extra)
-            imgui.text("My text with custom font")
-            imgui.pop_font()
+        # later in frame code
+
+        imgui.begin("Default Window")
+
+        imgui.text("Text displayed using default font")
+
+        imgui.push_font(new_font)
+        imgui.text("Text displayed using custom font")
+        imgui.pop_font()
+
+        imgui.end()
 
     **Note:** Pushed fonts should be poped with :func:`pop_font()` within the
     same frame. In order to avoid manual push/pop functions you can use the
@@ -5741,11 +5989,9 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     .. wraps::
         PushStyleVar(ImGuiStyleVar idx, float val)
     """
-    IF TARGET_IMGUI_VERSION > (1, 49):
-        # note: this check is not available on imgui<=1.49
-        if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
-            warnings.warn("Unknown style variable: {}".format(variable))
-            return False
+    if not (0 <= variable < enums.ImGuiStyleVar_Count_):
+        warnings.warn("Unknown style variable: {}".format(variable))
+        return False
 
     try:
         if isinstance(value, (tuple, list)):
@@ -5796,11 +6042,9 @@ cpdef push_style_color(
     .. wraps::
         PushStyleColor(ImGuiCol idx, const ImVec4& col)
     """
-    IF TARGET_IMGUI_VERSION > (1, 49):
-        # note: this check is not available on imgui<=1.49
-        if  not  (0 <= variable < enums.ImGuiStyleVar_Count_):
-            warnings.warn("Unknown style variable: {}".format(variable))
-            return False
+    if not (0 <= variable < enums.ImGuiCol_COUNT):
+        warnings.warn("Unknown style variable: {}".format(variable))
+        return False
 
     cimgui.PushStyleColor(variable, _cast_args_ImVec4(r, g, b, a))
 
@@ -6467,7 +6711,7 @@ def get_frame_height():
 
     .. wraps::
         float GetFrameHeight()
-    float GetFrameHeightWithSpacing() except +  # ✗
+    float GetFrameHeightWithSpacing() except +
     """
     return cimgui.GetFrameHeight()
 
@@ -6483,9 +6727,9 @@ def get_frame_height_with_spacing():
 
 def create_context(_FontAtlas shared_font_atlas = None):
     """CreateContext
-    
+
     .. todo::
-        Add an example 
+        Add an example
 
     .. wraps::
         ImGuiContext* CreateContext(
@@ -6513,11 +6757,11 @@ def destroy_context(_ImGuiContext ctx = None):
                 ImGuiContext* ctx = NULL);
     """
 
-    if ctx:
+    if ctx and ctx._ptr != NULL:
         cimgui.DestroyContext(ctx._ptr)
+        ctx._ptr = NULL
     else:
-        cimgui.DestroyContext(NULL)
-
+        raise RuntimeError("Context invalid (None or destroyed)")
 
 
 def get_current_context():
@@ -6577,22 +6821,25 @@ ImGuiError = _ImGuiError # make visible to Python
 def _py_font(_Font font):
     """Use specified font in given context.
 
-    Example:
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+        :width: 320
 
-    .. code-block:: python
+        io = imgui.get_io()
 
-        ...
-        font_extra = io.fonts.add_font_from_file_ttf(
-            "CODE2000.TTF", 30, io.fonts.get_glyph_ranges_latin()
-        )
-        ...
+        new_font = io.fonts.add_font_from_file_ttf("DroidSans.ttf", 20)
+        impl.refresh_font_texture()
 
-        # later in application loop
-        while True:
-            ...
-            with imgui.font(font_extra):
-                imgui.text("My text with custom font")
-            ...
+        # later in frame code
+
+        imgui.begin("Default Window")
+
+        imgui.text("Text displayed using default font")
+        with imgui.font(new_font):
+            imgui.text("Text displayed using custom font")
+
+        imgui.end()
 
     Args:
         font (_Font): font object retrieved from :any:`add_font_from_file_ttf`.

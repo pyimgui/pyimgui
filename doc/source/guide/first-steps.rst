@@ -67,6 +67,11 @@ commands.
 
   import imgui
 
+  # initilize imgui context (see documentation)
+  imgui.create_context()
+  imgui.get_io().display_size = 100, 100
+  imgui.get_io().fonts.get_tex_data_as_rgba32()
+
   # start new frame context
   imgui.new_frame()
 
@@ -109,7 +114,7 @@ and libraries:
   engine.
 * :mod:`imgui.integrations.sdl2` integrates **pyimgui** with SDL2_ library
   through PySDL2_ Python package
-* :mod:`imgui.integrations.pyglet` integrates **pyimgui with pyglet_ library.
+* :mod:`imgui.integrations.pyglet` integrates **pyimgui** with pyglet_ library.
 * :mod:`imgui.integrations.opengl` provides bare integration with OpenGL both
   in *fixed pipeline* and *programmable pipeline* mode. It does not provide any
   windowing facilities (so cannot be used as a standalone renderer) but serves

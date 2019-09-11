@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+from traceback import print_exc
 
 import pytest
 from inspect import currentframe, getframeinfo
+
+from _pytest.outcomes import Skipped
 from sphinx.application import Sphinx
 
 import imgui
@@ -14,6 +17,13 @@ sphinx = None
 
 def project_path(*paths):
     return os.path.join(PROJECT_ROOT_DIR, *paths)
+
+
+def _ns(locals_, globals_):
+    ns = {}
+    ns.update(locals_)
+    ns.update(globals_)
+    return ns
 
 
 class SphinxDoc(pytest.File):
@@ -36,8 +46,9 @@ class SphinxDoc(pytest.File):
     def collect(self):
         # build only specified file
         sphinx.build(filenames=[self.fspath.relto(project_path())])
+
         return [
-            DocItem(name, self, code)
+            DocItem(name or "anonymous", self, code)
             for (name, code) in sphinx.builder.snippets
         ]
 
@@ -53,17 +64,29 @@ class DocItem(pytest.Item):
     def exec_snippet(self, source):
 
         # Strip out new_frame/end_frame from source
+        if "# later" in source:
+            raise Skipped(msg="multi-stage snippet, can't comprehend")
+
         lines = [
             line
             if all([
                 "imgui.new_frame()" not in line,
                 "imgui.render()" not in line,
-                "imgui.end_frame()" not in line
+                "imgui.end_frame()" not in line,
+                "fonts.get_tex_data_as_rgba32()" not in line,
             ]) else ""
             for line in
             source.split('\n')
         ]
         source = "\n".join(lines)
+
+        if (
+            "import array" in source
+            and sys.version_info < (3, 0)
+        ):
+            pytest.skip(
+                "array.array does not work properly under py27 as memory view"
+            )
 
         code = compile(source, '<str>', 'exec')
         frameinfo = getframeinfo(currentframe())
@@ -80,10 +103,13 @@ class DocItem(pytest.Item):
 
         imgui.new_frame()
 
+        exec_ns = _ns(locals(), globals())
+
         try:
-            exec(code, locals(), globals())
+            exec(code, exec_ns, exec_ns)
         except Exception as err:
             # note: quick and dirty way to annotate sources with error marker
+            print_exc()
             lines = source.split('\n')
             lines.insert(sys.exc_info()[2].tb_next.tb_lineno, "^^^")
             self.code = "\n".join(lines)

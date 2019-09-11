@@ -18,6 +18,9 @@
 #
 import os
 import sys
+import logging
+
+logger = logging.getLogger(__name__)
 
 DOC_SOURCES_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT_DIR = os.path.dirname(os.path.dirname(DOC_SOURCES_DIR))
@@ -35,8 +38,31 @@ if on_rtd:
     render_examples = False
 
     # hack for lacking git-lfs support on rtd
-    from git_lfs import fetch
-    fetch(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+    import git_lfs
+    try:
+        from urllib.error import HTTPError
+    except ImportError:
+        from urllib2 import HTTPError
+
+    _fetch_urls = git_lfs.fetch_urls
+
+    def _patched_fetch_urls(lfs_url, oid_list):
+        """Hack git_lfs library that sometimes makes too big requests"""
+        objects = []
+
+        try:
+            objects.extend(_fetch_urls(lfs_url, oid_list))
+        except HTTPError as err:
+            if err.code != 413:
+                raise
+            logger.error("LFS: request entity too large, splitting in half")
+            objects.extend(_patched_fetch_urls(lfs_url, oid_list[:len(oid_list) // 2]))
+            objects.extend(_patched_fetch_urls(lfs_url, oid_list[len(oid_list) // 2:]))
+
+        return objects
+
+    git_lfs.fetch_urls = _patched_fetch_urls
+    git_lfs.fetch(PROJECT_ROOT_DIR)
 
 else:
     render_examples = True
@@ -424,4 +450,4 @@ napoleon_use_rtype = False
 
 autodoc_member_order = 'bysource'
 # this is in order to support GlfwImpl documentation on RTD
-autodoc_mock_imports = ['glfw']
+autodoc_mock_imports = ['cocos', 'glfw',  'OpenGL', 'pygame', 'pyglet', 'sdl2']
