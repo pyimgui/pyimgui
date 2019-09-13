@@ -529,7 +529,7 @@ cdef class _DrawList(object):
             for idx in xrange(self._ptr.CmdBuffer.Size)
         ]
 
-cdef class Colors(object):
+cdef class _Colors(object):
     cdef GuiStyle _style
 
     def __cinit__(self):
@@ -562,7 +562,7 @@ cdef class GuiStyle(object):
     """
     cdef cimgui.ImGuiStyle* _ptr
     cdef bool _owner
-    cdef Colors _colors
+    cdef _Colors _colors
 
     def __cinit__(self):
         self._ptr = NULL
@@ -593,7 +593,7 @@ cdef class GuiStyle(object):
     cdef GuiStyle from_ref(cimgui.ImGuiStyle& ref):
         cdef GuiStyle instance = GuiStyle()
         instance._ptr = &ref
-        instance._colors = Colors(instance)
+        instance._colors = _Colors(instance)
         return instance
 
     @staticmethod
@@ -601,7 +601,7 @@ cdef class GuiStyle(object):
         cdef cimgui.ImGuiStyle* _ptr = new cimgui.ImGuiStyle()
         cdef GuiStyle instance = GuiStyle.from_ref(deref(_ptr))
         instance._owner = True
-        instance._colors = Colors(instance)
+        instance._colors = _Colors(instance)
         return instance
 
     @property
@@ -909,6 +909,23 @@ cdef class GuiStyle(object):
 
     @property
     def colors(self):
+        """Retrieve and modify style colors through list-like interface.
+
+        .. visual-example::
+            :width: 700
+            :height: 500
+            :auto_layout:
+
+            style = imgui.get_style()
+            imgui.begin("Color window")
+            imgui.columns(4)
+            for color in range(0, imgui.COLOR_COUNT):
+                imgui.text("Color: {}".format(color))
+                imgui.color_button("color#{}".format(color), *style.colors[color])
+                imgui.next_column()
+
+            imgui.end()
+        """
         self._check_ptr()
         return self._colors
 
