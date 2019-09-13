@@ -5977,6 +5977,7 @@ cpdef push_style_color(
         return False
 
     cimgui.PushStyleColor(variable, _cast_args_ImVec4(r, g, b, a))
+    return True
 
 
 cpdef pop_style_var(unsigned int count=1):
@@ -6767,6 +6768,21 @@ def _py_styled(cimgui.ImGuiStyleVar variable, value):
     count = push_style_var(variable, value)
     yield
     pop_style_var(count)
+
+
+@contextmanager
+def _py_colored(
+    cimgui.ImGuiCol variable,
+    float r,
+    float g,
+    float b,
+    float a = 1.
+):
+    # note: we treat bool value as integer to guess if we are required to pop
+    #       anything because IMGUI may simply skip pushing
+    count = push_style_color(variable, r, g, b, a)
+    yield
+    pop_style_color(count)
 
 
 @contextmanager
