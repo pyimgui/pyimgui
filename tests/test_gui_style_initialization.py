@@ -18,6 +18,8 @@ def context():
 
 @pytest.fixture(params=IMGUI_DATA_DESCRIPTORS)
 def data_descriptor(request):
+    if request.param == "colors":
+        pytest.skip("'{}' isn't a writable property".format(request.param))
     return request.param
 
 

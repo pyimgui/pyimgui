@@ -529,6 +529,31 @@ cdef class _DrawList(object):
             for idx in xrange(self._ptr.CmdBuffer.Size)
         ]
 
+cdef class _Colors(object):
+    cdef GuiStyle _style
+
+    def __cinit__(self):
+        self._style = None
+
+    def __init__(self, GuiStyle gui_style):
+        self._style = gui_style
+
+    cdef inline _check_color(self, cimgui.ImGuiCol variable):
+        if not (0 <= variable < enums.ImGuiCol_COUNT):
+            raise ValueError("Unknown style variable: {}".format(variable))
+
+    def __getitem__(self, cimgui.ImGuiCol variable):
+        self._check_color(variable)
+        self._style._check_ptr()
+        cdef int ix = variable
+        return _cast_ImVec4_tuple(self._style._ptr.Colors[ix])
+
+    def __setitem__(self, cimgui.ImGuiCol variable, value):
+        self._check_color(variable)
+        self._style._check_ptr()
+        cdef int ix = variable
+        self._style._ptr.Colors[ix] = _cast_tuple_ImVec4(value)
+
 
 cdef class GuiStyle(object):
     """
@@ -537,10 +562,12 @@ cdef class GuiStyle(object):
     """
     cdef cimgui.ImGuiStyle* _ptr
     cdef bool _owner
+    cdef _Colors _colors
 
     def __cinit__(self):
         self._ptr = NULL
         self._owner = False
+        self._colors = None
 
     def __dealloc__(self):
         if self._owner:
@@ -566,6 +593,7 @@ cdef class GuiStyle(object):
     cdef GuiStyle from_ref(cimgui.ImGuiStyle& ref):
         cdef GuiStyle instance = GuiStyle()
         instance._ptr = &ref
+        instance._colors = _Colors(instance)
         return instance
 
     @staticmethod
@@ -573,6 +601,7 @@ cdef class GuiStyle(object):
         cdef cimgui.ImGuiStyle* _ptr = new cimgui.ImGuiStyle()
         cdef GuiStyle instance = GuiStyle.from_ref(deref(_ptr))
         instance._owner = True
+        instance._colors = _Colors(instance)
         return instance
 
     @property
@@ -871,12 +900,34 @@ cdef class GuiStyle(object):
         self._ptr.CurveTessellationTol = value
 
     def color(self, cimgui.ImGuiCol variable):
-        if not (0 <= variable < enums.ImGuiStyleVar_Count_):
+        if not (0 <= variable < enums.ImGuiCol_COUNT):
             raise ValueError("Unknown style variable: {}".format(variable))
 
         self._check_ptr()
         cdef int ix = variable
         return _cast_ImVec4_tuple(self._ptr.Colors[ix])
+
+    @property
+    def colors(self):
+        """Retrieve and modify style colors through list-like interface.
+
+        .. visual-example::
+            :width: 700
+            :height: 500
+            :auto_layout:
+
+            style = imgui.get_style()
+            imgui.begin("Color window")
+            imgui.columns(4)
+            for color in range(0, imgui.COLOR_COUNT):
+                imgui.text("Color: {}".format(color))
+                imgui.color_button("color#{}".format(color), *style.colors[color])
+                imgui.next_column()
+
+            imgui.end()
+        """
+        self._check_ptr()
+        return self._colors
 
 
 cdef class _DrawData(object):
