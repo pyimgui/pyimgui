@@ -6611,6 +6611,8 @@ def set_drag_drop_payload(str type, bytes data, cimgui.ImGuiCond condition=0):
     """Set the payload for a drag and drop source. Only call after
     :func:`begin_drag_drop_source` returns True.
 
+    **Note:** this is a beta API.
+
     For a complete example see :func:`begin_drag_drop_source`.
 
     Args:
@@ -6629,6 +6631,8 @@ def end_drag_drop_source():
     """End the drag and drop source. Only call after :func:`begin_drag_drop_source`
     returns True.
 
+    **Note:** this is a beta API.
+
     For a complete example see :func:`begin_drag_drop_source`.
 
     .. wraps::
@@ -6640,6 +6644,8 @@ def end_drag_drop_source():
 def begin_drag_drop_target():
     """Set the current item as a drag and drop target. If this return True, you
     can call :func:`accept_drag_drop_payload` and :func:`end_drag_drop_target`.
+
+    **Note:** this is a beta API.
 
     Returns:
         bool: True when a drag hovers over the target
@@ -6655,6 +6661,8 @@ def begin_drag_drop_target():
 def accept_drag_drop_payload(str type, cimgui.ImGuiDragDropFlags flags=0):
     """Get the drag and drop payload. Only call after :func:`begin_drag_drop_target`
     returns True.
+
+    **Note:** this is a beta API.
 
     For a complete example see :func:`begin_drag_drop_source`.
 
@@ -6678,6 +6686,8 @@ def accept_drag_drop_payload(str type, cimgui.ImGuiDragDropFlags flags=0):
 def end_drag_drop_target():
     """End the drag and drop source. Only call after :func:`begin_drag_drop_target`
     returns True.
+
+    **Note:** this is a beta API.
 
     For a complete example see :func:`begin_drag_drop_source`.
 
