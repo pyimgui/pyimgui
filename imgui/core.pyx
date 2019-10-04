@@ -6568,6 +6568,125 @@ def get_columns_count():
     return cimgui.GetColumnsCount()
 
 
+def begin_drag_drop_source(cimgui.ImGuiDragDropFlags flags=0):
+    """Set the current item as a drag and drop source. If this return True, you
+    can call :func:`set_drag_drop_payload` and :func:`end_drag_drop_source`.
+
+    **Note:** this is a beta API.
+
+    Args:
+        flags (ImGuiDragDropFlags): DragDrop flags.
+
+    Returns:
+        bool: True while a drag starting at this source is occurring
+
+    .. visual-example::
+        :auto_layout:
+        :width: 300
+
+        imgui.begin("Example: drag and drop")
+
+        imgui.button('source')
+        if imgui.begin_drag_drop_source():
+            imgui.set_drag_drop_payload('itemtype', b'payload')
+            imgui.button('dragged source')
+            imgui.end_drag_drop_source()
+
+        imgui.button('dest')
+        if imgui.begin_drag_drop_target():
+            payload = imgui.accept_drag_drop_payload('itemtype')
+            if payload is not None:
+                print('Received:', payload)
+            imgui.end_drag_drop_target()
+
+        imgui.end()
+
+    .. wraps::
+        bool BeginDragDropSource(ImGuiDragDropFlags flags = 0)
+    """
+    return cimgui.BeginDragDropSource(flags)
+
+
+def set_drag_drop_payload(str type, bytes data, cimgui.ImGuiCond condition=0):
+    """Set the payload for a drag and drop source. Only call after
+    :func:`begin_drag_drop_source` returns True.
+
+    For a complete example see :func:`begin_drag_drop_source`.
+
+    Args:
+        type (str): user defined type with maximum 32 bytes.
+        data (bytes): the data for the payload; will be copied and stored internally.
+        condition (:ref:`condition flag <condition-options>`): defines on which
+            condition value should be set. Defaults to :any:`imgui.ALWAYS`.
+
+    .. wraps::
+        bool SetDragDropPayload(const char* type, const void* data, size_t size, ImGuiCond cond = 0)
+    """
+    return cimgui.SetDragDropPayload(_bytes(type), <const char*>data, len(data), condition)
+
+
+def end_drag_drop_source():
+    """End the drag and drop source. Only call after :func:`begin_drag_drop_source`
+    returns True.
+
+    For a complete example see :func:`begin_drag_drop_source`.
+
+    .. wraps::
+        void EndDragDropSource()
+    """
+    cimgui.EndDragDropSource()
+
+
+def begin_drag_drop_target():
+    """Set the current item as a drag and drop target. If this return True, you
+    can call :func:`accept_drag_drop_payload` and :func:`end_drag_drop_target`.
+
+    Returns:
+        bool: True when a drag hovers over the target
+
+    For a complete example see :func:`begin_drag_drop_source`.
+
+    .. wraps::
+        bool BeginDragDropTarget()
+    """
+    return cimgui.BeginDragDropTarget()
+
+
+def accept_drag_drop_payload(str type, cimgui.ImGuiDragDropFlags flags=0):
+    """Get the drag and drop payload. Only call after :func:`begin_drag_drop_target`
+    returns True.
+
+    For a complete example see :func:`begin_drag_drop_source`.
+
+    Args:
+        type (str): user defined type with maximum 32 bytes.
+        flags (ImGuiDragDropFlags): DragDrop flags.
+
+    Returns:
+        bytes: the payload data that was set by :func:`set_drag_drop_payload`.
+
+    .. wraps::
+        const ImGuiPayload* AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags = 0)
+    """
+    cdef const cimgui.ImGuiPayload* payload = cimgui.AcceptDragDropPayload(_bytes(type), flags)
+    if payload == NULL:
+        return None
+    cdef const char* data = <const char *>payload.Data
+    return <bytes>data[:payload.DataSize]
+
+
+def end_drag_drop_target():
+    """End the drag and drop source. Only call after :func:`begin_drag_drop_target`
+    returns True.
+
+    For a complete example see :func:`begin_drag_drop_source`.
+
+    .. wraps::
+        void EndDragDropTarget()
+    """
+    cimgui.EndDragDropTarget()
+
+
 def begin_group():
     """Start item group and lock its horizontal starting position.
 
