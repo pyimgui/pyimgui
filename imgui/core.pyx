@@ -6188,6 +6188,35 @@ cpdef pop_style_var(unsigned int count=1):
     """
     cimgui.PopStyleVar(count)
 
+cpdef push_id(object scope_id):
+    """Push an id scope.
+
+    This means that all implicit ids created while the scope is on the top of
+    the id stack will not collide with implicit IDs created while it is not.
+    This is useful to avoid collisions with other widgets with the same
+    implicit IDs (usually, same labels.) Pushes the address of the passed
+    object, unless it is an integer in which case the value is pushed. This
+    means that for the scope to correctly persist across frames you must pass
+    the same object (is-equality in python) unless it is an integer or string.
+    Consider using the :func:`scope` context manager instead to manage the
+    push_id and pop_id pair.
+    """
+
+    if isinstance(scope_id, int):
+        cimgui.PushID(<void*><uintptr_t>scope_id)
+    elif isinstance(scope_id, str):
+        cimgui.PushID(_bytes(scope_id))
+    else:
+        cimgui.PushID(<void*>scope_id)
+
+cpdef pop_id():
+    """Pop an id scope.
+
+    Undoes the work of :func:`push_id`.
+    """
+
+    cimgui.PopID()
+
 
 cpdef get_font_size():
     """get current font size (= height in pixels) of current font with current scale applied
@@ -6846,20 +6875,6 @@ def get_frame_height_with_spacing():
         float GetFrameHeightWithSpacing()
     """
     return cimgui.GetFrameHeightWithSpacing()
-
-
-def push_id(int int_id):
-    """ Push identifier into the ID stack
-
-    Read the Imgui FAQ for more details about how ID are handled in dear imgui.
-
-    Args:
-        int_id (int): integer identifier
-
-    .. wraps::
-        void PushID(int int_id)
-    """
-    cimgui.PushID(int_id)
 
 
 def pop_id():

@@ -573,10 +573,15 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # ====
     # ID scopes
-    void PushID(const char* str_id) except +  # ✗
+    void PushID(const char* str_id) except +  # ✓
     void PushID(const char* str_id_begin, const char* str_id_end) except +  # ✗
+<<<<<<< HEAD
     void PushID(const void* ptr_id) except +  # ✗
     void PushID(int int_id) except +  # ✓
+=======
+    void PushID(const void* ptr_id) except +  # ✓
+    void PushID(int int_id) except +  # ✗
+>>>>>>> 4faa959b2e3efcd1f069d21bc7f0a3eb1cce616f
     void PopID() except +  # ✓
     ImGuiID GetID(const char* str_id) except +  # ✗
     ImGuiID GetID(const char* str_id_begin, const char* str_id_end) except +  # ✗

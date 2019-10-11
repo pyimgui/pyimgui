@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 [![completion](https://img.shields.io/badge/completion-72%25%20%28327%20of%20450%29-blue.svg)](https://github.com/swistakm/pyimgui)
+=======
+[![completion](https://img.shields.io/badge/completion-65%25%20%28269%20of%20409%29-blue.svg)](https://github.com/swistakm/pyimgui)
+>>>>>>> 4faa959b2e3efcd1f069d21bc7f0a3eb1cce616f
 [![Coverage Status](https://coveralls.io/repos/github/swistakm/pyimgui/badge.svg?branch=master)](https://coveralls.io/github/swistakm/pyimgui?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=latest)](https://pyimgui.readthedocs.io/en/latest/?badge=latest)
 
