@@ -5809,6 +5809,35 @@ def get_time():
     return cimgui.GetTime()
 
 
+## TODO
+# def get_key_index(
+
+
+def is_key_pressed(
+    int key_index,
+    bool repeat=True
+):
+    """Test if mouse is hovering rectangle with given coordinates.
+
+    Args:
+        key_index (int): key index
+
+    Returns:
+        bool: True if key is pressed. If repeat is True, returns True repeatedly
+              after a delay. Else, returns True only on the initial key press
+
+    .. wraps::
+        bool IsKeyPressed(
+            int key_index,
+            bool repeat = true
+        )
+    """
+    return cimgui.IsKeyPressed(
+        key_index,
+        repeat
+    )
+
+
 def is_mouse_hovering_rect(
     float r_min_x, float r_min_y,
     float r_max_x, float r_max_y,
