@@ -668,7 +668,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             int stride                # = sizeof(float))
     ) except +
 
-    void PlotHistogram(  # ✗
+    void PlotHistogram(  # ✓
             const char* label, const float* values, int values_count,
             # note: optional
             int values_offset, const char* overlay_text, float scale_min,

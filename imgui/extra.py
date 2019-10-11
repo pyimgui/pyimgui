@@ -9,6 +9,7 @@ __all__ = (
     "font",
     "styled",
     "istyled",
+    "colored",
     "vertex_buffer_vertex_pos_offset",
     "vertex_buffer_vertex_uv_offset",
     "vertex_buffer_vertex_col_offset",
@@ -19,6 +20,7 @@ __all__ = (
 font = core._py_font
 styled = core._py_styled
 istyled = core._py_istyled
+colored = core._py_colored
 vertex_buffer_vertex_pos_offset = core._py_vertex_buffer_vertex_pos_offset
 vertex_buffer_vertex_uv_offset = core._py_vertex_buffer_vertex_uv_offset
 vertex_buffer_vertex_col_offset = core._py_vertex_buffer_vertex_col_offset

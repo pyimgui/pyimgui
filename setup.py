@@ -104,6 +104,7 @@ EXTRAS_REQUIRE = {
     'glfw': backend_extras('glfw'),
     'pygame': backend_extras('pygame'),
     'opengl': backend_extras(),
+    'pyglet': backend_extras('pyglet')
 }
 
 # construct special 'full' extra that adds requirements for all built-in

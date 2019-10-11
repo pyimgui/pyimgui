@@ -4,6 +4,7 @@ from __future__ import absolute_import
 import glfw
 import imgui
 
+from . import compute_fb_scale
 from .opengl import ProgrammablePipelineRenderer
 
 
@@ -92,16 +93,13 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         self.io.mouse_wheel = y_offset
 
     def process_inputs(self):
-        # todo: consider moving to init
         io = imgui.get_io()
 
-        w, h = glfw.get_window_size(self.window)
-        dw, dh = glfw.get_framebuffer_size(self.window)
+        window_size = glfw.get_window_size(self.window)
+        fb_size = glfw.get_framebuffer_size(self.window)
 
-        io.display_size = w, h
-        if w != 0 and h != 0:
-            io.display_fb_scale = float(dw)/w, float(dh)/h # else?
-
+        io.display_size = window_size
+        io.display_fb_scale = compute_fb_scale(window_size, fb_size)
         io.delta_time = 1.0/60
 
         if glfw.get_window_attrib(self.window, glfw.FOCUSED):

@@ -1,14 +1,25 @@
-# -*- coding: utf-8 -*-
+from array import array
+from math import sin, pi
+from random import random
+
 import glfw
 import OpenGL.GL as gl
-
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
+from time import time
+
+
+C = .01
+L = int(pi * 2 * 100)
 
 
 def main():
     window = impl_glfw_init()
+    imgui.create_context()
     impl = GlfwRenderer(window)
+
+    plot_values = array('f', [sin(x * C) for x in range(L)])
+    histogram_values = array('f', [random() for _ in range(20)])
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
@@ -16,24 +27,28 @@ def main():
 
         imgui.new_frame()
 
-        if imgui.begin_main_menu_bar():
-            if imgui.begin_menu("File", True):
+        imgui.begin("Plot example")
+        imgui.plot_lines(
+            "Sin(t)",
+            plot_values,
+            overlay_text="SIN() over time",
+            # offset by one item every milisecond, plot values
+            # buffer its end wraps around
+            values_offset=int(time() * 100) % L,
+            # 0=autoscale => (0, 50) = (autoscale width, 50px height)
+            graph_size=(0, 50),
+        )
 
-                clicked_quit, selected_quit = imgui.menu_item(
-                    "Quit", 'Cmd+Q', False, True
-                )
+        imgui.plot_histogram(
+            "histogram(random())",
+            histogram_values,
+            overlay_text="random histogram",
+            # offset by one item every milisecond, plot values
+            # buffer its end wraps around
+            graph_size=(0, 50),
+        )
 
-                if clicked_quit:
-                    exit(1)
 
-                imgui.end_menu()
-            imgui.end_main_menu_bar()
-
-        imgui.show_test_window()
-
-        imgui.begin("Custom window", True)
-        imgui.text("Bar")
-        imgui.text_colored("Eggs", 0.2, 1., 0.)
         imgui.end()
 
         gl.glClearColor(1., 1., 1., 1)
@@ -74,6 +89,7 @@ def impl_glfw_init():
         exit(1)
 
     return window
+
 
 if __name__ == "__main__":
     main()

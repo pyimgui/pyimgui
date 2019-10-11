@@ -1,34 +1,22 @@
 from __future__ import absolute_import
 
-import sys
+import cocos
+from cocos.director import director
 
-import pygame
-import OpenGL.GL as gl
+from pyglet import gl
 
-from imgui.integrations.pygame import PygameRenderer
+from imgui.integrations.cocos2d import ImguiLayer
 import imgui
 
 
-def main():
-    pygame.init()
+class HelloWorld(ImguiLayer):
+    is_event_handler = True
 
-    size = 800, 600
+    def __init__(self):
+        super(HelloWorld, self).__init__()
+        self._text = "Input text here"
 
-    pygame.display.set_mode(size, pygame.DOUBLEBUF | pygame.OPENGL)
-
-    io = imgui.get_io()
-    io.fonts.add_font_default()
-    io.display_size = size
-
-    renderer = PygameRenderer()
-
-    while 1:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-
-            renderer.process_event(event)
-
+    def draw(self, *args, **kwargs):
         imgui.new_frame()
 
         if imgui.begin_main_menu_bar():
@@ -51,13 +39,22 @@ def main():
         imgui.text_colored("Eggs", 0.2, 1., 0.)
         imgui.end()
 
-        # note: cannot use screen.fill((1, 1, 1)) because pygame's screen
-        #       does not support fill() on OpenGL sufraces
-        gl.glClearColor(1, 1, 1, 1)
+        gl.glClearColor(1., 1., 1., 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-        imgui.render()
 
-        pygame.display.flip()
+        imgui.render()
+        self.renderer.render(imgui.get_draw_data())
+
+
+def main():
+    director.init(width=800, height=600, resizable=True)
+
+    imgui.create_context()
+    hello_layer = HelloWorld()
+
+    main_scene = cocos.scene.Scene(hello_layer)
+    director.run(main_scene)
+
 
 if __name__ == "__main__":
     main()

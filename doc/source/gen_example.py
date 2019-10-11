@@ -52,6 +52,49 @@ def simulate_click(x, y, state):
     mouse_down = state
 
 
+def find_fonts(source):
+    # another day, another hack
+    font_name = "DroidSans.ttf"
+
+    font_path = os.path.join(
+        os.path.dirname(__file__),
+        '..', '..', 'imgui-cpp', 'misc', 'fonts', font_name
+    )
+    return source.replace(font_name, font_path)
+
+
+def filter_source_lines(source_lines):
+    return [
+        (line if "# later" not in line else Ellipsis)
+        if all([
+            "imgui.new_frame()" not in line,
+            "imgui.render()" not in line,
+            "imgui.end_frame()" not in line,
+            "fonts.get_tex_data_as_rgba32()" not in line,
+        ]) else "" for line in source_lines
+    ]
+
+
+def _ns(locals_, globals_):
+    ns = {}
+    ns.update(locals_)
+    ns.update(globals_)
+    return ns
+
+
+def split_sources(source):
+    source_lines = filter_source_lines(source.split("\n"))
+
+    if Ellipsis in source_lines:
+        init_block = source_lines[:source_lines.index(Ellipsis)]
+        frame_block = source_lines[source_lines.index(Ellipsis)+1:]
+    else:
+        init_block = []
+        frame_block = source_lines
+
+    return "\n".join(init_block), "\n".join(frame_block)
+
+
 def render_snippet(
     source,
     file_path,
@@ -63,22 +106,12 @@ def render_snippet(
     click=None,
 ):
     _patch_imgui()
+    source = find_fonts(source)
 
-    # Little shim that filters out the new_frame and render commands
-    # so we can use them in code examples. It's simply a hoax.
-    lines = [
-        line
-        if all([
-            "imgui.new_frame()" not in line,
-            "imgui.render()" not in line,
-            "imgui.end_frame()" not in line
-        ]) else ""
-        for line in
-        source.split('\n')
-    ]
-    source = "\n".join(lines)
+    init_source, frame_source = split_sources(source)
 
-    code = compile(source, '<str>', 'exec')
+    init_code = compile(init_source, '<str>', 'exec')
+    frame_code = compile(frame_source, '<str>', 'exec')
     window_name = "minimal ImGui/GLFW3 example"
 
     if not glfw.init():
@@ -105,6 +138,12 @@ def render_snippet(
         exit(1)
 
     impl = GlfwRenderer(window)
+
+    exec_ns = _ns(globals(), locals())
+
+    if init_source:
+        exec(init_code, exec_ns)
+
     glfw.poll_events()
 
     # render target for framebuffer
@@ -152,8 +191,7 @@ def render_snippet(
                     pivot_x=0.5,
                     pivot_y=0.5
                 )
-
-            exec(code, locals(), globals())
+            exec(frame_code, exec_ns)
 
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, offscreen_fb)
 

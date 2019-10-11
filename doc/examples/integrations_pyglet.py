@@ -1,24 +1,22 @@
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-import cocos
-from cocos.director import director
-
+import pyglet
 from pyglet import gl
 
-from imgui.integrations.cocos2d import ImguiLayer
 import imgui
+from imgui.integrations.pyglet import PygletRenderer
 
 
-class HelloWorld(ImguiLayer):
-    is_event_handler = True
+def main():
 
-    def __init__(self):
-        super(HelloWorld, self).__init__()
-        self._text = "Input text here"
+    window = pyglet.window.Window(width=1280, height=720, resizable=True)
+    gl.glClearColor(1, 1, 1, 1)
+    imgui.create_context()
+    impl = PygletRenderer(window)
 
-    def draw(self, *args, **kwargs):
+    def update(dt):
         imgui.new_frame()
-
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
 
@@ -39,18 +37,15 @@ class HelloWorld(ImguiLayer):
         imgui.text_colored("Eggs", 0.2, 1., 0.)
         imgui.end()
 
-        gl.glClearColor(1., 1., 1., 1)
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
-
+    @window.event
+    def on_draw():
+        update(1/60.0)
+        window.clear()
         imgui.render()
+        impl.render(imgui.get_draw_data())
 
-
-def main():
-    director.init(width=800, height=600, resizable=True)
-
-    hello_layer = HelloWorld()
-    main_scene = cocos.scene.Scene(hello_layer)
-    director.run(main_scene)
+    pyglet.app.run()
+    impl.shutdown()
 
 
 if __name__ == "__main__":

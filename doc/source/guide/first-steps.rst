@@ -67,6 +67,11 @@ commands.
 
   import imgui
 
+  # initilize imgui context (see documentation)
+  imgui.create_context()
+  imgui.get_io().display_size = 100, 100
+  imgui.get_io().fonts.get_tex_data_as_rgba32()
+
   # start new frame context
   imgui.new_frame()
 
@@ -109,6 +114,7 @@ and libraries:
   engine.
 * :mod:`imgui.integrations.sdl2` integrates **pyimgui** with SDL2_ library
   through PySDL2_ Python package
+* :mod:`imgui.integrations.pyglet` integrates **pyimgui** with pyglet_ library.
 * :mod:`imgui.integrations.opengl` provides bare integration with OpenGL both
   in *fixed pipeline* and *programmable pipeline* mode. It does not provide any
   windowing facilities (so cannot be used as a standalone renderer) but serves
@@ -127,7 +133,7 @@ installation with ``pip install`` command e.g.::
 
 If you want you can install **pyimgui** with multiple backends at once::
 
-    $ pip install imgui[glfw,cocos2d,pygame,sdl2]
+    $ pip install imgui[glfw,cocos2d,pygame,sdl2,pyglet]
 
 You can even request to install all requirements for every supported backend
 and every optional feature using single ``full`` extras option::
@@ -143,5 +149,6 @@ of the `project page on GitHub <https://github.com/swistakm/pyimgui>`_.
 .. _PyOpenGL: http://pyopengl.sourceforge.net
 .. _SDL2: https://www.libsdl.org
 .. _PySDL2: https://pysdl2.readthedocs.io
+.. _pyglet: https://pyglet.readthedocs.io
 .. _doc/examples: https://github.com/swistakm/pyimgui/tree/master/doc/examples
 

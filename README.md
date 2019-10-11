@@ -1,4 +1,4 @@
-[![completion](https://img.shields.io/badge/completion-73%25%20%28335%20of%20453%29-blue.svg)](https://github.com/swistakm/pyimgui)
+[![completion](https://img.shields.io/badge/completion-72%25%20%28327%20of%20450%29-blue.svg)](https://github.com/swistakm/pyimgui)
 [![Coverage Status](https://coveralls.io/repos/github/swistakm/pyimgui/badge.svg?branch=master)](https://coveralls.io/github/swistakm/pyimgui?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=latest)](https://pyimgui.readthedocs.io/en/latest/?badge=latest)
 
@@ -25,12 +25,13 @@ Documentation: [pyimgui.readthedocs.io](https://pyimgui.readthedocs.io/en/latest
 Above command will install `imgui` package with additional dependencies for all
 built-in rendering backend integrations (pygame, cocos2d, etc.). If you don't
 want to install all additional dependencies you can always use bare
-`pip instal imgui` command or select a specific set of extra requirements:
+`pip install imgui` command or select a specific set of extra requirements:
 
 * for pygame backend use `pip install imgui[pygame]`
 * for GLFW3 backend use `pip install imgui[glfw]`
 * for SDL2 backend use `pip install imgui[sdl2]`
 * for Cocos2d backend use `pip install imgui[cocos2d]`
+* for pyglet backend use `pip install imgui[pyglet]`
 
 Package is distributed in form of *built wheels* so it does not require
 compilation on most operating systems. For more details about compatibility
@@ -83,7 +84,7 @@ commands:
 
 
 # Development tips
-We have tried hard to make the process of bootstraping this project as simple
+We have tried hard to make the process of bootstrapping this project as simple
 as possible.
 
 In order to build and install project locally ,ake sure you have created and
