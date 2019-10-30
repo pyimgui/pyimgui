@@ -675,7 +675,7 @@ cdef class _DrawList(object):
         tuple uv_a=(0,0),
         tuple uv_b=(1,1),
         cimgui.ImU32 col=0xffffffff):
-        """AddImage() primitive for ImDrawList()
+        """Add image to the draw list. Aspect ratio is not preserved.
 
         .. visual-example::
             :auto_layout:
