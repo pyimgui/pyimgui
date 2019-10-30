@@ -214,7 +214,7 @@ cdef extern from "imgui.h":
             const ImVec2& b,
             ImU32 col,
             # note: optional
-            float thickness # = 1.0f
+            float thickness            # = 1.0f
         ) except +  # ✓
 
 
@@ -224,20 +224,68 @@ cdef extern from "imgui.h":
             ImU32 col,
             # note: optional
             float rounding,             # = 0.0f,
-            int rounding_corners_flags, # = ImDrawCornerFlags_All, 
+            int rounding_corners_flags, # = ImDrawCornerFlags_All,
             float thickness             # = 1.0f
         ) except +  # ✓
 
 
         void AddRectFilled(
-            const ImVec2& a, 
-            const ImVec2& b, 
+            const ImVec2& a,
+            const ImVec2& b,
             ImU32 col,
             # note: optional
             float rounding,            # = 0.0f
             int rounding_corners_flags # = ImDrawCornerFlags_All
         ) except +  # ✓
-         
+
+
+        void  AddCircle(
+           const ImVec2& centre,
+           float radius,
+           ImU32 col,
+           # note:optional
+           int num_segments,           # = 12
+           float thickness             # = 1.0f
+        ) except +  # ✓
+
+
+        void AddCircleFilled(
+           const ImVec2& centre,
+           float radius,
+           ImU32 col,
+           # note:optional
+           int num_segments            # = 12
+        ) except +  # ✓
+
+
+        void AddText(
+           const ImVec2& pos,
+           ImU32 col,
+           const char* text_begin,
+           # note:optional
+           const char* text_end        # = NULL
+        ) except +  # ✓
+
+
+        void AddImage(
+           ImTextureID user_texture_id,
+           const ImVec2& a,
+           const ImVec2& b,
+           # note:optional
+           const ImVec2& uv_a,         # = ImVec2(0,0)
+           const ImVec2& uv_b,         # = ImVec2(1,1)
+           ImU32 col                   # = 0xFFFFFFFF
+        ) except +  # ✓
+
+
+        void AddPolyline(
+            const ImVec2* points,
+            int num_points,
+            ImU32 col,
+            bool closed,
+            float thickness
+        ) except +  # ✓
+
 
         void ChannelsSplit(int channels_count) except + # ✓
         void ChannelsMerge() except + # ✓
@@ -901,12 +949,12 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format
     ) except +  # Widgets: Trees
     bool VSliderScalar(  # ✗
-            const char* label, const ImVec2& size, ImGuiDataType data_type, void* v, const void* v_min, const void* v_max, 
+            const char* label, const ImVec2& size, ImGuiDataType data_type, void* v, const void* v_min, const void* v_max,
             # note: optional
             const char* format,
             float power
     ) except +
-   
+
     bool TreeNode(const char* label) except +  # ✓
     # bool TreeNode(const char* str_id, const char* fmt, ...) except +  # ✗
     # bool TreeNode(const void* ptr_id, const char* fmt, ...) except +  # ✗
@@ -1218,4 +1266,3 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             size_t* out_ini_size
     ) except +
-
