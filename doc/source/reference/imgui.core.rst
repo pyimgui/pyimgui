@@ -12,6 +12,11 @@ imgui.core module
     :undoc-members:
 
 
+.. autoclass:: imgui.core._DrawList
+    :members:
+    :undoc-members:
+
+
 .. autoclass:: _StaticGlyphRanges
     :members:
     :undoc-members:

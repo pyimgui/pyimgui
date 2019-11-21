@@ -355,6 +355,10 @@ cdef class _DrawCmd(object):
 
 
 cdef class _DrawList(object):
+    """ Low level drawing API.
+
+    _DrawList instance can be acquired by calling :func:`get_window_draw_list`.
+    """
     cdef cimgui.ImDrawList* _ptr
 
     @staticmethod
@@ -391,45 +395,6 @@ cdef class _DrawList(object):
         return <uintptr_t>self._ptr.IdxBuffer.Data
 
 
-    def add_rect_filled(
-            self,
-            float upper_left_x, float upper_left_y,
-            float lower_right_x, float lower_right_y,
-            cimgui.ImU32 col,
-            # note: optional
-            float rounding = 0.0,
-            cimgui.ImGuiWindowFlags rounding_corners_flags = 0xF,
-        ):
-        """Add a filled rectangle to the draw list.
-        Args:
-            upper_left_x (float): X coordinate of top-left
-            upper_left_y (float): Y coordinate of top-left
-            lower_right_x (float): X coordinate of lower-right
-            lower_right_y (float): Y coordinate of lower-right
-            col (ImU32): RGBA color specification
-            # note: optional
-            rounding (float): Degree of rounding, defaults to 0.0
-            rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
-
-        .. wraps::
-            void ImDrawList::AddRectFilled(
-                const ImVec2&,
-                const ImVec2&,
-                ImU32,
-                # note: optional
-                float, int
-            )
-        """
-        #_DrawList.from_ptr(self._ptr).AddRectFilled(
-        self._ptr.AddRectFilled(
-            _cast_args_ImVec2(upper_left_x, upper_left_y),
-            _cast_args_ImVec2(lower_right_x, lower_right_y),
-            col,
-            rounding,
-            rounding_corners_flags,
-        )
-
-
     def add_line(
             self,
             float start_x, float start_y,
@@ -440,9 +405,32 @@ cdef class _DrawList(object):
         ):
         """Add a straight line to the draw list.
 
-        .. wraps::
-            void ImDrawList::AddLine(const ImVec2& a, const ImVec2& b, ImU32 col, float thickness = 1.0f)
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
 
+            imgui.begin("Line example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_line(20, 35, 180, 80, imgui.get_color_u32_rgba(1,1,0,1), 3)
+            draw_list.add_line(180, 35, 20, 80, imgui.get_color_u32_rgba(1,0,0,1), 3)
+            imgui.end()
+
+        Args:
+            start_x (float): X coordinate of first point
+            start_y (float): Y coordinate of first point
+            end_x (float): X coordinate of second point
+            end_y (float): Y coordinate of second point
+            col (ImU32): RGBA color specification
+            thickness (float): Line thickness in pixels
+
+        .. wraps::
+            void ImDrawList::AddLine(
+                const ImVec2& a,
+                const ImVec2& b,
+                ImU32 col,
+                float thickness = 1.0f
+            )
         """
         self._ptr.AddLine(
             _cast_args_ImVec2(start_x, start_y),
@@ -450,7 +438,6 @@ cdef class _DrawList(object):
             col,
             thickness,
         )
-
 
     def add_rect(
             self,
@@ -464,13 +451,23 @@ cdef class _DrawList(object):
         ):
         """Add a rectangle outline to the draw list.
 
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Rect example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_rect(20, 35, 90, 80, imgui.get_color_u32_rgba(1,1,0,1), thickness=3)
+            draw_list.add_rect(110, 35, 180, 80, imgui.get_color_u32_rgba(1,0,0,1), rounding=5, thickness=3)
+            imgui.end()
+
         Args:
-            upper_left_x (float): X coordinate of top-left
-            upper_left_y (float): Y coordinate of top-left
-            lower_right_x (float): X coordinate of lower-right
-            lower_right_y (float): Y coordinate of lower-right
+            upper_left_x (float): X coordinate of top-left corner
+            upper_left_y (float): Y coordinate of top-left corner
+            lower_right_x (float): X coordinate of lower-right corner
+            lower_right_y (float): Y coordinate of lower-right corner
             col (ImU32): RGBA color specification
-            # note: optional
             rounding (float): Degree of rounding, defaults to 0.0
             rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
             thickness (float): Line thickness, defaults to 1.0
@@ -494,7 +491,278 @@ cdef class _DrawList(object):
             thickness,
         )
 
+    def add_rect_filled(
+            self,
+            float upper_left_x, float upper_left_y,
+            float lower_right_x, float lower_right_y,
+            cimgui.ImU32 col,
+            # note: optional
+            float rounding = 0.0,
+            cimgui.ImGuiWindowFlags rounding_corners_flags = 0xF,
+        ):
+        """Add a filled rectangle to the draw list.
 
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Filled rect example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_rect_filled(20, 35, 90, 80, imgui.get_color_u32_rgba(1,1,0,1))
+            draw_list.add_rect_filled(110, 35, 180, 80, imgui.get_color_u32_rgba(1,0,0,1), 5)
+            imgui.end()
+
+        Args:
+            upper_left_x (float): X coordinate of top-left corner
+            upper_left_y (float): Y coordinate of top-left corner
+            lower_right_x (float): X coordinate of lower-right corner
+            lower_right_y (float): Y coordinate of lower-right corner
+            col (ImU32): RGBA color specification
+            rounding (float): Degree of rounding, defaults to 0.0
+            rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
+
+        .. wraps::
+            void ImDrawList::AddRectFilled(
+                const ImVec2& a,
+                const ImVec2& b,
+                ImU32 col,
+                float rounding = 0.0f,
+                int rounding_corners_flags = ImDrawCornerFlags_All
+            )
+        """
+        self._ptr.AddRectFilled(
+            _cast_args_ImVec2(upper_left_x, upper_left_y),
+            _cast_args_ImVec2(lower_right_x, lower_right_y),
+            col,
+            rounding,
+            rounding_corners_flags,
+        )
+
+    def add_circle(
+            self,
+            float centre_x, float centre_y,
+            float radius,
+            cimgui.ImU32 col,
+            # note: optional
+            int num_segments = 12,
+            float thickness = 1.0
+        ):
+
+        """Add a circle to the draw list.
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Circle example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_circle(100, 60, 30, imgui.get_color_u32_rgba(1,1,0,1), thickness=3)
+            imgui.end()
+
+        Args:
+            centre_x (float): circle centre coordinates
+            centre_y (float): circle centre coordinates
+            radius (float): circle radius
+            col (ImU32): RGBA color specification
+            num_segments (ImU32): Number of segments, defaults to 12
+            thickness (float): Line thickness
+
+        .. wraps::
+            void ImDrawList::AddCircle(
+                const ImVec2& centre,
+                float radius,
+                ImU32 col,
+                int num_segments = 12,
+                float thickness = 1.0
+            )
+        """
+        self._ptr.AddCircle(
+            _cast_args_ImVec2(centre_x, centre_y),
+            radius,
+            col,
+            num_segments,
+            thickness
+        )
+
+    def add_circle_filled(
+            self,
+            float centre_x, float centre_y,
+            float radius,
+            cimgui.ImU32 col,
+            # note: optional
+            cimgui.ImU32 num_segments = 12
+        ):
+
+        """Add a filled circle to the draw list.
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Filled circle example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_circle_filled(100, 60, 30, imgui.get_color_u32_rgba(1,1,0,1))
+            imgui.end()
+
+        Args:
+            centre_x (float): circle centre coordinates
+            centre_y (float): circle centre coordinates
+            radius (float): circle radius
+            col (ImU32): RGBA color specification
+            num_segments (ImU32): Number of segments, defaults to 12
+
+        .. wraps::
+            void ImDrawList::AddCircleFilled(
+                const ImVec2& centre,
+                float radius,
+                ImU32 col,
+                int num_segments = 12
+            )
+        """
+        self._ptr.AddCircleFilled(
+            _cast_args_ImVec2(centre_x, centre_y),
+            radius,
+            col,
+            num_segments
+        )
+
+    def add_text(
+            self,
+            float pos_x, float pos_y,
+            cimgui.ImU32 col,
+            str text
+        ):
+        """Add text to the draw list.
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Text example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_text(20, 35, imgui.get_color_u32_rgba(1,1,0,1), "Hello!")
+            imgui.end()
+
+        Args:
+            pos_x (float): X coordinate of the text's upper-left corner
+            pos_y (float): Y coordinate of the text's upper-left corner
+            col (ImU32): RGBA color specification
+            text (str): text
+
+        .. wraps::
+            void ImDrawList::AddText(
+                const ImVec2& pos,
+                ImU32 col,
+                const char* text_begin,
+                const char* text_end = NULL
+            )
+        """
+        self._ptr.AddText(
+            _cast_args_ImVec2(pos_x, pos_y),
+            col,
+            _bytes(text),
+            NULL
+        )
+
+    def add_image(self,
+        texture_id,
+        tuple a,
+        tuple b,
+        tuple uv_a=(0,0),
+        tuple uv_b=(1,1),
+        cimgui.ImU32 col=0xffffffff):
+        """Add image to the draw list. Aspect ratio is not preserved.
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Image example")
+            texture_id = imgui.get_io().fonts.texture_id
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_image(texture_id, (20, 35), (180, 80), col=imgui.get_color_u32_rgba(0.5,0.5,1,1))
+            imgui.end()
+
+        Args:
+            texture_id (object): ID of the texture to draw
+            a (tuple): top-left image corner coordinates,
+            b (tuple): bottom-right image corner coordinates,
+            uv_a (tuple): UV coordinates of the top-left corner, defaults to (0, 0)
+            uv_b (tuple): UV coordinates of the bottom-right corner, defaults to (1, 1)
+            col (ImU32): tint color, defaults to 0xffffffff (no tint)
+
+        .. wraps::
+            void ImDrawList::AddImage(
+                ImTextureID user_texture_id,
+                const ImVec2& a,
+                const ImVec2& b,
+                const ImVec2& uv_a = ImVec2(0,0),
+                const ImVec2& uv_b = ImVec2(1,1),
+                ImU32 col = 0xFFFFFFFF
+            )
+        """
+        self._ptr.AddImage(
+            <void*>texture_id,
+            _cast_tuple_ImVec2(a),
+            _cast_tuple_ImVec2(b),
+            _cast_tuple_ImVec2(uv_a),
+            _cast_tuple_ImVec2(uv_b),
+            col
+        )
+
+    def add_polyline(
+            self,
+            list points,
+            cimgui.ImU32 col,
+            bool closed=False,
+            float thickness=1.0
+        ):
+        """Add a optionally closed polyline to the draw list.
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Polyline example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_polyline([(20, 35), (90, 35), (55, 80)], imgui.get_color_u32_rgba(1,1,0,1), closed=False, thickness=3)
+            draw_list.add_polyline([(110, 35), (180, 35), (145, 80)], imgui.get_color_u32_rgba(1,0,0,1), closed=True, thickness=3)
+            imgui.end()
+
+        Args:
+            points (list): list of points
+            col (float): RGBA color specification
+            closed (bool): close the polyline to form a polygon
+            thickness (float): line thickness
+
+        .. wraps::
+            void ImDrawList::AddPolyline(
+                const ImVec2* points,
+                int num_points,
+                ImU32 col,
+                bool closed,
+                float thickness
+            )
+        """
+        num_points = len(points)
+        cdef cimgui.ImVec2 *pts
+        pts = <cimgui.ImVec2 *>malloc(num_points * cython.sizeof(cimgui.ImVec2))
+        for i in range(num_points):
+            pts[i] = _cast_args_ImVec2(points[i][0], points[i][1])
+        self._ptr.AddPolyline(
+            pts,
+            num_points,
+            col,
+            closed,
+            thickness
+        )
+        free(pts)
 
     # channels
 
@@ -508,16 +776,13 @@ cdef class _DrawList(object):
         # TODO: document
         self._ptr.ChannelsSplit(channels_count)
 
-
     def channels_set_current(self, int idx):
         # TODO: document
         self._ptr.ChannelsSetCurrent(idx)
 
-
     def channels_merge(self):
         # TODO: document
         self._ptr.ChannelsMerge()
-
 
     @property
     def commands(self):
@@ -528,6 +793,7 @@ cdef class _DrawList(object):
             # note: add py3k compat
             for idx in xrange(self._ptr.CmdBuffer.Size)
         ]
+
 
 cdef class _Colors(object):
     cdef GuiStyle _style
@@ -2035,8 +2301,8 @@ def set_next_window_bg_alpha(float alpha):
 def get_window_draw_list():
     """Get the draw list associated with the window, to append your own drawing primitives
 
-    It may be useful if you want to do your own drawing via the DrawList
-    api.
+    It may be useful if you want to do your own drawing via the :class:`_DrawList`
+    API.
 
     .. visual-example::
         :auto_layout:
