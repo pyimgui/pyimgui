@@ -2180,11 +2180,11 @@ def set_window_size(
         imgui.set_window_size(80, 180)
         imgui.end()
 
-        .. wraps::
-            void SetWindowSize(
-                const ImVec2& size,
-                ImGuiCond cond = 0,
-            )
+    .. wraps::
+        void SetWindowSize(
+            const ImVec2& size,
+            ImGuiCond cond = 0,
+        )
     """
     cimgui.SetWindowSize(_cast_args_ImVec2(width, height), condition)
 
