@@ -375,6 +375,10 @@ cdef extern from "imgui.h":
         # todo: find a way to access enum var here
         ImVec4*     Colors
 
+    ctypedef struct ImGuiPayload:
+        void* Data  # ✓
+        int   DataSize  # ✓
+
     ctypedef struct ImGuiContext:
         pass
 
@@ -1136,12 +1140,12 @@ cdef extern from "imgui.h" namespace "ImGui":
     void LogText(const char*, ...) except +  # ✗
 
     # Drag and Drop
-    bool BeginDragDropSource(ImGuiDragDropFlags flags) except +  # ✗
-    bool SetDragDropPayload(const char* type, const void* data, size_t size, ImGuiCond cond) except +  # ✗
-    void EndDragDropSource() except +  # ✗
-    bool BeginDragDropTarget() except +  # ✗
-    const ImGuiPayload* AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags) except +  # ✗
-    void EndDragDropTarget() except +  # ✗
+    bool BeginDragDropSource(ImGuiDragDropFlags flags) except +  # ✓
+    bool SetDragDropPayload(const char* type, const void* data, size_t size, ImGuiCond cond) except +  # ✓
+    void EndDragDropSource() except +  # ✓
+    bool BeginDragDropTarget() except +  # ✓
+    const ImGuiPayload* AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags) except +  # ✓
+    void EndDragDropTarget() except +  # ✓
 
     # Clipping
     void PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect) except +  # ✗
