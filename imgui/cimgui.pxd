@@ -602,11 +602,11 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # ====
     # ID scopes
-    void PushID(const char* str_id) except +  # ✗
+    void PushID(const char* str_id) except +  # ✓
     void PushID(const char* str_id_begin, const char* str_id_end) except +  # ✗
     void PushID(const void* ptr_id) except +  # ✗
     void PushID(int int_id) except +  # ✗
-    void PopID() except +  # ✗
+    void PopID() except +  # ✓
     ImGuiID GetID(const char* str_id) except +  # ✗
     ImGuiID GetID(const char* str_id_begin, const char* str_id_end) except +  # ✗
     ImGuiID GetID(const void* ptr_id) except +  # ✗

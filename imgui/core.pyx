@@ -548,7 +548,6 @@ cdef class _DrawList(object):
             int num_segments = 12,
             float thickness = 1.0
         ):
-
         """Add a circle to the draw list.
 
         .. visual-example::
@@ -7161,6 +7160,27 @@ def set_current_context(_ImGuiContext ctx):
                 ImGuiContext *ctx);
     """
     cimgui.SetCurrentContext(ctx._ptr)
+
+
+def push_id(str str_id):
+    """Push an ID into the ID stack
+
+    Args:
+        id (str): ID to push
+
+      wraps::
+        PushID(const char* str_id)
+    """
+    cimgui.PushID(_bytes(str_id))
+
+
+def pop_id():
+    """Pop from the ID stack
+
+      wraps::
+        PopID()
+    """
+    cimgui.PopID()
 
 
 # === Python/C++ cross API for error handling ===
