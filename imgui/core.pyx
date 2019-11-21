@@ -2162,6 +2162,10 @@ def set_window_size(
 
     Call inside :func:`begin()`.
 
+    **Note:** usage of this function is not recommended. prefer using
+    :func:`set_next_window_size()` as this may incur tearing and minor
+    side-effects.
+
     Args:
         width (float): window width. Value 0.0 enables autofit.
         height (float): window height. Value 0.0 enables autofit.
@@ -2181,8 +2185,8 @@ def set_window_size(
                 const ImVec2& size,
                 ImGuiCond cond = 0,
             )
-        """
-        cimgui.SetWindowSize(_cast_args_ImVec2(width, height), condition)
+    """
+    cimgui.SetWindowSize(_cast_args_ImVec2(width, height), condition)
 
 def get_scroll_x():
     """get scrolling amount [0..GetScrollMaxX()]
