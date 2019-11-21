@@ -2156,6 +2156,37 @@ def set_window_focus():
     """
     cimgui.SetWindowFocus()
 
+def set_window_size(
+    float width, float height, cimgui.ImGuiCond condition=ONCE):
+    """Set window size
+
+    Call inside :func:`begin()`.
+
+    **Note:** usage of this function is not recommended. prefer using
+    :func:`set_next_window_size()` as this may incur tearing and minor
+    side-effects.
+
+    Args:
+        width (float): window width. Value 0.0 enables autofit.
+        height (float): window height. Value 0.0 enables autofit.
+        condition (:ref:`condition flag <condition-options>`): defines on which
+            condition value should be set. Defaults to :any:`imgui.ONCE`.
+
+    .. visual-example::
+        :title: window sizing
+        :height: 200
+
+        imgui.begin("Window size")
+        imgui.set_window_size(80, 180)
+        imgui.end()
+
+        .. wraps::
+            void SetWindowSize(
+                const ImVec2& size,
+                ImGuiCond cond = 0,
+            )
+    """
+    cimgui.SetWindowSize(_cast_args_ImVec2(width, height), condition)
 
 def get_scroll_x():
     """get scrolling amount [0..GetScrollMaxX()]
