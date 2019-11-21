@@ -7161,6 +7161,7 @@ def set_current_context(_ImGuiContext ctx):
     """
     cimgui.SetCurrentContext(ctx._ptr)
 
+
 def push_id(str str_id):
     """Push an ID into the ID stack
 
@@ -7171,6 +7172,7 @@ def push_id(str str_id):
         PushID(const char* str_id)
     """
     cimgui.PushID(_bytes(str_id))
+
 
 def pop_id():
     """Pop from the ID stack
