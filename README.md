@@ -65,6 +65,8 @@ Python versions:
 * py34
 * py35
 * py36
+* py37
+* py38
 
 **pyimgui** provides documentation with multiple visual examples.
 Thanks to custom Sphinx extensions we are able to render GUI examples off
