@@ -9,12 +9,11 @@ if [[ $TRAVIS_OS_NAME == "osx" ]]; then
 
     if [[ "$PY_VERSION" != "2.7" ]]; then
         travis_fold start brew-update
-        brew update
+        brew update > /dev/null
         travis_fold end brew-update
 
         travis_fold start brew-openssl
-        brew install openssl
-        brew link openssl --force
+        brew upgrade openssl
         travis_fold end brew-openssl
 
         travis_fold start brew-upgrade
