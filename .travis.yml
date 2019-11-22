@@ -13,10 +13,10 @@ matrix:
       env: PY_VERSION=3.3.7
 
     - os: osx
-      env: PY_VERSION=3.4.10
+      env: PY_VERSION=3.4.9
 
     - os: osx
-      env: PY_VERSION=3.5.9
+      env: PY_VERSION=3.5.6
 
     - os: osx
       env: PY_VERSION=3.6.9

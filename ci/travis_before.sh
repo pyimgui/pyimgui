@@ -12,10 +12,6 @@ if [[ $TRAVIS_OS_NAME == "osx" ]]; then
         brew update > /dev/null
         travis_fold end brew-update
 
-        travis_fold start brew-openssl
-        brew upgrade openssl
-        travis_fold end brew-openssl
-
         travis_fold start brew-upgrade
         brew outdated pyenv || brew upgrade pyenv
         travis_fold end brew-upgrade
