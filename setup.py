@@ -102,6 +102,7 @@ EXTRAS_REQUIRE = {
     'cocos2d': backend_extras('cocos2d'),
     'sdl2': backend_extras('PySDL2'),
     'glfw': backend_extras('glfw'),
+    'cyglfw3': backend_extras('cyglfw3'),
     'pygame': backend_extras('pygame'),
     'opengl': backend_extras(),
     'pyglet': backend_extras('pyglet')
