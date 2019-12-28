@@ -21,6 +21,7 @@ class PygletMixin(object):
         key.HOME: imgui.KEY_HOME,
         key.END: imgui.KEY_END,
         key.DELETE: imgui.KEY_DELETE,
+        key.SPACE: imgui.KEY_SPACE,
         key.BACKSPACE: imgui.KEY_BACKSPACE,
         key.RETURN: imgui.KEY_ENTER,
         key.ESCAPE: imgui.KEY_ESCAPE,
