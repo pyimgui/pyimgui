@@ -11,7 +11,6 @@
 import cython
 from cython.view cimport array as cvarray
 from cython.operator cimport dereference as deref
-import pyimgui_demo
 
 from collections import namedtuple
 import warnings
@@ -7325,19 +7324,3 @@ def _py_vertex_buffer_vertex_size():
 
 def _py_index_buffer_index_size():
     return sizeof(cimgui.ImDrawIdx)
-
-def _py_show_demo_window():
-    """Show pyimgui demo window.
-        (As of yet, not all functions are implemented. So some
-        features will be missing.)
-
-    .. visual-example::
-        :width: 700
-        :height: 600
-        :auto_layout:
-
-        imgui.py_show_demo_window()
-
-    
-    """
-    pyimgui_demo.show_pyimgui_demo()
