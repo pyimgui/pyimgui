@@ -15,6 +15,7 @@ __all__ = (
     "vertex_buffer_vertex_col_offset",
     "vertex_buffer_vertex_size",
     "index_buffer_index_size",
+    "py_show_demo_window"
 )
 
 font = core._py_font
@@ -26,3 +27,4 @@ vertex_buffer_vertex_uv_offset = core._py_vertex_buffer_vertex_uv_offset
 vertex_buffer_vertex_col_offset = core._py_vertex_buffer_vertex_col_offset
 vertex_buffer_vertex_size = core._py_vertex_buffer_vertex_size
 index_buffer_index_size = core._py_index_buffer_index_size
+py_show_demo_window = core._py_show_demo_window
