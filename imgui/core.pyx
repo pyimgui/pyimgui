@@ -1427,6 +1427,22 @@ cdef class _IO(object):
 
     # ... maping of input properties ...
     @property
+    def config_flags(self):
+        return self._ptr.ConfigFlags
+
+    @config_flags.setter
+    def config_flags(self, cimgui.ImGuiConfigFlags value):
+        self._ptr.ConfigFlags = value
+    
+    @property
+    def backend_flags(self):
+        return self._ptr.BackendFlags
+    
+    @backend_flags.setter
+    def backend_flags(self, cimgui.ImGuiBackendFlags value):
+        self._ptr.BackendFlags = value
+
+    @property
     def display_size(self):
         return _cast_ImVec2_tuple(self._ptr.DisplaySize)
 
