@@ -1635,6 +1635,14 @@ cdef class _IO(object):
     @mouse_wheel.setter
     def mouse_wheel(self, float value):
         self._ptr.MouseWheel = value
+    
+    @property
+    def mouse_wheel_horizontal(self):
+        return self._ptr.MouseWheelH
+    
+    @mouse_wheel_horizontal.setter
+    def mouse_wheel_horizontal(self, float value):
+        self._ptr.MouseWheelH = value
 
     @property
     def mouse_draw_cursor(self):
@@ -1691,6 +1699,12 @@ cdef class _IO(object):
 
     def add_input_character(self, cimgui.ImWchar c):
         self._ptr.AddInputCharacter(c)
+    
+    def add_input_characters_utf8(self, str utf8_chars):
+        self._ptr.AddInputCharactersUTF8(_bytes(utf8_chars))
+    
+    def clear_input_characters(self):
+        self._ptr.ClearInputCharacters()
 
     # ... mapping of output properties ...
     @property
