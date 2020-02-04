@@ -619,8 +619,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     void TextUnformatted(const char*) except +  # ✓
     void Text(const char*, ...) except +  # ✓
     void TextColored(const ImVec4&, const char*, ...) except +  # ✓
-    void TextDisabled(const char*, ...) except +  # ✗
-    void TextWrapped(const char*, ...) except +  # ✗
+    void TextDisabled(const char*, ...) except +  # ✓
+    void TextWrapped(const char*, ...) except +  # ✓
     void LabelText(const char*, const char*, ...) except +  # ✓
     void BulletText(const char*, ...) except +  # ✓
 
