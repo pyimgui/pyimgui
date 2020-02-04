@@ -127,7 +127,7 @@ cdef extern from "imgui.h":
         ImVec2      MousePos  # ✓
         bool        MouseDown[5]  # ✓
         float       MouseWheel  # ✓
-        float       MouseWheelH  # ✗
+        float       MouseWheelH  # ✓
         bool        MouseDrawCursor  # ✓
         bool        KeyCtrl  # ✓
         bool        KeyShift  # ✓

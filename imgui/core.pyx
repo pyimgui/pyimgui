@@ -1605,6 +1605,14 @@ cdef class _IO(object):
     @mouse_wheel.setter
     def mouse_wheel(self, float value):
         self._ptr.MouseWheel = value
+    
+    @property
+    def mouse_wheel_horizontal(self):
+        return self._ptr.MouseWheelH
+    
+    @mouse_wheel_horizontal.setter
+    def mouse_wheel_horizontal(self, float value):
+        self._ptr.MouseWheelH = value
 
     @property
     def mouse_draw_cursor(self):
