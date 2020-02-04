@@ -137,8 +137,8 @@ cdef extern from "imgui.h":
         ImWchar     InputCharacters[16+1]  # ✗
 
         void        AddInputCharacter(ImWchar c) except +  # ✓
-        void        AddInputCharactersUTF8(const char* utf8_chars) except +  # ✗
-        void        ClearInputCharacters() except +  # ✗
+        void        AddInputCharactersUTF8(const char* utf8_chars) except +  # ✓
+        void        ClearInputCharacters() except +  # ✓
 
         # ====
         # source-note: Output - Retrieve after calling NewFrame(), you can use

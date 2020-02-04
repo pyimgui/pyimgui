@@ -1661,6 +1661,12 @@ cdef class _IO(object):
 
     def add_input_character(self, cimgui.ImWchar c):
         self._ptr.AddInputCharacter(c)
+    
+    def add_input_characters_utf8(self, str utf8_chars):
+        self._ptr.AddInputCharactersUTF8(_bytes(utf8_chars))
+    
+    def clear_input_characters(self):
+        self._ptr.ClearInputCharacters()
 
     # ... mapping of output properties ...
     @property
