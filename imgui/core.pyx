@@ -6444,7 +6444,8 @@ cpdef get_font_size():
     """
     return cimgui.GetFontSize()
 
-
+cpdef get_style_color_vec_4(cimgui.ImGuiCol idx):
+    return _cast_ImVec4_tuple(cimgui.GetStyleColorVec4(idx))
 
 # TODO: Can we implement function overloading? Prefer these are all named 'get_color_u32' with different signatures
 # https://www.python.org/dev/peps/pep-0443/

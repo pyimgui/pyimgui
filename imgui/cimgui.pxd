@@ -546,7 +546,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void PushStyleVar(ImGuiStyleVar, float) except +  # ✓
     void PushStyleVar(ImGuiStyleVar, const ImVec2&) except +  # ✓
     void PopStyleVar(int) except +  # ✓
-    ImVec4& GetStyleColorVec4(ImGuiCol idx) except +  # ✗
+    ImVec4& GetStyleColorVec4(ImGuiCol idx) except +  # ✓
     ImFont* GetFont() except +  # ✗
     float GetFontSize() except +  # ✓
     ImVec2 GetFontTexUvWhitePixel() except +  # ✗
