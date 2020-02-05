@@ -307,7 +307,7 @@ cdef extern from "imgui.h":
 
     ctypedef struct ImFont:
         pass
-
+           
     ctypedef struct ImFontAtlas:  # ✓
         void*   TexID  # ✓
 
@@ -549,7 +549,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImVec4& GetStyleColorVec4(ImGuiCol idx) except +  # ✓
     ImFont* GetFont() except +  # ✗
     float GetFontSize() except +  # ✓
-    ImVec2 GetFontTexUvWhitePixel() except +  # ✗
+    ImVec2 GetFontTexUvWhitePixel() except +  # ✓
     ImU32 GetColorU32(ImGuiCol, float) except +  # ✓
     ImU32 GetColorU32(const ImVec4& col) except +  # ✓
     ImU32 GetColorU32(ImU32 col) except +  # ✓
@@ -561,10 +561,10 @@ cdef extern from "imgui.h" namespace "ImGui":
     float CalcItemWidth() except +  # ✓
     void PushTextWrapPos(float wrap_pos_x) except +  # ✓
     void PopTextWrapPos() except +  # ✓
-    void PushAllowKeyboardFocus(bool v) except +  # ✗
-    void PopAllowKeyboardFocus() except +  # ✗
-    void PushButtonRepeat(bool repeat) except +  # ✗
-    void PopButtonRepeat() except +  # ✗
+    void PushAllowKeyboardFocus(bool v) except +  # ✓
+    void PopAllowKeyboardFocus() except +  # ✓
+    void PushButtonRepeat(bool repeat) except +  # ✓
+    void PopButtonRepeat() except +  # ✓
 
     # ====
     # Cursor / Layout
@@ -586,15 +586,15 @@ cdef extern from "imgui.h" namespace "ImGui":
     void BeginGroup() except +  # ✓
     void EndGroup() except +  # ✓
     ImVec2 GetCursorPos() except +  # ✓
-    float GetCursorPosX() except +  # ✗
-    float GetCursorPosY() except +  # ✗
+    float GetCursorPosX() except +  # ✓
+    float GetCursorPosY() except +  # ✓
     void SetCursorPos(const ImVec2& local_pos) except +  # ✓
-    void SetCursorPosX(float x) except +  # ✗
-    void SetCursorPosY(float y) except +  # ✗
+    void SetCursorPosX(float x) except +  # ✓
+    void SetCursorPosY(float y) except +  # ✓
     ImVec2 GetCursorStartPos() except +  # ✓
     ImVec2 GetCursorScreenPos() except +  # ✓
     void SetCursorScreenPos(const ImVec2& screen_pos) except +  # ✓
-    void AlignTextToFramePadding() except +  # ✗
+    void AlignTextToFramePadding() except +  # ✓
     float GetTextLineHeight() except +  # ✓
     float GetTextLineHeightWithSpacing() except +  # ✓
     float GetFrameHeight() except +  # ✓

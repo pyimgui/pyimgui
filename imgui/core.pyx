@@ -6447,6 +6447,9 @@ cpdef get_font_size():
 cpdef get_style_color_vec_4(cimgui.ImGuiCol idx):
     return _cast_ImVec4_tuple(cimgui.GetStyleColorVec4(idx))
 
+cpdef get_font_tex_uv_white_pixel():
+    return _cast_ImVec2_tuple(cimgui.GetFontTexUvWhitePixel())
+
 # TODO: Can we implement function overloading? Prefer these are all named 'get_color_u32' with different signatures
 # https://www.python.org/dev/peps/pep-0443/
 # Neither singledispatch nor multipledispatch seems to be available in Cython :-/
@@ -6589,6 +6592,17 @@ cpdef pop_text_wrap_pos():
 
 pop_text_wrap_position = pop_text_wrap_pos
 
+cpdef push_allow_keyboard_focus(bool v):
+    cimgui.PushAllowKeyboardFocus(v)
+
+cpdef pop_allow_keyboard_focus():
+    cimgui.PopAllowKeyboardFocus()
+
+cpdef push_button_repeat(bool repeat):
+    cimgui.PushButtonRepeat(repeat)
+
+cpdef pop_button_repeat():
+    cimgui.PopButtonRepeat()
 
 cpdef pop_style_color(unsigned int count=1):
     """Pop style color from stack.
@@ -7135,6 +7149,11 @@ def get_cursor_pos():
     """
     return _cast_ImVec2_tuple(cimgui.GetCursorPos())
 
+def get_cursor_pos_X():
+    return cimgui.GetCursorPosX()
+
+def get_cursor_pos_Y():
+    return cimgui.GetCursorPosY()
 
 def set_cursor_pos(local_pos):
     """Set the cursor position in local coordinates [0..<window size>] (useful to work with ImDrawList API)
@@ -7144,6 +7163,11 @@ def set_cursor_pos(local_pos):
     """
     cimgui.SetCursorPos(_cast_tuple_ImVec2(local_pos))
 
+def set_cursor_pos_X(float x):
+    cimgui.SetCursorPosX(x)
+
+def set_cursor_pos_Y(float y):
+    cimgui.SetCursorPosY(y)
 
 def get_cursor_start_pos():
     """Get the initial cursor position.
@@ -7178,6 +7202,8 @@ get_cursor_start_position = get_cursor_start_pos
 get_cursor_screen_position = get_cursor_screen_pos
 set_cursor_screen_position = set_cursor_screen_pos
 
+def align_text_to_frame_padding():
+    cimgui.AlignTextToFramePadding()
 
 def get_text_line_height():
     """Get text line height.
