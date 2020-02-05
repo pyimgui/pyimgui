@@ -2224,6 +2224,13 @@ def set_window_size(
     """
     cimgui.SetWindowSize(_cast_args_ImVec2(width, height), condition)
 
+def set_window_size_named(str name, size, cimgui.ImGuiCond condition = ONCE):
+    cimgui.SetWindowSize(
+        _bytes(name),
+        _cast_tuple_ImVec2(size),
+        condition
+    )
+
 def get_scroll_x():
     """get scrolling amount [0..GetScrollMaxX()]
 
@@ -2538,28 +2545,21 @@ def set_next_window_size(
 def set_next_window_content_size(size):
     cimgui.SetNextWindowContentSize(_cast_tuple_ImVec2(size))
 
-def set_window_pos(position, cimgui.ImGuiCond cond):
-    cimgui.SetWindowPos(_cast_tuple_ImVec2(position), cond)
+def set_window_pos(position, cimgui.ImGuiCond condition = ALWAYS):
+    cimgui.SetWindowPos(_cast_tuple_ImVec2(position), condition)
 
-def set_window_pos_named(str name, position, cimgui.ImGuiCond cond):
+def set_window_pos_named(str name, position, cimgui.ImGuiCond condition = ALWAYS):
     cimgui.SetWindowPos(
         _bytes(name),
         _cast_tuple_ImVec2(position),
-        cond
+        condition
     )
 
-def set_window_size(str name, size, cimgui.ImGuiCond cond):
-    cimgui.SetWindowSize(
-        _bytes(name),
-        _cast_tuple_ImVec2(size),
-        cond
-    )
+def set_window_collapsed(bool collapsed, cimgui.ImGuiCond condition):
+    cimgui.SetWindowCollapsed(collapsed, condition)
 
-def set_window_collapsed(bool collapsed, cimgui.ImGuiCond cond):
-    cimgui.SetWindowCollapsed(collapsed, cond)
-
-def set_window_collapsed_named(str name, bool collapsed, cimgui.ImGuiCond cond):
-    cimgui.SetWindowCollapsed(_bytes(name), collapsed, cond)
+def set_window_collapsed_named(str name, bool collapsed, cimgui.ImGuiCond condition):
+    cimgui.SetWindowCollapsed(_bytes(name), collapsed, condition)
 
 
 def is_window_collapsed():
@@ -5800,7 +5800,7 @@ def plot_histogram(
         stride
     )
 
-def progress_bar(float fraction, size = (100, 20), str overlay = ""):
+def progress_bar(float fraction, size, str overlay = ""):
     """ Show a progress bar
 
     .. visual-example::
