@@ -2189,6 +2189,9 @@ def set_window_focus():
     """
     cimgui.SetWindowFocus()
 
+def set_window_focus_named(str name):
+    cimgui.SetWindowFocus(_bytes(name))
+
 def set_window_size(
     float width, float height, cimgui.ImGuiCond condition=ONCE):
     """Set window size
@@ -2531,6 +2534,32 @@ def set_next_window_size(
         )
     """
     cimgui.SetNextWindowSize(_cast_args_ImVec2(width, height), condition)
+
+def set_next_window_content_size(size):
+    cimgui.SetNextWindowContentSize(_cast_tuple_ImVec2(size))
+
+def set_window_pos(position, cimgui.ImGuiCond cond):
+    cimgui.SetWindowPos(_cast_tuple_ImVec2(position), cond)
+
+def set_window_pos_named(str name, position, cimgui.ImGuiCond cond):
+    cimgui.SetWindowPos(
+        _bytes(name),
+        _cast_tuple_ImVec2(position),
+        cond
+    )
+
+def set_window_size(str name, size, cimgui.ImGuiCond cond):
+    cimgui.SetWindowSize(
+        _bytes(name),
+        _cast_tuple_ImVec2(size),
+        cond
+    )
+
+def set_window_collapsed(bool collapsed, cimgui.ImGuiCond cond):
+    cimgui.SetWindowCollapsed(collapsed, cond)
+
+def set_window_collapsed_named(str name, bool collapsed, cimgui.ImGuiCond cond):
+    cimgui.SetWindowCollapsed(_bytes(name), collapsed, cond)
 
 
 def is_window_collapsed():

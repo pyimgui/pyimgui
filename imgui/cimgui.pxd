@@ -477,7 +477,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiSizeCallback custom_callback,
             void* custom_callback_data
     ) except +
-    void SetNextWindowContentSize(const ImVec2& size) except +  # ✗
+    void SetNextWindowContentSize(const ImVec2& size) except +  # ✓
     void SetNextWindowCollapsed(  # ✓
             bool collapsed,
             # note: optional
@@ -485,7 +485,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void SetNextWindowFocus() except +  # ✓
     void SetNextWindowBgAlpha(float alpha) except +  # ✓
-    void SetWindowPos(  # ✗
+    void SetWindowPos(  # ✓
             const ImVec2& pos,
             # note: optional
             ImGuiCond cond
@@ -495,28 +495,28 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiCond cond
     ) except +
-    void SetWindowCollapsed(  # ✗
+    void SetWindowCollapsed(  # ✓
             bool collapsed,
             # note: optional
             ImGuiCond cond
     ) except +
     void SetWindowFocus() except +  # ✓
     void SetWindowFontScale(float scale) except +  # ✓
-    void SetWindowPos(  # ✗
+    void SetWindowPos(  # ✓
             const char* name, const ImVec2& pos,
             # note: optional
             ImGuiCond cond
     ) except +
-    void SetWindowSize(  # ✗
+    void SetWindowSize(  # ✓
             const char* name, const ImVec2& size, ImGuiCond
             cond
     ) except +
-    void SetWindowCollapsed(  # ✗
+    void SetWindowCollapsed(  # ✓
             const char* name, bool collapsed,
             # note: optional
             ImGuiCond cond
     ) except +
-    void SetWindowFocus(const char* name) except +  # ✗
+    void SetWindowFocus(const char* name) except +  # ✓
 
     float GetScrollX() except +  # ✓
     float GetScrollY() except +  # ✓
