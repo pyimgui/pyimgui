@@ -1733,6 +1733,9 @@ cdef class _IO(object):
     def metrics_active_windows(self):
         return self._ptr.MetricsActiveWindows
 
+    @property
+    def mouse_delta(self):
+        return _cast_ImVec2_tuple(self._ptr.MouseDelta)
 
 _io = None
 def get_io():

@@ -155,7 +155,7 @@ cdef extern from "imgui.h":
         int         MetricsRenderVertices  # ✓
         int         MetricsRenderIndices  # ✓
         int         MetricsActiveWindows  # ✓
-        ImVec2      MouseDelta  # ✗
+        ImVec2      MouseDelta  # ✓
 
         # ====
         # source-note: [Internal] ImGui will maintain those fields for you
