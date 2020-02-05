@@ -5797,11 +5797,7 @@ def progress_bar(float fraction, size = (100, 20), str overlay = ""):
     ) 
 
     """
-    cdef cimgui.ImVec2 size_vec
-    size_vec.x = size[0]
-    size_vec.y = size[1]
-
-    cimgui.ProgressBar(fraction, size_vec, _bytes(overlay))
+    cimgui.ProgressBar(fraction, _cast_tuple_ImVec2(size), _bytes(overlay))
 
 def set_item_default_focus():
     """Make last item the default focused item of a window.
