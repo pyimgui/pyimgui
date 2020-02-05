@@ -710,7 +710,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             int values_offset, const char* overlay_text, float scale_min,
             float scale_max, ImVec2 graph_size
     ) except +
-    void ProgressBar(  # ✗
+    void ProgressBar(  # ✓
             float fraction,
             # note: optional
             const ImVec2& size_arg, const char* overlay

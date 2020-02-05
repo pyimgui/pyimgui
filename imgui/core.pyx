@@ -5768,6 +5768,37 @@ def plot_histogram(
         stride
     )
 
+def progress_bar(float fraction, size = (100, 20), str overlay = ""):
+    """ Show a progress bar
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 200
+    
+        imgui.begin("Progress bar example")
+        imgui.progress_bar(0.7, (100,20), "Overlay text")
+        imgui.end()
+
+    Args:
+        fraction (float): A floating point number between 0.0 and 1.0
+            0.0 means no progress and 1.0 means progress is completed
+        size : a tuple (width, height) that sets the width and height
+            of the progress bar
+        overlay (str): Optional text that will be shown in the progress bar
+
+    .. wraps::
+            void ProgressBar(
+            float fraction,
+            const ImVec2& size_arg, const char* overlay
+    ) 
+
+    """
+    cdef cimgui.ImVec2 size_vec
+    size_vec.x = size[0]
+    size_vec.y = size[1]
+
+    cimgui.ProgressBar(fraction, size_vec, _bytes(overlay))
 
 def set_item_default_focus():
     """Make last item the default focused item of a window.
