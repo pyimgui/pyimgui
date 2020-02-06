@@ -3584,6 +3584,10 @@ def small_button(str label):
     """
     return cimgui.SmallButton(_bytes(label))
 
+def arrow_button(str label, cimgui.ImGuiDir direction = DIRECTION_NONE):
+    if direction == DIRECTION_NONE:
+        raise ValueError("Direction wasn't specified.")
+    return cimgui.ArrowButton(_bytes(label), direction)
 
 def invisible_button(str identifier, width, height):
     """Create invisible button.
@@ -6592,8 +6596,8 @@ cpdef pop_text_wrap_pos():
 
 pop_text_wrap_position = pop_text_wrap_pos
 
-cpdef push_allow_keyboard_focus(bool v):
-    cimgui.PushAllowKeyboardFocus(v)
+cpdef push_allow_keyboard_focus(bool allow_focus):
+    cimgui.PushAllowKeyboardFocus(allow_focus)
 
 cpdef pop_allow_keyboard_focus():
     cimgui.PopAllowKeyboardFocus()
