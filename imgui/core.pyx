@@ -2189,8 +2189,8 @@ def set_window_focus():
     """
     cimgui.SetWindowFocus()
 
-def set_window_focus_named(str name):
-    cimgui.SetWindowFocus(_bytes(name))
+def set_window_focus_labeled(str label):
+    cimgui.SetWindowFocus(_bytes(label))
 
 def set_window_size(
     float width, float height, cimgui.ImGuiCond condition=ONCE):
@@ -2224,10 +2224,10 @@ def set_window_size(
     """
     cimgui.SetWindowSize(_cast_args_ImVec2(width, height), condition)
 
-def set_window_size_named(str name, size, cimgui.ImGuiCond condition = ONCE):
+def set_window_size_named(str label, float width, float height, cimgui.ImGuiCond condition = ONCE):
     cimgui.SetWindowSize(
-        _bytes(name),
-        _cast_tuple_ImVec2(size),
+        _bytes(label),
+        _cast_args_ImVec2(width, height),
         condition
     )
 
@@ -2542,24 +2542,24 @@ def set_next_window_size(
     """
     cimgui.SetNextWindowSize(_cast_args_ImVec2(width, height), condition)
 
-def set_next_window_content_size(size):
-    cimgui.SetNextWindowContentSize(_cast_tuple_ImVec2(size))
+def set_next_window_content_size(float width, float height):
+    cimgui.SetNextWindowContentSize(_cast_args_ImVec2(width, height))
 
-def set_window_pos(position, cimgui.ImGuiCond condition = ALWAYS):
-    cimgui.SetWindowPos(_cast_tuple_ImVec2(position), condition)
+def set_window_position(float x, float y, cimgui.ImGuiCond condition = ALWAYS):
+    cimgui.SetWindowPos(_cast_args_ImVec2(x,y), condition)
 
-def set_window_pos_named(str name, position, cimgui.ImGuiCond condition = ALWAYS):
+def set_window_position_labeled(str label, float x, float y, cimgui.ImGuiCond condition = ALWAYS):
     cimgui.SetWindowPos(
-        _bytes(name),
-        _cast_tuple_ImVec2(position),
+        _bytes(label),
+        _cast_args_ImVec2(x,y),
         condition
     )
 
-def set_window_collapsed(bool collapsed, cimgui.ImGuiCond condition):
+def set_window_collapsed(bool collapsed, cimgui.ImGuiCond condition = ALWAYS):
     cimgui.SetWindowCollapsed(collapsed, condition)
 
-def set_window_collapsed_named(str name, bool collapsed, cimgui.ImGuiCond condition):
-    cimgui.SetWindowCollapsed(_bytes(name), collapsed, condition)
+def set_window_collapsed_labeled(str label, bool collapsed, cimgui.ImGuiCond condition = ALWAYS):
+    cimgui.SetWindowCollapsed(_bytes(label), collapsed, condition)
 
 
 def is_window_collapsed():
@@ -5804,7 +5804,7 @@ def plot_histogram(
         stride
     )
 
-def progress_bar(float fraction, size, str overlay = ""):
+def progress_bar(float fraction, size = (0,0), str overlay = ""):
     """ Show a progress bar
 
     .. visual-example::
