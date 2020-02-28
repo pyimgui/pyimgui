@@ -3426,7 +3426,7 @@ def text_disabled(str text):
         :auto_layout:
 
         imgui.begin("Example: disabled text")
-        imgui.text("Disabled text")
+        imgui.text_disabled("Disabled text")
         imgui.end()
 
     Args:
