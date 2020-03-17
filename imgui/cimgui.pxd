@@ -113,8 +113,9 @@ cdef extern from "imgui.h":
         # source-note: User Functions
         # note: callbacks may wrap arbitrary Python code so we need to
         #       propagate exceptions from them (as well as C++ exceptions)
-        const char* (*GetClipboardTextFn)() except +  # ✗
-        void        (*SetClipboardTextFn)(const char* text) except +  # ✗
+        const char* (*GetClipboardTextFn)(void* user_data) except +  # ✓
+        void        (*SetClipboardTextFn)(void* user_data, const char* text) except +  # ✓
+        void*       ClipboardUserData  # ✗
 
         void*       (*MemAllocFn)(size_t sz) except +  # ✗
         void        (*MemFreeFn)(void* ptr) except +  # ✗
