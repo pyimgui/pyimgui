@@ -2184,12 +2184,53 @@ def get_window_content_region_width():
 def set_window_focus():
     """Set window to be focused
 
+    Call inside :func:`begin()`.
+
+    .. visual-example::
+        :title: Window focus
+        :height: 100
+
+        imgui.begin("Window 1")
+        imgui.end()
+
+        imgui.begin("Window 2")
+        imgui.set_window_focus()
+        imgui.end()
+        
     .. wraps::
         void SetWindowFocus()
     """
     cimgui.SetWindowFocus()
 
 def set_window_focus_labeled(str label):
+    """Set focus to the window named label
+
+    Args:
+        label(string): the name of the window that will be focused   
+
+    .. visual-example::
+        :title: Window focus
+        :height: 100
+
+        imgui.set_window_focus_labeled("Window 2")
+
+        imgui.begin("Window 1", True)
+        imgui.text("Apples")
+        imgui.end()
+
+        imgui.begin("Window 2", True)
+        imgui.text("Orange")
+        imgui.end()
+
+        imgui.begin("Window 3", True)
+        imgui.text("Mango")
+        imgui.end()
+
+    .. wraps::
+        void SetWindowFocus(
+            const char* name
+        )
+    """
     cimgui.SetWindowFocus(_bytes(label))
 
 def set_window_size(
@@ -2225,6 +2266,35 @@ def set_window_size(
     cimgui.SetWindowSize(_cast_args_ImVec2(width, height), condition)
 
 def set_window_size_named(str label, float width, float height, cimgui.ImGuiCond condition = ONCE):
+    """Set the window with label to some size
+
+    Args:
+        label(string): name of the window
+        width(float): new width of the window
+        height(float): new height of the window
+        condition (:ref:`condition flag <condition-options>`): defines on which
+            condition value should be set. Defaults to :any:`imgui.ONCE`.
+
+    .. visual-example::
+        :title: Window size
+        :height: 200
+
+        imgui.set_window_size_named("Window 1",100,100)
+        imgui.set_window_size_named("Window 2",100,200)      
+        
+        imgui.begin("Window 1")
+        imgui.end()
+
+        imgui.begin("Window 2")
+        imgui.end()
+
+    .. wraps::
+        void SetWindowSize(
+            const char* name, 
+            const ImVec2& size,
+             ImGuiCond cond
+    )
+    """
     cimgui.SetWindowSize(
         _bytes(label),
         _cast_args_ImVec2(width, height),
@@ -2543,12 +2613,94 @@ def set_next_window_size(
     cimgui.SetNextWindowSize(_cast_args_ImVec2(width, height), condition)
 
 def set_next_window_content_size(float width, float height):
+    """Set content size of the next window. Show scrollbars
+       if content doesn't fit in the window
+
+    Call before :func:`begin()`.
+
+    Args:
+        width(float): width of the content area 
+        height(float): height of the content area
+
+    .. visual-example::
+        :title: Content Size Demo
+        :height: 30
+
+        imgui.set_window_size(20,20)
+        imgui.set_next_window_content_size(100,100)
+        
+        imgui.begin("Window", True)
+        imgui.text("Some example text")
+        imgui.end()
+
+    .. wraps::
+        void SetNextWindowContentSize(
+            const ImVec2& size
+        )
+    """
     cimgui.SetNextWindowContentSize(_cast_args_ImVec2(width, height))
 
 def set_window_position(float x, float y, cimgui.ImGuiCond condition = ALWAYS):
+    """Set the size of the current window
+
+    Call inside: func: 'begin()'
+
+    Args:
+        x(float): position on the x axis
+        y(float): position on the y axis
+        condition (:ref:`condition flag <condition-options>`): defines on which
+            condition value should be set. Defaults to :any:`imgui.ALWAYS`.
+
+    .. visual-example::
+        :title: Window Size Demo
+        :height: 200
+
+        imgui.begin("Window 1")
+        imgui.set_window_position(20,20) 
+        imgui.end()
+
+        imgui.begin("Window 2")
+        imgui.set_window_position(20,50)  
+        imgui.end()
+        
+    .. wraps::
+        void SetWindowPos(
+            const ImVec2& pos,
+            ImGuiCond cond
+        )
+    """
     cimgui.SetWindowPos(_cast_args_ImVec2(x,y), condition)
 
 def set_window_position_labeled(str label, float x, float y, cimgui.ImGuiCond condition = ALWAYS):
+    """Set the size of the window with label
+
+    Args:
+        label(str): name of the window to be resized
+        x(float): position on the x axis
+        y(float): position on the y axis
+        condition (:ref:`condition flag <condition-options>`): defines on which
+            condition value should be set. Defaults to :any:`imgui.ALWAYS`.
+
+    .. visual-example::
+        :title: Window Size Demo
+        :height: 200
+
+        imgui.set_window_position_labeled("Window 1", 20, 50)
+        imgui.set_window_position_labeled("Window 2", 20, 100)
+
+        imgui.begin("Window 1")
+        imgui.end()
+
+        imgui.begin("Window 2")
+        imgui.end()
+
+    .. wraps::
+        void SetWindowPos(
+            const char* name, 
+            const ImVec2& pos,
+            ImGuiCond cond
+    )    
+    """
     cimgui.SetWindowPos(
         _bytes(label),
         _cast_args_ImVec2(x,y),
@@ -2556,9 +2708,55 @@ def set_window_position_labeled(str label, float x, float y, cimgui.ImGuiCond co
     )
 
 def set_window_collapsed(bool collapsed, cimgui.ImGuiCond condition = ALWAYS):
+    """Set the current window to be collapsed
+
+    Call inside: func: 'begin()'
+
+    Args:
+        collapsed(bool): set boolean for collapsing the window. Set True for closed
+        condition (:ref:`condition flag <condition-options>`): defines on which
+            condition value should be set. Defaults to :any:`imgui.ALWAYS`.
+
+    .. visual-example::
+        :title: Window Collapsed Demo
+        :height: 200
+
+        imgui.begin("Window 1")
+        imgui.set_window_collapsed(True)
+        imgui.end()
+
+    .. wraps::
+        void SetWindowCollapsed(
+            bool collapsed,
+            ImGuiCond cond
+        )
+    """
     cimgui.SetWindowCollapsed(collapsed, condition)
 
 def set_window_collapsed_labeled(str label, bool collapsed, cimgui.ImGuiCond condition = ALWAYS):
+    """Set window with label to collapse
+
+    Args:
+        label(string): name of the window
+        collapsed(bool): set boolean for collapsing the window. Set True for closed
+        condition (:ref:`condition flag <condition-options>`): defines on which
+            condition value should be set. Defaults to :any:`imgui.ALWAYS`.
+
+    .. visual-example::
+        :title: Window Collapsed Demo
+        :height: 200
+
+        imgui.set_window_collapsed_labeled("Window 1", True)
+        imgui.begin("Window 1")
+        imgui.end()
+        
+    .. wraps::
+        void SetWindowCollapsed(
+            const char* name, 
+            bool collapsed,
+            ImGuiCond cond
+        )
+    """
     cimgui.SetWindowCollapsed(_bytes(label), collapsed, condition)
 
 
@@ -3585,6 +3783,26 @@ def small_button(str label):
     return cimgui.SmallButton(_bytes(label))
 
 def arrow_button(str label, cimgui.ImGuiDir direction = DIRECTION_NONE):
+    """Display an arrow button
+
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+
+        imgui.begin("Arrow button")
+        imgui.arrow_button("Button", imgui.DIRECTION_LEFT)
+        imgui.end()
+
+    Args:
+        label (str): button label.
+        direction = imgui direction constant
+
+    Returns:
+        bool: True if clicked.
+
+    .. wraps::
+        bool ArrowButton(const char*, ImGuiDir)
+    """
     if direction == DIRECTION_NONE:
         raise ValueError("Direction wasn't specified.")
     return cimgui.ArrowButton(_bytes(label), direction)
