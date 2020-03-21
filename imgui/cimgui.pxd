@@ -127,7 +127,7 @@ cdef extern from "imgui.h":
         ImVec2      MousePos  # ✓
         bool        MouseDown[5]  # ✓
         float       MouseWheel  # ✓
-        float       MouseWheelH  # ✗
+        float       MouseWheelH  # ✓
         bool        MouseDrawCursor  # ✓
         bool        KeyCtrl  # ✓
         bool        KeyShift  # ✓
@@ -137,8 +137,8 @@ cdef extern from "imgui.h":
         ImWchar     InputCharacters[16+1]  # ✗
 
         void        AddInputCharacter(ImWchar c) except +  # ✓
-        void        AddInputCharactersUTF8(const char* utf8_chars) except +  # ✗
-        void        ClearInputCharacters() except +  # ✗
+        void        AddInputCharactersUTF8(const char* utf8_chars) except +  # ✓
+        void        ClearInputCharacters() except +  # ✓
 
         # ====
         # source-note: Output - Retrieve after calling NewFrame(), you can use
@@ -155,7 +155,7 @@ cdef extern from "imgui.h":
         int         MetricsRenderVertices  # ✓
         int         MetricsRenderIndices  # ✓
         int         MetricsActiveWindows  # ✓
-        ImVec2      MouseDelta  # ✗
+        ImVec2      MouseDelta  # ✓
 
         # ====
         # source-note: [Internal] ImGui will maintain those fields for you
@@ -307,7 +307,7 @@ cdef extern from "imgui.h":
 
     ctypedef struct ImFont:
         pass
-
+           
     ctypedef struct ImFontAtlas:  # ✓
         void*   TexID  # ✓
 
@@ -477,7 +477,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiSizeCallback custom_callback,
             void* custom_callback_data
     ) except +
-    void SetNextWindowContentSize(const ImVec2& size) except +  # ✗
+    void SetNextWindowContentSize(const ImVec2& size) except +  # ✓
     void SetNextWindowCollapsed(  # ✓
             bool collapsed,
             # note: optional
@@ -485,7 +485,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void SetNextWindowFocus() except +  # ✓
     void SetNextWindowBgAlpha(float alpha) except +  # ✓
-    void SetWindowPos(  # ✗
+    void SetWindowPos(  # ✓
             const ImVec2& pos,
             # note: optional
             ImGuiCond cond
@@ -495,28 +495,28 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiCond cond
     ) except +
-    void SetWindowCollapsed(  # ✗
+    void SetWindowCollapsed(  # ✓
             bool collapsed,
             # note: optional
             ImGuiCond cond
     ) except +
     void SetWindowFocus() except +  # ✓
     void SetWindowFontScale(float scale) except +  # ✓
-    void SetWindowPos(  # ✗
+    void SetWindowPos(  # ✓
             const char* name, const ImVec2& pos,
             # note: optional
             ImGuiCond cond
     ) except +
-    void SetWindowSize(  # ✗
+    void SetWindowSize(  # ✓
             const char* name, const ImVec2& size, ImGuiCond
             cond
     ) except +
-    void SetWindowCollapsed(  # ✗
+    void SetWindowCollapsed(  # ✓
             const char* name, bool collapsed,
             # note: optional
             ImGuiCond cond
     ) except +
-    void SetWindowFocus(const char* name) except +  # ✗
+    void SetWindowFocus(const char* name) except +  # ✓
 
     float GetScrollX() except +  # ✓
     float GetScrollY() except +  # ✓
@@ -546,10 +546,10 @@ cdef extern from "imgui.h" namespace "ImGui":
     void PushStyleVar(ImGuiStyleVar, float) except +  # ✓
     void PushStyleVar(ImGuiStyleVar, const ImVec2&) except +  # ✓
     void PopStyleVar(int) except +  # ✓
-    ImVec4& GetStyleColorVec4(ImGuiCol idx) except +  # ✗
+    ImVec4& GetStyleColorVec4(ImGuiCol idx) except +  # ✓
     ImFont* GetFont() except +  # ✗
     float GetFontSize() except +  # ✓
-    ImVec2 GetFontTexUvWhitePixel() except +  # ✗
+    ImVec2 GetFontTexUvWhitePixel() except +  # ✓
     ImU32 GetColorU32(ImGuiCol, float) except +  # ✓
     ImU32 GetColorU32(const ImVec4& col) except +  # ✓
     ImU32 GetColorU32(ImU32 col) except +  # ✓
@@ -561,10 +561,10 @@ cdef extern from "imgui.h" namespace "ImGui":
     float CalcItemWidth() except +  # ✓
     void PushTextWrapPos(float wrap_pos_x) except +  # ✓
     void PopTextWrapPos() except +  # ✓
-    void PushAllowKeyboardFocus(bool v) except +  # ✗
-    void PopAllowKeyboardFocus() except +  # ✗
-    void PushButtonRepeat(bool repeat) except +  # ✗
-    void PopButtonRepeat() except +  # ✗
+    void PushAllowKeyboardFocus(bool v) except +  # ✓
+    void PopAllowKeyboardFocus() except +  # ✓
+    void PushButtonRepeat(bool repeat) except +  # ✓
+    void PopButtonRepeat() except +  # ✓
 
     # ====
     # Cursor / Layout
@@ -586,15 +586,15 @@ cdef extern from "imgui.h" namespace "ImGui":
     void BeginGroup() except +  # ✓
     void EndGroup() except +  # ✓
     ImVec2 GetCursorPos() except +  # ✓
-    float GetCursorPosX() except +  # ✗
-    float GetCursorPosY() except +  # ✗
+    float GetCursorPosX() except +  # ✓
+    float GetCursorPosY() except +  # ✓
     void SetCursorPos(const ImVec2& local_pos) except +  # ✓
-    void SetCursorPosX(float x) except +  # ✗
-    void SetCursorPosY(float y) except +  # ✗
+    void SetCursorPosX(float x) except +  # ✓
+    void SetCursorPosY(float y) except +  # ✓
     ImVec2 GetCursorStartPos() except +  # ✓
     ImVec2 GetCursorScreenPos() except +  # ✓
     void SetCursorScreenPos(const ImVec2& screen_pos) except +  # ✓
-    void AlignTextToFramePadding() except +  # ✗
+    void AlignTextToFramePadding() except +  # ✓
     float GetTextLineHeight() except +  # ✓
     float GetTextLineHeightWithSpacing() except +  # ✓
     float GetFrameHeight() except +  # ✓
@@ -619,8 +619,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     void TextUnformatted(const char*) except +  # ✓
     void Text(const char*, ...) except +  # ✓
     void TextColored(const ImVec4&, const char*, ...) except +  # ✓
-    void TextDisabled(const char*, ...) except +  # ✗
-    void TextWrapped(const char*, ...) except +  # ✗
+    void TextDisabled(const char*, ...) except +  # ✓
+    void TextWrapped(const char*, ...) except +  # ✓
     void LabelText(const char*, const char*, ...) except +  # ✓
     void BulletText(const char*, ...) except +  # ✓
 
@@ -628,7 +628,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool Button(const char*, const ImVec2& size) except +  # ✓
     bool Button(const char*) except +  # ✓
     bool SmallButton(const char*) except +  # ✓
-    bool ArrowButton(const char*, ImGuiDir) except +  # ✗
+    bool ArrowButton(const char*, ImGuiDir) except +  # ✓
     bool InvisibleButton(const char*, const ImVec2& size) except +  # ✓
     bool ImageButton(  # ✓
             ImTextureID user_texture_id, const ImVec2& size,
@@ -710,7 +710,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             int values_offset, const char* overlay_text, float scale_min,
             float scale_max, ImVec2 graph_size
     ) except +
-    void ProgressBar(  # ✗
+    void ProgressBar(  # ✓
             float fraction,
             # note: optional
             const ImVec2& size_arg, const char* overlay
