@@ -8,7 +8,7 @@ import pygame.event
 import imgui
 
 
-class PygameRenderer(FixedPipelineRenderer):
+class PygameRenderer(ProgrammablePipelineRenderer):
     def __init__(self):
         super(PygameRenderer, self).__init__()
 
