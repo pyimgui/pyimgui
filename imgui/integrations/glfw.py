@@ -13,12 +13,28 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         super(GlfwRenderer, self).__init__()
         self.window = window
 
+        self.previous_user_callback_keyboard = None
+        self.previous_user_callback_mouse = None
+        self.previous_user_callback_char = None
+        self.previous_user_callback_scroll = None
+        self.previous_user_callback_resize = None
+
         if attach_callbacks:
-            glfw.set_key_callback(self.window, self.keyboard_callback)
-            glfw.set_cursor_pos_callback(self.window, self.mouse_callback)
-            glfw.set_window_size_callback(self.window, self.resize_callback)
-            glfw.set_char_callback(self.window, self.char_callback)
-            glfw.set_scroll_callback(self.window, self.scroll_callback)
+            self.previous_user_callback_keyboard = glfw.set_key_callback(
+                self.window, self.keyboard_callback
+            )
+            self.previous_user_callback_mouse = glfw.set_cursor_pos_callback(
+                self.window, self.mouse_callback
+            )
+            self.previous_user_callback_resize = glfw.set_window_size_callback(
+                self.window, self.resize_callback
+            )
+            self.previous_user_callback_char = glfw.set_char_callback(
+                self.window, self.char_callback
+            )
+            self.previous_user_callback_scroll = glfw.set_scroll_callback(
+                self.window, self.scroll_callback
+            )
 
         self.io.display_size = glfw.get_framebuffer_size(self.window)
 
@@ -49,6 +65,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         key_map[imgui.KEY_Z] = glfw.KEY_Z
 
     def keyboard_callback(self, window, key, scancode, action, mods):
+        if self.previous_user_callback_keyboard:
+            self.previous_user_callback_keyboard(window, key, scancode, action, mods)
         # perf: local for faster access
         io = self.io
 
@@ -78,18 +96,28 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         )
 
     def char_callback(self, window, char):
+        if self.previous_user_callback_char:
+            self.previous_user_callback_keyboard(window, char)
+
         io = imgui.get_io()
 
         if 0 < char < 0x10000:
             io.add_input_character(char)
 
     def resize_callback(self, window, width, height):
+        if self.previous_user_callback_resize:
+            self.previous_user_callback_resize(window, width, height)
         self.io.display_size = width, height
 
     def mouse_callback(self, *args, **kwargs):
+        if self.previous_user_callback_mouse:
+            self.previous_user_callback_mouse(*args, **kwargs)
         pass
 
     def scroll_callback(self, window, x_offset, y_offset):
+        if self.previous_user_callback_scroll:
+            self.previous_user_callback_scroll(window, x_offset, y_offset)
+
         self.io.mouse_wheel = y_offset
 
     def process_inputs(self):
