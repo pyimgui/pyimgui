@@ -47,11 +47,15 @@ class PygletMixin(object):
     def on_key_press(self, key, mods):
         if key in self.REVERSE_KEY_MAP:
             self.io.keys_down[self.REVERSE_KEY_MAP[key]] = True
+        
+        self.io.key_ctrl = mods & pyg_key.MOD_CTRL and True
 
     def on_key_release(self, key, mods):
         if key in self.REVERSE_KEY_MAP:
             self.io.keys_down[self.REVERSE_KEY_MAP[key]] = False
 
+        self.io.key_ctrl = mods & pyg_key.MOD_CTRL and False
+            
     def on_text(self, text):
         io = imgui.get_io()
 
