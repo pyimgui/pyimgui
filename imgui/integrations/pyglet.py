@@ -105,10 +105,14 @@ class PygletRenderer(PygletMixin, ProgrammablePipelineRenderer):
     def __init__(self, window, attach_callbacks=True):
         super(PygletRenderer, self).__init__()
         window_size = window.get_size()
-        viewport_size = window.get_viewport_size()
-
         self.io.display_size = window_size
-        self.io.display_fb_scale = compute_fb_scale(window_size, viewport_size)
+
+        if hasattr(window, 'get_viewport_size'):
+            viewport_size = window.get_viewport_size()
+            self.io.display_fb_scale = compute_fb_scale(window_size, viewport_size)
+        else:
+            self.io.display_fb_scale = (window.get_pixel_ratio(), window.get_pixel_ratio())
+
 
         self._map_keys()
 
