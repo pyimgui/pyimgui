@@ -35,7 +35,7 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         return SDL_GetClipboardText()
 
     def _set_clipboard_text(self, text):
-        SDL_SetClipboardText(text)
+        SDL_SetClipboardText(ctypes.c_char_p(text.encode()))
 
     def _map_keys(self):
         key_map = self.io.key_map
@@ -85,6 +85,7 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
             io.key_shift = ((SDL_GetModState() & KMOD_SHIFT) != 0)
             io.key_ctrl = ((SDL_GetModState() & KMOD_CTRL) != 0)
             io.key_alt = ((SDL_GetModState() & KMOD_ALT) != 0)
+            io.key_super = ((SDL_GetModState() & KMOD_GUI) != 0)
 
             return True
 
