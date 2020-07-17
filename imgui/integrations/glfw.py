@@ -21,9 +21,17 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             glfw.set_scroll_callback(self.window, self.scroll_callback)
 
         self.io.display_size = glfw.get_framebuffer_size(self.window)
+        self.io.get_clipboard_text_fn = self._get_clipboard_text
+        self.io.set_clipboard_text_fn = self._set_clipboard_text
 
         self._map_keys()
         self._gui_time = None
+
+    def _get_clipboard_text(self):
+        return glfw.get_clipboard_string(self.window)
+
+    def _set_clipboard_text(self, text):
+        glfw.set_clipboard_string(self.window, text)
 
     def _map_keys(self):
         key_map = self.io.key_map
