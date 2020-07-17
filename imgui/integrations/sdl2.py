@@ -26,8 +26,16 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         SDL_GetWindowSize(self.window, width_ptr, height_ptr)
 
         self.io.display_size = width_ptr[0], height_ptr[0]
+        self.io.get_clipboard_text_fn = self._get_clipboard_text
+        self.io.set_clipboard_text_fn = self._set_clipboard_text
 
         self._map_keys()
+
+    def _get_clipboard_text(self):
+        return SDL_GetClipboardText()
+
+    def _set_clipboard_text(self, text):
+        SDL_SetClipboardText(text)
 
     def _map_keys(self):
         key_map = self.io.key_map

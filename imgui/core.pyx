@@ -1434,10 +1434,14 @@ cdef class _IO(object):
 
     cdef cimgui.ImGuiIO* _ptr
     cdef object _fonts
+    cdef object _get_clipboard_text_fn
+    cdef object _set_clipboard_text_fn
 
     def __init__(self):
         self._ptr = &cimgui.GetIO()
         self._fonts = _FontAtlas.from_ptr(self._ptr.Fonts)
+        self._get_clipboard_text_fn = None
+        self._set_clipboard_text_fn = None
 
     # ... maping of input properties ...
     @property
@@ -1447,11 +1451,11 @@ cdef class _IO(object):
     @config_flags.setter
     def config_flags(self, cimgui.ImGuiConfigFlags value):
         self._ptr.ConfigFlags = value
-    
+
     @property
     def backend_flags(self):
         return self._ptr.BackendFlags
-    
+
     @backend_flags.setter
     def backend_flags(self, cimgui.ImGuiBackendFlags value):
         self._ptr.BackendFlags = value
@@ -1606,6 +1610,41 @@ cdef class _IO(object):
     @config_resize_windows_from_edges.setter
     def config_resize_windows_from_edges(self, cimgui.bool value):
         self._ptr.ConfigResizeWindowsFromEdges = value
+
+    @staticmethod
+    cdef const char* _get_clipboard_text(void* user_data):
+        text = _io.get_clipboard_text_fn()
+        if type(text) is bytes:
+            return text
+        return _bytes(text)
+
+    @property
+    def get_clipboard_text_fn(self):
+        return self._get_clipboard_text_fn
+
+    @get_clipboard_text_fn.setter
+    def get_clipboard_text_fn(self, func):
+        if callable(func):
+            self._get_clipboard_text_fn = func
+            self._ptr.GetClipboardTextFn = self._get_clipboard_text
+        else:
+            raise ValueError("func is not a callable: %s" % str(func))
+
+    @staticmethod
+    cdef void _set_clipboard_text(void* user_data, const char* text):
+        _io.set_clipboard_text_fn(_from_bytes(text))
+
+    @property
+    def set_clipboard_text_fn(self):
+        return self._set_clipboard_text_fn
+
+    @set_clipboard_text_fn.setter
+    def set_clipboard_text_fn(self, func):
+        if callable(func):
+            self._set_clipboard_text_fn = func
+            self._ptr.SetClipboardTextFn = self._set_clipboard_text
+        else:
+            raise ValueError("func is not a callable: %s" % str(func))
 
     @property
     def mouse_pos(self):
