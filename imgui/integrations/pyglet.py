@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
+import warnings
+from distutils.version import LooseVersion
 
 from pyglet.window import key, mouse
+import pyglet
 
 import imgui
 
 from . import compute_fb_scale
-from .opengl import FixedPipelineRenderer
+from .opengl import FixedPipelineRenderer, ProgrammablePipelineRenderer
 
 
 class PygletMixin(object):
@@ -32,6 +35,37 @@ class PygletMixin(object):
         key.Y: imgui.KEY_Y,
         key.Z: imgui.KEY_Z,
     }
+
+    def _set_pixel_ratio(self, window):
+        window_size = window.get_size()
+        self.io.display_size = window_size
+        # It is conceivable that the pyglet version will not be solely
+        # determinant of whether we use the fixed or programmable, so do some
+        # minor introspection here to check.
+        if hasattr(window, 'get_viewport_size'):
+            viewport_size = window.get_viewport_size()
+            self.io.display_fb_scale = compute_fb_scale(window_size, viewport_size)
+        elif hasattr(window, 'get_pixel_ratio'):
+            self.io.display_fb_scale = (window.get_pixel_ratio(),
+                                        window.get_pixel_ratio())
+        else:
+            # Default to 1.0 in this unlikely circumstance
+            self.io.display_fb_scale = (1.0, 1.0)
+
+
+    def _attach_callbacks(self, window):
+        window.push_handlers(
+            self.on_mouse_motion,
+            self.on_key_press,
+            self.on_key_release,
+            self.on_text,
+            self.on_mouse_drag,
+            self.on_mouse_press,
+            self.on_mouse_release,
+            self.on_mouse_scroll,
+            self.on_resize,
+        )
+
 
     def _map_keys(self):
         key_map = self.io.key_map
@@ -108,27 +142,39 @@ class PygletMixin(object):
     def on_resize(self, width, height):
         self.io.display_size = width, height
 
-
-class PygletRenderer(PygletMixin, FixedPipelineRenderer):
+class PygletFixedPipelineRenderer(PygletMixin, FixedPipelineRenderer):
     def __init__(self, window, attach_callbacks=True):
-        super(PygletRenderer, self).__init__()
-        window_size = window.get_size()
-        viewport_size = window.get_viewport_size()
-
-        self.io.display_size = window_size
-        self.io.display_fb_scale = compute_fb_scale(window_size, viewport_size)
-
+        super(PygletFixedPipelineRenderer, self).__init__()
+        self._set_pixel_ratio(window)
         self._map_keys()
+        if attach_callbacks: self._attach_callbacks(window)
 
-        if attach_callbacks:
-            window.push_handlers(
-                self.on_mouse_motion,
-                self.on_key_press,
-                self.on_key_release,
-                self.on_text,
-                self.on_mouse_drag,
-                self.on_mouse_press,
-                self.on_mouse_release,
-                self.on_mouse_scroll,
-                self.on_resize,
-            )
+class PygletProgrammablePipelineRenderer(PygletMixin, ProgrammablePipelineRenderer):
+    def __init__(self, window, attach_callbacks = True):
+        super(PygletProgrammablePipelineRenderer, self).__init__()
+        self._set_pixel_ratio(window)
+        self._map_keys()
+        if attach_callbacks: self._attach_callbacks(window)
+
+class PygletRenderer(PygletFixedPipelineRenderer):
+    def __init__(self, window, attach_callbacks=True):
+        warnings.warn("PygletRenderer is deprecated; please use either "
+                      "PygletFixedPipelineRenderer (for OpenGL 2.1, pyglet < 2.0) or "
+                      "PygletProgrammablePipelineRenderer (for later versions) or "
+                      "create_renderer(window) to auto-detect.",
+                      DeprecationWarning)
+        super(PygletRenderer, self).__init__(window, attach_callbacks)
+
+def create_renderer(window, attach_callbacks=True):
+    """
+    This is a helper function that wraps the appropriate version of the Pyglet
+    renderer class, based on the version of pyglet being used.
+    """
+    # Determine the context version
+    # Pyglet < 2.0 has issues with ProgrammablePipeline even when the context
+    # is OpenGL 3, so we need to check the pyglet version rather than looking
+    # at window.config.major_version to see if we want to use programmable.
+    if LooseVersion(pyglet.version) < LooseVersion('2.0'):
+        return PygletFixedPipelineRenderer(window, attach_callbacks)
+    else:
+        return PygletProgrammablePipelineRenderer(window, attach_callbacks)
