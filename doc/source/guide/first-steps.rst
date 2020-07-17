@@ -114,7 +114,9 @@ and libraries:
   engine.
 * :mod:`imgui.integrations.sdl2` integrates **pyimgui** with SDL2_ library
   through PySDL2_ Python package
-* :mod:`imgui.integrations.pyglet` integrates **pyimgui** with pyglet_ library.
+* :mod:`imgui.integrations.pyglet` integrates **pyimgui** with pyglet_
+  library, both stable (1.5.x) and development versions (2.x), switching
+  between *fixed* and *programmable* as appropriate.
 * :mod:`imgui.integrations.opengl` provides bare integration with OpenGL both
   in *fixed pipeline* and *programmable pipeline* mode. It does not provide any
   windowing facilities (so cannot be used as a standalone renderer) but serves
