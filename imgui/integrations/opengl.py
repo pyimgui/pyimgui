@@ -173,12 +173,12 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
 
         gl.glViewport(0, 0, int(fb_width), int(fb_height))
 
-        ortho_projection = (ctypes.c_float * 16)( *[
+        ortho_projection = (ctypes.c_float * 16)(
              2.0/display_width, 0.0,                   0.0, 0.0,
              0.0,               2.0/-display_height,   0.0, 0.0,
              0.0,               0.0,                  -1.0, 0.0,
             -1.0,               1.0,                   0.0, 1.0
-        ]);
+        )
 
         gl.glUseProgram(self._shader_handle)
         gl.glUniform1i(self._attrib_location_tex, 0)
