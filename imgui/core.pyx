@@ -1674,11 +1674,11 @@ cdef class _IO(object):
     @mouse_wheel.setter
     def mouse_wheel(self, float value):
         self._ptr.MouseWheel = value
-    
+
     @property
     def mouse_wheel_horizontal(self):
         return self._ptr.MouseWheelH
-    
+
     @mouse_wheel_horizontal.setter
     def mouse_wheel_horizontal(self, float value):
         self._ptr.MouseWheelH = value
@@ -1738,10 +1738,10 @@ cdef class _IO(object):
 
     def add_input_character(self, cimgui.ImWchar c):
         self._ptr.AddInputCharacter(c)
-    
+
     def add_input_characters_utf8(self, str utf8_chars):
         self._ptr.AddInputCharactersUTF8(_bytes(utf8_chars))
-    
+
     def clear_input_characters(self):
         self._ptr.ClearInputCharacters()
 
@@ -2249,7 +2249,7 @@ def set_window_focus():
         imgui.begin("Window 2")
         imgui.set_window_focus()
         imgui.end()
-        
+
     .. wraps::
         void SetWindowFocus()
     """
@@ -2259,7 +2259,7 @@ def set_window_focus_labeled(str label):
     """Set focus to the window named label
 
     Args:
-        label(string): the name of the window that will be focused   
+        label(string): the name of the window that will be focused
 
     .. visual-example::
         :title: Window focus
@@ -2333,8 +2333,8 @@ def set_window_size_named(str label, float width, float height, cimgui.ImGuiCond
         :height: 200
 
         imgui.set_window_size_named("Window 1",100,100)
-        imgui.set_window_size_named("Window 2",100,200)      
-        
+        imgui.set_window_size_named("Window 2",100,200)
+
         imgui.begin("Window 1")
         imgui.end()
 
@@ -2343,7 +2343,7 @@ def set_window_size_named(str label, float width, float height, cimgui.ImGuiCond
 
     .. wraps::
         void SetWindowSize(
-            const char* name, 
+            const char* name,
             const ImVec2& size,
              ImGuiCond cond
     )
@@ -2672,7 +2672,7 @@ def set_next_window_content_size(float width, float height):
     Call before :func:`begin()`.
 
     Args:
-        width(float): width of the content area 
+        width(float): width of the content area
         height(float): height of the content area
 
     .. visual-example::
@@ -2681,7 +2681,7 @@ def set_next_window_content_size(float width, float height):
 
         imgui.set_window_size(20,20)
         imgui.set_next_window_content_size(100,100)
-        
+
         imgui.begin("Window", True)
         imgui.text("Some example text")
         imgui.end()
@@ -2709,13 +2709,13 @@ def set_window_position(float x, float y, cimgui.ImGuiCond condition = ALWAYS):
         :height: 200
 
         imgui.begin("Window 1")
-        imgui.set_window_position(20,20) 
+        imgui.set_window_position(20,20)
         imgui.end()
 
         imgui.begin("Window 2")
-        imgui.set_window_position(20,50)  
+        imgui.set_window_position(20,50)
         imgui.end()
-        
+
     .. wraps::
         void SetWindowPos(
             const ImVec2& pos,
@@ -2749,10 +2749,10 @@ def set_window_position_labeled(str label, float x, float y, cimgui.ImGuiCond co
 
     .. wraps::
         void SetWindowPos(
-            const char* name, 
+            const char* name,
             const ImVec2& pos,
             ImGuiCond cond
-    )    
+    )
     """
     cimgui.SetWindowPos(
         _bytes(label),
@@ -2802,10 +2802,10 @@ def set_window_collapsed_labeled(str label, bool collapsed, cimgui.ImGuiCond con
         imgui.set_window_collapsed_labeled("Window 1", True)
         imgui.begin("Window 1")
         imgui.end()
-        
+
     .. wraps::
         void SetWindowCollapsed(
-            const char* name, 
+            const char* name,
             bool collapsed,
             ImGuiCond cond
         )
@@ -6126,7 +6126,7 @@ def progress_bar(float fraction, size = (0,0), str overlay = ""):
         :auto_layout:
         :width: 400
         :height: 200
-    
+
         imgui.begin("Progress bar example")
         imgui.progress_bar(0.7, (100,20), "Overlay text")
         imgui.end()
@@ -6142,7 +6142,7 @@ def progress_bar(float fraction, size = (0,0), str overlay = ""):
             void ProgressBar(
             float fraction,
             const ImVec2& size_arg, const char* overlay
-    ) 
+    )
 
     """
     cimgui.ProgressBar(fraction, _cast_tuple_ImVec2(size), _bytes(overlay))
@@ -7632,7 +7632,7 @@ def push_id(str str_id):
     """Push an ID into the ID stack
 
     Args:
-        id (str): ID to push
+        str_id (str): ID to push
 
       wraps::
         PushID(const char* str_id)
@@ -7743,6 +7743,24 @@ def _py_istyled(*variables_and_values):
     finally:
         # perf: short wiring despite we have a wrapper for this
         cimgui.PopStyleVar(count)
+
+
+@contextmanager
+def _py_scoped(str str_id):
+    """Use scoped ID within a block of code.
+
+    This context manager can be used to distinguish widgets sharing
+    same implicit identifiers without manual calling of :func:`push_id`
+    :func:`pop_id` functions.
+
+    Example:
+
+    Args:
+        str_id (str): ID to push and pop within marked scope
+    """
+    push_id(str_id)
+    yield
+    pop_id()
 
 
 def _py_vertex_buffer_vertex_pos_offset():
