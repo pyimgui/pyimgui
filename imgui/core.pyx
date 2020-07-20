@@ -1493,6 +1493,14 @@ cdef class _IO(object):
         self._ptr.LogFilename = value
 
     @property
+    def ini_file_name(self):
+        return self._ptr.IniFilename
+
+    @ini_file_name.setter
+    def ini_file_name(self, char* value):
+        self._ptr.IniFilename = value
+
+    @property
     def mouse_double_click_time(self):
         return self._ptr.MouseDoubleClickTime
 
