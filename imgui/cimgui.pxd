@@ -193,7 +193,10 @@ cdef extern from "imgui.h":
         void*          UserCallbackData  # ✗
 
 
-    ctypedef unsigned short ImDrawIdx
+    # note: this is redefined in config-cpp/py_imconfig.h
+    # (see: https://github.com/swistakm/pyimgui/issues/138)
+    # (see: https://github.com/ocornut/imgui/issues/1188)
+    ctypedef unsigned int ImDrawIdx
 
 
     ctypedef struct ImDrawVert:  # ✗

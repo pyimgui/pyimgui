@@ -35,3 +35,6 @@ typedef signed __int64       int64_t;
 
 
 void __py_assert(const char* msg);
+
+// tune vertex index size to enable longer draw lists (see #138 issue)
+#define ImDrawIdx unsigned int
