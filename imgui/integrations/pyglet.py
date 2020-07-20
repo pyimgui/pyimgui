@@ -142,6 +142,7 @@ class PygletMixin(object):
     def on_resize(self, width, height):
         self.io.display_size = width, height
 
+
 class PygletFixedPipelineRenderer(PygletMixin, FixedPipelineRenderer):
     def __init__(self, window, attach_callbacks=True):
         super(PygletFixedPipelineRenderer, self).__init__()
@@ -149,12 +150,14 @@ class PygletFixedPipelineRenderer(PygletMixin, FixedPipelineRenderer):
         self._map_keys()
         if attach_callbacks: self._attach_callbacks(window)
 
+
 class PygletProgrammablePipelineRenderer(PygletMixin, ProgrammablePipelineRenderer):
     def __init__(self, window, attach_callbacks = True):
         super(PygletProgrammablePipelineRenderer, self).__init__()
         self._set_pixel_ratio(window)
         self._map_keys()
         if attach_callbacks: self._attach_callbacks(window)
+
 
 class PygletRenderer(PygletFixedPipelineRenderer):
     def __init__(self, window, attach_callbacks=True):
@@ -164,6 +167,7 @@ class PygletRenderer(PygletFixedPipelineRenderer):
                       "create_renderer(window) to auto-detect.",
                       DeprecationWarning)
         super(PygletRenderer, self).__init__(window, attach_callbacks)
+
 
 def create_renderer(window, attach_callbacks=True):
     """

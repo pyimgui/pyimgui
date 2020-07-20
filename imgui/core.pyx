@@ -7476,11 +7476,14 @@ def get_cursor_pos():
     """
     return _cast_ImVec2_tuple(cimgui.GetCursorPos())
 
-def get_cursor_pos_X():
+
+def get_cursor_pos_x():
     return cimgui.GetCursorPosX()
 
-def get_cursor_pos_Y():
+
+def get_cursor_pos_y():
     return cimgui.GetCursorPosY()
+
 
 def set_cursor_pos(local_pos):
     """Set the cursor position in local coordinates [0..<window size>] (useful to work with ImDrawList API)
@@ -7490,11 +7493,14 @@ def set_cursor_pos(local_pos):
     """
     cimgui.SetCursorPos(_cast_tuple_ImVec2(local_pos))
 
-def set_cursor_pos_X(float x):
+
+def set_cursor_pos_x(float x):
     cimgui.SetCursorPosX(x)
 
-def set_cursor_pos_Y(float y):
+
+def set_cursor_pos_y(float y):
     cimgui.SetCursorPosY(y)
+
 
 def get_cursor_start_pos():
     """Get the initial cursor position.
