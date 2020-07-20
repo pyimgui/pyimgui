@@ -99,12 +99,18 @@ def backend_extras(*requirements):
 
 EXTRAS_REQUIRE = {
     'Cython':  ['Cython>=0.24,<=0.28.2'],
-    'cocos2d': backend_extras('cocos2d'),
+    'cocos2d': backend_extras(
+        "cocos2d",
+        "pyglet>=1.5.6; sys_platform == 'darwin'",
+    ),
     'sdl2': backend_extras('PySDL2'),
     'glfw': backend_extras('glfw'),
     'pygame': backend_extras('pygame'),
     'opengl': backend_extras(),
-    'pyglet': backend_extras('pyglet')
+    'pyglet': backend_extras(
+        "pyglet; sys_platform != 'darwin'",
+        "pyglet>=1.5.6; sys_platform == 'darwin'",
+    )
 }
 
 # construct special 'full' extra that adds requirements for all built-in

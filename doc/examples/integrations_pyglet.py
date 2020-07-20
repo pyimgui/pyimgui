@@ -5,7 +5,10 @@ import pyglet
 from pyglet import gl
 
 import imgui
-from imgui.integrations.pyglet import PygletRenderer
+# Note that we could explicitly choose to use PygletFixedPipelineRenderer
+# or PygletProgrammablePipelineRenderer, but create_renderer handles the
+# version checking for us.
+from imgui.integrations.pyglet import create_renderer
 
 
 def main():
@@ -13,7 +16,7 @@ def main():
     window = pyglet.window.Window(width=1280, height=720, resizable=True)
     gl.glClearColor(1, 1, 1, 1)
     imgui.create_context()
-    impl = PygletRenderer(window)
+    impl = create_renderer(window)
 
     def update(dt):
         imgui.new_frame()
