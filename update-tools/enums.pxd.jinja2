@@ -1,0 +1,57 @@
+cdef extern from "imgui.h":
+    ctypedef enum ImGuiKey_:
+        {{ parser.fields_of("ImGuiKey_") | indent(8)}}
+
+    ctypedef enum ImGuiNavInput_:
+        {{ parser.fields_of("ImGuiNavInput_") | indent(8)}}
+
+    ctypedef enum ImGuiConfigFlags_:
+        {{ parser.fields_of("ImGuiConfigFlags_") | indent(8)}}
+
+    ctypedef enum ImGuiBackendFlags_:
+        {{ parser.fields_of("ImGuiBackendFlags_") | indent(8)}}
+
+    ctypedef enum ImGuiCol_:
+        {{ parser.fields_of("ImGuiCol_") | indent(8)}}
+
+    ctypedef enum ImGuiDataType_:
+        {{ parser.fields_of("ImGuiDataType_") | indent(8)}}
+
+    ctypedef enum ImGuiStyleVar_:
+        {{ parser.fields_of("ImGuiStyleVar_") | indent(8)}}
+
+    ctypedef enum ImGuiCond_:
+        {{ parser.fields_of("ImGuiCond_") | indent(8)}}
+
+    ctypedef enum ImGuiWindowFlags_:
+        {{ parser.fields_of("ImGuiWindowFlags_") | indent(8)}}
+
+    ctypedef enum ImGuiColorEditFlags_:
+        {{ parser.fields_of("ImGuiColorEditFlags_") | indent(8)}}
+
+    ctypedef enum ImGuiTreeNodeFlags_:
+        {{ parser.fields_of("ImGuiTreeNodeFlags_") | indent(8)}}
+
+    ctypedef enum ImGuiSelectableFlags_:
+        {{ parser.fields_of("ImGuiSelectableFlags_") | indent(8)}}
+
+    ctypedef enum ImGuiComboFlags_:
+        {{ parser.fields_of("ImGuiComboFlags_") | indent(8)}}
+
+    ctypedef enum ImGuiFocusedFlags_:
+        {{ parser.fields_of("ImGuiFocusedFlags_") | indent(8)}}
+
+    ctypedef enum ImGuiHoveredFlags_:
+        {{ parser.fields_of("ImGuiHoveredFlags_") | indent(8)}}
+
+    ctypedef enum ImGuiDragDropFlags_:
+        {{ parser.fields_of("ImGuiDragDropFlags_") | indent(8)}}
+
+    ctypedef enum ImGuiDir_:
+        {{ parser.fields_of("ImGuiDir_") | indent(8)}}
+
+    ctypedef enum ImGuiMouseCursor_:
+        {{ parser.fields_of("ImGuiMouseCursor_") | indent(8)}}
+
+    ctypedef enum ImGuiInputTextFlags_:
+        {{ parser.fields_of("ImGuiInputTextFlags_") | indent(8)}}

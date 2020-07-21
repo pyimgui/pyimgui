@@ -1,0 +1,47 @@
+# ==== Condition enum redefines ====
+{{ parser.fields_of("ImGuiCond_") }}
+
+# ==== Style var enum redefines ====
+{{ parser.fields_of("ImGuiStyleVar_", prefix="STYLE_") }}
+
+# ==== Key map enum redefines ====
+{{ parser.fields_of("ImGuiKey_", prefix="KEY_") }}
+
+# ==== Window flags enum redefines ====
+{{ parser.fields_of("ImGuiWindowFlags_", prefix="WINDOW_") }}
+
+# ==== TreeNode flags enum redefines ====
+{{ parser.fields_of("ImGuiTreeNodeFlags_", prefix="TREE_NODE_") }}
+
+# ==== Selectable flags enum redefines ====
+{{ parser.fields_of("ImGuiSelectableFlags_", prefix="SELECTABLE_") }}
+
+# ==== Combo flags enum redefines ====
+{{ parser.fields_of("ImGuiComboFlags_", prefix="COMBO_") }}
+
+# === Focus flag enum redefines ====
+{{ parser.fields_of("ImGuiFocusedFlags_", prefix="FOCUS_") }}
+
+# === Hovered flag enum redefines ====
+{{ parser.fields_of("ImGuiHoveredFlags_", prefix="HOVERED_") }}
+
+# === Drag Drop flag enum redefines ====
+{{ parser.fields_of("ImGuiDragDropFlags_", prefix="DRAG_DROP_") }}
+
+# === Cardinal Direction enum redefines ====
+{{ parser.fields_of("ImGuiDir_", prefix="DIRECTION_") }}
+
+# ==== Mouse Cursors ====
+{{ parser.fields_of("ImGuiMouseCursor_", prefix="MOUSE_CURSOR_") }}
+
+# ==== Color identifiers for styling ====
+{{ parser.fields_of("ImGuiCol_", prefix="COLOR_") }}
+
+# ==== Text input flags ====
+{{ parser.fields_of("ImGuiInputTextFlags_", prefix="INPUT_TEXT") }}
+
+# ==== Config Flags ====
+{{ parser.fields_of("ImGuiConfigFlags_", prefix="CONFIG_") }}
+
+# ==== Backend Flags ====
+{{ parser.fields_of("ImGuiBackendFlags_", prefix="BACKEND_") }}
