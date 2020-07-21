@@ -1,9 +1,11 @@
 from imgui import core
 
 # ==== Condition enum redefines ====
-#: Set the variable
+#: No condition (always set the variable), same as _Always
+NONE = core.NONE
+#: No condition (always set the variable)
 ALWAYS = core.ALWAYS
-#: Set the variable once per runtime session (only the first call with succeed)
+#: Set the variable once per runtime session (only the first call will succeed)
 ONCE = core.ONCE
 #: Set the variable if the object/window has no persistently saved data (no entry in .ini file)
 FIRST_USE_EVER = core.FIRST_USE_EVER
@@ -51,8 +53,12 @@ STYLE_SCROLLBAR_ROUNDING = core.STYLE_SCROLLBAR_ROUNDING
 STYLE_GRAB_MIN_SIZE = core.STYLE_GRAB_MIN_SIZE
 #: float     GrabRounding
 STYLE_GRAB_ROUNDING = core.STYLE_GRAB_ROUNDING
+#: float     TabRounding
+STYLE_TAB_ROUNDING = core.STYLE_TAB_ROUNDING
 #: ImVec2    ButtonTextAlign
 STYLE_BUTTON_TEXT_ALIGN = core.STYLE_BUTTON_TEXT_ALIGN
+#: ImVec2    SelectableTextAlign
+STYLE_SELECTABLE_TEXT_ALIGN = core.STYLE_SELECTABLE_TEXT_ALIGN
 STYLE_COUNT = core.STYLE_COUNT
 
 # ==== Key map enum redefines ====
@@ -71,6 +77,7 @@ KEY_BACKSPACE = core.KEY_BACKSPACE
 KEY_SPACE = core.KEY_SPACE
 KEY_ENTER = core.KEY_ENTER
 KEY_ESCAPE = core.KEY_ESCAPE
+KEY_KEY_PAD_ENTER = core.KEY_KEY_PAD_ENTER
 #: for text edit CTRL+A: select all
 KEY_A = core.KEY_A
 #: for text edit CTRL+C: copy
@@ -93,7 +100,7 @@ WINDOW_NO_TITLE_BAR = core.WINDOW_NO_TITLE_BAR
 WINDOW_NO_RESIZE = core.WINDOW_NO_RESIZE
 #: Disable user moving the window
 WINDOW_NO_MOVE = core.WINDOW_NO_MOVE
-#: Disable scrollbars (window can still scroll with mouse or programatically)
+#: Disable scrollbars (window can still scroll with mouse or programmatically)
 WINDOW_NO_SCROLLBAR = core.WINDOW_NO_SCROLLBAR
 #: Disable user vertically scrolling with mouse wheel. On child window, mouse wheel will be forwarded to the parent unless NoScrollbar is also set.
 WINDOW_NO_SCROLL_WITH_MOUSE = core.WINDOW_NO_SCROLL_WITH_MOUSE
@@ -113,7 +120,7 @@ WINDOW_MENU_BAR = core.WINDOW_MENU_BAR
 WINDOW_HORIZONTAL_SCROLLBAR = core.WINDOW_HORIZONTAL_SCROLLBAR
 #: Disable taking focus when transitioning from hidden to visible state
 WINDOW_NO_FOCUS_ON_APPEARING = core.WINDOW_NO_FOCUS_ON_APPEARING
-#: Disable bringing window to front when taking focus (e.g. clicking on it or programatically giving it focus)
+#: Disable bringing window to front when taking focus (e.g. clicking on it or programmatically giving it focus)
 WINDOW_NO_BRING_TO_FRONT_ON_FOCUS = core.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS
 #: Always show vertical scrollbar (even if ContentSize.y < Size.y)
 WINDOW_ALWAYS_VERTICAL_SCROLLBAR = core.WINDOW_ALWAYS_VERTICAL_SCROLLBAR
@@ -125,6 +132,8 @@ WINDOW_ALWAYS_USE_WINDOW_PADDING = core.WINDOW_ALWAYS_USE_WINDOW_PADDING
 WINDOW_NO_NAV_INPUTS = core.WINDOW_NO_NAV_INPUTS
 #: No focusing toward this window with gamepad/keyboard navigation (e.g. skipped by CTRL+TAB)
 WINDOW_NO_NAV_FOCUS = core.WINDOW_NO_NAV_FOCUS
+#: Append '*' to title without affecting the ID, as a convenience to avoid using the ### operator. When used in a tab/docking context, tab is selected on closure and closure is deferred by one frame to allow code to cancel the closure (with a confirmation popup, etc.) without flicker.
+WINDOW_UNSAVED_DOCUMENT = core.WINDOW_UNSAVED_DOCUMENT
 WINDOW_NO_NAV = core.WINDOW_NO_NAV
 WINDOW_NO_DECORATION = core.WINDOW_NO_DECORATION
 WINDOW_NO_INPUTS = core.WINDOW_NO_INPUTS
@@ -165,6 +174,10 @@ TREE_NODE_LEAF = core.TREE_NODE_LEAF
 TREE_NODE_BULLET = core.TREE_NODE_BULLET
 #: Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding().
 TREE_NODE_FRAME_PADDING = core.TREE_NODE_FRAME_PADDING
+#: Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line. In the future we may refactor the hit system to be front-to-back, allowing natural overlaps and then this can become the default.
+TREE_NODE_SPAN_AVAIL_WIDTH = core.TREE_NODE_SPAN_AVAIL_WIDTH
+#: Extend hit box to the left-most and right-most edges (bypass the indented area).
+TREE_NODE_SPAN_FULL_WIDTH = core.TREE_NODE_SPAN_FULL_WIDTH
 #: (WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)
 TREE_NODE_NAV_LEFT_JUMPS_BACK_HERE = core.TREE_NODE_NAV_LEFT_JUMPS_BACK_HERE
 TREE_NODE_COLLAPSING_HEADER = core.TREE_NODE_COLLAPSING_HEADER
@@ -177,8 +190,10 @@ SELECTABLE_DONT_CLOSE_POPUPS = core.SELECTABLE_DONT_CLOSE_POPUPS
 SELECTABLE_SPAN_ALL_COLUMNS = core.SELECTABLE_SPAN_ALL_COLUMNS
 #: Generate press events on double clicks too
 SELECTABLE_ALLOW_DOUBLE_CLICK = core.SELECTABLE_ALLOW_DOUBLE_CLICK
-#: Cannot be selected, display greyed out text
+#: Cannot be selected, display grayed out text
 SELECTABLE_DISABLED = core.SELECTABLE_DISABLED
+#: (WIP) Hit testing to allow subsequent widgets to overlap this one
+SELECTABLE_ALLOW_ITEM_OVERLAP = core.SELECTABLE_ALLOW_ITEM_OVERLAP
 
 # ==== Combo flags enum redefines ====
 COMBO_NONE = core.COMBO_NONE
@@ -204,7 +219,7 @@ FOCUS_NONE = core.FOCUS_NONE
 FOCUS_CHILD_WINDOWS = core.FOCUS_CHILD_WINDOWS
 #: IsWindowFocused(): Test from root window (top most parent of the current hierarchy)
 FOCUS_ROOT_WINDOW = core.FOCUS_ROOT_WINDOW
-#: IsWindowFocused(): Return true if any window is focused. Important: If you are trying to tell how to dispatch your low-level inputs, do NOT use this. Use ImGui::GetIO().WantCaptureMouse instead.
+#: IsWindowFocused(): Return true if any window is focused. Important: If you are trying to tell how to dispatch your low-level inputs, do NOT use this. Use 'io.WantCaptureMouse' instead! Please read the FAQ!
 FOCUS_ANY_WINDOW = core.FOCUS_ANY_WINDOW
 FOCUS_ROOT_AND_CHILD_WINDOWS = core.FOCUS_ROOT_AND_CHILD_WINDOWS
 
@@ -221,7 +236,7 @@ HOVERED_ANY_WINDOW = core.HOVERED_ANY_WINDOW
 HOVERED_ALLOW_WHEN_BLOCKED_BY_POPUP = core.HOVERED_ALLOW_WHEN_BLOCKED_BY_POPUP
 #: Return true even if an active item is blocking access to this item/window. Useful for Drag and Drop patterns.
 HOVERED_ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM = core.HOVERED_ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM
-#: Return true even if the position is overlapped by another window
+#: Return true even if the position is obstructed or overlapped by another window
 HOVERED_ALLOW_WHEN_OVERLAPPED = core.HOVERED_ALLOW_WHEN_OVERLAPPED
 #: Return true even if the item is disabled
 HOVERED_ALLOW_WHEN_DISABLED = core.HOVERED_ALLOW_WHEN_DISABLED
@@ -238,7 +253,7 @@ DRAG_DROP_SOURCE_NO_DISABLE_HOVER = core.DRAG_DROP_SOURCE_NO_DISABLE_HOVER
 DRAG_DROP_SOURCE_NO_HOLD_TO_OPEN_OTHERS = core.DRAG_DROP_SOURCE_NO_HOLD_TO_OPEN_OTHERS
 #: Allow items such as Text(), Image() that have no unique identifier to be used as drag source, by manufacturing a temporary identifier based on their window-relative position. This is extremely unusual within the dear imgui ecosystem and so we made it explicit.
 DRAG_DROP_SOURCE_ALLOW_NULL_ID = core.DRAG_DROP_SOURCE_ALLOW_NULL_ID
-#: External source (from outside of imgui), won't attempt to read current item/window info. Will always return true. Only one Extern source can be active simultaneously.
+#: External source (from outside of dear imgui), won't attempt to read current item/window info. Will always return true. Only one Extern source can be active simultaneously.
 DRAG_DROP_SOURCE_EXTERN = core.DRAG_DROP_SOURCE_EXTERN
 #: Automatically expire the payload if the source cease to be submitted (otherwise payloads are persisting while being dragged)
 DRAG_DROP_SOURCE_AUTO_EXPIRE_PAYLOAD = core.DRAG_DROP_SOURCE_AUTO_EXPIRE_PAYLOAD
@@ -264,7 +279,7 @@ MOUSE_CURSOR_NONE = core.MOUSE_CURSOR_NONE
 MOUSE_CURSOR_ARROW = core.MOUSE_CURSOR_ARROW
 #: When hovering over InputText, etc.
 MOUSE_CURSOR_TEXT_INPUT = core.MOUSE_CURSOR_TEXT_INPUT
-#: (Unused by imgui functions)
+#: (Unused by Dear ImGui functions)
 MOUSE_CURSOR_RESIZE_ALL = core.MOUSE_CURSOR_RESIZE_ALL
 #: When hovering over an horizontal border
 MOUSE_CURSOR_RESIZE_NS = core.MOUSE_CURSOR_RESIZE_NS
@@ -274,8 +289,10 @@ MOUSE_CURSOR_RESIZE_EW = core.MOUSE_CURSOR_RESIZE_EW
 MOUSE_CURSOR_RESIZE_NESW = core.MOUSE_CURSOR_RESIZE_NESW
 #: When hovering over the bottom-right corner of a window
 MOUSE_CURSOR_RESIZE_NWSE = core.MOUSE_CURSOR_RESIZE_NWSE
-#: (Unused by imgui functions. Use for e.g. hyperlinks)
+#: (Unused by Dear ImGui functions. Use for e.g. hyperlinks)
 MOUSE_CURSOR_HAND = core.MOUSE_CURSOR_HAND
+#: When hovering something with disallowed interaction. Usually a crossed circle.
+MOUSE_CURSOR_NOT_ALLOWED = core.MOUSE_CURSOR_NOT_ALLOWED
 MOUSE_CURSOR_COUNT = core.MOUSE_CURSOR_COUNT
 
 # ==== Color identifiers for styling ====
@@ -307,6 +324,7 @@ COLOR_SLIDER_GRAB_ACTIVE = core.COLOR_SLIDER_GRAB_ACTIVE
 COLOR_BUTTON = core.COLOR_BUTTON
 COLOR_BUTTON_HOVERED = core.COLOR_BUTTON_HOVERED
 COLOR_BUTTON_ACTIVE = core.COLOR_BUTTON_ACTIVE
+#: Header* colors are used for CollapsingHeader, TreeNode, Selectable, MenuItem
 COLOR_HEADER = core.COLOR_HEADER
 COLOR_HEADER_HOVERED = core.COLOR_HEADER_HOVERED
 COLOR_HEADER_ACTIVE = core.COLOR_HEADER_ACTIVE
@@ -316,6 +334,11 @@ COLOR_SEPARATOR_ACTIVE = core.COLOR_SEPARATOR_ACTIVE
 COLOR_RESIZE_GRIP = core.COLOR_RESIZE_GRIP
 COLOR_RESIZE_GRIP_HOVERED = core.COLOR_RESIZE_GRIP_HOVERED
 COLOR_RESIZE_GRIP_ACTIVE = core.COLOR_RESIZE_GRIP_ACTIVE
+COLOR_TAB = core.COLOR_TAB
+COLOR_TAB_HOVERED = core.COLOR_TAB_HOVERED
+COLOR_TAB_ACTIVE = core.COLOR_TAB_ACTIVE
+COLOR_TAB_UNFOCUSED = core.COLOR_TAB_UNFOCUSED
+COLOR_TAB_UNFOCUSED_ACTIVE = core.COLOR_TAB_UNFOCUSED_ACTIVE
 COLOR_PLOT_LINES = core.COLOR_PLOT_LINES
 COLOR_PLOT_LINES_HOVERED = core.COLOR_PLOT_LINES_HOVERED
 COLOR_PLOT_HISTOGRAM = core.COLOR_PLOT_HISTOGRAM
@@ -344,7 +367,7 @@ INPUT_TEXTCHARS_UPPERCASE = core.INPUT_TEXTCHARS_UPPERCASE
 INPUT_TEXTCHARS_NO_BLANK = core.INPUT_TEXTCHARS_NO_BLANK
 #: Select entire text when first taking mouse focus
 INPUT_TEXTAUTO_SELECT_ALL = core.INPUT_TEXTAUTO_SELECT_ALL
-#: Return 'true' when Enter is pressed (as opposed to when the value was modified)
+#: Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider looking at the IsItemDeactivatedAfterEdit() function.
 INPUT_TEXTENTER_RETURNS_TRUE = core.INPUT_TEXTENTER_RETURNS_TRUE
 #: Callback on pressing TAB (for completion handling)
 INPUT_TEXTCALLBACK_COMPLETION = core.INPUT_TEXTCALLBACK_COMPLETION
@@ -374,8 +397,11 @@ INPUT_TEXTCHARS_SCIENTIFIC = core.INPUT_TEXTCHARS_SCIENTIFIC
 INPUT_TEXTCALLBACK_RESIZE = core.INPUT_TEXTCALLBACK_RESIZE
 #: For internal use by InputTextMultiline()
 INPUT_TEXTMULTILINE = core.INPUT_TEXTMULTILINE
+#: For internal use by functions using InputText() before reformatting data
+INPUT_TEXTNO_MARK_EDITED = core.INPUT_TEXTNO_MARK_EDITED
 
 # ==== Config Flags ====
+CONFIG_NONE = core.CONFIG_NONE
 #: Master keyboard navigation enable flag. NewFrame() will automatically fill io.NavInputs[] based on io.KeysDown[].
 CONFIG_NAV_ENABLE_KEYBOARD = core.CONFIG_NAV_ENABLE_KEYBOARD
 #: Master gamepad navigation enable flag. This is mostly to instruct your imgui back-end to fill io.NavInputs[]. Back-end also needs to set ImGuiBackendFlags_HasGamepad.
@@ -394,9 +420,12 @@ CONFIG_IS_SRGB = core.CONFIG_IS_SRGB
 CONFIG_IS_TOUCH_SCREEN = core.CONFIG_IS_TOUCH_SCREEN
 
 # ==== Backend Flags ====
-#: Back-end supports gamepad and currently has one connected.
+BACKEND_NONE = core.BACKEND_NONE
+#: Back-end Platform supports gamepad and currently has one connected.
 BACKEND_HAS_GAMEPAD = core.BACKEND_HAS_GAMEPAD
-#: Back-end supports honoring GetMouseCursor() value to change the OS cursor shape.
+#: Back-end Platform supports honoring GetMouseCursor() value to change the OS cursor shape.
 BACKEND_HAS_MOUSE_CURSORS = core.BACKEND_HAS_MOUSE_CURSORS
-#: Back-end supports io.WantSetMousePos requests to reposition the OS mouse position (only used if ImGuiConfigFlags_NavEnableSetMousePos is set).
+#: Back-end Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if ImGuiConfigFlags_NavEnableSetMousePos is set).
 BACKEND_HAS_SET_MOUSE_POS = core.BACKEND_HAS_SET_MOUSE_POS
+#: Back-end Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.
+BACKEND_RENDERER_HAS_VTX_OFFSET = core.BACKEND_RENDERER_HAS_VTX_OFFSET

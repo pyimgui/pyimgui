@@ -107,7 +107,7 @@ cdef extern from "imgui.h":
         ImVec2        DisplayVisibleMax  # ✓
         bool          ConfigMacOSXBehaviors  # ✓
         bool          ConfigInputTextCursorBlink  # ✓
-        bool          ConfigResizeWindowsFromEdges  # ✓
+        bool          ConfigWindowsResizeFromEdges  # ✓
 
         # ====
         # source-note: User Functions
