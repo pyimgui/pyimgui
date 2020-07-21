@@ -38,138 +38,155 @@ DEF TARGET_IMGUI_VERSION = (1, 65)
 cdef unsigned short* _LATIN_ALL = [0x0020, 0x024F , 0]
 
 # ==== Condition enum redefines ====
-ALWAYS = enums.ImGuiCond_Always
-ONCE = enums.ImGuiCond_Once
-FIRST_USE_EVER = enums.ImGuiCond_FirstUseEver
-APPEARING = enums.ImGuiCond_Appearing
+ALWAYS = enums.ImGuiCond_Always  # Set the variable
+ONCE = enums.ImGuiCond_Once  # Set the variable once per runtime session (only the first call with succeed)
+FIRST_USE_EVER = enums.ImGuiCond_FirstUseEver  # Set the variable if the object/window has no persistently saved data (no entry in .ini file)
+APPEARING = enums.ImGuiCond_Appearing  # Set the variable if the object/window is appearing after being hidden/inactive (or the first time)
 
 # ==== Style var enum redefines ====
-STYLE_ALPHA = enums.ImGuiStyleVar_Alpha # float
-STYLE_WINDOW_PADDING = enums.ImGuiStyleVar_WindowPadding  # Vec2
-STYLE_WINDOW_ROUNDING = enums.ImGuiStyleVar_WindowRounding  # float
-STYLE_WINDOW_BORDERSIZE = enums.ImGuiStyleVar_WindowBorderSize  # float
-STYLE_WINDOW_MIN_SIZE = enums.ImGuiStyleVar_WindowMinSize  # Vec2
-STYLE_WINDOW_TITLE_ALIGN = enums.ImGuiStyleVar_WindowTitleAlign  # Vec2
-STYLE_CHILD_ROUNDING = enums.ImGuiStyleVar_ChildRounding  # float
-STYLE_CHILD_BORDERSIZE = enums.ImGuiStyleVar_ChildBorderSize  # float
-STYLE_POPUP_ROUNDING = enums.ImGuiStyleVar_PopupRounding  # float
-STYLE_POPUP_BORDERSIZE = enums.ImGuiStyleVar_PopupBorderSize  # float
-STYLE_FRAME_PADDING = enums.ImGuiStyleVar_FramePadding # Vec2
-STYLE_FRAME_ROUNDING = enums.ImGuiStyleVar_FrameRounding # float
-STYLE_FRAME_BORDERSIZE = enums.ImGuiStyleVar_FrameBorderSize  # float
-STYLE_ITEM_SPACING = enums.ImGuiStyleVar_ItemSpacing # Vec2
-STYLE_ITEM_INNER_SPACING = enums.ImGuiStyleVar_ItemInnerSpacing # Vec2
-STYLE_INDENT_SPACING = enums.ImGuiStyleVar_IndentSpacing # float
-STYLE_SCROLLBAR_SIZE = enums.ImGuiStyleVar_ScrollbarSize # float
-STYLE_SCROLLBAR_ROUNDING = enums.ImGuiStyleVar_ScrollbarRounding # float
-STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
-STYLE_GRAB_ROUNDING = enums.ImGuiStyleVar_GrabRounding # float
-STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # flags ImGuiAlign_*
+STYLE_ALPHA = enums.ImGuiStyleVar_Alpha  # float     Alpha
+STYLE_WINDOW_PADDING = enums.ImGuiStyleVar_WindowPadding  # ImVec2    WindowPadding
+STYLE_WINDOW_ROUNDING = enums.ImGuiStyleVar_WindowRounding  # float     WindowRounding
+STYLE_WINDOW_BORDER_SIZE = enums.ImGuiStyleVar_WindowBorderSize  # float     WindowBorderSize
+STYLE_WINDOW_MIN_SIZE = enums.ImGuiStyleVar_WindowMinSize  # ImVec2    WindowMinSize
+STYLE_WINDOW_TITLE_ALIGN = enums.ImGuiStyleVar_WindowTitleAlign  # ImVec2    WindowTitleAlign
+STYLE_CHILD_ROUNDING = enums.ImGuiStyleVar_ChildRounding  # float     ChildRounding
+STYLE_CHILD_BORDER_SIZE = enums.ImGuiStyleVar_ChildBorderSize  # float     ChildBorderSize
+STYLE_POPUP_ROUNDING = enums.ImGuiStyleVar_PopupRounding  # float     PopupRounding
+STYLE_POPUP_BORDER_SIZE = enums.ImGuiStyleVar_PopupBorderSize  # float     PopupBorderSize
+STYLE_FRAME_PADDING = enums.ImGuiStyleVar_FramePadding  # ImVec2    FramePadding
+STYLE_FRAME_ROUNDING = enums.ImGuiStyleVar_FrameRounding  # float     FrameRounding
+STYLE_FRAME_BORDER_SIZE = enums.ImGuiStyleVar_FrameBorderSize  # float     FrameBorderSize
+STYLE_ITEM_SPACING = enums.ImGuiStyleVar_ItemSpacing  # ImVec2    ItemSpacing
+STYLE_ITEM_INNER_SPACING = enums.ImGuiStyleVar_ItemInnerSpacing  # ImVec2    ItemInnerSpacing
+STYLE_INDENT_SPACING = enums.ImGuiStyleVar_IndentSpacing  # float     IndentSpacing
+STYLE_SCROLLBAR_SIZE = enums.ImGuiStyleVar_ScrollbarSize  # float     ScrollbarSize
+STYLE_SCROLLBAR_ROUNDING = enums.ImGuiStyleVar_ScrollbarRounding  # float     ScrollbarRounding
+STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize  # float     GrabMinSize
+STYLE_GRAB_ROUNDING = enums.ImGuiStyleVar_GrabRounding  # float     GrabRounding
+STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign  # ImVec2    ButtonTextAlign
+STYLE_COUNT = enums.ImGuiStyleVar_COUNT
 
 # ==== Key map enum redefines ====
-KEY_TAB = enums.ImGuiKey_Tab                 # for tabbing through fields
-KEY_LEFT_ARROW = enums.ImGuiKey_LeftArrow    # for text edit
-KEY_RIGHT_ARROW = enums.ImGuiKey_RightArrow  # for text edit
-KEY_UP_ARROW = enums.ImGuiKey_UpArrow        # for text edit
-KEY_DOWN_ARROW = enums.ImGuiKey_DownArrow    # for text edit
+KEY_TAB = enums.ImGuiKey_Tab
+KEY_LEFT_ARROW = enums.ImGuiKey_LeftArrow
+KEY_RIGHT_ARROW = enums.ImGuiKey_RightArrow
+KEY_UP_ARROW = enums.ImGuiKey_UpArrow
+KEY_DOWN_ARROW = enums.ImGuiKey_DownArrow
 KEY_PAGE_UP = enums.ImGuiKey_PageUp
 KEY_PAGE_DOWN = enums.ImGuiKey_PageDown
-KEY_HOME = enums.ImGuiKey_Home               # for text edit
-KEY_END = enums.ImGuiKey_End                 # for text edit
-KEY_INSERT = enums.ImGuiKey_Insert           # for text edit
-KEY_DELETE = enums.ImGuiKey_Delete           # for text edit
-KEY_BACKSPACE = enums.ImGuiKey_Backspace     # for text edit
-KEY_SPACE = enums.ImGuiKey_Space             # for text edit
-KEY_ENTER = enums.ImGuiKey_Enter             # for text edit
-KEY_ESCAPE = enums.ImGuiKey_Escape           # for text edit
-KEY_A = enums.ImGuiKey_A                     # for text edit CTRL+A: select all
-KEY_C = enums.ImGuiKey_C                     # for text edit CTRL+C: copy
-KEY_V = enums.ImGuiKey_V                     # for text edit CTRL+V: paste
-KEY_X = enums.ImGuiKey_X                     # for text edit CTRL+X: cut
-KEY_Y = enums.ImGuiKey_Y                     # for text edit CTRL+Y: redo
-KEY_Z = enums.ImGuiKey_Z                     # for text edit CTRL+Z: undo
+KEY_HOME = enums.ImGuiKey_Home
+KEY_END = enums.ImGuiKey_End
+KEY_INSERT = enums.ImGuiKey_Insert
+KEY_DELETE = enums.ImGuiKey_Delete
+KEY_BACKSPACE = enums.ImGuiKey_Backspace
+KEY_SPACE = enums.ImGuiKey_Space
+KEY_ENTER = enums.ImGuiKey_Enter
+KEY_ESCAPE = enums.ImGuiKey_Escape
+KEY_A = enums.ImGuiKey_A  # for text edit CTRL+A: select all
+KEY_C = enums.ImGuiKey_C  # for text edit CTRL+C: copy
+KEY_V = enums.ImGuiKey_V  # for text edit CTRL+V: paste
+KEY_X = enums.ImGuiKey_X  # for text edit CTRL+X: cut
+KEY_Y = enums.ImGuiKey_Y  # for text edit CTRL+Y: redo
+KEY_Z = enums.ImGuiKey_Z  # for text edit CTRL+Z: undo
+KEY_COUNT = enums.ImGuiKey_COUNT
 
 # ==== Window flags enum redefines ====
-WINDOW_NO_TITLE_BAR = enums.ImGuiWindowFlags_NoTitleBar
-WINDOW_NO_RESIZE = enums.ImGuiWindowFlags_NoResize
-WINDOW_NO_MOVE = enums.ImGuiWindowFlags_NoMove
-WINDOW_NO_SCROLLBAR = enums.ImGuiWindowFlags_NoScrollbar
-WINDOW_NO_SCROLL_WITH_MOUSE = enums.ImGuiWindowFlags_NoScrollWithMouse
-WINDOW_NO_COLLAPSE = enums.ImGuiWindowFlags_NoCollapse
-WINDOW_ALWAYS_AUTO_RESIZE = enums.ImGuiWindowFlags_AlwaysAutoResize
-WINDOW_NO_SAVED_SETTINGS = enums.ImGuiWindowFlags_NoSavedSettings
-WINDOW_NO_INPUTS = enums.ImGuiWindowFlags_NoInputs
-WINDOW_MENU_BAR = enums.ImGuiWindowFlags_MenuBar
-WINDOW_HORIZONTAL_SCROLLING_BAR = enums.ImGuiWindowFlags_HorizontalScrollbar
-WINDOW_NO_FOCUS_ON_APPEARING = enums.ImGuiWindowFlags_NoFocusOnAppearing
-WINDOW_NO_BRING_TO_FRONT_ON_FOCUS = enums.ImGuiWindowFlags_NoBringToFrontOnFocus
-WINDOW_ALWAYS_VERTICAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysVerticalScrollbar
-WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysHorizontalScrollbar
-WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
-WINDOW_NO_NAV_INPUTS = enums.ImGuiWindowFlags_NoNavInputs
-WINDOW_NO_NAV_FOCUS = enums.ImGuiWindowFlags_NoNavFocus
+WINDOW_NONE = enums.ImGuiWindowFlags_None
+WINDOW_NO_TITLE_BAR = enums.ImGuiWindowFlags_NoTitleBar  # Disable title-bar
+WINDOW_NO_RESIZE = enums.ImGuiWindowFlags_NoResize  # Disable user resizing with the lower-right grip
+WINDOW_NO_MOVE = enums.ImGuiWindowFlags_NoMove  # Disable user moving the window
+WINDOW_NO_SCROLLBAR = enums.ImGuiWindowFlags_NoScrollbar  # Disable scrollbars (window can still scroll with mouse or programatically)
+WINDOW_NO_SCROLL_WITH_MOUSE = enums.ImGuiWindowFlags_NoScrollWithMouse  # Disable user vertically scrolling with mouse wheel. On child window, mouse wheel will be forwarded to the parent unless NoScrollbar is also set.
+WINDOW_NO_COLLAPSE = enums.ImGuiWindowFlags_NoCollapse  # Disable user collapsing window by double-clicking on it
+WINDOW_ALWAYS_AUTO_RESIZE = enums.ImGuiWindowFlags_AlwaysAutoResize  # Resize every window to its content every frame
+WINDOW_NO_BACKGROUND = enums.ImGuiWindowFlags_NoBackground  # Disable drawing background color (WindowBg, etc.) and outside border. Similar as using SetNextWindowBgAlpha(0.0f).
+WINDOW_NO_SAVED_SETTINGS = enums.ImGuiWindowFlags_NoSavedSettings  # Never load/save settings in .ini file
+WINDOW_NO_MOUSE_INPUTS = enums.ImGuiWindowFlags_NoMouseInputs  # Disable catching mouse, hovering test with pass through.
+WINDOW_MENU_BAR = enums.ImGuiWindowFlags_MenuBar  # Has a menu-bar
+WINDOW_HORIZONTAL_SCROLLBAR = enums.ImGuiWindowFlags_HorizontalScrollbar  # Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.
+WINDOW_NO_FOCUS_ON_APPEARING = enums.ImGuiWindowFlags_NoFocusOnAppearing  # Disable taking focus when transitioning from hidden to visible state
+WINDOW_NO_BRING_TO_FRONT_ON_FOCUS = enums.ImGuiWindowFlags_NoBringToFrontOnFocus  # Disable bringing window to front when taking focus (e.g. clicking on it or programatically giving it focus)
+WINDOW_ALWAYS_VERTICAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysVerticalScrollbar  # Always show vertical scrollbar (even if ContentSize.y < Size.y)
+WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = enums.ImGuiWindowFlags_AlwaysHorizontalScrollbar  # Always show horizontal scrollbar (even if ContentSize.x < Size.x)
+WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding  # Ensure child windows without border uses style.WindowPadding (ignored by default for non-bordered child windows, because more convenient)
+WINDOW_NO_NAV_INPUTS = enums.ImGuiWindowFlags_NoNavInputs  # No gamepad/keyboard navigation within the window
+WINDOW_NO_NAV_FOCUS = enums.ImGuiWindowFlags_NoNavFocus  # No focusing toward this window with gamepad/keyboard navigation (e.g. skipped by CTRL+TAB)
 WINDOW_NO_NAV = enums.ImGuiWindowFlags_NoNav
+WINDOW_NO_DECORATION = enums.ImGuiWindowFlags_NoDecoration
+WINDOW_NO_INPUTS = enums.ImGuiWindowFlags_NoInputs
+WINDOW_NAV_FLATTENED = enums.ImGuiWindowFlags_NavFlattened  # [BETA] Allow gamepad/keyboard navigation to cross over parent border to this child (only use on child that have no scrolling!)
+WINDOW_CHILD_WINDOW = enums.ImGuiWindowFlags_ChildWindow  # Don't use! For internal use by BeginChild()
+WINDOW_TOOLTIP = enums.ImGuiWindowFlags_Tooltip  # Don't use! For internal use by BeginTooltip()
+WINDOW_POPUP = enums.ImGuiWindowFlags_Popup  # Don't use! For internal use by BeginPopup()
+WINDOW_MODAL = enums.ImGuiWindowFlags_Modal  # Don't use! For internal use by BeginPopupModal()
+WINDOW_CHILD_MENU = enums.ImGuiWindowFlags_ChildMenu  # Don't use! For internal use by BeginMenu()
 
 # ==== TreeNode flags enum redefines ====
-TREE_NODE_SELECTED = enums.ImGuiTreeNodeFlags_Selected
-TREE_NODE_FRAMED = enums.ImGuiTreeNodeFlags_Framed
-TREE_NODE_ALLOW_ITEM_OVERLAP = enums.ImGuiTreeNodeFlags_AllowItemOverlap
-TREE_NODE_NO_TREE_PUSH_ON_OPEN = enums.ImGuiTreeNodeFlags_NoTreePushOnOpen
-TREE_NODE_NO_AUTO_OPEN_ON_LOG = enums.ImGuiTreeNodeFlags_NoAutoOpenOnLog
-TREE_NODE_DEFAULT_OPEN = enums.ImGuiTreeNodeFlags_DefaultOpen
-TREE_NODE_OPEN_ON_DOUBLE_CLICK = enums.ImGuiTreeNodeFlags_OpenOnDoubleClick
-TREE_NODE_OPEN_ON_ARROW = enums.ImGuiTreeNodeFlags_OpenOnArrow
-TREE_NODE_LEAF = enums.ImGuiTreeNodeFlags_Leaf
-TREE_NODE_BULLET = enums.ImGuiTreeNodeFlags_Bullet
-TREE_NODE_FRAME_PADDING = enums.ImGuiTreeNodeFlags_FramePadding
+TREE_NODE_NONE = enums.ImGuiTreeNodeFlags_None
+TREE_NODE_SELECTED = enums.ImGuiTreeNodeFlags_Selected  # Draw as selected
+TREE_NODE_FRAMED = enums.ImGuiTreeNodeFlags_Framed  # Full colored frame (e.g. for CollapsingHeader)
+TREE_NODE_ALLOW_ITEM_OVERLAP = enums.ImGuiTreeNodeFlags_AllowItemOverlap  # Hit testing to allow subsequent widgets to overlap this one
+TREE_NODE_NO_TREE_PUSH_ON_OPEN = enums.ImGuiTreeNodeFlags_NoTreePushOnOpen  # Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra indent nor pushing on ID stack
+TREE_NODE_NO_AUTO_OPEN_ON_LOG = enums.ImGuiTreeNodeFlags_NoAutoOpenOnLog  # Don't automatically and temporarily open node when Logging is active (by default logging will automatically open tree nodes)
+TREE_NODE_DEFAULT_OPEN = enums.ImGuiTreeNodeFlags_DefaultOpen  # Default node to be open
+TREE_NODE_OPEN_ON_DOUBLE_CLICK = enums.ImGuiTreeNodeFlags_OpenOnDoubleClick  # Need double-click to open node
+TREE_NODE_OPEN_ON_ARROW = enums.ImGuiTreeNodeFlags_OpenOnArrow  # Only open when clicking on the arrow part. If ImGuiTreeNodeFlags_OpenOnDoubleClick is also set, single-click arrow or double-click all box to open.
+TREE_NODE_LEAF = enums.ImGuiTreeNodeFlags_Leaf  # No collapsing, no arrow (use as a convenience for leaf nodes).
+TREE_NODE_BULLET = enums.ImGuiTreeNodeFlags_Bullet  # Display a bullet instead of arrow
+TREE_NODE_FRAME_PADDING = enums.ImGuiTreeNodeFlags_FramePadding  # Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding().
+TREE_NODE_NAV_LEFT_JUMPS_BACK_HERE = enums.ImGuiTreeNodeFlags_NavLeftJumpsBackHere  # (WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)
 TREE_NODE_COLLAPSING_HEADER = enums.ImGuiTreeNodeFlags_CollapsingHeader
 
 # ==== Selectable flags enum redefines ====
-SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups
-SELECTABLE_SPAN_ALL_COLUMNS = enums.ImGuiSelectableFlags_SpanAllColumns
-SELECTABLE_ALLOW_DOUBLE_CLICK = enums.ImGuiSelectableFlags_AllowDoubleClick
+SELECTABLE_NONE = enums.ImGuiSelectableFlags_None
+SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups  # Clicking this don't close parent popup window
+SELECTABLE_SPAN_ALL_COLUMNS = enums.ImGuiSelectableFlags_SpanAllColumns  # Selectable frame can span all columns (text will still fit in current column)
+SELECTABLE_ALLOW_DOUBLE_CLICK = enums.ImGuiSelectableFlags_AllowDoubleClick  # Generate press events on double clicks too
+SELECTABLE_DISABLED = enums.ImGuiSelectableFlags_Disabled  # Cannot be selected, display greyed out text
 
 # ==== Combo flags enum redefines ====
-
-COMBO_POPUP_ALIGN_LEFT = enums.ImGuiComboFlags_PopupAlignLeft
-COMBO_HEIGHT_SMALL = enums.ImGuiComboFlags_HeightSmall
-COMBO_HEIGHT_REGULAR = enums.ImGuiComboFlags_HeightRegular
-COMBO_HEIGHT_LARGE = enums.ImGuiComboFlags_HeightLarge
-COMBO_HEIGHT_LARGEST = enums.ImGuiComboFlags_HeightLargest
-COMBO_NO_ARROW_BUTTON = enums.ImGuiComboFlags_NoArrowButton
-COMBO_NO_PREVIEW = enums.ImGuiComboFlags_NoPreview
-COMBO_HEIGHT_MASK = enums.ImGuiComboFlags_HeightMask_
+COMBO_NONE = enums.ImGuiComboFlags_None
+COMBO_POPUP_ALIGN_LEFT = enums.ImGuiComboFlags_PopupAlignLeft  # Align the popup toward the left by default
+COMBO_HEIGHT_SMALL = enums.ImGuiComboFlags_HeightSmall  # Max ~4 items visible. Tip: If you want your combo popup to be a specific size you can use SetNextWindowSizeConstraints() prior to calling BeginCombo()
+COMBO_HEIGHT_REGULAR = enums.ImGuiComboFlags_HeightRegular  # Max ~8 items visible (default)
+COMBO_HEIGHT_LARGE = enums.ImGuiComboFlags_HeightLarge  # Max ~20 items visible
+COMBO_HEIGHT_LARGEST = enums.ImGuiComboFlags_HeightLargest  # As many fitting items as possible
+COMBO_NO_ARROW_BUTTON = enums.ImGuiComboFlags_NoArrowButton  # Display on the preview box without the square arrow button
+COMBO_NO_PREVIEW = enums.ImGuiComboFlags_NoPreview  # Display only a square arrow button
+COMBO_HEIGHT_MASK_ = enums.ImGuiComboFlags_HeightMask_
 
 # === Focus flag enum redefines ====
-FOCUS_CHILD_WINDOWS = enums.ImGuiFocusedFlags_ChildWindows
-FOCUS_ROOT_WINDOW = enums.ImGuiFocusedFlags_RootWindow
-FOCUS_ANY_WINDOW = enums.ImGuiFocusedFlags_AnyWindow
+FOCUS_NONE = enums.ImGuiFocusedFlags_None
+FOCUS_CHILD_WINDOWS = enums.ImGuiFocusedFlags_ChildWindows  # IsWindowFocused(): Return true if any children of the window is focused
+FOCUS_ROOT_WINDOW = enums.ImGuiFocusedFlags_RootWindow  # IsWindowFocused(): Test from root window (top most parent of the current hierarchy)
+FOCUS_ANY_WINDOW = enums.ImGuiFocusedFlags_AnyWindow  # IsWindowFocused(): Return true if any window is focused. Important: If you are trying to tell how to dispatch your low-level inputs, do NOT use this. Use ImGui::GetIO().WantCaptureMouse instead.
 FOCUS_ROOT_AND_CHILD_WINDOWS = enums.ImGuiFocusedFlags_RootAndChildWindows
 
 # === Hovered flag enum redefines ====
-HOVERED_NONE = enums.ImGuiHoveredFlags_None
-HOVERED_CHILD_WINDOWS = enums.ImGuiHoveredFlags_ChildWindows
-HOVERED_ROOT_WINDOW = enums.ImGuiHoveredFlags_RootWindow
-HOVERED_ANY_WINDOW = enums.ImGuiHoveredFlags_AnyWindow
-HOVERED_ALLOW_WHEN_BLOCKED_BY_POPUP = enums.ImGuiHoveredFlags_AllowWhenBlockedByPopup
-HOVERED_ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM = enums.ImGuiHoveredFlags_AllowWhenBlockedByActiveItem
-HOVERED_ALLOW_WHEN_OVERLAPPED = enums.ImGuiHoveredFlags_AllowWhenOverlapped
+HOVERED_NONE = enums.ImGuiHoveredFlags_None  # Return true if directly over the item/window, not obstructed by another window, not obstructed by an active popup or modal blocking inputs under them.
+HOVERED_CHILD_WINDOWS = enums.ImGuiHoveredFlags_ChildWindows  # IsWindowHovered() only: Return true if any children of the window is hovered
+HOVERED_ROOT_WINDOW = enums.ImGuiHoveredFlags_RootWindow  # IsWindowHovered() only: Test from root window (top most parent of the current hierarchy)
+HOVERED_ANY_WINDOW = enums.ImGuiHoveredFlags_AnyWindow  # IsWindowHovered() only: Return true if any window is hovered
+HOVERED_ALLOW_WHEN_BLOCKED_BY_POPUP = enums.ImGuiHoveredFlags_AllowWhenBlockedByPopup  # Return true even if a popup window is normally blocking access to this item/window
+HOVERED_ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM = enums.ImGuiHoveredFlags_AllowWhenBlockedByActiveItem  # Return true even if an active item is blocking access to this item/window. Useful for Drag and Drop patterns.
+HOVERED_ALLOW_WHEN_OVERLAPPED = enums.ImGuiHoveredFlags_AllowWhenOverlapped  # Return true even if the position is overlapped by another window
+HOVERED_ALLOW_WHEN_DISABLED = enums.ImGuiHoveredFlags_AllowWhenDisabled  # Return true even if the item is disabled
 HOVERED_RECT_ONLY = enums.ImGuiHoveredFlags_RectOnly
 HOVERED_ROOT_AND_CHILD_WINDOWS = enums.ImGuiHoveredFlags_RootAndChildWindows
 
 # === Drag Drop flag enum redefines ====
-DRAG_DROP_SOURCE_NO_PREVIEW_TOOLTIP = enums.ImGuiDragDropFlags_SourceNoPreviewTooltip
-DRAG_DROP_SOURCE_NO_DISABLE_HOVER = enums.ImGuiDragDropFlags_SourceNoDisableHover
-DRAG_DROP_SOURCE_NO_HOLD_TO_OPEN_OTHERS = enums.ImGuiDragDropFlags_SourceNoHoldToOpenOthers
-DRAG_DROP_SOURCE_ALLOW_NULL_ID = enums.ImGuiDragDropFlags_SourceAllowNullID
-DRAG_DROP_SOURCE_EXTERN = enums.ImGuiDragDropFlags_SourceExtern
-DRAG_DROP_SOURCE_AUTO_EXPIRE_PAYLOAD = enums.ImGuiDragDropFlags_SourceAutoExpirePayload
-
-# === Accept Drag Drop Payload flag enum redefines ====
-DRAG_DROP_ACCEPT_BEFORE_DELIVERY = enums.ImGuiDragDropFlags_AcceptBeforeDelivery
-DRAG_DROP_ACCEPT_NO_DRAW_DEFAULT_RECT = enums.ImGuiDragDropFlags_AcceptNoDrawDefaultRect
-DRAG_DROP_ACCEPT_NO_PREVIEW_TOOLTIP = enums.ImGuiDragDropFlags_AcceptNoPreviewTooltip
-DRAG_DROP_ACCEPT_PEEK_ONLY = enums.ImGuiDragDropFlags_AcceptPeekOnly
+DRAG_DROP_NONE = enums.ImGuiDragDropFlags_None
+DRAG_DROP_SOURCE_NO_PREVIEW_TOOLTIP = enums.ImGuiDragDropFlags_SourceNoPreviewTooltip  # By default, a successful call to BeginDragDropSource opens a tooltip so you can display a preview or description of the source contents. This flag disable this behavior.
+DRAG_DROP_SOURCE_NO_DISABLE_HOVER = enums.ImGuiDragDropFlags_SourceNoDisableHover  # By default, when dragging we clear data so that IsItemHovered() will return false, to avoid subsequent user code submitting tooltips. This flag disable this behavior so you can still call IsItemHovered() on the source item.
+DRAG_DROP_SOURCE_NO_HOLD_TO_OPEN_OTHERS = enums.ImGuiDragDropFlags_SourceNoHoldToOpenOthers  # Disable the behavior that allows to open tree nodes and collapsing header by holding over them while dragging a source item.
+DRAG_DROP_SOURCE_ALLOW_NULL_ID = enums.ImGuiDragDropFlags_SourceAllowNullID  # Allow items such as Text(), Image() that have no unique identifier to be used as drag source, by manufacturing a temporary identifier based on their window-relative position. This is extremely unusual within the dear imgui ecosystem and so we made it explicit.
+DRAG_DROP_SOURCE_EXTERN = enums.ImGuiDragDropFlags_SourceExtern  # External source (from outside of imgui), won't attempt to read current item/window info. Will always return true. Only one Extern source can be active simultaneously.
+DRAG_DROP_SOURCE_AUTO_EXPIRE_PAYLOAD = enums.ImGuiDragDropFlags_SourceAutoExpirePayload  # Automatically expire the payload if the source cease to be submitted (otherwise payloads are persisting while being dragged)
+DRAG_DROP_ACCEPT_BEFORE_DELIVERY = enums.ImGuiDragDropFlags_AcceptBeforeDelivery  # AcceptDragDropPayload() will returns true even before the mouse button is released. You can then call IsDelivery() to test if the payload needs to be delivered.
+DRAG_DROP_ACCEPT_NO_DRAW_DEFAULT_RECT = enums.ImGuiDragDropFlags_AcceptNoDrawDefaultRect  # Do not draw the default highlight rectangle when hovering over target.
+DRAG_DROP_ACCEPT_NO_PREVIEW_TOOLTIP = enums.ImGuiDragDropFlags_AcceptNoPreviewTooltip  # Request hiding the BeginDragDropSource tooltip from the BeginDragDropTarget site.
+DRAG_DROP_ACCEPT_PEEK_ONLY = enums.ImGuiDragDropFlags_AcceptPeekOnly  # For peeking ahead and inspecting the payload before delivery.
 
 # === Cardinal Direction enum redefines ====
 DIRECTION_NONE = enums.ImGuiDir_None
@@ -177,32 +194,36 @@ DIRECTION_LEFT = enums.ImGuiDir_Left
 DIRECTION_RIGHT = enums.ImGuiDir_Right
 DIRECTION_UP = enums.ImGuiDir_Up
 DIRECTION_DOWN = enums.ImGuiDir_Down
+DIRECTION_COUNT = enums.ImGuiDir_COUNT
 
 # ==== Mouse Cursors ====
+MOUSE_CURSOR_NONE = enums.ImGuiMouseCursor_None
 MOUSE_CURSOR_ARROW = enums.ImGuiMouseCursor_Arrow
-MOUSE_CURSOR_TEXT_INPUT = enums.ImGuiMouseCursor_TextInput
-MOUSE_CURSOR_RESIZE_ALL = enums.ImGuiMouseCursor_ResizeAll
-MOUSE_CURSOR_RESIZE_NS = enums.ImGuiMouseCursor_ResizeNS
-MOUSE_CURSOR_RESIZE_EW = enums.ImGuiMouseCursor_ResizeEW
-MOUSE_CURSOR_RESIZE_NESW = enums.ImGuiMouseCursor_ResizeNESW
-MOUSE_CURSOR_RESIZE_NWSE = enums.ImGuiMouseCursor_ResizeNWSE
+MOUSE_CURSOR_TEXT_INPUT = enums.ImGuiMouseCursor_TextInput  # When hovering over InputText, etc.
+MOUSE_CURSOR_RESIZE_ALL = enums.ImGuiMouseCursor_ResizeAll  # (Unused by imgui functions)
+MOUSE_CURSOR_RESIZE_NS = enums.ImGuiMouseCursor_ResizeNS  # When hovering over an horizontal border
+MOUSE_CURSOR_RESIZE_EW = enums.ImGuiMouseCursor_ResizeEW  # When hovering over a vertical border or a column
+MOUSE_CURSOR_RESIZE_NESW = enums.ImGuiMouseCursor_ResizeNESW  # When hovering over the bottom-left corner of a window
+MOUSE_CURSOR_RESIZE_NWSE = enums.ImGuiMouseCursor_ResizeNWSE  # When hovering over the bottom-right corner of a window
+MOUSE_CURSOR_HAND = enums.ImGuiMouseCursor_Hand  # (Unused by imgui functions. Use for e.g. hyperlinks)
+MOUSE_CURSOR_COUNT = enums.ImGuiMouseCursor_COUNT
 
 # ==== Color identifiers for styling ====
 COLOR_TEXT = enums.ImGuiCol_Text
 COLOR_TEXT_DISABLED = enums.ImGuiCol_TextDisabled
-COLOR_WINDOW_BACKGROUND = enums.ImGuiCol_WindowBg
-COLOR_CHILD_BACKGROUND = enums.ImGuiCol_ChildBg
-COLOR_POPUP_BACKGROUND = enums.ImGuiCol_PopupBg
+COLOR_WINDOW_BG = enums.ImGuiCol_WindowBg  # Background of normal windows
+COLOR_CHILD_BG = enums.ImGuiCol_ChildBg  # Background of child windows
+COLOR_POPUP_BG = enums.ImGuiCol_PopupBg  # Background of popups, menus, tooltips windows
 COLOR_BORDER = enums.ImGuiCol_Border
 COLOR_BORDER_SHADOW = enums.ImGuiCol_BorderShadow
-COLOR_FRAME_BACKGROUND = enums.ImGuiCol_FrameBg
-COLOR_FRAME_BACKGROUND_HOVERED = enums.ImGuiCol_FrameBgHovered
-COLOR_FRAME_BACKGROUND_ACTIVE = enums.ImGuiCol_FrameBgActive
-COLOR_TITLE_BACKGROUND = enums.ImGuiCol_TitleBg
-COLOR_TITLE_BACKGROUND_ACTIVE = enums.ImGuiCol_TitleBgActive
-COLOR_TITLE_BACKGROUND_COLLAPSED = enums.ImGuiCol_TitleBgCollapsed
-COLOR_MENUBAR_BACKGROUND = enums.ImGuiCol_MenuBarBg
-COLOR_SCROLLBAR_BACKGROUND = enums.ImGuiCol_ScrollbarBg
+COLOR_FRAME_BG = enums.ImGuiCol_FrameBg  # Background of checkbox, radio button, plot, slider, text input
+COLOR_FRAME_BG_HOVERED = enums.ImGuiCol_FrameBgHovered
+COLOR_FRAME_BG_ACTIVE = enums.ImGuiCol_FrameBgActive
+COLOR_TITLE_BG = enums.ImGuiCol_TitleBg
+COLOR_TITLE_BG_ACTIVE = enums.ImGuiCol_TitleBgActive
+COLOR_TITLE_BG_COLLAPSED = enums.ImGuiCol_TitleBgCollapsed
+COLOR_MENU_BAR_BG = enums.ImGuiCol_MenuBarBg
+COLOR_SCROLLBAR_BG = enums.ImGuiCol_ScrollbarBg
 COLOR_SCROLLBAR_GRAB = enums.ImGuiCol_ScrollbarGrab
 COLOR_SCROLLBAR_GRAB_HOVERED = enums.ImGuiCol_ScrollbarGrabHovered
 COLOR_SCROLLBAR_GRAB_ACTIVE = enums.ImGuiCol_ScrollbarGrabActive
@@ -225,47 +246,52 @@ COLOR_PLOT_LINES = enums.ImGuiCol_PlotLines
 COLOR_PLOT_LINES_HOVERED = enums.ImGuiCol_PlotLinesHovered
 COLOR_PLOT_HISTOGRAM = enums.ImGuiCol_PlotHistogram
 COLOR_PLOT_HISTOGRAM_HOVERED = enums.ImGuiCol_PlotHistogramHovered
-COLOR_TEXT_SELECTED_BACKGROUND = enums.ImGuiCol_TextSelectedBg
+COLOR_TEXT_SELECTED_BG = enums.ImGuiCol_TextSelectedBg
 COLOR_DRAG_DROP_TARGET = enums.ImGuiCol_DragDropTarget
-COLOR_NAV_HIGHLIGHT = enums.ImGuiCol_NavHighlight
-COLOR_NAV_WINDOWING_HIGHLIGHT = enums.ImGuiCol_NavWindowingHighlight
-COLOR_NAV_WINDOWING_DIM_BACKGROUND = enums.ImGuiCol_NavWindowingDimBg
-COLOR_MODAL_WINDOW_DIM_BACKGROUND = enums.ImGuiCol_ModalWindowDimBg
+COLOR_NAV_HIGHLIGHT = enums.ImGuiCol_NavHighlight  # Gamepad/keyboard: current highlighted item
+COLOR_NAV_WINDOWING_HIGHLIGHT = enums.ImGuiCol_NavWindowingHighlight  # Highlight window when using CTRL+TAB
+COLOR_NAV_WINDOWING_DIM_BG = enums.ImGuiCol_NavWindowingDimBg  # Darken/colorize entire screen behind the CTRL+TAB window list, when active
+COLOR_MODAL_WINDOW_DIM_BG = enums.ImGuiCol_ModalWindowDimBg  # Darken/colorize entire screen behind a modal window, when one is active
 COLOR_COUNT = enums.ImGuiCol_COUNT
 
 # ==== Text input flags ====
-INPUT_TEXT_CHARS_DECIMAL = enums.ImGuiInputTextFlags_CharsDecimal
-INPUT_TEXT_CHARS_HEXADECIMAL = enums.ImGuiInputTextFlags_CharsHexadecimal
-INPUT_TEXT_CHARS_UPPERCASE = enums.ImGuiInputTextFlags_CharsUppercase
-INPUT_TEXT_CHARS_NO_BLANK = enums.ImGuiInputTextFlags_CharsNoBlank
-INPUT_TEXT_AUTO_SELECT_ALL = enums.ImGuiInputTextFlags_AutoSelectAll
-INPUT_TEXT_ENTER_RETURNS_TRUE = enums.ImGuiInputTextFlags_EnterReturnsTrue
-INPUT_TEXT_CALLBACK_COMPLETION = enums.ImGuiInputTextFlags_CallbackCompletion
-INPUT_TEXT_CALLBACK_HISTORY = enums.ImGuiInputTextFlags_CallbackHistory
-INPUT_TEXT_CALLBACK_ALWAYS = enums.ImGuiInputTextFlags_CallbackAlways
-INPUT_TEXT_CALLBACK_CHAR_FILTER = enums.ImGuiInputTextFlags_CallbackCharFilter
-INPUT_TEXT_ALLOW_TAB_INPUT = enums.ImGuiInputTextFlags_AllowTabInput
-INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE = enums.ImGuiInputTextFlags_CtrlEnterForNewLine
-INPUT_TEXT_NO_HORIZONTAL_SCROLL = enums.ImGuiInputTextFlags_NoHorizontalScroll
-INPUT_TEXT_ALWAYS_INSERT_MODE = enums.ImGuiInputTextFlags_AlwaysInsertMode
-INPUT_TEXT_READ_ONLY = enums.ImGuiInputTextFlags_ReadOnly
-INPUT_TEXT_PASSWORD = enums.ImGuiInputTextFlags_Password
-INPUT_TEXT_NO_UNDO_REDO = enums.ImGuiInputTextFlags_NoUndoRedo
+INPUT_TEXTNONE = enums.ImGuiInputTextFlags_None
+INPUT_TEXTCHARS_DECIMAL = enums.ImGuiInputTextFlags_CharsDecimal  # Allow 0123456789.+-*/
+INPUT_TEXTCHARS_HEXADECIMAL = enums.ImGuiInputTextFlags_CharsHexadecimal  # Allow 0123456789ABCDEFabcdef
+INPUT_TEXTCHARS_UPPERCASE = enums.ImGuiInputTextFlags_CharsUppercase  # Turn a..z into A..Z
+INPUT_TEXTCHARS_NO_BLANK = enums.ImGuiInputTextFlags_CharsNoBlank  # Filter out spaces, tabs
+INPUT_TEXTAUTO_SELECT_ALL = enums.ImGuiInputTextFlags_AutoSelectAll  # Select entire text when first taking mouse focus
+INPUT_TEXTENTER_RETURNS_TRUE = enums.ImGuiInputTextFlags_EnterReturnsTrue  # Return 'true' when Enter is pressed (as opposed to when the value was modified)
+INPUT_TEXTCALLBACK_COMPLETION = enums.ImGuiInputTextFlags_CallbackCompletion  # Callback on pressing TAB (for completion handling)
+INPUT_TEXTCALLBACK_HISTORY = enums.ImGuiInputTextFlags_CallbackHistory  # Callback on pressing Up/Down arrows (for history handling)
+INPUT_TEXTCALLBACK_ALWAYS = enums.ImGuiInputTextFlags_CallbackAlways  # Callback on each iteration. User code may query cursor position, modify text buffer.
+INPUT_TEXTCALLBACK_CHAR_FILTER = enums.ImGuiInputTextFlags_CallbackCharFilter  # Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.
+INPUT_TEXTALLOW_TAB_INPUT = enums.ImGuiInputTextFlags_AllowTabInput  # Pressing TAB input a '\t' character into the text field
+INPUT_TEXTCTRL_ENTER_FOR_NEW_LINE = enums.ImGuiInputTextFlags_CtrlEnterForNewLine  # In multi-line mode, unfocus with Enter, add new line with Ctrl+Enter (default is opposite: unfocus with Ctrl+Enter, add line with Enter).
+INPUT_TEXTNO_HORIZONTAL_SCROLL = enums.ImGuiInputTextFlags_NoHorizontalScroll  # Disable following the cursor horizontally
+INPUT_TEXTALWAYS_INSERT_MODE = enums.ImGuiInputTextFlags_AlwaysInsertMode  # Insert mode
+INPUT_TEXTREAD_ONLY = enums.ImGuiInputTextFlags_ReadOnly  # Read-only mode
+INPUT_TEXTPASSWORD = enums.ImGuiInputTextFlags_Password  # Password mode, display all characters as '*'
+INPUT_TEXTNO_UNDO_REDO = enums.ImGuiInputTextFlags_NoUndoRedo  # Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call ClearActiveID().
+INPUT_TEXTCHARS_SCIENTIFIC = enums.ImGuiInputTextFlags_CharsScientific  # Allow 0123456789.+-*/eE (Scientific notation input)
+INPUT_TEXTCALLBACK_RESIZE = enums.ImGuiInputTextFlags_CallbackResize  # Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)
+INPUT_TEXTMULTILINE = enums.ImGuiInputTextFlags_Multiline  # For internal use by InputTextMultiline()
 
 # ==== Config Flags ====
-CONFIG_NAV_ENABLE_KEYBOARD = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavEnableKeyboard
-CONFIG_NAV_ENABLE_GAMEPAD = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavEnableGamepad
-CONFIG_NAV_ENABLE_SET_MOUSE_POS = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavEnableSetMousePos
-CONFIG_NAV_NO_CAPTURE_KEYBOARD = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavNoCaptureKeyboard
-CONFIG_NO_MOUSE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouse
-CONFIG_NO_MOUSE_CURSOR_CHARGE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouseCursorChange
-CONFIG_IS_RGB = enums.ImGuiConfigFlags_.ImGuiConfigFlags_IsSRGB
-CONFIG_IS_TOUCH_SCREEN = enums.ImGuiConfigFlags_.ImGuiConfigFlags_IsTouchScreen
+CONFIG_NAV_ENABLE_KEYBOARD = enums.ImGuiConfigFlags_NavEnableKeyboard  # Master keyboard navigation enable flag. NewFrame() will automatically fill io.NavInputs[] based on io.KeysDown[].
+CONFIG_NAV_ENABLE_GAMEPAD = enums.ImGuiConfigFlags_NavEnableGamepad  # Master gamepad navigation enable flag. This is mostly to instruct your imgui back-end to fill io.NavInputs[]. Back-end also needs to set ImGuiBackendFlags_HasGamepad.
+CONFIG_NAV_ENABLE_SET_MOUSE_POS = enums.ImGuiConfigFlags_NavEnableSetMousePos  # Instruct navigation to move the mouse cursor. May be useful on TV/console systems where moving a virtual mouse is awkward. Will update io.MousePos and set io.WantSetMousePos=true. If enabled you MUST honor io.WantSetMousePos requests in your binding, otherwise ImGui will react as if the mouse is jumping around back and forth.
+CONFIG_NAV_NO_CAPTURE_KEYBOARD = enums.ImGuiConfigFlags_NavNoCaptureKeyboard  # Instruct navigation to not set the io.WantCaptureKeyboard flag when io.NavActive is set.
+CONFIG_NO_MOUSE = enums.ImGuiConfigFlags_NoMouse  # Instruct imgui to clear mouse position/buttons in NewFrame(). This allows ignoring the mouse information set by the back-end.
+CONFIG_NO_MOUSE_CURSOR_CHANGE = enums.ImGuiConfigFlags_NoMouseCursorChange  # Instruct back-end to not alter mouse cursor shape and visibility. Use if the back-end cursor changes are interfering with yours and you don't want to use SetMouseCursor() to change mouse cursor. You may want to honor requests from imgui by reading GetMouseCursor() yourself instead.
+CONFIG_IS_SRGB = enums.ImGuiConfigFlags_IsSRGB  # Application is SRGB-aware.
+CONFIG_IS_TOUCH_SCREEN = enums.ImGuiConfigFlags_IsTouchScreen  # Application is using a touch screen instead of a mouse.
 
 # ==== Backend Flags ====
-BACKEND_HAS_GAMEPAD = enums.ImGuiBackendFlags_.ImGuiBackendFlags_HasGamepad
-BACKEND_HAS_MOUSE_CURSORS = enums.ImGuiBackendFlags_.ImGuiBackendFlags_HasMouseCursors
-BACKEND_HAS_SET_MOUSE_POS = enums.ImGuiBackendFlags_.ImGuiBackendFlags_HasSetMousePos
+BACKEND_HAS_GAMEPAD = enums.ImGuiBackendFlags_HasGamepad  # Back-end supports gamepad and currently has one connected.
+BACKEND_HAS_MOUSE_CURSORS = enums.ImGuiBackendFlags_HasMouseCursors  # Back-end supports honoring GetMouseCursor() value to change the OS cursor shape.
+BACKEND_HAS_SET_MOUSE_POS = enums.ImGuiBackendFlags_HasSetMousePos  # Back-end supports io.WantSetMousePos requests to reposition the OS mouse position (only used if ImGuiConfigFlags_NavEnableSetMousePos is set).
+
 
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
@@ -6682,7 +6708,7 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     .. wraps::
         PushStyleVar(ImGuiStyleVar idx, float val)
     """
-    if not (0 <= variable < enums.ImGuiStyleVar_Count_):
+    if not (0 <= variable < enums.ImGuiStyleVar_COUNT):
         warnings.warn("Unknown style variable: {}".format(variable))
         return False
 

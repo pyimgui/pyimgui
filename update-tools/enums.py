@@ -38,8 +38,8 @@ def pyx_format(field, comment, max_len, prefix=""):
 def py_format(field, comment, max_len, prefix=""):
     key = inflection.underscore(field.split("_", 1)[-1]).upper()
 
-    return "{comment}{prefix}{key} = core.{field}".format(
-        prefix=prefix, key=key, field=field,
+    return "{comment}{prefix}{key} = core.{prefix}{key}".format(
+        prefix=prefix, key=key,
         comment="#: " + comment + "\n" if comment else ""
     )
 
@@ -94,14 +94,14 @@ def pxd():
 
 @cli.command()
 def py():
-    template = env.get_template(os.path.join(base_dir, "flags.jinja2"))
+    template = env.get_template(os.path.join(base_dir, "flags.py.jinja2"))
     parser = EnumParser(os.path.join(base_dir, "..", "imgui-cpp", "imgui.h"), py_format)
     click.echo(template.render(parser=parser))
 
 
 @cli.command()
 def pyx():
-    template = env.get_template(os.path.join(base_dir, "flags.jinja2"))
+    template = env.get_template(os.path.join(base_dir, "core.pyx.jinja2"))
     parser = EnumParser(os.path.join(base_dir, "..", "imgui-cpp", "imgui.h"), pyx_format)
     click.echo(template.render(parser=parser))
 
