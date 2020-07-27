@@ -75,11 +75,16 @@ class PygletMixin(object):
         for value in self.REVERSE_KEY_MAP.values():
             key_map[value] = value
 
-    def _on_mods_change(self, mods):
-        self.io.key_ctrl = mods & key.MOD_CTRL
-        self.io.key_super = mods & key.MOD_COMMAND
-        self.io.key_alt = mods & key.MOD_ALT
-        self.io.key_shift = mods & key.MOD_SHIFT
+    def _on_mods_change(self, mods, key_pressed = 0):
+        self.io.key_ctrl = mods & key.MOD_CTRL or \
+                            key_pressed in (key.LCTRL, key.RCTRL)
+        self.io.key_super = mods & key.MOD_COMMAND or \
+                            key_pressed in (key.LCOMMAND, key.RCOMMAND)
+        self.io.key_alt = mods & key.MOD_ALT or \
+                            key_pressed in (key.LALT, key.RALT)
+        self.io.key_shift = mods & key.MOD_SHIFT or \
+                            key_pressed in (key.LSHIFT, key.RSHIFT)
+        print(self.io.key_ctrl, self.io.key_super, self.io.key_alt, self.io.key_shift)
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.io.mouse_pos = x, self.io.display_size.y - y
@@ -87,7 +92,7 @@ class PygletMixin(object):
     def on_key_press(self, key_pressed, mods):
         if key_pressed in self.REVERSE_KEY_MAP:
             self.io.keys_down[self.REVERSE_KEY_MAP[key_pressed]] = True
-        self._on_mods_change(mods)
+        self._on_mods_change(mods, key_pressed)
 
     def on_key_release(self, key_released, mods):
         if key_released in self.REVERSE_KEY_MAP:
