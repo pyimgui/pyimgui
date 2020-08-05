@@ -84,6 +84,7 @@ install:
   - cp "c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdint.h" "C:\Users\appveyor\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include\stdint.h"
   # get latest version of all submodules
   - "git submodule update --init --recursive"
+  - "%PYTHON%\\python.exe -m pip install -U setuptools"
   - "%PYTHON%\\python.exe -m pip install -r doc/requirements-test.txt"
 
 build: off

@@ -76,7 +76,7 @@ def lib_symbols(lib_path, undefined=False):
     )
     out = cppfilt.communicate()[0]
 
-    return set(out.split('\n'))
+    return set(out.decode().split('\n'))
 
 
 def output(done_count, all_count, badge_output=None):
