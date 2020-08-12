@@ -1,3 +1,4 @@
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -37,6 +38,10 @@ var/
 .installed.cfg
 *.egg
 completion.svg
+
+# Visual Studio stuff
+.vs/
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -117,4 +122,4 @@ ENV/
 
 # Fonts
 *.ttf
-*.otf
+*.otfs
