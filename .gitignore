@@ -1,4 +1,3 @@
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -122,4 +121,4 @@ ENV/
 
 # Fonts
 *.ttf
-*.otfs
+*.otf
