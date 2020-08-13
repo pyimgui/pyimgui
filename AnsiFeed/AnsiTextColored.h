@@ -32,17 +32,26 @@ namespace ImGui
 
     bool ParseColor(const char* s, ImU32* col, int* skipChars)
     {
-        if (s[0] != '\033' || s[1] != '[') {
+        if (s[0] != '\033' && s[0] != '\x1b')// && s[0] != '\e')
+        {
+            printf("missed1");
+            return false;
+        }
+
+        if (s[1] != '[') {
+            printf("missed2");
             return false;
         }
 
         if (s[2] == 'm') {
+            printf("missed3");
             *col = 0xffcccccc;
             *skipChars = 3;
             return true;
         }
 
         if (s[2] == '0' && s[3] == 'm') {
+            printf("missed4");
             *col = 0xffcccccc;
             *skipChars = 4;
             return true;
@@ -77,6 +86,7 @@ namespace ImGui
         }
 
         *skipChars = static_cast<int>(seqEnd - s + 1);
+        printf("success1");
         return true;
     }
 
@@ -529,6 +539,7 @@ namespace ImGui
 
     void TextAnsi(const char* fmt,  ...)
     {
+        printf("GotHere2");
         va_list args;
         va_start(args, fmt);
         TextAnsiV(fmt, args);
@@ -544,6 +555,7 @@ namespace ImGui
 
     void TextAnsiColored(const ImVec4& col, const char* fmt, ...)
     {
+        printf("GotHere1");
         va_list args;
         va_start(args, fmt);
         TextAnsiColoredV(col, fmt, args);

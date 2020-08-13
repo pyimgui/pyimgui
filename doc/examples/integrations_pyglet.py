@@ -9,7 +9,8 @@ import imgui
 # or PygletProgrammablePipelineRenderer, but create_renderer handles the
 # version checking for us.
 from imgui.integrations.pyglet import create_renderer
-
+import colorama
+from colorama import Fore
 
 def main():
 
@@ -38,6 +39,16 @@ def main():
         imgui.begin("Custom window", True)
         imgui.text("Bar")
         imgui.text_colored("Eggs", 0.2, 1., 0.)
+        # colorstr = colorama.an  \033[31m
+        # imgui.text_ansi("BarAnsi: "+Fore.RED+" whoop")
+        # # print("BarAnsi: "+Fore.RED+" whoop")
+        # imgui.text_ansi_colored("EggsAnsiColored: "+Fore.RED+" whoop", 0.2, 1., 0.)
+        message = "BarAnsi: "+"\033[31m" +" whoop"+"\033[0m"
+        print(message)
+        imgui.text_ansi("BarAnsi: "+"\033[31m" +" whoop"+"\033[0m")
+        # print("BarAnsi: "+"\033[31m"+" whoop"+"\033[0m")
+        imgui.text_ansi_colored("EggsAnsiColored: "+'\033[31m' +" whoop"+"\033[0m", 0.2, 1., 0.)
+
         imgui.end()
 
     @window.event
