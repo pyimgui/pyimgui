@@ -3682,7 +3682,7 @@ def text_ansi(str text):
         Text(const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.Text("%s", _bytes(text))
+    cimguiAnsiFeed.TextAnsi("%s", _bytes(text))
 
 
 def text_colored(str text, float r, float g, float b, float a=1.):
@@ -3754,7 +3754,7 @@ def text_ansi_colored(str text, float r, float g, float b, float a=1.):
         TextColored(const ImVec4& col, const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
+    cimguiAnsiFeed.TextAnsiColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
 
 def text_disabled(str text):
     """Add disabled(grayed out) text to current widget stack.

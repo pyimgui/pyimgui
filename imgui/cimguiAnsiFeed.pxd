@@ -15,7 +15,10 @@ cimport cimgui
 
 from cimgui cimport ImVec4
 
-cdef extern from "AnsiTextColored.h" namespace "ImGui":
+cdef extern from "../AnsiFeed/AnsiTextColored.h" namespace "ImGui":
    #  void TextTest(const char* fmt, ...)
     void TextAnsi(const char* fmt, ...) except +  # ✓
     void TextAnsiColored(const ImVec4& col, const char* fmt, ...) except +  # ✓
+
+cdef extern from "../AnsiFeed/AnsiTextColored.cpp":
+    pass
