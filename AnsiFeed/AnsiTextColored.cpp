@@ -63,7 +63,7 @@ namespace ImGui
             seqEnd++;
         }
 
-        std::string seq{ &s[2], seqEnd };
+        std::string seq( &s[2], seqEnd );
         std::string colorStr;
         for (const auto& el : jet::split(seq, ";")) {
             if (el[0] == '3' && el.size() == 2) {
