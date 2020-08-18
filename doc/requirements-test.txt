@@ -4,13 +4,23 @@ wheel
 
 # note: Sphinx and docutils are for collecting tests
 # note: Newer Sphinx versions won't work on Python 2.7 and Python 3.3
+# future: remove once we obsolete Python3.7
+
 Sphinx==1.6.7; python_version < '3.7.0'
 # note: But older versions wont collect tests on Python 3.7
 Sphinx==1.8.1; python_version >= '3.7.0'
+
 
 # note: Colorama is dependency of Sphinx but latest version will fail to
 #       install on Python 3.3
 colorama<0.4; sys.platform == 'win32'
 docutils<0.13.1
 mock
-pytest
+
+# note: we still build wheels for Python2.7. pytest 5.x dropped support for
+#       Python2.7 but API for discovering your own tests was relatively
+#       backwards-compatible. Unfortunately 6.x isn't backwards compatible so
+#       it's better set version constraint until we drop old Python versions
+#       rather then add some more compat shims
+# future: remove once we obsolete Python3.7
+pytest<6.0.0
