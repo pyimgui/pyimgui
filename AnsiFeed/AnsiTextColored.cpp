@@ -72,6 +72,7 @@ namespace ImGui
         for each(const std::string& el in jet::split(seq, ";")) {
     #else
         for (const std::string& el : jet::split(seq, ";")) {
+    #endif
 #else
         for (const std::string& el : jet::split(seq, ";")) {
 #endif
