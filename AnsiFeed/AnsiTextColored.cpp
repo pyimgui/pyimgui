@@ -65,7 +65,16 @@ namespace ImGui
 
         std::string seq( &s[2], seqEnd );
         std::string colorStr;
+#ifdef _MSC_VER
+    #if _MSC_VER < 1700
+        //https://en.wikipedia.org/wiki/Microsoft_Visual_C
+        //https://stackoverflow.com/a/22221983/11502722
+        for each(const std::string& el in jet::split(seq, ";")) {
+    #else
         for (const std::string& el : jet::split(seq, ";")) {
+#else
+        for (const std::string& el : jet::split(seq, ";")) {
+#endif
             if (el[0] == '3' && el.size() == 2) {
                 colorStr = el;
                 break;
