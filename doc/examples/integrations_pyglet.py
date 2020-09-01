@@ -40,13 +40,13 @@ def main():
         imgui.text_colored("Eggs", 0.2, 1., 0.)
         imgui.end()
 
-    @window.event
-    def on_draw():
-        update(1/60.0)
+    def draw(dt):
+        update(dt)
         window.clear()
         imgui.render()
         impl.render(imgui.get_draw_data())
 
+    pyglet.clock.schedule_interval(draw, 1/120.)
     pyglet.app.run()
     impl.shutdown()
 
