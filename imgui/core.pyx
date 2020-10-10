@@ -7260,9 +7260,9 @@ def get_column_width(int column_index=-1):
         column_index (int): index of the column to get the width for.
 
     .. wraps::
-        void GetColumnWidth(int column_index = -1)
+        float GetColumnWidth(int column_index = -1)
     """
-    cimgui.GetColumnWidth(column_index)
+    return cimgui.GetColumnWidth(column_index)
 
 
 def set_column_width(int column_index, float width):
