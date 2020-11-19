@@ -276,7 +276,7 @@ cdef bytes _bytes(str text):
 
 
 cdef str _from_bytes(bytes text):
-    return <str>(text if PY_MAJOR_VERSION < 3 else text.decode('utf-8'))
+    return <str>(text if PY_MAJOR_VERSION < 3 else text.decode('utf-8', errors='ignore'))
 
 
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
