@@ -80,10 +80,13 @@ def lib_symbols(lib_path, undefined=False):
 
 
 def output(done_count, all_count, badge_output=None):
-    result = "%d%% (%s of %s)" % (
-        float(done_count)/all_count * 100,
-        done_count, all_count
-    )
+    if all_count == 0:
+        result = "-"
+    else:
+        result = "%d%% (%s of %s)" % (
+            float(done_count)/all_count * 100,
+            done_count, all_count
+        )
 
     badge_url = BASE_URL % quote(result)
     badge_md = BADGE_TEMPLATE % badge_url
