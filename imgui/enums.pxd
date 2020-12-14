@@ -204,6 +204,18 @@ cdef extern from "imgui.h":
         ImGuiColorEditFlags__PickerMask     = ImGuiColorEditFlags_PickerHueWheel|ImGuiColorEditFlags_PickerHueBar
         ImGuiColorEditFlags__OptionsDefault
 
+    ctypedef enum ImGuiSliderFlags_:
+        ImGuiSliderFlags_None                   
+        ImGuiSliderFlags_AlwaysClamp            # Clamp value to min/max bounds when input manually with CTRL+Click. By default CTRL+Click allows going out of bounds.
+        ImGuiSliderFlags_Logarithmic            # Make the widget logarithmic (linear otherwise). Consider using ImGuiSliderFlags_NoRoundToFormat with this if using a format-string with small amount of digits.
+        ImGuiSliderFlags_NoRoundToFormat        # Disable rounding underlying value to match precision of the display format string (e.g. %.3f values are rounded to those 3 digits)
+        ImGuiSliderFlags_NoInput                # Disable CTRL+Click or Enter key allowing to input text directly into the widget
+    
+    ctypedef enum ImGuiMouseButton_:
+        ImGuiMouseButton_Left
+        ImGuiMouseButton_Right
+        ImGuiMouseButton_Middle
+        ImGuiMouseButton_COUNT
 
 
     ctypedef enum ImGuiTreeNodeFlags_:
@@ -220,7 +232,21 @@ cdef extern from "imgui.h":
         ImGuiTreeNodeFlags_FramePadding         # Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height.  Equivalent to calling AlignTextToFramePadding()
         ImGuiTreeNodeFlags_NavLeftJumpsBackHere # (WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)
         ImGuiTreeNodeFlags_CollapsingHeader     # ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_NoAutoOpenOnLog
+    
+    ctypedef enum ImGuiPopupFlags_:
+        ImGuiPopupFlags_None                    
+        ImGuiPopupFlags_MouseButtonLeft         # For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as ImGuiMouseButton_Left)
+        ImGuiPopupFlags_MouseButtonRight        # For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as ImGuiMouseButton_Right)
+        ImGuiPopupFlags_MouseButtonMiddle       # For BeginPopupContext*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as ImGuiMouseButton_Middle)
+        ImGuiPopupFlags_MouseButtonMask_        #
+        ImGuiPopupFlags_MouseButtonDefault_     #
+        ImGuiPopupFlags_NoOpenOverExistingPopup # For OpenPopup*(), BeginPopupContext*(): don't open if there's already a popup at the same level of the popup stack
+        ImGuiPopupFlags_NoOpenOverItems         # For BeginPopupContextWindow(): don't return true when hovering items, only when hovering empty space
+        ImGuiPopupFlags_AnyPopupId              # For IsPopupOpen(): ignore the ImGuiID parameter and test for any popup.
+        ImGuiPopupFlags_AnyPopupLevel           # For IsPopupOpen(): search/test at any level of the popup stack (default test in the current level)
+        ImGuiPopupFlags_AnyPopup                = ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel
 
+    
     ctypedef enum ImGuiSelectableFlags_:
         ImGuiSelectableFlags_DontClosePopups    # Clicking this don't close parent popup window
         ImGuiSelectableFlags_SpanAllColumns     # Selectable frame can span all columns (text will still fit in current column)
@@ -235,7 +261,32 @@ cdef extern from "imgui.h":
         ImGuiComboFlags_NoArrowButton           # Display on the preview box without the square arrow button
         ImGuiComboFlags_NoPreview               # Display only a square arrow button
         ImGuiComboFlags_HeightMask_             # ImGuiComboFlags_HeightSmall | ImGuiComboFlags_HeightRegular | ImGuiComboFlags_HeightLarge | ImGuiComboFlags_HeightLargest
+    
+    ctypedef enum ImGuiTabBarFlags_:
+        ImGuiTabBarFlags_None                           
+        ImGuiTabBarFlags_Reorderable                    # Allow manually dragging tabs to re-order them + New tabs are appended at the end of list
+        ImGuiTabBarFlags_AutoSelectNewTabs              # Automatically select new tabs when they appear
+        ImGuiTabBarFlags_TabListPopupButton             # Disable buttons to open the tab list popup
+        ImGuiTabBarFlags_NoCloseWithMiddleMouseButton   # Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You can still repro this behavior on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
+        ImGuiTabBarFlags_NoTabListScrollingButtons      # Disable scrolling buttons (apply when fitting policy is ImGuiTabBarFlags_FittingPolicyScroll)
+        ImGuiTabBarFlags_NoTooltip                      # Disable tooltips when hovering a tab
+        ImGuiTabBarFlags_FittingPolicyResizeDown        # Resize tabs when they don't fit
+        ImGuiTabBarFlags_FittingPolicyScroll            # Add scroll buttons when tabs don't fit
+        ImGuiTabBarFlags_FittingPolicyMask_             = ImGuiTabBarFlags_FittingPolicyResizeDown | ImGuiTabBarFlags_FittingPolicyScroll,
+        ImGuiTabBarFlags_FittingPolicyDefault_          = ImGuiTabBarFlags_FittingPolicyResizeDown
+    
+    ctypedef enum ImGuiTabItemFlags_:
+        ImGuiTabItemFlags_None                          
+        ImGuiTabItemFlags_UnsavedDocument               # Append '*' to title without affecting the ID, as a convenience to avoid using the ### operator. Also: tab is selected on closure and closure is deferred by one frame to allow code to undo it without flicker.
+        ImGuiTabItemFlags_SetSelected                   # Trigger flag to programmatically make the tab selected when calling BeginTabItem()
+        ImGuiTabItemFlags_NoCloseWithMiddleMouseButton  # Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You can still repro this behavior on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
+        ImGuiTabItemFlags_NoPushId                      # Don't call PushID(tab->ID)/PopID() on BeginTabItem()/EndTabItem()
+        ImGuiTabItemFlags_NoTooltip                     # Disable tooltip for the given tab
+        ImGuiTabItemFlags_NoReorder                     # Disable reordering this tab or having another tab cross over this tab
+        ImGuiTabItemFlags_Leading                       # Enforce the tab position to the left of the tab bar (after the tab list popup button)
+        ImGuiTabItemFlags_Trailing                      # Enforce the tab position to the right of the tab bar (before the scrolling buttons)
 
+    
     ctypedef enum ImGuiFocusedFlags_:
         ImGuiFocusedFlags_ChildWindows          # IsWindowFocused(): Return true if any children of the window is focused
         ImGuiFocusedFlags_RootWindow            # IsWindowFocused(): Test from root window (top most parent of the current hierarchy)

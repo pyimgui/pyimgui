@@ -8,7 +8,7 @@ Notes:
 """
 from libcpp cimport bool
 
-from enums cimport ImGuiKey_, ImGuiCol_
+from enums cimport ImGuiKey_, ImGuiCol_, ImGuiSliderFlags_
 
 
 cdef extern from "imgui.h":
@@ -55,15 +55,20 @@ cdef extern from "imgui.h":
     ctypedef int ImFontAtlasFlags
     ctypedef int ImGuiBackendFlags
     ctypedef int ImGuiColorEditFlags
+    ctypedef int ImGuiSliderFlags
+    ctypedef int ImGuiMouseButton
     ctypedef int ImGuiColumnsFlags
     ctypedef int ImGuiConfigFlags
     ctypedef int ImGuiComboFlags
+    ctypedef int ImGuiTabBarFlags
+    ctypedef int ImGuiTabItemFlags
     ctypedef int ImGuiDragDropFlags
     ctypedef int ImGuiFocusedFlags
     ctypedef int ImGuiHoveredFlags
     ctypedef int ImGuiInputTextFlags
     ctypedef int ImGuiSelectableFlags
     ctypedef int ImGuiTreeNodeFlags
+    ctypedef int ImGuiPopupFlags
     ctypedef int ImGuiWindowFlags
     ctypedef int (*ImGuiInputTextCallback)(ImGuiInputTextCallbackData *data);
     ctypedef void (*ImGuiSizeCallback)(ImGuiSizeCallbackData* data);
@@ -394,49 +399,55 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImFontAtlas* shared_font_atlas
     ) except +
-    void DestroyContext(ImGuiContext* ctx) except +  # ✓
+    void DestroyContext(# ✓
+            # note: optional
+            ImGuiContext* ctx
+    ) except +  
     ImGuiContext* GetCurrentContext() except +  # ✓
     void SetCurrentContext(ImGuiContext* ctx) except +  # ✓
-    bool DebugCheckVersionAndDataLayout(const char* version_str, size_t sz_io, size_t sz_style, size_t sz_vec2, size_t sz_vec4, size_t sz_drawvert) except +  # ✓
 
     # ====
     # Main
     ImGuiIO& GetIO() except +  # ✓
     ImGuiStyle& GetStyle() except +  # ✓
-    void ScaleAllSizes(float scale_factor) except +  # ✗
-
     void NewFrame() except +  # ✓
+    void EndFrame() except +  # ✓
     # note: Render runs callbacks that may be arbitrary Python code
     #       so we need to propagate exceptions from them
     void Render() except +  # ✓
     ImDrawData* GetDrawData() except +  # ✓
-    void EndFrame() except +  # ✓
-
-    void ShowDemoWindow(bool*) except +  # ✓
+    
+    # TODO: Shouldn't this be elsewhere? Member of ImGuiStyle
+    void ScaleAllSizes(float scale_factor) except +  # ✗
+    
+    # ====
+    # Demo, Debug, Information
+    void ShowDemoWindow(bool* p_open) except +  # ✓
     void ShowDemoWindow() except +  # ✓
-    void ShowMetricsWindow(bool*) except +  # ✓
+    void ShowMetricsWindow(bool* p_open) except +  # ✓
     void ShowMetricsWindow() except +  # ✓
-    void ShowStyleEditor(ImGuiStyle*) except +  # ✓
+    void ShowStyleEditor(ImGuiStyle* ref) except +  # ✓
     void ShowStyleEditor() except +  # ✓
-    bool ShowStyleSelector(const char*) except +  # ✓
+    bool ShowStyleSelector(const char* label) except +  # ✓
     void ShowFontSelector(const char*) except +  # ✓
     void ShowUserGuide() except +  # ✓
     const char* GetVersion() except +  # ✓
 
+    # ====
+    # Styles
     void StyleColorsDark(ImGuiStyle* dst) except +  # ✓
     void StyleColorsClassic(ImGuiStyle* dst) except +  # ✓
     void StyleColorsLight(ImGuiStyle* dst) except +  # ✓
 
-    void SetItemDefaultFocus() except +  # ✓
-    void SetKeyboardFocusHere(int offset) except +  # ✓
-
-
     # ====
     # Window
-    bool Begin(const char*, bool*, ImGuiWindowFlags) except + # ✓
+    bool Begin(const char*, bool* p_open, ImGuiWindowFlags) except + # ✓
     # note: following API was deprecated
     # bool Begin(const char*, bool*, const ImVec2&, float, ImGuiWindowFlags)
     void End() except +  # ✓
+    
+    # ====
+    # Child Windows
     bool BeginChild(const char*, const ImVec2&, bool, ImGuiWindowFlags) except +  # ✓
     bool BeginChild(const char*, const ImVec2&, bool) except +  # ✓
     bool BeginChild(const char*, const ImVec2&) except +  # ✓
@@ -459,12 +470,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImVec2 GetWindowSize() except +  # ✓
     float GetWindowWidth() except +  # ✓
     float GetWindowHeight() except +  # ✓
-    ImVec2 GetContentRegionMax() except +  # ✓
-    ImVec2 GetContentRegionAvail() except +  # ✓
-    float GetContentRegionAvailWidth() except +  # ✓ # OBSOLETED in 1.70 (from May 2019)
-    ImVec2 GetWindowContentRegionMin() except +  # ✓
-    ImVec2 GetWindowContentRegionMax() except +  # ✓
-    float GetWindowContentRegionWidth() except +  # ✓
+    
     void SetNextWindowPos(  # ✓ note: overrides ommited
             const ImVec2& pos,
             # note: optional
@@ -522,7 +528,18 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiCond cond
     ) except +
     void SetWindowFocus(const char* name) except +  # ✓
+    
+    # ====
+    # Content region
+    ImVec2 GetContentRegionMax() except +  # ✓
+    ImVec2 GetContentRegionAvail() except +  # ✓
+    float GetContentRegionAvailWidth() except +  # ✓ # OBSOLETED in 1.70 (from May 2019)
+    ImVec2 GetWindowContentRegionMin() except +  # ✓
+    ImVec2 GetWindowContentRegionMax() except +  # ✓
+    float GetWindowContentRegionWidth() except +  # ✓
 
+    # ====
+    # Windows Scrolling
     float GetScrollX() except +  # ✓
     float GetScrollY() except +  # ✓
     float GetScrollMaxX() except +  # ✓
@@ -533,20 +550,21 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             float center_y_ratio
     ) except +
+    void SetScrollHereX(float center_x_ratio) except + # ✗
+    void SetScrollHereY(float center_y_ratio) except + # ✗
+    void SetScrollFromPosX(float local_x, float center_x_ratio) except + # ✗
     void SetScrollFromPosY(  # ✓
-            float pos_y,
+            float local_y,
             # note: optional
             float center_y_ratio
     ) except +
-
-    void GetStateStorage(ImGuiStorage* tree) except +  # ✗
-    ImGuiStorage* GetStateStorage() except +  # ✗
 
     # ====
     # Parameters stacks (shared)
     void PushFont(ImFont*) except +  # ✓
     void PopFont() except +  # ✓
-    void PushStyleColor(ImGuiCol, const ImVec4&) except +  # ✓
+    void PushStyleColor(ImGuiCol idx, ImU32 col) except +  # ✗
+    void PushStyleColor(ImGuiCol idx, const ImVec4&) except +  # ✓
     void PopStyleColor(int) except +  # ✓
     void PushStyleVar(ImGuiStyleVar, float) except +  # ✓
     void PushStyleVar(ImGuiStyleVar, const ImVec2&) except +  # ✓
@@ -563,10 +581,11 @@ cdef extern from "imgui.h" namespace "ImGui":
     # Parameters stacks (current window)
     void PushItemWidth(float item_width) except +  # ✓
     void PopItemWidth() except +  # ✓
+    void SetNextItemWidth(float item_width) except + # ✗
     float CalcItemWidth() except +  # ✓
-    void PushTextWrapPos(float wrap_pos_x) except +  # ✓
+    void PushTextWrapPos(float wrap_local_pos_x) except +  # ✓
     void PopTextWrapPos() except +  # ✓
-    void PushAllowKeyboardFocus(bool v) except +  # ✓
+    void PushAllowKeyboardFocus(bool allow_keyboard_focus) except +  # ✓
     void PopAllowKeyboardFocus() except +  # ✓
     void PushButtonRepeat(bool repeat) except +  # ✓
     void PopButtonRepeat() except +  # ✓
@@ -576,7 +595,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     void Separator() except +  # ✓
     void SameLine(  # ✓
             # note: optional
-            float pos_x, float spacing_w)
+            float offset_from_start_x, float spacing # API CHANGE
+    ) except +
     void NewLine() except +  # ✓
     void Spacing() except +  # ✓
     void Dummy(const ImVec2& size) except +  # ✓
@@ -594,11 +614,11 @@ cdef extern from "imgui.h" namespace "ImGui":
     float GetCursorPosX() except +  # ✓
     float GetCursorPosY() except +  # ✓
     void SetCursorPos(const ImVec2& local_pos) except +  # ✓
-    void SetCursorPosX(float x) except +  # ✓
-    void SetCursorPosY(float y) except +  # ✓
+    void SetCursorPosX(float local_x) except +  # ✓
+    void SetCursorPosY(float local_y) except +  # ✓
     ImVec2 GetCursorStartPos() except +  # ✓
     ImVec2 GetCursorScreenPos() except +  # ✓
-    void SetCursorScreenPos(const ImVec2& screen_pos) except +  # ✓
+    void SetCursorScreenPos(const ImVec2& pos) except +  # ✓
     void AlignTextToFramePadding() except +  # ✓
     float GetTextLineHeight() except +  # ✓
     float GetTextLineHeightWithSpacing() except +  # ✓
@@ -606,7 +626,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     float GetFrameHeightWithSpacing() except +  # ✓
 
     # ====
-    # ID scopes
+    # ID stack/scopes
     void PushID(const char* str_id) except +  # ✓
     void PushID(const char* str_id_begin, const char* str_id_end) except +  # ✗
     void PushID(const void* ptr_id) except +  # ✗
@@ -616,44 +636,41 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImGuiID GetID(const char* str_id_begin, const char* str_id_end) except +  # ✗
     ImGuiID GetID(const void* ptr_id) except +  # ✗
 
-
-
     # ====
-    # Widgets
-    # Widgets: text
+    # Widgets: Text
     void TextUnformatted(const char*) except +  # ✓
     void Text(const char*, ...) except +  # ✓
+    # TextV ?
     void TextColored(const ImVec4&, const char*, ...) except +  # ✓
+    # TextColoredV ?
     void TextDisabled(const char*, ...) except +  # ✓
+    # TextDisabledV ?
     void TextWrapped(const char*, ...) except +  # ✓
+    # TextWrappedV ?
     void LabelText(const char*, const char*, ...) except +  # ✓
+    # LabelTextV ?
     void BulletText(const char*, ...) except +  # ✓
+    # BulletTextV ?
 
-    # Widgets: buttons
+    # ====
+    # Widgets: Main
     bool Button(const char*, const ImVec2& size) except +  # ✓
     bool Button(const char*) except +  # ✓
     bool SmallButton(const char*) except +  # ✓
-    bool ArrowButton(const char*, ImGuiDir) except +  # ✓
     bool InvisibleButton(const char*, const ImVec2& size) except +  # ✓
+    bool ArrowButton(const char*, ImGuiDir) except +  # ✓
+    void Image(  # ✓
+            ImTextureID user_texture_id, const ImVec2& size,
+            # note: optional
+            const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col,
+            const ImVec4& border_col
+    ) except +  
     bool ImageButton(  # ✓
             ImTextureID user_texture_id, const ImVec2& size,
             # note: optional
             const ImVec2& uv0, const ImVec2& uv1, int frame_padding,
             const ImVec4& bg_col, const ImVec4& tint_col
     ) except +
-    bool ColorButton(  # ✓
-            const char *desc_id,
-            const ImVec4& col,
-            ImGuiColorEditFlags flags,
-            # note: optional
-            ImVec2 size
-    ) except +  # Widgets: images
-    void Image(  # ✓
-            ImTextureID user_texture_id, const ImVec2& size,
-            # note: optional
-            const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col,
-            const ImVec4& border_col
-    ) except +  # Widgets: checkboxes etc.
     bool Checkbox(const char* label, bool* v) except +  # ✓
     bool CheckboxFlags(  # ✓
             const char* label, unsigned int* flags, unsigned int flags_value
@@ -661,14 +678,28 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool RadioButton(const char* label, bool active) except +  # ✓
     # note: probably no reason to support it
     bool RadioButton(const char* label, int* v, int v_button) except +  # ✓
+    void ProgressBar(  # ✓
+            float fraction,
+            # note: optional
+            const ImVec2& size_arg, const char* overlay
+    ) except +  
+    void Bullet() except +  # ✓
 
-    # Widgets: combos
+    # ====
+    # Widgets: Combo Box
+    bool BeginCombo( # ✗
+            const char* label, 
+            const char* preview_value, 
+            ImGuiComboFlags flags
+    ) except + 
+    bool EndCombo() except + # ✗
     bool Combo(  # ✓
             const char* label, int* current_item,
             const char* items_separated_by_zeros,
             # note: optional
             int popup_max_height_in_items
-    ) except +  # note: we only implemented the null-separated version that is fully
+    ) except +  
+    # note: we only implemented the null-separated version that is fully
     #       compatible with following. Probably no reason to support it
     bool Combo(  # ✓
             const char* label, int* current_item,
@@ -682,55 +713,31 @@ cdef extern from "imgui.h" namespace "ImGui":
             void* data, int items_count,
             # note: optional
             int popup_max_height_in_items
-    ) except +  # Widgets: color-edits
-    bool ColorEdit3(const char* label, float col[3]) except +  # ✓
-    bool ColorEdit4(  # ✓
-            const char* label, float col[4],
-            # note: optional
-            bool show_alpha
-    ) except +  #void ColorEditMode(ImGuiColorEditMode mode) except +  # note: obsoleted
-
-    # Widgets: plots
-    void PlotLines( # ✓
-            const char* label, const float* values, int values_count,
-            # note: optional
-            int values_offset,        # = 0
-            const char* overlay_text, # = NULL
-            float scale_min,          # = FLT_MAX
-            float scale_max,          # = FLT_MAX
-            ImVec2 graph_size,        # = ImVec2(0,0)
-            int stride                # = sizeof(float))
-    ) except +
-
-    void PlotHistogram(  # ✓
-            const char* label, const float* values, int values_count,
-            # note: optional
-            int values_offset, const char* overlay_text, float scale_min,
-            float scale_max, ImVec2 graph_size, int stride
-    ) except +
-    void PlotHistogram(  # ✗
-            const char* label, float (*values_getter)(void* data, int idx),
-            void* data, int values_count,
-            # note: optional
-            int values_offset, const char* overlay_text, float scale_min,
-            float scale_max, ImVec2 graph_size
-    ) except +
-    void ProgressBar(  # ✓
-            float fraction,
-            # note: optional
-            const ImVec2& size_arg, const char* overlay
-    ) except +  # Widgets: Drags (tip: ctrl+click on a drag box to input with keyboard.
-    void Bullet() except +  # ✓
-
+    ) except +  
+    
+    # ====
+    # Widgets: Drag Sliders
     # manually input values aren't clamped, can go off-bounds) except +  # For all the Float2/Float3/Float4/Int2/Int3/Int4 versions of every
     # functions, remember than a 'float v[3]' function argument is the same
     # as 'float* v'. You can pass address of your first element out of a
     # contiguous set, e.g. &myvector.x
+    bool DragFloat( # ✗
+            const char* label, float* v, 
+            # note: optional
+            float v_speed, float v_min, float v_max, 
+            const char* format, ImGuiSliderFlags flags
+    ) except +
     bool DragFloat(  # ✓ # OBSOLETED in 1.78 (from June 2020)
             const char* label, float* v,
             # note: optional
             float v_speed, float v_min, float v_max,
             const char* format, float power
+    ) except +
+    bool DragFloat2( # ✗
+            const char* label, float v[2], 
+            # note: optional
+            float v_speed, float v_min, float v_max, 
+            const char* format, ImGuiSliderFlags flags
     ) except +
     bool DragFloat2(  # ✓ # OBSOLETED in 1.78 (from June 2020)
             const char* label, float v[2],
@@ -738,17 +745,37 @@ cdef extern from "imgui.h" namespace "ImGui":
             float v_speed, float v_min, float v_max,
             const char* format, float power
     ) except +
+    bool DragFloat3( # ✗
+            const char* label, float v[3], 
+            # note: optional
+            float v_speed, float v_min, float v_max, 
+            const char* format, ImGuiSliderFlags flags
+    ) except +
     bool DragFloat3(  # ✓ # OBSOLETED in 1.78 (from June 2020)
             const char* label, float v[3],
             # note: optional
             float v_speed, float v_min, float v_max,
             const char* format, float power
     ) except +
+    bool DragFloat4( # ✗
+            const char* label, float v[4], 
+            # note: optional
+            float v_speed, float v_min, float v_max, 
+            const char* format, ImGuiSliderFlags flags
+    ) except +
     bool DragFloat4(  # ✓ # OBSOLETED in 1.78 (from June 2020)
             const char* label, float v[4],
             # note: optional
             float v_speed, float v_min, float v_max,
             const char* format, float power
+    ) except +
+    bool DragFloatRange2( # ✗
+            const char* label, float* v_current_min, float* v_current_max, 
+            # note: optional
+            float v_speed, float v_min, float v_max, 
+            const char* format, 
+            const char* format_max, 
+            ImGuiSliderFlags flags
     ) except +
     bool DragFloatRange2(  # ✗
             const char* label, float* v_current_min, float* v_current_max,
@@ -761,33 +788,47 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* label, int* v,
             # note: optional
             float v_speed, int v_min, int v_max,
-            const char* format
+            const char* format,
+            ImGuiSliderFlags flags # NEW
     ) except +
     bool DragInt2(  # ✓
             const char* label, int v[2],
             # note: optional
             float v_speed, int v_min, int v_max,
-            const char* format
+            const char* format,
+            ImGuiSliderFlags flags # NEW
     ) except +
     bool DragInt3(  # ✓
             const char* label, int v[3],
             # note: optional
             float v_speed, int v_min, int v_max,
-            const char* format
+            const char* format,
+            ImGuiSliderFlags flags # NEW
     ) except +
     bool DragInt4(  # ✓
             const char* label, int v[4],
             # note: optional
             float v_speed, int v_min, int v_max,
-            const char* format
+            const char* format,
+            ImGuiSliderFlags flags # NEW
     ) except +
     bool DragIntRange2(  # ✗
             const char* label, int* v_current_min, int* v_current_max,
             # note: optional
             float v_speed, int v_min, int v_max,
             const char* format,
-            const char* format_max
+            const char* format_max,
+            ImGuiSliderFlags flags # NEW
     ) except +  # Widgets: Input with Keyboard
+    bool DragScalar( # ✗
+            const char* label, 
+            ImGuiDataType data_type, 
+            void* p_data, 
+            float v_speed, 
+            # note: optional
+            const void* p_min, const void* p_max, 
+            const char* format, ImGuiSliderFlags flags
+    ) except +
     bool DragScalar(  # ✗ # OBSOLETED in 1.78 (from June 2020)
             const char* label,
             ImGuiDataType data_type, void* v,
@@ -796,7 +837,18 @@ cdef extern from "imgui.h" namespace "ImGui":
             const void* v_min,
             const void* v_max,
             const char* format,
-            float power)
+            float power
+    )
+    bool DragScalarN( # ✗
+            const char* label, 
+            ImGuiDataType data_type, 
+            void* p_data, 
+            int components, 
+            float v_speed, 
+            # note: optional
+            const void* p_min, const void* p_max, 
+            const char* format, ImGuiSliderFlags flags
+    ) except +
     bool DragScalarN(  # ✗ # OBSOLETED in 1.78 (from June 2020)
             const char* label,
             ImGuiDataType data_type, void* v,
@@ -806,6 +858,112 @@ cdef extern from "imgui.h" namespace "ImGui":
             const void* v_max,
             const char* format,
             float power)
+    
+    # ====
+    # Widgets: Regular Sliders
+    #  manually input values aren't clamped, can go off-bounds)
+    bool SliderFloat(  # ✗
+            const char* label, float* v, float v_min, float v_max,
+            # note: optional
+            const char* format, ImGuiSliderFlags flags
+    ) except +
+    bool SliderFloat(  # ✓ # OBSOLETED in 1.78 (from June 2020)
+            const char* label, float* v, float v_min, float v_max,
+            # note: optional
+            const char* format, float power
+    ) except +
+    bool SliderFloat2(  # ✗
+            const char* label, float v[2], float v_min, float v_max,
+            # note: optional
+            const char* format, ImGuiSliderFlags flags
+    ) except +
+    bool SliderFloat2(  # ✓ # OBSOLETED in 1.78 (from June 2020)
+            const char* label, float v[2], float v_min, float v_max,
+            # note: optional
+            const char* format, float power
+    ) except +
+    bool SliderFloat3(  # ✗
+            const char* label, float v[3], float v_min, float v_max,
+            # note: optional
+            const char* format, ImGuiSliderFlags flags
+    ) except +
+    bool SliderFloat3(  # ✓ # OBSOLETED in 1.78 (from June 2020)
+            const char* label, float v[3], float v_min, float v_max,
+            # note: optional
+            const char* format, float power
+    ) except +
+    bool SliderFloat4(  # ✗
+            const char* label, float v[4], float v_min, float v_max,
+            # note: optional
+            const char* format, ImGuiSliderFlags flags
+    ) except +
+    bool SliderFloat4(  # ✓ # OBSOLETED in 1.78 (from June 2020)
+            const char* label, float v[4], float v_min, float v_max,
+            # note: optional
+            const char* format, float power
+    ) except +
+    bool SliderAngle(  # ✗
+            const char* label, float* v_rad,
+            # note: optional
+            float v_degrees_min, float v_degrees_max,
+            const char* format, ImGuiSliderFlags flags
+    ) except +
+    bool SliderInt(  # ✓
+            const char* label, int* v, int v_min, int v_max,
+            # note: optional
+            const char* format,
+            ImGuiSliderFlags flags # NEW
+    ) except +
+    bool SliderInt2(  # ✓
+            const char* label, int v[2], int v_min, int v_max,
+            # note: optional
+            const char* format,
+            ImGuiSliderFlags flags # NEW
+    ) except +
+    bool SliderInt3(  # ✓
+            const char* label, int v[3], int v_min, int v_max,
+            # note: optional
+            const char* format,
+            ImGuiSliderFlags flags # NEW
+    ) except +
+    bool SliderInt4(  # ✓
+            const char* label, int v[4], int v_min, int v_max,
+            # note: optional
+            const char* format,
+            ImGuiSliderFlags flags # NEW
+    ) except +
+    bool SliderScalar( # ✗
+            const char* label, ImGuiDataType data_type,
+            void* v, const void* v_min, const void* v_max,
+            # note: optional
+            const char* format, ImGuiSliderFlags flags);
+    bool SliderScalarN( # ✗
+            const char* label, ImGuiDataType data_type,
+            void *v,
+            int components, const void* v_min, const void* v_max,
+            # note: optional
+            const char* format, ImGuiSliderFlags flags);
+    bool VSliderFloat(  # ✓
+            const char* label, const ImVec2& size, float* v,
+            float v_min, float v_max,
+            # note: optional
+            const char* format, ImGuiSliderFlags flags
+    ) except +
+    bool VSliderInt(  # ✓
+            const char* label, const ImVec2& size, int* v, int v_min, int v_max,
+            # note: optional
+            const char* format,
+            ImGuiSliderFlags flags # NEW
+    ) except +  # Widgets: Trees
+    bool VSliderScalar(  # ✗
+            const char* label, const ImVec2& size, ImGuiDataType data_type, void* v, const void* v_min, const void* v_max,
+            # note: optional
+            const char* format,
+            ImGuiSliderFlags flags
+    ) except +
+    
+    # ====
+    # Widgets: Input with Keyboard
     bool InputText(  # ✓
             const char* label, char* buf, size_t buf_size,
             # note: optional
@@ -818,6 +976,20 @@ cdef extern from "imgui.h" namespace "ImGui":
             const ImVec2& size, ImGuiInputTextFlags flags,
             ImGuiInputTextCallback callback, void* user_data
     ) except +
+    bool InputTextWithHint( # ✗
+            const char* label, const char* hint, char* buf, 
+            size_t buf_size, 
+            # note: optional
+            ImGuiInputTextFlags flags, 
+            ImGuiInputTextCallback callback, void* user_data
+    ) except +
+    bool InputFloat(  # ✗
+            const char* label, float* v,
+            # note: optional
+            float step, float step_fast,
+            const char* format,
+            ImGuiInputTextFlags flags
+    ) except +
     bool InputFloat(  # ✓ # OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
             const char* label, float* v,
             # note: optional
@@ -825,17 +997,35 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format,
             ImGuiInputTextFlags extra_flags
     ) except +
+    bool InputFloat2(  # ✗
+            const char* label, float v[2],
+            # note: optional
+            const char* format,
+            ImGuiInputTextFlags flags
+    ) except +
     bool InputFloat2(  # ✓ # OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
             const char* label, float v[2],
             # note: optional
             const char* format,
             ImGuiInputTextFlags extra_flags
     ) except +
+    bool InputFloat3(  # ✗
+            const char* label, float v[3],
+            # note: optional
+            const char* format,
+            ImGuiInputTextFlags flags
+    ) except +
     bool InputFloat3(  # ✓ # OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
             const char* label, float v[3],
             # note: optional
             const char* format,
             ImGuiInputTextFlags extra_flags
+    ) except +
+    bool InputFloat4(  # ✗
+            const char* label, float v[4],
+            # note: optional
+            const char* format,
+            ImGuiInputTextFlags flags
     ) except +
     bool InputFloat4(  # ✓ # OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
             const char* label, float v[4],
@@ -847,31 +1037,39 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* label, int* v,
             # note: optional
             int step, int step_fast,
-            ImGuiInputTextFlags extra_flags
+            ImGuiInputTextFlags flags
     ) except +
     bool InputInt2(  # ✓
             const char* label, int v[2],
             # note: optional
-            ImGuiInputTextFlags extra_flags
+            ImGuiInputTextFlags flags
     ) except +
     bool InputInt3(  # ✓
             const char* label, int v[3],
             # note: optional
-            ImGuiInputTextFlags extra_flags
+            ImGuiInputTextFlags flags
     ) except +
     bool InputInt4(  # ✓
             const char* label, int v[4],
             # note: optional
-            ImGuiInputTextFlags extra_flags
-    ) except +  # Widgets: Sliders (tip: ctrl+click on a slider to input with keyboard.
+            ImGuiInputTextFlags flags
+    ) except +  
     bool InputDouble(  # ✓
             const char* label, double v,
             # note: optional
             double step, int step_fast,
             const char* format,
-            ImGuiInputTextFlags extra_flags
+            ImGuiInputTextFlags flags
     ) except +
-    bool InputScalar(  # X # OBSOLETED in 1.78 (from June 2020)
+    bool InputScalar( # ✗
+            const char* label, ImGuiDataType data_type, void* p_data, 
+            # note: optional
+            const void* p_step, 
+            const void* p_step_fast, 
+            const char* format, 
+            ImGuiInputTextFlags flags
+    ) except +
+    bool InputScalar(  # ✗ # OBSOLETED in 1.78 (from June 2020)
             const char* label, ImGuiDataType data_type, void* v,
             # note: optional
             const void* step,
@@ -879,7 +1077,16 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format,
             ImGuiInputTextFlags extra_flags
     ) except +
-    bool InputScalarN(  # X # OBSOLETED in 1.78 (from June 2020)
+    bool InputScalarN( # ✗
+            const char* label, ImGuiDataType data_type, 
+            void* p_data, int components, 
+            # note: optional
+            const void* p_step, 
+            const void* p_step_fast, 
+            const char* format, 
+            ImGuiInputTextFlags flags
+    ) except +
+    bool InputScalarN(  # ✗ # OBSOLETED in 1.78 (from June 2020)
             const char* label, ImGuiDataType data_type,
             void* v, int components,
             # note: optional
@@ -888,82 +1095,43 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format,
             ImGuiInputTextFlags extra_flags
     ) except +
+    
+    # ====
+    # Widgets: Color Editor/Picker
+    bool ColorEdit3( # ✓
+            const char* label, 
+            float col[3],
+            # note: optional
+            ImGuiColorEditFlags flags # NEW
+    ) except + 
+    bool ColorEdit4(  # ✓
+            const char* label, float col[4],
+            # note: optional
+            ImGuiColorEditFlags flags # API CHANGE
+    ) except +  
+    #void ColorEditMode(ImGuiColorEditMode mode) except +  # note: obsoleted
+    bool ColorPicker3( # ✗
+            const char* label, float col[3], 
+            # note: optional
+            ImGuiColorEditFlags flags
+    ) except + 
+    bool ColorPicker4( # ✗
+            const char* label, float col[4], 
+            # note: optional
+            ImGuiColorEditFlags flags, 
+            const float* ref_col
+    ) except +
+    bool ColorButton(  # ✓
+            const char *desc_id,
+            const ImVec4& col,
+            # note: optional
+            ImGuiColorEditFlags flags,
+            ImVec2 size
+    ) except + 
+    void SetColorEditOptions(ImGuiColorEditFlags flags) except + # ✗
 
-    #  manually input values aren't clamped, can go off-bounds)
-    bool SliderFloat(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float* v, float v_min, float v_max,
-            # note: optional
-            const char* format, float power
-    ) except +
-    bool SliderFloat2(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float v[2], float v_min, float v_max,
-            # note: optional
-            const char* format, float power
-    ) except +
-    bool SliderFloat3(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float v[3], float v_min, float v_max,
-            # note: optional
-            const char* format, float power
-    ) except +
-    bool SliderFloat4(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float v[4], float v_min, float v_max,
-            # note: optional
-            const char* format, float power
-    ) except +
-    bool SliderAngle(  # ✗
-            const char* label, float* v_rad,
-            # note: optional
-            float v_degrees_min, float v_degrees_max
-    ) except +
-    bool SliderInt(  # ✓
-            const char* label, int* v, int v_min, int v_max,
-            # note: optional
-            const char* format
-    ) except +
-    bool SliderInt2(  # ✓
-            const char* label, int v[2], int v_min, int v_max,
-            # note: optional
-            const char* format
-    ) except +
-    bool SliderInt3(  # ✓
-            const char* label, int v[3], int v_min, int v_max,
-            # note: optional
-            const char* format
-    ) except +
-    bool SliderInt4(  # ✓
-            const char* label, int v[4], int v_min, int v_max,
-            # note: optional
-            const char* format
-    ) except +
-    bool SliderScalar( # ✗
-            const char* label, ImGuiDataType data_type,
-            void* v, const void* v_min, const void* v_max,
-            # note: optional
-            const char* format, float power);
-    bool SliderScalarN( # ✗
-            const char* label, ImGuiDataType data_type,
-            void *v,
-            int components, const void* v_min, const void* v_max,
-            # note: optional
-            const char* format, float power);
-    bool VSliderFloat(  # ✓
-            const char* label, const ImVec2& size, float* v,
-            float v_min, float v_max,
-            # note: optional
-            const char* format, float power
-    ) except +
-    bool VSliderInt(  # ✓
-            const char* label, const ImVec2& size, int* v, int v_min, int v_max,
-            # note: optional
-            const char* format
-    ) except +  # Widgets: Trees
-    bool VSliderScalar(  # ✗
-            const char* label, const ImVec2& size, ImGuiDataType data_type, void* v, const void* v_min, const void* v_max,
-            # note: optional
-            const char* format,
-            float power
-    ) except +
-
+    # ====
+    # Widgets: Trees
     bool TreeNode(const char* label) except +  # ✓
     # bool TreeNode(const char* str_id, const char* fmt, ...) except +  # ✗
     # bool TreeNode(const void* ptr_id, const char* fmt, ...) except +  # ✗
@@ -973,7 +1141,11 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* label,
             # note: optional
             ImGuiTreeNodeFlags flags
-    ) except +  # bool TreeNodeEx(const char* str_id, ImGuiTreeNodeFlags flags, const char* fmt, ...) IM_PRINTFARGS(3) except +  # bool TreeNodeEx(const void* ptr_id, ImGuiTreeNodeFlags flags, const char* fmt, ...) IM_PRINTFARGS(3) except +  # bool TreeNodeExV(const char* str_id, ImGuiTreeNodeFlags flags, const char* fmt, va_list args) except +  # bool TreeNodeExV(const void* ptr_id, ImGuiTreeNodeFlags flags, const char* fmt, va_list args) except +  # ✗
+    ) except +  
+    # bool TreeNodeEx(const char* str_id, ImGuiTreeNodeFlags flags, const char* fmt, ...) except +  # ✗
+    # bool TreeNodeEx(const void* ptr_id, ImGuiTreeNodeFlags flags, const char* fmt, ...) except +  # ✗
+    # bool TreeNodeExV(const char* str_id, ImGuiTreeNodeFlags flags, const char* fmt, va_list args) except +  # ✗
+    # bool TreeNodeExV(const void* ptr_id, ImGuiTreeNodeFlags flags, const char* fmt, va_list args) except +  # ✗
     void TreePush(  # ✗
             # note: optional
             const char* str_id
@@ -983,7 +1155,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             const void* ptr_id
     ) except +
     void TreePop() except +  # ✓
-    void TreeAdvanceToLabelPos() except +  # ✗
+    void TreeAdvanceToLabelPos() except +  # ✗ # OBSOLETED in 1.72 (from April 2019)
     float GetTreeNodeToLabelSpacing() except +  # ✗
     void SetNextTreeNodeOpen(  # ✗ # OBSOLETED in 1.72 (from April 2019)
             bool is_open,
@@ -999,7 +1171,15 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* label, bool* p_open,
             # note: optional
             ImGuiTreeNodeFlags flags
-    ) except +  # Widgets: Selectable / Lists
+    ) except +  
+    void SetNextItemOpen( # ✗
+            bool is_open, 
+            # note: open
+            ImGuiCond cond
+    ) except +
+    
+    # ====
+    # Widgets: Selectable
     bool Selectable(  # ✓
             const char* label,
             # note: optional
@@ -1011,6 +1191,9 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiSelectableFlags flags, const ImVec2& size
     ) except +
+
+    # ====
+    # Widgets: List Boxes
     bool ListBox(  # ✓
             const char* label, int* current_item, const char* items[],
             int items_count,
@@ -1036,6 +1219,44 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void ListBoxFooter() except +  # ✓
 
+    # ====
+    # Widgets: Data Plotting
+    void PlotLines( # ✓
+            const char* label, const float* values, int values_count,
+            # note: optional
+            int values_offset,        # = 0
+            const char* overlay_text, # = NULL
+            float scale_min,          # = FLT_MAX
+            float scale_max,          # = FLT_MAX
+            ImVec2 graph_size,        # = ImVec2(0,0)
+            int stride                # = sizeof(float))
+    ) except +
+    void PlotLines( # ✗
+            const char* label, 
+            float(*values_getter)(void* data, int idx), 
+            void* data, int values_count, 
+            # note: optional
+            int values_offset, 
+            const char* overlay_text, 
+            float scale_min, 
+            float scale_max, 
+            ImVec2 graph_size
+    ) except +
+    void PlotHistogram(  # ✓
+            const char* label, const float* values, int values_count,
+            # note: optional
+            int values_offset, const char* overlay_text, float scale_min,
+            float scale_max, ImVec2 graph_size, int stride
+    ) except +
+    void PlotHistogram(  # ✗
+            const char* label, float (*values_getter)(void* data, int idx),
+            void* data, int values_count,
+            # note: optional
+            int values_offset, const char* overlay_text, float scale_min,
+            float scale_max, ImVec2 graph_size
+    ) except +
+
+    # ====
     # Widgets: Value() Helpers.
     void Value(const char* prefix, bool b) except +  # ✗
     void Value(const char* prefix, int v) except +  # ✗
@@ -1045,20 +1266,17 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             const char* float_format
     ) except +
-    void ValueColor(const char* prefix, const ImVec4& v) except +  # ✗
-    void ValueColor(const char* prefix, unsigned int v) except +  # ✗
+    
+    # NOT FOUND
+    # void ValueColor(const char* prefix, const ImVec4& v) except +  # ✗
+    # void ValueColor(const char* prefix, unsigned int v) except +  # ✗
 
-    # Tooltips
-    void SetTooltip(const char* fmt, ...) except +  # ✓
-    # void SetTooltipV(const char* fmt, va_list args) except +  # ✗
-    void BeginTooltip() except +  # ✓
-    void EndTooltip() except +  # ✓
-
-    # Menus
-    bool BeginMainMenuBar() except +  # ✓
-    void EndMainMenuBar() except +  # ✓
+    # ====
+    # Widgets: Menus
     bool BeginMenuBar() except +  # ✓
     void EndMenuBar() except +  # ✓
+    bool BeginMainMenuBar() except +  # ✓
+    void EndMainMenuBar() except +  # ✓
     bool BeginMenu(  # ✓
             const char* label,
             # note: optional
@@ -1075,13 +1293,44 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* label, const char* shortcut, bool* p_selected,
             # note: optional
             bool enabled
-    ) except +  # Popups
-    void OpenPopup(const char* str_id) except +  # ✓
+    ) except +
+    
+    # ====
+    # Tooltips
+    void BeginTooltip() except +  # ✓
+    void EndTooltip() except +  # ✓
+    void SetTooltip(const char* fmt, ...) except +  # ✓
+    # void SetTooltipV(const char* fmt, va_list args) except +  # ✗
+    
+    # ====
+    # Popups, Modals
     bool BeginPopup(const char* str_id, ImGuiWindowFlags flags) except +  # ✓
+    bool BeginPopupModal(  # ✓
+            const char* name,
+            # note: optional
+            bool* p_open, ImGuiWindowFlags extra_flags
+    ) except +
+    void EndPopup() except +  # ✓
+    void OpenPopup( # ✓
+            const char* str_id,
+            # note: optional
+            ImGuiPopupFlags popup_flags # NEW
+    ) except + 
+    bool OpenPopupOnItemClick( # ✗
+            const char* str_id, 
+            # note: optional
+            ImGuiPopupFlags popup_flags
+    ) except +
+    void CloseCurrentPopup() except +  # ✓
     bool BeginPopupContextItem(  # ✓
             # note: optional
             const char* str_id,
-            int mouse_button
+            ImGuiPopupFlags popup_flags # API CHANGE
+    ) except +
+    bool BeginPopupContextWindow( # ✗
+            # note: optional
+            const char* str_id, 
+            ImGuiPopupFlags popup_flags
     ) except +
     bool BeginPopupContextWindow(  # ✓ OBSOLETED in 1.77 (from June 2020)
             const char* str_id,
@@ -1091,18 +1340,14 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     bool BeginPopupContextVoid(  # ✗
             # note: optional
-            const char* str_id, int mouse_button
+            const char* str_id, 
+            ImGuiPopupFlags popup_flags
     ) except +
-    bool BeginPopupModal(  # ✓
-            const char* name,
+    bool IsPopupOpen( # ✗
+            const char* str_id,
             # note: optional
-            bool* p_open, ImGuiWindowFlags extra_flags
-    ) except +
-    void EndPopup() except +  # ✓
-    bool OpenPopupOnItemClick(const char* str_id, int mouse_button) except +  # ✗
-    bool IsPopupOpen(const char* str_id) except +  # ✗
-    void CloseCurrentPopup() except +  # ✓
-
+            ImGuiPopupFlags flags
+    ) except + 
 
     # ====
     # Columns
@@ -1123,48 +1368,86 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void SetColumnOffset(int column_index, float offset_x) except +  # ✓
     int GetColumnsCount() except +  # ✓
-
-
+    
+    # ====
+    # Tab Bars, Tabs
+    bool BeginTabBar( # ✗
+            const char* str_id, 
+            # note: optional
+            ImGuiTabBarFlags flags
+    ) except +
+    void EndTabBar() except + # ✗                                                        // only call EndTabBar() if BeginTabBar() returns true!
+    bool BeginTabItem( # ✗
+            const char* label, 
+            # note: optional
+            bool* p_open, 
+            ImGuiTabItemFlags flags
+    ) except +
+    void EndTabItem() except + # ✗
+    bool TabItemButton(
+            const char* label, 
+            # note: optional
+            ImGuiTabItemFlags flags
+    ) except +
+    void SetTabItemClosed(const char* tab_or_docked_window_label) except + # ✗
+    
+    # ====
+    # Logging/Capture
     # Logging: all text output from interface is redirected to
     # tty/file/clipboard. By default, tree nodes are automatically opened
     #  during logging.
     void LogToTTY(  # ✗
             # note: optional
-            int max_depth
+            int auto_open_depth
     ) except +
     void LogToFile(  # ✗
             # note: optional
-            int max_depth, const char* filename
+            int auto_open_depth, const char* filename
     ) except +
     void LogToClipboard(  # ✗
             # note: optional
-            int max_depth
+            int auto_open_depth
     ) except +
     void LogFinish() except +  # ✗
     void LogButtons() except +  # ✗
-    void LogText(const char*, ...) except +  # ✗
+    void LogText(const char* fmt, ...) except +  # ✗
 
+    # ====
     # Drag and Drop
+    # - [BETA API] API may evolve!
     bool BeginDragDropSource(ImGuiDragDropFlags flags) except +  # ✓
     bool SetDragDropPayload(const char* type, const void* data, size_t size, ImGuiCond cond) except +  # ✓
     void EndDragDropSource() except +  # ✓
     bool BeginDragDropTarget() except +  # ✓
     const ImGuiPayload* AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags) except +  # ✓
     void EndDragDropTarget() except +  # ✓
+    const ImGuiPayload* GetDragDropPayload() except + # ✗
 
+    # ====
     # Clipping
     void PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect) except +  # ✗
     void PopClipRect() except +  # ✗
 
-    # Utilities
+    # ====
+    # Focus, Activation
+    void SetItemDefaultFocus() except +  # ✓
+    void SetKeyboardFocusHere(int offset) except +  # ✓
+
+    # ====
+    # Item/Widgets Utilities
     bool IsItemHovered(ImGuiHoveredFlags flags) except +  # ✓
     bool IsItemActive() except +  # ✓
     bool IsItemFocused() except +  # ✓
     bool IsItemClicked(  # ✓
             # note: optional
-            int mouse_button
+            ImGuiMouseButton mouse_button # API CHANGE
     ) except +
     bool IsItemVisible() except +  # ✓
+    bool IsItemEdited() except + # ✗
+    bool IsItemActivated() except + # ✗
+    bool IsItemDeactivated() except + # ✗
+    bool IsItemDeactivatedAfterEdit() except + # ✗
+    bool IsItemToggledOpen() except + # ✗
     bool IsAnyItemHovered() except +  # ✓
     bool IsAnyItemActive() except +  # ✓
     bool IsAnyItemFocused() except +  # ✓
@@ -1172,17 +1455,30 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImVec2 GetItemRectMax() except +  # ✓
     ImVec2 GetItemRectSize() except +  # ✓
     void SetItemAllowOverlap() except +  # ✓
+    
+    # ====
+    # Miscellaneous Utilities
     bool IsRectVisible(const ImVec2& size) except +  # ✓
+    bool IsRectVisible(const ImVec2& rect_min, const ImVec2& rect_max) except +  # ✗
     double GetTime() except +  # ✓
     int GetFrameCount() except +  # ✗
+    ImDrawList* GetBackgroundDrawList() except +  # ✗
+    ImDrawList* GetForegroundDrawList() except +  # ✗
     ImDrawList* GetOverlayDrawList() except +  # ✗ # OBSOLETED in 1.69 (from Mar 2019)
     ImDrawListSharedData* GetDrawListSharedData() except +  # ✗
-
     const char* GetStyleColorName(ImGuiCol idx) except +  # ✓
-
     void SetStateStorage(ImGuiStorage* storage) except +  # ✗
     ImGuiStorage* GetStateStorage() except +  # ✗
+    void CalcListClipping(int items_count, float items_height, int* out_items_display_start, int* out_items_display_end) except +  # ✗
+    bool BeginChildFrame(  # ✗
+            ImGuiID id, const ImVec2& size,
+            # note: optional
+            ImGuiWindowFlags flags
+    ) except +
+    void EndChildFrame() except +  # ✗
 
+    # ====
+    # Text Utilities
     ImVec2 CalcTextSize(  # ✗
             const char* text,
             # note: optional
@@ -1190,21 +1486,16 @@ cdef extern from "imgui.h" namespace "ImGui":
             bool hide_text_after_double_hash,
             float wrap_width
     ) except +
-    void CalcListClipping(int items_count, float items_height, int* out_items_display_start, int* out_items_display_end) except +  # ✗
 
-    bool BeginChildFrame(  # ✗
-            ImGuiID id, const ImVec2& size,
-            # note: optional
-            ImGuiWindowFlags extra_flags
-    ) except +
-    void EndChildFrame() except +  # ✗
-
+    # ====
+    # Color Utilities
     ImVec4 ColorConvertU32ToFloat4(ImU32 in_) except +  # ✗
     ImU32 ColorConvertFloat4ToU32(const ImVec4& in_) except +  # ✗
     void ColorConvertRGBtoHSV(float r, float g, float b, float& out_h, float& out_s, float& out_v) except +  # ✗
     void ColorConvertHSVtoRGB(float h, float s, float v, float& out_r, float& out_g, float& out_b) except +  # ✗
 
-    # Inputs
+    # ====
+    # Inputs Utilities: Keyboard
     int GetKeyIndex(ImGuiKey key) except +  # ✓
     bool IsKeyDown(int key_index) except +  # ✓
     bool IsKeyPressed(  # ✓
@@ -1214,8 +1505,14 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     bool IsKeyReleased(int key_index) except +  # ✓
     int GetKeyPressedAmount(int key_index, float repeat_delay, float rate) except +  # ✗
+    void CaptureKeyboardFromApp(  # ✗
+            # note: optional
+            bool want_capture_keyboard_value
+    ) except +
+    
+    # ====
+    # Inputs Utilities: Mouse
     bool IsMouseDown(int button) except +  # ✓
-    bool IsAnyMouseDown() except +  # ✗
     bool IsMouseClicked(  # ✓
             int button,
             # note: optional
@@ -1229,12 +1526,13 @@ cdef extern from "imgui.h" namespace "ImGui":
             bool clip
     ) except +
     bool IsMousePosValid(const ImVec2* mouse_pos) except +  # ✗
+    bool IsAnyMouseDown() except +  # ✗
+    ImVec2 GetMousePos() except +  # ✓
+    ImVec2 GetMousePosOnOpeningCurrentPopup() except +  # ✗
     bool IsMouseDragging(  # ✓
             # note: optional
             int button, float lock_threshold
     ) except +
-    ImVec2 GetMousePos() except +  # ✓
-    ImVec2 GetMousePosOnOpeningCurrentPopup() except +  # ✗
     ImVec2 GetMouseDragDelta(  # ✓
             # note: optional
             int button, float lock_threshold
@@ -1245,21 +1543,18 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     ImGuiMouseCursor GetMouseCursor() except +  # ✓
     void SetMouseCursor(ImGuiMouseCursor type) except +  # ✓
-    void CaptureKeyboardFromApp(  # ✗
-            # note: optional
-            bool capture
-    ) except +
     void CaptureMouseFromApp(  # ✗
             # note: optional
-            bool capture
-    ) except +  # ====
-    # Helpers functions to access functions pointers in ImGui::GetIO() except +  # void* MemAlloc(size_t sz) except +  # void MemFree(void* ptr)
+            bool want_capture_mouse_value
+    ) except +
+    
+    # ====
+    # Clipboard Utilities
     const char* GetClipboardText() except +  # ✗
     void SetClipboardText(const char* text) except +  # ✗
 
-
+    # ====
     # Settings/.Ini Utilities
-
     void LoadIniSettingsFromDisk(  # ✗
             const char* ini_filename
     ) except +
@@ -1275,3 +1570,20 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             size_t* out_ini_size
     ) except +
+    
+    # ====
+    # Debug Utilities
+    bool DebugCheckVersionAndDataLayout(const char* version_str, size_t sz_io, size_t sz_style, size_t sz_vec2, size_t sz_vec4, size_t sz_drawvert) except +  # ✓
+    
+    # ====
+    # Memory Allocators
+    void SetAllocatorFunctions( # ✗
+            void* (*alloc_func)(size_t sz, void* user_data), 
+            void (*free_func)(void* ptr, void* user_data), 
+            # note: optional
+            void* user_data
+    ) except +
+    void* MemAlloc(size_t size) except + # ✗
+    void MemFree(void* ptr) except + # ✗
+
+    
