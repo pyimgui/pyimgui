@@ -838,9 +838,13 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             float center_y_ratio
     ) except +
-    void SetScrollHereX(float center_x_ratio) except + # ✗
-    void SetScrollHereY(float center_y_ratio) except + # ✗
-    void SetScrollFromPosX(float local_x, float center_x_ratio) except + # ✗
+    void SetScrollHereX(float center_x_ratio) except + # ✓
+    void SetScrollHereY(float center_y_ratio) except + # ✓
+    void SetScrollFromPosX( # ✓
+            float local_x, 
+            # note: optional
+            float center_x_ratio
+    ) except +
     void SetScrollFromPosY(  # ✓
             float local_y,
             # note: optional

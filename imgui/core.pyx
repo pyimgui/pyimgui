@@ -2035,6 +2035,7 @@ def render():
     """
     cimgui.Render()
 
+
 def show_user_guide():
     """Show ImGui user guide editor.
 
@@ -6838,21 +6839,76 @@ def set_scroll_here(float center_y_ratio = 0.5):
         void SetScrollHere(float center_y_ratio = 0.5f)
     """
     return cimgui.SetScrollHere(center_y_ratio)
+    
+def set_scroll_here_x(float center_x_ratio = 0.5):
+    """Set scroll here X.
 
-
-def set_scroll_from_pos_y(float pos_y, float center_y_ratio = 0.5):
-    """Set scroll from position Y
-
-    adjust scrolling amount to make given position valid. use GetCursorPos() or GetCursorStartPos()+offset to get valid positions.
+    Adjust scrolling amount to make current cursor position visible. 
+    center_x_ratio =
+        0.0: left, 
+        0.5: center, 
+        1.0: right. 
+        
+    When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
 
     Args:
-        float pos_y
+        float center_x_ratio = 0.5f
+
+    .. wraps::
+        void SetScrollHereX(float center_x_ratio = 0.5f)
+    """
+    return cimgui.SetScrollHereX(center_x_ratio)
+    
+def set_scroll_here_y(float center_y_ratio = 0.5):
+    """Set scroll here Y.
+
+    Adjust scrolling amount to make current cursor position visible. 
+    center_y_ratio =
+        0.0: top, 
+        0.5: center, 
+        1.0: bottom. 
+        
+    When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
+
+    Args:
         float center_y_ratio = 0.5f
 
     .. wraps::
-        void SetScrollFromPosY(float pos_y, float center_y_ratio = 0.5f)
+        void SetScrollHereY(float center_y_ratio = 0.5f)
     """
-    return cimgui.SetScrollFromPosY(pos_y, center_y_ratio)
+    return cimgui.SetScrollHereY(center_y_ratio)
+
+
+def set_scroll_from_pos_x(float local_x, float center_x_ratio = 0.5):
+    """Set scroll from position X
+
+    Adjust scrolling amount to make given position visible. 
+    Generally GetCursorStartPos() + offset to compute a valid position.
+    
+    Args:
+        float local_x
+        float center_x_ratio = 0.5f
+
+    .. wraps::
+        void SetScrollFromPosX(float local_x, float center_x_ratio = 0.5f)
+    """
+    return cimgui.SetScrollFromPosX(local_x, center_x_ratio)
+
+
+def set_scroll_from_pos_y(float local_y, float center_y_ratio = 0.5):
+    """Set scroll from position Y
+
+    Adjust scrolling amount to make given position visible. 
+    Generally GetCursorStartPos() + offset to compute a valid position.
+    
+    Args:
+        float local_y
+        float center_y_ratio = 0.5f
+
+    .. wraps::
+        void SetScrollFromPosY(float local_y, float center_y_ratio = 0.5f)
+    """
+    return cimgui.SetScrollFromPosY(local_y, center_y_ratio)
 
 
 def push_font(_Font font):
@@ -6906,43 +6962,6 @@ def pop_font():
         void PopFont()
     """
     cimgui.PopFont()
-
-cpdef calc_text_size(str text, bool hide_text_after_double_hash = False, float wrap_width = 0.0):
-    """Calculate text size. 
-    Text can be multi-line. 
-    Optionally ignore text after a ## marker.
-
-    .. visual-example::
-        :auto_layout:
-        :width: 300
-        :height: 100
-
-        imgui.begin("Text size calculation")
-        text_content = "This is a ##text##!"
-        text_size1 = imgui.calc_text_size(text_content)
-        imgui.text('"%s" has size %ix%i' % (text_content, text_size1[0], text_size1[1]))
-        text_size2 = imgui.calc_text_size(text_content, True)
-        imgui.text('"%s" has size %ix%i' % (text_content, text_size2[0], text_size2[1]))
-        text_size3 = imgui.calc_text_size(text_content, False, 30.0)
-        imgui.text('"%s" has size %ix%i' % (text_content, text_size3[0], text_size3[1]))
-        imgui.end()
-
-    Args:
-        text (str): text
-        hide_text_after_double_hash (bool): if True, text after '##' is ignored
-        wrap_width (float): if > 0.0 calculate size using text wrapping
-    
-    .. wraps::
-        CalcTextSize(const char* text, const char* text_end, bool hide_text_after_double_hash, float wrap_width)
-    """
-    return _cast_ImVec2_tuple(
-        cimgui.CalcTextSize(
-            _bytes(text),
-            NULL,
-            hide_text_after_double_hash,
-            wrap_width
-        )
-    )
 
 cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     """Push style variable on stack.
@@ -7179,6 +7198,7 @@ cpdef calculate_item_width():
         float CalcItemWidth()
     """
     return cimgui.CalcItemWidth()
+
 
 cpdef push_text_wrap_pos(float wrap_pos_x = 0.0):
     """Word-wrapping function for text*() commands.
