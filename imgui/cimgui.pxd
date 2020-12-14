@@ -770,7 +770,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiCond cond
     ) except +
-    void SetNextWindowSizeConstraints(  # ✗
+    void SetNextWindowSizeConstraints(  # ✓
             const ImVec2& size_min,
             const ImVec2& size_max,
             ImGuiSizeCallback custom_callback,

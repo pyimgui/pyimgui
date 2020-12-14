@@ -2864,6 +2864,41 @@ def set_next_window_size(
     """
     cimgui.SetNextWindowSize(_cast_args_ImVec2(width, height), condition)
 
+# TODO: Callbacks
+# Useful for non trivial constraints
+def set_next_window_size_constraints(tuple size_min, tuple size_max):
+    """Set next window size limits. use -1,-1 on either X/Y axis to preserve the current size. 
+    Sizes will be rounded down.
+
+    Call before :func:`begin()`.
+    
+    Args:
+        size_min (tuple): Minimum window size
+        size_max (tuple): Maximum window size
+    
+    .. visual-example::
+        :title: Window size constraints
+        :height: 200
+        
+        imgui.set_next_window_size_constraints((175,50), (200, 100))
+        imgui.begin("Constrained Window")
+        imgui.text("...")
+        imgui.end()
+    
+    .. wraps::
+        void SetNextWindowSizeConstraints(
+            const ImVec2& size_min, 
+            const ImVec2& size_max, 
+            ImGuiSizeCallback custom_callback = NULL, 
+            void* custom_callback_user_data = NULL
+        )
+
+    """
+    cimgui.SetNextWindowSizeConstraints(
+        _cast_tuple_ImVec2(size_min), 
+        _cast_tuple_ImVec2(size_max), 
+        NULL, NULL)
+
 def set_next_window_content_size(float width, float height):
     """Set content size of the next window. Show scrollbars
        if content doesn't fit in the window
