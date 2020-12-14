@@ -1765,9 +1765,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void EndChildFrame() except +  # ✗
 
-    # ====
     # Text Utilities
-    ImVec2 CalcTextSize(  # ✗
+    ImVec2 CalcTextSize(  # ✓
             const char* text,
             # note: optional
             const char* text_end,
