@@ -1182,7 +1182,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetStateStorage(ImGuiStorage* storage) except +  # ✗
     ImGuiStorage* GetStateStorage() except +  # ✗
 
-    ImVec2 CalcTextSize(  # ✗
+    ImVec2 CalcTextSize(  # ✓
             const char* text,
             # note: optional
             const char* text_end,
