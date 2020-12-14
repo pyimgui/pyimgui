@@ -3387,7 +3387,7 @@ def menu_item(
     return clicked, inout_selected
 
 
-def open_popup(str label):
+def open_popup(str label, cimgui.ImGuiPopupFlags flags=0):
     """Open a popup window.
 
     Marks a popup window as open. Popups are closed when user click outside,
@@ -3418,10 +3418,11 @@ def open_popup(str label):
 
     .. wraps::
         void OpenPopup(
-            const char* str_id
+            const char* str_id,
+            ImGuiPopupFlags popup_flags = 0
         )
     """
-    cimgui.OpenPopup(_bytes(label))
+    cimgui.OpenPopup(_bytes(label), flags)
 
 
 def begin_popup(str label, cimgui.ImGuiWindowFlags flags=0):
@@ -4280,7 +4281,7 @@ def combo(str label, int current, list items, int height_in_items=-1):
     ), inout_current
 
 
-def color_edit3(str label, float r, float g, float b):
+def color_edit3(str label, float r, float g, float b, cimgui.ImGuiColorEditFlags flags = 0):
     """Display color edit widget for color without alpha value.
 
     .. visual-example::
@@ -4313,13 +4314,13 @@ def color_edit3(str label, float r, float g, float b):
         change and current value of color
 
     .. wraps::
-        bool ColorEdit3(const char* label, float col[3])
+        bool ColorEdit3(const char* label, float col[3], ImGuiColorEditFlags flags = 0)
     """
 
     cdef float[3] inout_color = [r, g, b]
 
     return cimgui.ColorEdit3(
-        _bytes(label), <float *>(&inout_color)
+        _bytes(label), <float *>(&inout_color), flags
     ), (inout_color[0], inout_color[1], inout_color[2])
 
 
@@ -4622,7 +4623,8 @@ def drag_int(
     float change_speed = 1.0,
     int min_value=0,
     int max_value=0,
-    str format = "%d"
+    str format = "%d",
+    cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int drag widget.
 
@@ -4665,13 +4667,14 @@ def drag_int(
             int v_min = 0.0f,
             int v_max = 0.0f,
             const char* format = "%d",
+            ImGuiSliderFlags flags = 0
         )
     """
     cdef int inout_value = value
 
     return cimgui.DragInt(
         _bytes(label), &inout_value,
-        change_speed, min_value, max_value, _bytes(format)
+        change_speed, min_value, max_value, _bytes(format), flags
     ), inout_value
 
 
@@ -4680,7 +4683,8 @@ def drag_int2(
     float change_speed = 1.0,
     int min_value=0,
     int max_value=0,
-    str format = "%d"
+    str format = "%d",
+    cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int drag widget with 2 values.
 
@@ -4719,12 +4723,13 @@ def drag_int2(
             int v_min = 0.0f,
             int v_max = 0.0f,
             const char* format = "%d",
+            ImGuiSliderFlags flags = 0
         )
     """
     cdef int[2] inout_values = [value0, value1]
     return cimgui.DragInt2(
         _bytes(label), <int*>&inout_values,
-        change_speed, min_value, max_value, _bytes(format),
+        change_speed, min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1])
 
 
@@ -4733,7 +4738,8 @@ def drag_int3(
     float change_speed = 1.0,
     int min_value=0,
     int max_value=0,
-    str format = "%d"
+    str format = "%d",
+    cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int drag widget with 3 values.
 
@@ -4772,12 +4778,13 @@ def drag_int3(
             int v_min = 0.0f,
             int v_max = 0.0f,
             const char* format = "%d",
+            ImGuiSliderFlags flags = 0
         )
     """
     cdef int[3] inout_values = [value0, value1, value2]
     return cimgui.DragInt3(
         _bytes(label), <int*>&inout_values,
-        change_speed, min_value, max_value, _bytes(format),
+        change_speed, min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
@@ -4786,7 +4793,8 @@ def drag_int4(
     float change_speed = 1.0,
     int min_value=0,
     int max_value=0,
-    str format = "%d"
+    str format = "%d",
+    cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int drag widget with 4 values.
 
@@ -4825,12 +4833,13 @@ def drag_int4(
             int v_min = 0.0f,
             int v_max = 0.0f,
             const char* format = "%d",
+            ImGuiSliderFlags flags = 0
         )
     """
     cdef int[4] inout_values = [value0, value1, value2, value3]
     return cimgui.DragInt4(
         _bytes(label), <int*>&inout_values,
-        change_speed, min_value, max_value, _bytes(format),
+        change_speed, min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
@@ -5628,7 +5637,8 @@ def slider_int(
     int value,
     int min_value,
     int max_value,
-    str format = "%.f"
+    str format = "%.f",
+    cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget
 
@@ -5667,13 +5677,14 @@ def slider_int(
             int v,
             int v_min,
             int v_max,
-            const char* format = "%.3f"
+            const char* format = "%.3f",
+            ImGuiSliderFlags flags = 0
         )
     """
     cdef int inout_value = value
     return cimgui.SliderInt(
         _bytes(label), <int*>&inout_value,
-        min_value, max_value, _bytes(format)
+        min_value, max_value, _bytes(format), flags
     ), inout_value
 
 
@@ -5682,7 +5693,8 @@ def slider_int2(
     int value0, int value1,
     int min_value,
     int max_value,
-    str format = "%.f"
+    str format = "%.f",
+    cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget with 2 values.
 
@@ -5721,13 +5733,14 @@ def slider_int2(
             int v[2],
             int v_min,
             int v_max,
-            const char* format = "%.3f"
+            const char* format = "%.3f",
+            ImGuiSliderFlags flags = 0
         )
     """
     cdef int[2] inout_values = [value0, value1]
     return cimgui.SliderInt2(
         _bytes(label), <int*>&inout_values,
-        min_value, max_value, _bytes(format)
+        min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1])
 
 
@@ -5736,7 +5749,8 @@ def slider_int3(
     int value0, int value1, int value2,
     int min_value,
     int max_value,
-    str format = "%.f"
+    str format = "%.f",
+    cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget with 3 values.
 
@@ -5775,13 +5789,14 @@ def slider_int3(
             int v[3],
             int v_min,
             int v_max,
-            const char* format = "%.3f"
+            const char* format = "%.3f",
+            ImGuiSliderFlags flags = 0
         )
     """
     cdef int[3] inout_values = [value0, value1, value2]
     return cimgui.SliderInt3(
         _bytes(label), <int*>&inout_values,
-        min_value, max_value, _bytes(format)
+        min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
@@ -5790,7 +5805,8 @@ def slider_int4(
     int value0, int value1, int value2, int value3,
     int min_value,
     int max_value,
-    str format = "%.f"
+    str format = "%.f",
+    cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget with 4 values.
 
@@ -5828,13 +5844,14 @@ def slider_int4(
             int v[4],
             int v_min,
             int v_max,
-            const char* format = "%.3f"
+            const char* format = "%.3f",
+            ImGuiSliderFlags flags = 0
         )
     """
     cdef int[4] inout_values = [value0, value1, value2, value3]
     return cimgui.SliderInt4(
         _bytes(label), <int*>&inout_values,
-        min_value, max_value, _bytes(format)
+        min_value, max_value, _bytes(format), 0
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
@@ -5846,7 +5863,7 @@ def v_slider_float(
     float min_value,
     float max_value,
     str format = "%.f",
-    float power=1.0
+    cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display vertical float slider widget with the specified width and
     height.
@@ -5892,14 +5909,14 @@ def v_slider_float(
             float v_min,
             floatint v_max,
             const char* format = "%.3f",
-            float power=1.0
+            ImGuiSliderFlags flags = 0
         )
     """
     cdef float inout_value = value
     return cimgui.VSliderFloat(
         _bytes(label), _cast_args_ImVec2(width, height),
         <float*>&inout_value,
-        min_value, max_value, _bytes(format), power
+        min_value, max_value, _bytes(format), flags
     ), inout_value
 
 
@@ -5910,7 +5927,8 @@ def v_slider_int(
     int value,
     int min_value,
     int max_value,
-    str format = "%d"
+    str format = "%d",
+    cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display vertical int slider widget with the specified width and height.
 
@@ -5953,14 +5971,15 @@ def v_slider_int(
             int v,
             int v_min,
             int v_max,
-            const char* format = "%.3f"
+            const char* format = "%.3f",
+            ImGuiSliderFlags flags = 0
         )
     """
     cdef int inout_value = value
     return cimgui.VSliderInt(
         _bytes(label), _cast_args_ImVec2(width, height),
         <int*>&inout_value,
-        min_value, max_value, _bytes(format)
+        min_value, max_value, _bytes(format), flags
     ), inout_value
 
 
