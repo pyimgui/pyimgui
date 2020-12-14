@@ -19,71 +19,98 @@ cdef extern from "imgui.h":
     ctypedef struct ImDrawData
     ctypedef struct ImDrawList
     ctypedef struct ImDrawListSharedData
+    ctypedef struct ImDrawListSplitter
     ctypedef struct ImDrawVert
     ctypedef struct ImFont
     ctypedef struct ImFontAtlas
     ctypedef struct ImFontConfig
+    ctypedef struct ImFontGlyph
+    ctypedef struct ImFontGlyphRangesBuilder
     ctypedef struct ImColor
+    ctypedef struct ImGuiContext
     ctypedef struct ImGuiIO
+    ctypedef struct ImGuiInputTextCallbackData
+    ctypedef struct ImGuiListClipper
     ctypedef struct ImGuiOnceUponAFrame
+    ctypedef struct ImGuiPayload
+    ctypedef struct ImGuiSizeCallbackData
     ctypedef struct ImGuiStorage
     # ctypedef struct ImGuiStyle  # declared later
-    ctypedef struct ImGuiTextFilter
     ctypedef struct ImGuiTextBuffer
-    ctypedef struct ImGuiInputTextCallbackData
-    ctypedef struct ImGuiSizeCallbackData
-    ctypedef struct ImGuiListClipper
-    ctypedef struct ImGuiPayload
-    ctypedef struct ImGuiContext
-
+    ctypedef struct ImGuiTextFilter
+    
     # ====
-    # Various int typedefs and enumerations
-    ctypedef void* ImTextureID
-    ctypedef unsigned int ImU32
-    ctypedef unsigned int ImGuiID
-    ctypedef unsigned short ImWchar
+    # Enums/Flags
     ctypedef int ImGuiCol
+    ctypedef int ImGuiCond
     ctypedef int ImGuiDataType
     ctypedef int ImGuiDir
-    ctypedef int ImGuiCond
     ctypedef int ImGuiKey
     ctypedef int ImGuiNavInput
+    ctypedef int ImGuiMouseButton
     ctypedef int ImGuiMouseCursor
     ctypedef int ImGuiStyleVar
     ctypedef int ImDrawCornerFlags
     ctypedef int ImDrawListFlags
     ctypedef int ImFontAtlasFlags
     ctypedef int ImGuiBackendFlags
+    ctypedef int ImGuiButtonFlags
     ctypedef int ImGuiColorEditFlags
-    ctypedef int ImGuiSliderFlags
-    ctypedef int ImGuiMouseButton
-    ctypedef int ImGuiColumnsFlags
     ctypedef int ImGuiConfigFlags
     ctypedef int ImGuiComboFlags
-    ctypedef int ImGuiTabBarFlags
-    ctypedef int ImGuiTabItemFlags
     ctypedef int ImGuiDragDropFlags
     ctypedef int ImGuiFocusedFlags
     ctypedef int ImGuiHoveredFlags
     ctypedef int ImGuiInputTextFlags
-    ctypedef int ImGuiSelectableFlags
-    ctypedef int ImGuiTreeNodeFlags
+    ctypedef int ImGuiKeyModFlags
     ctypedef int ImGuiPopupFlags
+    ctypedef int ImGuiSelectableFlags
+    ctypedef int ImGuiSliderFlags
+    ctypedef int ImGuiTabBarFlags
+    ctypedef int ImGuiTabItemFlags
+    ctypedef int ImGuiTreeNodeFlags
     ctypedef int ImGuiWindowFlags
+    # ctypedef int ImGuiColumnsFlags # REMOVED
+
+    # ====
+    # Various int typedefs and enumerations
+    ctypedef void* ImTextureID
+    ctypedef unsigned int ImGuiID
     ctypedef int (*ImGuiInputTextCallback)(ImGuiInputTextCallbackData *data);
     ctypedef void (*ImGuiSizeCallback)(ImGuiSizeCallbackData* data);
-
+    
+    # ====
+    # Decoded character types
+    ctypedef unsigned short ImWchar16
+    ctypedef unsigned int ImWchar32
+    ctypedef unsigned short ImWchar
+    
+    # ====
+    # Basic scalar data types
+    ctypedef signed char         ImS8 
+    ctypedef unsigned char       ImU8 
+    ctypedef signed short        ImS16
+    ctypedef unsigned short      ImU16
+    ctypedef signed int          ImS32
+    ctypedef unsigned int        ImU32
+    ctypedef signed   long long  ImS64
+    ctypedef unsigned long long  ImU64
+    
+    
+    # ====
+    # 2D vector
     ctypedef struct ImVec2:
         float x
         float y
-
+    
+    # ====
+    # 4D vector
     ctypedef struct ImVec4:
         float x
         float y
         float z
         float w
-
-
+    
     ctypedef struct ImGuiIO:
         # ====
         # source-note: Settings (fill once)
