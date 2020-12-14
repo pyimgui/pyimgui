@@ -2196,6 +2196,7 @@ def get_content_region_available():
     return _cast_ImVec2_tuple(cimgui.GetContentRegionAvail())
 
 
+# OBSOLETED in 1.70 (from May 2019)
 def get_content_region_available_width():
     """Get available content region width.
 
@@ -2546,6 +2547,7 @@ def get_window_draw_list():
     return _DrawList.from_ptr(cimgui.GetWindowDrawList())
 
 
+# OBSOLETED in 1.69 (from Mar 2019)
 def get_overlay_draw_list():
     """Get a special draw list that will be drawn last (over all windows).
 
@@ -3562,6 +3564,7 @@ def begin_popup_context_item(str label = None, int mouse_button = 1):
         return cimgui.BeginPopupContextItem(_bytes(label), mouse_button)
 
 
+# ✓ OBSOLETED in 1.77 (from June 2020)
 def begin_popup_context_window(
     str label = None,
     bool also_over_items = True,
@@ -4367,6 +4370,7 @@ def color_edit4(
     ), (inout_color[0], inout_color[1], inout_color[2], inout_color[3])
 
 
+# OBSOLETED in 1.78 (from June 2020)
 def drag_float(
     str label, float value,
     float change_speed = 1.0,
@@ -4433,6 +4437,7 @@ def drag_float(
     ), inout_value
 
 
+# OBSOLETED in 1.78 (from June 2020)
 def drag_float2(
     str label, float value0, float value1,
     float change_speed = 1.0,
@@ -4492,6 +4497,7 @@ def drag_float2(
     ), (inout_values[0], inout_values[1])
 
 
+# OBSOLETED in 1.78 (from June 2020)
 def drag_float3(
     str label, float value0, float value1, float value2,
     float change_speed = 1.0,
@@ -4551,6 +4557,7 @@ def drag_float3(
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
+# OBSOLETED in 1.78 (from June 2020)
 def drag_float4(
     str label, float value0, float value1, float value2, float value3,
     float change_speed = 1.0,
@@ -4957,6 +4964,7 @@ def input_text_multiline(
     return changed, output
 
 
+# OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
 def input_float(
     str label,
     float value,
@@ -5009,6 +5017,7 @@ def input_float(
     ), inout_value
 
 
+# OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
 def input_float2(
     str label,
     float value0, float value1,
@@ -5055,6 +5064,7 @@ def input_float2(
     ), (inout_values[0], inout_values[1])
 
 
+# OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
 def input_float3(
     str label,
     float value0, float value1, float value2,
@@ -5101,6 +5111,7 @@ def input_float3(
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
+# OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
 def input_float4(
     str label,
     float value0, float value1, float value2, float value3,
@@ -5373,6 +5384,7 @@ def input_double(
 
 
 
+# OBSOLETED in 1.78 (from June 2020)
 def slider_float(
     str label,
     float value,
@@ -5432,6 +5444,7 @@ def slider_float(
     ), inout_value
 
 
+# OBSOLETED in 1.78 (from June 2020)
 def slider_float2(
     str label,
     float value0, float value1,
@@ -5490,6 +5503,7 @@ def slider_float2(
     ), (inout_values[0], inout_values[1])
 
 
+# OBSOLETED in 1.78 (from June 2020)
 def slider_float3(
     str label,
     float value0, float value1, float value2,
@@ -5549,6 +5563,7 @@ def slider_float3(
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
+# OBSOLETED in 1.78 (from June 2020)
 def slider_float4(
     str label,
     float value0, float value1, float value2, float value3,
@@ -6574,6 +6589,7 @@ def set_mouse_cursor(cimgui.ImGuiMouseCursor mouse_cursor_type):
     return cimgui.SetMouseCursor(mouse_cursor_type)
 
 
+# OBSOLETED in 1.66 (from Sep 2018)
 def set_scroll_here(float center_y_ratio = 0.5):
     """Set scroll here.
 
