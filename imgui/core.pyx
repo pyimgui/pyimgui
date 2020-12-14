@@ -1,6 +1,6 @@
 # distutils: language = c++
 # distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp imgui-cpp/imgui_widgets.cpp config-cpp/py_imconfig.cpp
-# distutils: include_dirs = imgui-cpp AnsiFeed
+# distutils: include_dirs = imgui-cpp ansifeed-cpp
 # cython: embedsignature=True
 """
 
@@ -29,7 +29,7 @@ from libcpp cimport bool
 
 cimport cimgui
 cimport enums
-cimport cimguiAnsiFeed
+cimport ansifeed
 
 from cpython.version cimport PY_MAJOR_VERSION
 
@@ -3664,14 +3664,14 @@ def text_ansi(str text):
 
     Similar to imgui.text, but with ANSI parsing.
     imgui.text documentation below:
-    
+
     .. visual-example::
         :title: simple text widget
         :height: 80
         :auto_layout:
 
         imgui.begin("Example: simple text")
-        imgui.text("Simple text")
+        imgui.text_ansi("Default \033[31m colored \033[m default")
         imgui.end()
 
     Args:
@@ -3681,7 +3681,7 @@ def text_ansi(str text):
         Text(const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimguiAnsiFeed.TextAnsi("%s", _bytes(text))
+    ansifeed.TextAnsi("%s", _bytes(text))
 
 
 def text_colored(str text, float r, float g, float b, float a=1.):
@@ -3723,13 +3723,13 @@ def text_ansi_colored(str text, float r, float g, float b, float a=1.):
 
     Similar to imgui.text_colored, but with ANSI parsing.
     imgui.text_colored documentation below:
-    
+
     It is a shortcut for:
 
     .. code-block:: python
 
         imgui.push_style_color(imgui.COLOR_TEXT, r, g, b, a)
-        imgui.text(text)
+        imgui.text_ansi(text)
         imgui.pop_style_color()
 
 
@@ -3739,7 +3739,7 @@ def text_ansi_colored(str text, float r, float g, float b, float a=1.):
         :auto_layout:
 
         imgui.begin("Example: colored text")
-        imgui.text_colored("Colored text", 1, 0, 0)
+        imgui.text_ansi_colored("Default \033[31m colored \033[m default", 1, 0, 0)
         imgui.end()
 
     Args:
@@ -3753,7 +3753,7 @@ def text_ansi_colored(str text, float r, float g, float b, float a=1.):
         TextColored(const ImVec4& col, const char* fmt, ...)
     """
     # note: "%s" required for safety and to favor of Python string formating
-    cimguiAnsiFeed.TextAnsiColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
+    ansifeed.TextAnsiColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
 
 def text_disabled(str text):
     """Add disabled(grayed out) text to current widget stack.
