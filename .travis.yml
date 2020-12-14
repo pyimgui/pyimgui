@@ -27,6 +27,9 @@ matrix:
     - os: osx
       env: PY_VERSION=3.8.0
 
+    - os: osx
+      env: PY_VERSION=3.9.1
+
     - os: linux
       sudo: required
       dist: trusty
