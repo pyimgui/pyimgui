@@ -174,15 +174,6 @@ cdef extern from "imgui.h":
         ImGuiButtonFlags_MouseButtonRight       # React on right mouse button
         ImGuiButtonFlags_MouseButtonMiddle      # React on center mouse button
 
-
-    ctypedef enum ImGuiAlign_:
-        ImGuiAlign_Left
-        ImGuiAlign_Center
-        ImGuiAlign_Right
-        ImGuiAlign_Top
-        ImGuiAlign_VCenter
-        ImGuiAlign_Default
-
     ctypedef enum ImGuiCond_:
         ImGuiCond_None          # No condition (always set the variable), same as _Always
         ImGuiCond_Always        # No condition (always set the variable)
