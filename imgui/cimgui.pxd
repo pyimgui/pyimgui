@@ -112,8 +112,9 @@ cdef extern from "imgui.h":
         float w
     
     ctypedef struct ImGuiIO:
+    
         # ====
-        # source-note: Settings (fill once)
+        # Configuration (fill once)
         ImGuiConfigFlags   ConfigFlags # ✗
         ImGuiBackendFlags  BackendFlags # ✗
         ImVec2        DisplaySize # ✓
@@ -134,50 +135,63 @@ cdef extern from "imgui.h":
         ImFontAtlas*  Fonts  # ✓
         float         FontGlobalScale  # ✓
         bool          FontAllowUserScaling  # ✓
+        ImFont*       FontDefault # ✗
         ImVec2        DisplayFramebufferScale  # ✓
         #ImVec2        DisplayVisibleMin  # ✓ # DEPRECIATED
         #ImVec2        DisplayVisibleMax  # ✓ # DEPRECIATED
+        
+        # Miscellaneous options
+        bool          MouseDrawCursor  # ✓
         bool          ConfigMacOSXBehaviors  # ✓
         bool          ConfigInputTextCursorBlink  # ✓
         #bool          ConfigResizeWindowsFromEdges  # ✓ # RENAMED
         bool          ConfigWindowsResizeFromEdges # ✓
-
+        bool          ConfigWindowsMoveFromTitleBarOnly # ✗
+        float         ConfigWindowsMemoryCompactTimer # ✗
+        
         # ====
-        # source-note: User Functions
+        # Platform Functions
+        # Platform/Render
+        const char* BackendPlatformName # ✗
+        const char* BackendRendererName # ✗
+        void*       BackendPlatformUserData # ✗
+        void*       BackendRendererUserData # ✗
+        void*       BackendLanguageUserData # ✗
+        
+        # Optional: Access OS clipboard
         # note: callbacks may wrap arbitrary Python code so we need to
         #       propagate exceptions from them (as well as C++ exceptions)
         const char* (*GetClipboardTextFn)(void* user_data) except +  # ✓
         void        (*SetClipboardTextFn)(void* user_data, const char* text) except +  # ✓
         void*       ClipboardUserData  # ✗
-
-        void*       (*MemAllocFn)(size_t sz) except +  # ✗
-        void        (*MemFreeFn)(void* ptr) except +  # ✗
+        
+        # Optional: Notify OS Input Method Editor of the screen position of your cursor for text input position
         void        (*ImeSetInputScreenPosFn)(int x, int y) except +  # ✗
         void*       ImeWindowHandle  # ✗
 
         # ====
-        # source-note: Input - Fill before calling NewFrame()
-
+        # Input - Fill before calling NewFrame()
         ImVec2      MousePos  # ✓
         bool        MouseDown[5]  # ✓
         float       MouseWheel  # ✓
         float       MouseWheelH  # ✓
-        bool        MouseDrawCursor  # ✓
         bool        KeyCtrl  # ✓
         bool        KeyShift  # ✓
         bool        KeyAlt  # ✓
         bool        KeySuper  # ✓
         bool        KeysDown[512]  # ✓
-        ImWchar     InputCharacters[16+1]  # ✗
+        # note: originally NavInputs[ImGuiNavInput_COUNT]
+        # todo: find a way to access enum var here
+        ImWchar*    NavInputs  # ✗
 
+        # Functions
         void        AddInputCharacter(ImWchar c) except +  # ✓
+        void        AddInputCharacterUTF16(ImWchar16 c) except + # ✗
         void        AddInputCharactersUTF8(const char* utf8_chars) except +  # ✓
         void        ClearInputCharacters() except +  # ✓
 
         # ====
-        # source-note: Output - Retrieve after calling NewFrame(), you can use
-        #              them to discard inputs or hide them from the rest of
-        #              your application
+        # Output - Updated by NewFrame() or EndFrame()/Render()
         bool        WantCaptureMouse  # ✓
         bool        WantCaptureKeyboard  # ✓
         bool        WantTextInput  # ✓
@@ -188,27 +202,10 @@ cdef extern from "imgui.h":
         float       Framerate  # ✓
         int         MetricsRenderVertices  # ✓
         int         MetricsRenderIndices  # ✓
+        int         MetricsRenderWindows # ✗
         int         MetricsActiveWindows  # ✓
+        int         MetricsActiveAllocations # ✗
         ImVec2      MouseDelta  # ✓
-
-        # ====
-        # source-note: [Internal] ImGui will maintain those fields for you
-        #ImVec2      MousePosPrev  # ✗
-        #ImVec2      MouseClickedPos[5]  # ✗
-        #float       MouseClickedTime[5]  # ✗
-        #bool        MouseClicked[5]  # ✗
-        #bool        MouseDoubleClicked[5]  # ✗
-        #bool        MouseReleased[5]  # ✗
-        #bool        MouseDownOwned[5]  # ✗
-        #float       MouseDownDuration[5]  # ✗
-        #float       MouseDownDurationPrev[5]  # ✗
-        #float       MouseDragMaxDistanceAbs[5]  # ✗
-        #float       MouseDragMaxDistanceSqr[5]  # ✗
-        #float       KeysDownDuration[512]  # ✗
-        #float       KeysDownDurationPrev[512]  # ✗
-        #float       NavInputsDownDuration[ImGuiNavInput_COUNT]   # ✗
-        #float       NavInputsDownDurationPrev[ImGuiNavInput_COUNT] # ✗
-
 
     cdef cppclass ImVector[T]:
         int        Size
@@ -219,9 +216,11 @@ cdef extern from "imgui.h":
     ctypedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd)  # ✗
 
     ctypedef struct ImDrawCmd:  # ✓
-        unsigned int   ElemCount  # ✓
         ImVec4         ClipRect  # ✓
         ImTextureID    TextureId  # ✓
+        unsigned int   VtxOffset # ✗
+        unsigned int   IdxOffset # ✗
+        unsigned int   ElemCount  # ✓
         ImDrawCallback UserCallback  # ✗
         void*          UserCallbackData  # ✗
 
@@ -237,14 +236,25 @@ cdef extern from "imgui.h":
         ImVec2 uv  # ✗
         ImU32  col  # ✗
 
-
     ctypedef struct ImDrawList:
         # we map only buffer vectors since everything else is internal
         # and right now we dont want to suport it.
         ImVector[ImDrawCmd]  CmdBuffer  # ✓
         ImVector[ImDrawIdx]  IdxBuffer  # ✓
         ImVector[ImDrawVert] VtxBuffer  # ✓
-
+        ImDrawListFlags      Flags # ✗
+        
+        void PushClipRect( # ✗
+            ImVec2 clip_rect_min, 
+            ImVec2 clip_rect_max, 
+            # note: optional
+            bool intersect_with_current_clip_rect # = false
+        ) except + 
+        void PushClipRectFullScreen() except + # ✗
+        void PopClipRect() except + # ✗
+        void PushTextureID(ImTextureID texture_id) except + # ✗
+        void PopTextureID() except + # ✗
+        
 
         void AddLine(
             const ImVec2& a,
@@ -261,7 +271,7 @@ cdef extern from "imgui.h":
             ImU32 col,
             # note: optional
             float rounding,             # = 0.0f,
-            int rounding_corners_flags, # = ImDrawCornerFlags_All,
+            ImDrawCornerFlags rounding_corners_flags, # = ImDrawCornerFlags_All,
             float thickness             # = 1.0f
         ) except +  # ✓
 
@@ -272,16 +282,58 @@ cdef extern from "imgui.h":
             ImU32 col,
             # note: optional
             float rounding,            # = 0.0f
-            int rounding_corners_flags # = ImDrawCornerFlags_All
+            ImDrawCornerFlags rounding_corners_flags # = ImDrawCornerFlags_All
         ) except +  # ✓
-
-
+        
+        void AddRectFilledMultiColor( # ✗
+            const ImVec2& p_min, 
+            const ImVec2& p_max, 
+            ImU32 col_upr_left, 
+            ImU32 col_upr_right, 
+            ImU32 col_bot_right, 
+            ImU32 col_bot_left
+        ) except +
+        
+        void AddQuad( # ✗
+            const ImVec2& p1, 
+            const ImVec2& p2, 
+            const ImVec2& p3, 
+            const ImVec2& p4, 
+            ImU32 col, 
+            # note:optional
+            float thickness         # = 1.0f
+        ) except +
+        
+        void AddQuadFilled( # ✗
+            const ImVec2& p1, 
+            const ImVec2& p2, 
+            const ImVec2& p3, 
+            const ImVec2& p4, 
+            ImU32 col
+        ) except +
+        
+        void AddTriangle( # ✗
+            const ImVec2& p1, 
+            const ImVec2& p2, 
+            const ImVec2& p3, 
+            ImU32 col, 
+            # note:optional
+            float thickness         # = 1.0f
+        ) except +
+        
+        void AddTriangleFilled( # ✗
+            const ImVec2& p1, 
+            const ImVec2& p2, 
+            const ImVec2& p3, 
+            ImU32 col
+        ) except +
+    
         void  AddCircle(
            const ImVec2& centre,
            float radius,
            ImU32 col,
            # note:optional
-           int num_segments,           # = 12
+           int num_segments,           # = 0        # UPDATE
            float thickness             # = 1.0f
         ) except +  # ✓
 
@@ -291,28 +343,44 @@ cdef extern from "imgui.h":
            float radius,
            ImU32 col,
            # note:optional
-           int num_segments            # = 12
+           int num_segments            # = 0        # UPDATE
         ) except +  # ✓
-
-
-        void AddText(
+        
+        void AddNgon( # ✗
+            const ImVec2& center, 
+            float radius, 
+            ImU32 col, 
+            int num_segments, 
+            # note:optional
+            float thickness            # = 1.0f
+        ) except +
+        
+        void AddNgonFilled( # ✗
+            const ImVec2& center, 
+            float radius, 
+            ImU32 col, 
+            int num_segments
+        ) except +
+    
+        void AddText( # ✓
            const ImVec2& pos,
            ImU32 col,
            const char* text_begin,
            # note:optional
            const char* text_end        # = NULL
-        ) except +  # ✓
-
-
-        void AddImage(
-           ImTextureID user_texture_id,
-           const ImVec2& a,
-           const ImVec2& b,
-           # note:optional
-           const ImVec2& uv_a,         # = ImVec2(0,0)
-           const ImVec2& uv_b,         # = ImVec2(1,1)
-           ImU32 col                   # = 0xFFFFFFFF
-        ) except +  # ✓
+        ) except + 
+        
+        #void AddText( # ✗
+        #    const ImFont* font, 
+        #    float font_size, 
+        #    const ImVec2& pos, 
+        #    ImU32 col, 
+        #    const char* text_begin, 
+        #    # note:optional
+        #    const char* text_end,       # = NULL
+        #    float wrap_width,           # = 0.0f
+        #    const ImVec4* cpu_fine_clip_rect # = NULL
+        #) except +
 
 
         void AddPolyline(
@@ -322,32 +390,173 @@ cdef extern from "imgui.h":
             bool closed,
             float thickness
         ) except +  # ✓
+        
+        void AddConvexPolyFilled( # ✗
+            const ImVec2* points, 
+            int num_points, 
+            ImU32 col
+        ) except +
+        
+        void AddBezierCurve( # ✗
+            const ImVec2& p1, 
+            const ImVec2& p2, 
+            const ImVec2& p3, 
+            const ImVec2& p4, 
+            ImU32 col, 
+            float thickness, 
+            # note:optional
+            int num_segments        # = 0
+        ) except +
+        
+        # Image primitives
+        void AddImage(
+           ImTextureID user_texture_id,
+           const ImVec2& a,
+           const ImVec2& b,
+           # note:optional
+           const ImVec2& uv_a,         # = ImVec2(0,0)
+           const ImVec2& uv_b,         # = ImVec2(1,1)
+           ImU32 col                   # = 0xFFFFFFFF
+        ) except +  # ✓
+        
+        void AddImageQuad( # ✗
+            ImTextureID user_texture_id, 
+            const ImVec2& p1, 
+            const ImVec2& p2, 
+            const ImVec2& p3, 
+            const ImVec2& p4, 
+            # note:optional
+            const ImVec2& uv1,      # = ImVec2(0, 0)
+            const ImVec2& uv2,      # = ImVec2(1, 0)
+            const ImVec2& uv3,      # = ImVec2(1, 1)
+            const ImVec2& uv4,      # = ImVec2(0, 1)
+            ImU32 col               # = 0xFFFFFFFF
+        ) except +
+        
+        void AddImageRounded( # ✗
+            ImTextureID user_texture_id, 
+            const ImVec2& p_min, 
+            const ImVec2& p_max, 
+            const ImVec2& uv_min, 
+            const ImVec2& uv_max, 
+            ImU32 col, 
+            float rounding, 
+            # note:optional
+            ImDrawCornerFlags rounding_corners # = ImDrawCornerFlags_All
+        ) except +
 
+        # Stateful path API, add points then finish with PathFillConvex() or PathStroke()
+        void PathClear() except + # ✗
+        void PathLineTo(const ImVec2& pos) except + # ✗
+        void PathLineToMergeDuplicate(const ImVec2& pos) except + # ✗
+        void PathFillConvex(ImU32 col) except + # ✗
+        void PathStroke( # ✗
+            ImU32 col, 
+            bool closed, 
+            # note: optional
+            float thickness         # = 1.0f
+        ) except +
+        void PathArcTo( # ✗
+            const ImVec2& center, 
+            float radius, 
+            float a_min, 
+            float a_max, 
+            # note: optional
+            int num_segments        # = 10
+        ) except +
+        void PathArcToFast( # ✗
+            const ImVec2& center, 
+            float radius, 
+            int a_min_of_12, 
+            int a_max_of_12
+        ) except +
+        void PathBezierCurveTo( # ✗
+            const ImVec2& p2, 
+            const ImVec2& p3, 
+            const ImVec2& p4, 
+            # note: optional
+            int num_segments        # = 0
+        ) except +
+        void PathRect( # ✗ 
+            const ImVec2& rect_min, 
+            const ImVec2& rect_max, 
+            # note: optional
+            float rounding,         # = 0.0f
+            ImDrawCornerFlags rounding_corners # = ImDrawCornerFlags_All
+        ) except +
 
+        # Advanced
+        void AddCallback(ImDrawCallback callback, void* callback_data) except + # ✗
+        void AddDrawCmd() except + # ✗
+        ImDrawList* CloneOutput() except + # ✗
+        
+        # Advanced: Channels
         void ChannelsSplit(int channels_count) except + # ✓
         void ChannelsMerge() except + # ✓
         void ChannelsSetCurrent(int idx) except + # ✓
-
+        
+        # Advanced: Primitives allocations
+        void PrimReserve(int idx_count, int vtx_count) except + # ✗
+        void PrimUnreserve(int idx_count, int vtx_count) except + # ✗
+        void PrimRect(const ImVec2& a, const ImVec2& b, ImU32 col) except + # ✗
+        void PrimRectUV(const ImVec2& a, const ImVec2& b, const ImVec2& uv_a, const ImVec2& uv_b, ImU32 col) except + # ✗
+        void PrimQuadUV(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& d, const ImVec2& uv_a, const ImVec2& uv_b, const ImVec2& uv_c, const ImVec2& uv_d, ImU32 col) except + # ✗
+        inline void  PrimWriteVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col) except + # ✗
+        inline void  PrimWriteIdx(ImDrawIdx idx) except + # ✗
+        inline void  PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col) except + # ✗
 
 
     ctypedef struct ImDrawData:  # ✓
         bool            Valid  # ✓
         ImDrawList**    CmdLists  # ✓
         int             CmdListsCount  # ✓
-        int             TotalVtxCount  # ✓
         int             TotalIdxCount  # ✓
+        int             TotalVtxCount  # ✓
+        ImVec2          DisplayPos # ✗
+        ImVec2          DisplaySize # ✗
+        ImVec2          FramebufferScale # ✗
+        
         void            DeIndexAllBuffers() except +  # ✓
         void            ScaleClipRects(const ImVec2&) except +  # ✓
-
-    ctypedef struct ImFontConfig:
+        
+    ctypedef struct ImFontAtlasCustomRect: # TODO
         pass
 
-    ctypedef struct ImFont:
+    ctypedef struct ImFontConfig:
+        void*           FontData # ✗
+        int             FontDataSize # ✗
+        bool            FontDataOwnedByAtlas # ✗
+        int             FontNo # ✗
+        float           SizePixels # ✗
+        int             OversampleH # ✗
+        int             OversampleV # ✗
+        bool            PixelSnapH # ✗
+        ImVec2          GlyphExtraSpacing # ✗
+        ImVec2          GlyphOffset # ✗
+        const ImWchar*  GlyphRanges # ✗
+        float           GlyphMinAdvanceX # ✗
+        float           GlyphMaxAdvanceX # ✗
+        bool            MergeMode # ✗
+        unsigned int    RasterizerFlags # ✗
+        float           RasterizerMultiply # ✗
+        ImWchar         EllipsisChar # ✗
+        
+        # ImFontConfig()  # ✗
+        
+
+    ctypedef struct ImFont: # TODO
         pass
 
     ctypedef struct ImFontAtlas:  # ✓
-        void*   TexID  # ✓
+        
+        bool                Locked # ✗
+        ImFontAtlasFlags    Flags # ✗
+        void*               TexID  # ✓
+        int                 TexDesiredWidth # ✗
+        int                 TexGlyphPadding # ✗
 
+        ImFont* AddFont(const ImFontConfig* font_cfg) except + # ✗
+        
         ImFont* AddFontDefault(  # ✓
                    # note: optional
                    const ImFontConfig* font_cfg
@@ -358,13 +567,41 @@ cdef extern from "imgui.h":
                     const ImFontConfig* font_cfg,
                     const ImWchar* glyph_ranges
         ) except +
-        void GetTexDataAsAlpha8(unsigned char**, int*, int*, int* = NULL) except +  # ✓
-        void GetTexDataAsRGBA32(unsigned char**, int*, int*, int* = NULL) except +  # ✓
+        ImFont* AddFontFromMemoryTTF( # ✗
+            void* font_data, 
+            int font_size, 
+            float size_pixels, 
+            # note: optional
+            const ImFontConfig* font_cfg,       # = NULL
+            const ImWchar* glyph_ranges         # = NULL
+        ) except +
+        ImFont* AddFontFromMemoryCompressedTTF( # ✗
+            const void* compressed_font_data, 
+            int compressed_font_size, 
+            float size_pixels, 
+            # note: optional
+            const ImFontConfig* font_cfg,       # = NULL
+            const ImWchar* glyph_ranges         # = NULL
+        ) except +
+        ImFont* AddFontFromMemoryCompressedBase85TTF( # ✗
+            const char* compressed_font_data_base85, 
+            float size_pixels, 
+            # note: optional
+            const ImFontConfig* font_cfg,       # = NULL
+            const ImWchar* glyph_ranges         # = NULL
+        ) except +
 
-        void ClearTexData() except +  # ✓
         void ClearInputData() except +  # ✓
+        void ClearTexData() except +  # ✓
         void ClearFonts() except +  # ✓
         void Clear() except +  # ✓
+        
+        
+        bool Build() except + # ✗
+        void GetTexDataAsAlpha8(unsigned char**, int*, int*, int* = NULL) except +  # ✓
+        void GetTexDataAsRGBA32(unsigned char**, int*, int*, int* = NULL) except +  # ✓
+        bool IsBuilt() except + # ✗
+        void SetTexID(ImTextureID id) except + # ✗
 
         const ImWchar* GetGlyphRangesDefault() except +  # ✓
         const ImWchar* GetGlyphRangesKorean() except +  # ✓
@@ -372,9 +609,22 @@ cdef extern from "imgui.h":
         const ImWchar* GetGlyphRangesChineseFull() except +  # ✓
         const ImWchar* GetGlyphRangesChineseSimplifiedCommon() except +  # ✓
         const ImWchar* GetGlyphRangesCyrillic() except +  # ✓
+        const ImWchar* GetGlyphRangesThai() except + # ✗
+        const ImWchar* GetGlyphRangesVietnamese() except + # ✗
+        
+        # ====
+        # [BETA] Custom Rectangles/Glyphs API
+        int AddCustomRectRegular(int width, int height)  except + # ✗
+        int AddCustomRectFontGlyph( # ✗
+            ImFont* font, ImWchar id, 
+            int width, int height, 
+            float advance_x, 
+            # note: optional
+            const ImVec2& offset            # = ImVec2(0, 0)
+        ) except +
+        ImFontAtlasCustomRect* GetCustomRectByIndex(int index) except + # ✗
 
-
-    ctypedef struct ImGuiStorage:
+    ctypedef struct ImGuiStorage: # TODO
         pass
 
     cdef cppclass ImGuiStyle:
@@ -384,6 +634,7 @@ cdef extern from "imgui.h":
         float       WindowBorderSize  # ✓
         ImVec2      WindowMinSize  # ✓
         ImVec2      WindowTitleAlign  # ✓
+        ImGuiDir    WindowMenuButtonPosition # ✗
         float       ChildRounding  # ✓
         float       ChildBorderSize  # ✓
         float       PopupRounding  # ✓
@@ -400,17 +651,27 @@ cdef extern from "imgui.h":
         float       ScrollbarRounding  # ✓
         float       GrabMinSize  # ✓
         float       GrabRounding  # ✓
+        float       LogSliderDeadzone # ✗
+        float       TabRounding # ✗
+        float       TabBorderSize # ✗
+        float       TabMinWidthForCloseButton # ✗
+        ImGuiDir    ColorButtonPosition # ✗
         ImVec2      ButtonTextAlign  # ✓
+        ImVec2      SelectableTextAlign # ✗
         ImVec2      DisplayWindowPadding  # ✓
         ImVec2      DisplaySafeAreaPadding  # ✓
         float       MouseCursorScale   # ✓
         bool        AntiAliasedLines  # ✓
+        bool        AntiAliasedLinesUseTex # ✗
         bool        AntiAliasedFill  # ✓
         float       CurveTessellationTol  # ✓
+        float       CircleSegmentMaxError
 
         # note: originally Colors[ImGuiCol_COUNT]
         # todo: find a way to access enum var here
         ImVec4*     Colors
+        
+        void ScaleAllSizes(float scale_factor) except + # ✗
 
     ctypedef struct ImGuiPayload:
         void* Data  # ✓
