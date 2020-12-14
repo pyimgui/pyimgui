@@ -5,7 +5,7 @@
 Builds:
 
 * [![Build status](https://ci.appveyor.com/api/projects/status/s7pud6on7dww89iv?svg=true)](https://ci.appveyor.com/project/swistakm/pyimgui) (Windows)
-* [![Build Status](https://travis-ci.org/swistakm/pyimgui.svg?branch=master)](https://travis-ci.org/swistakm/pyimgui) (OS X & Linux)
+* [![Build Status](https://travis-ci.com/swistakm/pyimgui.svg?branch=master)](https://travis-ci.com/github/swistakm/pyimgui/branches) (OS X & Linux)
 
 
 # pyimgui
