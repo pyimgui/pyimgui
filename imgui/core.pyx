@@ -267,6 +267,14 @@ BACKEND_HAS_GAMEPAD = enums.ImGuiBackendFlags_.ImGuiBackendFlags_HasGamepad
 BACKEND_HAS_MOUSE_CURSORS = enums.ImGuiBackendFlags_.ImGuiBackendFlags_HasMouseCursors
 BACKEND_HAS_SET_MOUSE_POS = enums.ImGuiBackendFlags_.ImGuiBackendFlags_HasSetMousePos
 
+# ==== Slider Flags ====
+SLIDER_FLAGS_NONE = enums.ImGuiSliderFlags_None
+SLIDER_FLAGS_ALWAYS_CLAMP = enums.ImGuiSliderFlags_AlwaysClamp
+SLIDER_FLAGS_LOGARITHMIC = enums.ImGuiSliderFlags_Logarithmic
+SLIDER_FLAGS_NO_ROUND_TO_FORMAT = enums.ImGuiSliderFlags_NoRoundToFormat
+SLIDER_FLAGS_NO_INPUT = enums.ImGuiSliderFlags_NoInput
+
+
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
 
@@ -5882,7 +5890,7 @@ def v_slider_float(
             "vertical slider float",
             width, height, value,
             min_value=0, max_value=100,
-            format="%0.3f", power = 1.0
+            format="%0.3f", flags=imgui.SLIDER_FLAGS_NONE
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -5895,7 +5903,7 @@ def v_slider_float(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_float()`.
-        power (float): how fast values changes on slide.
+        flags (ImGuiSliderFlags): Slider Flags.
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
