@@ -103,11 +103,12 @@ cdef extern from "imgui.h":
         float         FontGlobalScale  # ✓
         bool          FontAllowUserScaling  # ✓
         ImVec2        DisplayFramebufferScale  # ✓
-        ImVec2        DisplayVisibleMin  # ✓
-        ImVec2        DisplayVisibleMax  # ✓
+        #ImVec2        DisplayVisibleMin  # ✓ # DEPRECIATED
+        #ImVec2        DisplayVisibleMax  # ✓ # DEPRECIATED
         bool          ConfigMacOSXBehaviors  # ✓
         bool          ConfigInputTextCursorBlink  # ✓
-        bool          ConfigResizeWindowsFromEdges  # ✓
+        #bool          ConfigResizeWindowsFromEdges  # ✓ # RENAMED
+        bool          ConfigWindowsResizeFromEdges # ✓
 
         # ====
         # source-note: User Functions

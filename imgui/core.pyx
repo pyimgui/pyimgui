@@ -33,7 +33,7 @@ cimport enums
 from cpython.version cimport PY_MAJOR_VERSION
 
 # todo: find a way to cimport this directly from imgui.h
-DEF TARGET_IMGUI_VERSION = (1, 65)
+DEF TARGET_IMGUI_VERSION = (1, 79)
 
 cdef unsigned short* _LATIN_ALL = [0x0020, 0x024F , 0]
 
@@ -1579,21 +1579,25 @@ cdef class _IO(object):
     def display_fb_scale(self, value):
         self._ptr.DisplayFramebufferScale = _cast_tuple_ImVec2(value)
 
-    @property
-    def display_visible_min(self):
-        return _cast_ImVec2_tuple(self._ptr.DisplayVisibleMin)
+    # DEPRECIATED
+    #@property
+    #def display_visible_min(self):
+    #    return _cast_ImVec2_tuple(self._ptr.DisplayVisibleMin)
 
-    @display_visible_min.setter
-    def display_visible_min(self,  value):
-        self._ptr.DisplayVisibleMin = _cast_tuple_ImVec2(value)
+    # DEPRECIATED
+    #@display_visible_min.setter
+    #def display_visible_min(self,  value):
+    #    self._ptr.DisplayVisibleMin = _cast_tuple_ImVec2(value)
 
-    @property
-    def display_visible_max(self):
-        return _cast_ImVec2_tuple(self._ptr.DisplayVisibleMax)
+    # DEPRECIATED
+    #@property
+    #def display_visible_max(self):
+    #    return _cast_ImVec2_tuple(self._ptr.DisplayVisibleMax)
 
-    @display_visible_max.setter
-    def display_visible_max(self,  value):
-        self._ptr.DisplayVisibleMax = _cast_tuple_ImVec2(value)
+    # DEPRECIATED
+    #@display_visible_max.setter
+    #def display_visible_max(self,  value):
+    #    self._ptr.DisplayVisibleMax = _cast_tuple_ImVec2(value)
 
     @property
     def config_mac_osx_behaviors(self):
@@ -1611,13 +1615,15 @@ cdef class _IO(object):
     def config_cursor_blink(self, cimgui.bool value):
         self._ptr.ConfigInputTextCursorBlink = value
 
+    # RENAMED from config_resize_windows_from_edges
     @property
-    def config_resize_windows_from_edges(self):
-        return self._ptr.ConfigResizeWindowsFromEdges
-
-    @config_resize_windows_from_edges.setter
-    def config_resize_windows_from_edges(self, cimgui.bool value):
-        self._ptr.ConfigResizeWindowsFromEdges = value
+    def config_windows_resize_from_edges(self):
+        return self._ptr.ConfigWindowsResizeFromEdges
+    
+    # RENAMED from config_resize_windows_from_edges
+    @config_windows_resize_from_edges.setter
+    def config_windows_resize_from_edges(self, cimgui.bool value):
+        self._ptr.ConfigWindowsResizeFromEdges = value
 
     @staticmethod
     cdef const char* _get_clipboard_text(void* user_data):
