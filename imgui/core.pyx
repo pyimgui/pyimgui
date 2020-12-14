@@ -6723,7 +6723,7 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     .. wraps::
         PushStyleVar(ImGuiStyleVar idx, float val)
     """
-    if not (0 <= variable < enums.ImGuiStyleVar_Count_):
+    if not (0 <= variable < enums.ImGuiStyleVar_COUNT):
         warnings.warn("Unknown style variable: {}".format(variable))
         return False
 
