@@ -673,9 +673,13 @@ cdef extern from "imgui.h":
         
         void ScaleAllSizes(float scale_factor) except + # ✗
 
-    ctypedef struct ImGuiPayload:
+    ctypedef struct ImGuiPayload: # ✗
         void* Data  # ✓
         int   DataSize  # ✓
+        
+        bool IsDataType(const char* type) except + # ✗
+        bool IsPreview() except + # ✗
+        bool IsDelivery() except + # ✗
 
     ctypedef struct ImGuiContext:
         pass
@@ -1669,7 +1673,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool BeginDragDropTarget() except +  # ✓
     const ImGuiPayload* AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags) except +  # ✓
     void EndDragDropTarget() except +  # ✓
-    const ImGuiPayload* GetDragDropPayload() except + # ✗
+    const ImGuiPayload* GetDragDropPayload() except + # ✓
 
     # ====
     # Clipping

@@ -7827,6 +7827,22 @@ def end_drag_drop_target():
     cimgui.EndDragDropTarget()
 
 
+def get_drag_drop_payload():
+    """Peek directly into the current payload from anywhere. 
+    May return NULL. 
+    
+    .. todo:: Map ImGuiPayload::IsDataType() to test for the payload type.
+    
+    .. wraps::
+        const ImGuiPayload* GetDragDropPayload()
+    """
+    cdef const cimgui.ImGuiPayload* payload = cimgui.GetDragDropPayload()
+    if payload == NULL:
+        return None
+    cdef const char* data = <const char *>payload.Data
+    return <bytes>data[:payload.DataSize]
+
+
 def begin_group():
     """Start item group and lock its horizontal starting position.
 
