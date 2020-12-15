@@ -9,8 +9,7 @@ from imgui import extra
 from imgui import _compat
 
 
-# TODO: Add in new redefines for ImGui v1.61
-
+# TODO: Complete and correcte doc text for ImGui v1.79
 
 VERTEX_BUFFER_POS_OFFSET = extra.vertex_buffer_vertex_pos_offset()
 VERTEX_BUFFER_UV_OFFSET = extra.vertex_buffer_vertex_uv_offset()
@@ -21,14 +20,15 @@ VERTEX_SIZE = extra.vertex_buffer_vertex_size()
 INDEX_SIZE = extra.index_buffer_index_size()
 
 # ==== Condition constants (redefines for autodoc)
-#: Set the variable always
+#: No condition (always set the variable), same as _Always
+NONE = core.NONE
+#: No condition (always set the variable)
 ALWAYS = core.ALWAYS
-#: Only set the variable on the first call per runtime session
+#: Set the variable once per runtime session (only the first call will succeed)
 ONCE = core.ONCE
-#: Only set the variable if the window doesn't exist in the .ini file
+#: Set the variable if the object/window has no persistently saved data (no entry in .ini file)
 FIRST_USE_EVER = core.FIRST_USE_EVER
-#: Only set the variable if the window is appearing after being inactive
-#: (or the first time)
+#: Set the variable if the object/window is appearing after being hidden/inactive (or the first time)
 APPEARING = core.APPEARING
 
 
@@ -61,6 +61,8 @@ KEY_SPACE = core.KEY_SPACE
 KEY_ENTER = core.KEY_ENTER
 #: for text edit
 KEY_ESCAPE = core.KEY_ESCAPE
+#: 
+KEY_PAD_ENTER = core.KEY_PAD_ENTER
 #: for text edit CTRL+A: select all
 KEY_A = core.KEY_A
 #: for text edit CTRL+C: copy
@@ -74,6 +76,47 @@ KEY_Y = core.KEY_Y
 #: for text edit CTRL+Z: undo
 KEY_Z = core.KEY_Z
 
+# === Nav Input (redefines for autodoc)
+#: activate / open / toggle / tweak value        e.g. Cross  (PS4), A (Xbox), A (Switch), Space (Keyboard)
+NAV_INPUT_ACTIVATE = core.NAV_INPUT_ACTIVATE
+#: cancel / close / exit                         e.g. Circle (PS4), B (Xbox), B (Switch), Escape (Keyboard)
+NAV_INPUT_CANCEL = core.NAV_INPUT_CANCEL
+#: text input / on-screen keyboard               e.g. Triang.(PS4), Y (Xbox), X (Switch), Return (Keyboard)
+NAV_INPUT_INPUT = core.NAV_INPUT_INPUT
+#: tap: toggle menu / hold: focus, move, resize  e.g. Square (PS4), X (Xbox), Y (Switch), Alt (Keyboard)
+NAV_INPUT_MENU = core.NAV_INPUT_MENU
+#: move / tweak / resize window (w/ PadMenu)     e.g. D-pad Left/Right/Up/Down (Gamepads), Arrow keys (Keyboard)
+NAV_INPUT_DPAD_LEFT = core.NAV_INPUT_DPAD_LEFT
+#:
+NAV_INPUT_DPAD_RIGHT = core.NAV_INPUT_DPAD_RIGHT
+#:
+NAV_INPUT_DPAD_UP = core.NAV_INPUT_DPAD_UP
+#:
+NAV_INPUT_DPAD_DOWN = core.NAV_INPUT_DPAD_DOWN
+#: scroll / move window (w/ PadMenu)             e.g. Left Analog Stick Left/Right/Up/Down
+NAV_INPUT_L_STICK_LEFT = core.NAV_INPUT_L_STICK_LEFT
+#:
+NAV_INPUT_L_STICK_RIGHT = core.NAV_INPUT_L_STICK_RIGHT 
+#:
+NAV_INPUT_L_STICK_UP = core.NAV_INPUT_L_STICK_UP
+#:
+NAV_INPUT_L_STICK_DOWN = core.NAV_INPUT_L_STICK_DOWN
+#: next window (w/ PadMenu)                      e.g. L1 or L2 (PS4), LB or LT (Xbox), L or ZL (Switch)
+NAV_INPUT_FOCUS_PREV = core.NAV_INPUT_FOCUS_PREV
+#: prev window (w/ PadMenu)                      e.g. R1 or R2 (PS4), RB or RT (Xbox), R or ZL (Switch)
+NAV_INPUT_FOCUS_NEXT = core.NAV_INPUT_FOCUS_NEXT
+#: slower tweaks                                 e.g. L1 or L2 (PS4), LB or LT (Xbox), L or ZL (Switch)
+NAV_INPUT_TWEAK_SLOW = core.NAV_INPUT_TWEAK_SLOW
+#: faster tweaks                                 e.g. R1 or R2 (PS4), RB or RT (Xbox), R or ZL (Switch)
+NAV_INPUT_TEWAK_FAST    = core.NAV_INPUT_TEWAK_FAST
+
+
+# === Key Mode Flags (redefines for autodoc)
+KEY_MOD_NONE = core.KEY_MOD_NONE
+KEY_MOD_CTRL = core.KEY_MOD_CTRL
+KEY_MOD_SHIFT = core.KEY_MOD_SHIFT
+KEY_MOD_ALT = core.KEY_MOD_ALT
+KEY_MOD_SUPER = core.KEY_MOD_SUPER
 
 # === Style var constants (redefines for autodoc)
 #: associated type: ``float``.
@@ -116,52 +159,129 @@ STYLE_SCROLLBAR_ROUNDING = core.STYLE_SCROLLBAR_ROUNDING
 STYLE_GRAB_MIN_SIZE = core.STYLE_GRAB_MIN_SIZE
 #: associated type: ``float``.
 STYLE_GRAB_ROUNDING = core.STYLE_GRAB_ROUNDING
+#: associated type: ``float``
+STYLE_TAB_ROUNDING = core.STYLE_TAB_ROUNDING
 #: associated type: flags ImGuiAlign_*.
 STYLE_BUTTON_TEXT_ALIGN = core.STYLE_BUTTON_TEXT_ALIGN
+#: associated type: Vec2
+STYLE_SELECTABLE_TEXT_ALIGN = core.STYLE_SELECTABLE_TEXT_ALIGN
+
+# === Button Flags (redefines for autodoc)
+BUTTON_NONE = core.BUTTON_NONE
+#: React on left mouse button (default)
+BUTTON_MOUSE_BUTTON_LEFT = core.BUTTON_MOUSE_BUTTON_LEFT
+#: React on right mouse button
+BUTTON_MOUSE_BUTTON_RIGHT = core.BUTTON_MOUSE_BUTTON_RIGHT
+#: React on center mouse button
+BUTTON_MOUSE_BUTTON_MIDDLE = core.BUTTON_MOUSE_BUTTON_MIDDLE
 
 # === Window flag constants (redefines for autodoc)
+#:
+WINDOW_NONE = core.WINDOW_NONE
 #: Disable title-bar.
 WINDOW_NO_TITLE_BAR = core.WINDOW_NO_TITLE_BAR
 #: Disable user resizing with the lower-right grip.
 WINDOW_NO_RESIZE = core.WINDOW_NO_RESIZE
 #: Disable user moving the window.
 WINDOW_NO_MOVE = core.WINDOW_NO_MOVE
-#: Disable scrollbars (window can still scroll with mouse or programatically).
+#: Disable scrollbars (window can still scroll with mouse or programmatically).
 WINDOW_NO_SCROLLBAR = core.WINDOW_NO_SCROLLBAR
-#: Disable user vertically scrolling with mouse wheel.
+#: Disable user vertically scrolling with mouse wheel. On child window, mouse wheel will be forwarded to the parent unless NoScrollbar is also set.
 WINDOW_NO_SCROLL_WITH_MOUSE = core.WINDOW_NO_SCROLL_WITH_MOUSE
 #: Disable user collapsing window by double-clicking on it.
 WINDOW_NO_COLLAPSE = core.WINDOW_NO_COLLAPSE
 #: Resize every window to its content every frame.
 WINDOW_ALWAYS_AUTO_RESIZE = core.WINDOW_ALWAYS_AUTO_RESIZE
+#: Disable drawing background color (WindowBg, etc.) and outside border. Similar as using SetNextWindowBgAlpha(0.0f).
+WINDOW_NO_BACKGROUND = core.WINDOW_NO_BACKGROUND
 #: Never load/save settings in ``.ini`` file.
 WINDOW_NO_SAVED_SETTINGS = core.WINDOW_NO_SAVED_SETTINGS
-#: Disable catching mouse or keyboard inputs.
-WINDOW_NO_INPUTS = core.WINDOW_NO_INPUTS
+#: Disable catching mouse, hovering test with pass through.
+WINDOW_NO_MOUSE_INPUTS = core.WINDOW_NO_MOUSE_INPUTS
 #: Has a menu-bar.
 WINDOW_MENU_BAR = core.WINDOW_MENU_BAR
-#: Allow horizontal scrollbar to appear (off by default).
+#: Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.
 WINDOW_HORIZONTAL_SCROLLING_BAR = core.WINDOW_HORIZONTAL_SCROLLING_BAR
 #: Disable taking focus when transitioning from hidden to visible state.
 WINDOW_NO_FOCUS_ON_APPEARING = core.WINDOW_NO_FOCUS_ON_APPEARING
-#: Disable bringing window to front when taking focus (e.g. clicking on it or
-#: programatically giving it focus).
+#: Disable bringing window to front when taking focus (e.g. clicking on it or programmatically giving it focus).
 WINDOW_NO_BRING_TO_FRONT_ON_FOCUS = core.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS
 #: Always show vertical scrollbar (even if ContentSize.y < Size.y).
 WINDOW_ALWAYS_VERTICAL_SCROLLBAR = core.WINDOW_ALWAYS_VERTICAL_SCROLLBAR
 #: Always show horizontal scrollbar (even if ContentSize.x < Size.x).
 WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR = core.WINDOW_ALWAYS_HORIZONTAL_SCROLLBAR
-#: Ensure child windows without border uses style.WindowPadding (ignored by
-#: default for non-bordered child windows, because more convenient).
+#: Ensure child windows without border uses style.WindowPadding (ignored by default for non-bordered child windows, because more convenient).
 WINDOW_ALWAYS_USE_WINDOW_PADDING = core.WINDOW_ALWAYS_USE_WINDOW_PADDING
-# No gamepad/keyboard navigation within the window
+#: No gamepad/keyboard navigation within the window.
 WINDOW_NO_NAV_INPUTS = core.WINDOW_NO_NAV_INPUTS
-# No focusing toward this window with gamepad/keyboard navigation
+#: No focusing toward this window with gamepad/keyboard navigation (e.g. skipped by CTRL+TAB).
 WINDOW_NO_NAV_FOCUS = core.WINDOW_NO_NAV_FOCUS
-# Shortcut: ``imgui.WINDOW_NO_NAV_INPUTS | imgui.WINDOW_NO_NAV_FOCUS``.
+#: Append '*' to title without affecting the ID, as a convenience to avoid using the ### operator. When used in a tab/docking context, tab is selected on closure and closure is deferred by one frame to allow code to cancel the closure (with a confirmation popup, etc.) without flicker.
+WINDOW_UNSAVED_DOCUMENT = core.WINDOW_UNSAVED_DOCUMENT
+#: Shortcut: ``imgui.WINDOW_NO_NAV_INPUTS | imgui.WINDOW_NO_NAV_FOCUS``.
 WINDOW_NO_NAV = core.WINDOW_NO_NAV
+#: Shortcut: ``imgui.WINDOW_NO_TITLE_BAR | imgui.WINDOW_NO_RESIZE | imgui.WINDOW_NO_SCROLLBAR | imgui.WINDOW_NO_COLLAPSE``.
+WINDOW_NO_DECORATION = core.WINDOW_NO_DECORATION
+#: Shortcut: ``imgui.WINDOW_NO_MOUSE_INPUTS | imgui.WINDOW_NO_NAV_INPUTS | imgui.WINDOW_NO_NAV_FOCUS``.
+WINDOW_NO_INPUTS = core.WINDOW_NO_INPUTS
+
+# === Color Edit Flags (redefines for autodoc)
+#:
+COLOR_EDIT_NONE = core.COLOR_EDIT_NONE
+#: ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will only read 3 components from the input pointer).
+COLOR_EDIT_NO_ALPHA = core.COLOR_EDIT_NO_ALPHA
+#: ColorEdit: disable picker when clicking on colored square.
+COLOR_EDIT_NO_PICKER = core.COLOR_EDIT_NO_PICKER
+#: ColorEdit: disable toggling options menu when right-clicking on inputs/small preview.
+COLOR_EDIT_NO_OPTIONS = core.COLOR_EDIT_NO_OPTIONS
+#: ColorEdit, ColorPicker: disable colored square preview next to the inputs. (e.g. to show only the inputs)
+COLOR_EDIT_NO_SMALL_PREVIEW = core.COLOR_EDIT_NO_SMALL_PREVIEW
+#: ColorEdit, ColorPicker: disable inputs sliders/text widgets (e.g. to show only the small preview colored square).
+COLOR_EDIT_NO_INPUTS = core.COLOR_EDIT_NO_INPUTS
+#: ColorEdit, ColorPicker, ColorButton: disable tooltip when hovering the preview.
+COLOR_EDIT_NO_TOOLTIP = core.COLOR_EDIT_NO_TOOLTIP
+#: ColorEdit, ColorPicker: disable display of inline text label (the label is still forwarded to the tooltip and picker).
+COLOR_EDIT_NO_LABEL = core.COLOR_EDIT_NO_LABEL
+#: ColorPicker: disable bigger color preview on right side of the picker, use small colored square preview instead.
+COLOR_EDIT_NO_SIDE_PREVIEW = core.COLOR_EDIT_NO_SIDE_PREVIEW
+#: ColorEdit: disable drag and drop target. ColorButton: disable drag and drop source.
+COLOR_EDIT_NO_DRAG_DROP = core.COLOR_EDIT_NO_DRAG_DROP
+#: ColorButton: disable border (which is enforced by default)
+COLOR_EDIT_NO_BORDER = core.COLOR_EDIT_NO_BORDER
+
+#: ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.
+COLOR_EDIT_ALPHA_BAR = core.COLOR_EDIT_ALPHA_BAR
+#: ColorEdit, ColorPicker, ColorButton: display preview as a transparent color over a checkerboard, instead of opaque.
+COLOR_EDIT_ALPHA_PREVIEW = core.COLOR_EDIT_ALPHA_PREVIEW
+#: ColorEdit, ColorPicker, ColorButton: display half opaque / half checkerboard, instead of opaque.
+COLOR_EDIT_ALPHA_PREVIEW_HALF = core.COLOR_EDIT_ALPHA_PREVIEW_HALF
+#: (WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use ImGuiColorEditFlags_Float flag as well).
+COLOR_EDIT_HDR = core.COLOR_EDIT_HDR
+#: ColorEdit: override _display_ type among RGB/HSV/Hex. ColorPicker: select any combination using one or more of RGB/HSV/Hex.
+COLOR_EDIT_DISPLAY_RGB = core.COLOR_EDIT_DISPLAY_RGB
+#: ColorEdit: override _display_ type among RGB/HSV/Hex. ColorPicker: select any combination using one or more of RGB/HSV/Hex.
+COLOR_EDIT_DISPLAY_HSV = core.COLOR_EDIT_DISPLAY_HSV
+#: ColorEdit: override _display_ type among RGB/HSV/Hex. ColorPicker: select any combination using one or more of RGB/HSV/Hex.
+COLOR_EDIT_DISPLAY_HEX = core.COLOR_EDIT_DISPLAY_HEX
+#: ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0..255.
+COLOR_EDIT_UINT8 = core.COLOR_EDIT_UINT8
+#: ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers.
+COLOR_EDIT_FLOAT = core.COLOR_EDIT_FLOAT
+#: ColorPicker: bar for Hue, rectangle for Sat/Value.
+COLOR_EDIT_PICKER_HUE_BAR = core.COLOR_EDIT_PICKER_HUE_BAR
+#: ColorPicker: wheel for Hue, triangle for Sat/Value.
+COLOR_EDIT_PICKER_HUE_WHEEL = core.COLOR_EDIT_PICKER_HUE_WHEEL
+#: ColorEdit, ColorPicker: input and output data in RGB format.
+COLOR_EDIT_INPUT_RGB = core.COLOR_EDIT_INPUT_RGB
+#: ColorEdit, ColorPicker: input and output data in HSV format.
+COLOR_EDIT_INPUT_HSV = core.COLOR_EDIT_INPUT_HSV
+
+#: Shortcut: ``imgui.COLOR_EDIT_UINT8 | imgui.COLOR_EDIT_DISPLAY_RGB | imgui.COLOR_EDIT_INPUT_RGB | imgui.COLOR_EDIT_PICKER_HUE_BAR``.
+COLOR_EDIT_DEFAULT_OPTIONS = core.COLOR_EDIT_DEFAULT_OPTIONS
 
 # === Tree node flag constants (redefines for autodoc)
+#:
+TREE_NODE_NONE = core.TREE_NODE_NONE
 #: Draw as selected
 TREE_NODE_SELECTED = core.TREE_NODE_SELECTED
 #: Full colored frame (e.g. for :func:`imgui.core.collapsing_header`).
@@ -175,7 +295,7 @@ TREE_NODE_NO_TREE_PUSH_ON_OPEN = core.TREE_NODE_NO_TREE_PUSH_ON_OPEN
 #: Don't automatically and temporarily open node when Logging is active
 #: (by default logging will automatically open tree nodes).
 TREE_NODE_NO_AUTO_OPEN_ON_LOG = core.TREE_NODE_NO_AUTO_OPEN_ON_LOG
-#: Default node to be open.
+#: Default node to be open
 TREE_NODE_DEFAULT_OPEN = core.TREE_NODE_DEFAULT_OPEN
 #: Need double-click to open node.
 TREE_NODE_OPEN_ON_DOUBLE_CLICK = core.TREE_NODE_OPEN_ON_DOUBLE_CLICK
@@ -189,10 +309,29 @@ TREE_NODE_LEAF = core.TREE_NODE_LEAF
 TREE_NODE_BULLET = core.TREE_NODE_BULLET
 #: Use FramePadding (even for an unframed text node) to vertically align
 #: text baseline to regular widget height. Equivalent to calling
-#: align_text_to_frame_padding()
+#: ``align_text_to_frame_padding()``
 TREE_NODE_FRAME_PADDING = core.TREE_NODE_FRAME_PADDING
+#: Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line. In the future we may refactor the hit system to be front-to-back, allowing natural overlaps and then this can become the default.
+TREE_NODE_SPAN_AVAILABLE_WIDTH = core.TREE_NODE_SPAN_AVAILABLE_WIDTH
+#: Extend hit box to the left-most and right-most edges (bypass the indented area).
+TREE_NODE_SPAN_FULL_WIDTH = core.TREE_NODE_SPAN_FULL_WIDTH
+#: (WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)
+TREE_NODE_NAV_LEFT_JUPS_BACK_HERE = core.TREE_NODE_NAV_LEFT_JUPS_BACK_HERE
 #: Shortcut: ``imgui.TREE_NODE_FRAMED | imgui.TREE_NODE_NO_AUTO_OPEN_ON_LOG``.
 TREE_NODE_COLLAPSING_HEADER = core.TREE_NODE_COLLAPSING_HEADER
+
+# === Popup Flags (redefines for autodoc)
+POPUP_NONE = core.POPUP_NONE
+POPUP_MOUSE_BUTTON_LEFT = core.POPUP_MOUSE_BUTTON_LEFT
+POPUP_MOUSE_BUTTON_RIGHT = core.POPUP_MOUSE_BUTTON_RIGHT
+POPUP_MOUSE_BUTTON_MIDDLE = core.POPUP_MOUSE_BUTTON_MIDDLE
+POPUP_MOUSE_BUTTON_MASK = core.POPUP_MOUSE_BUTTON_MASK
+POPUP_MOUSE_BUTTON_DEFAULT = core.POPUP_MOUSE_BUTTON_DEFAULT
+POPUP_NO_OPEN_OVER_EXISTING_POPUP = core.POPUP_NO_OPEN_OVER_EXISTING_POPUP
+POPUP_NO_OPEN_OVER_ITEMS = core.POPUP_NO_OPEN_OVER_ITEMS
+POPUP_ANY_POPUP_ID = core.POPUP_ANY_POPUP_ID
+POPUP_ANY_POPUP_LEVEL = core.POPUP_ANY_POPUP_LEVEL
+POPUP_ANY_POPUP = core.POPUP_ANY_POPUP
 
 # === Color flag constants (redefines for autodoc)
 COLOR_TEXT = core.COLOR_TEXT
@@ -228,6 +367,11 @@ COLOR_SEPARATOR_ACTIVE = core.COLOR_SEPARATOR_ACTIVE
 COLOR_RESIZE_GRIP = core.COLOR_RESIZE_GRIP
 COLOR_RESIZE_GRIP_HOVERED = core.COLOR_RESIZE_GRIP_HOVERED
 COLOR_RESIZE_GRIP_ACTIVE = core.COLOR_RESIZE_GRIP_ACTIVE
+COLOR_TAB = COLOR_TAB
+COLOR_TAB_HOVERED = COLOR_TAB_HOVERED                           
+COLOR_TAB_ACTIVE = COLOR_TAB_ACTIVE                            
+COLOR_TAB_UNFOCUSED = COLOR_TAB_UNFOCUSED                         
+COLOR_TAB_UNFOCUSED_ACTIVE = COLOR_TAB_UNFOCUSED_ACTIVE                  
 COLOR_PLOT_LINES = core.COLOR_PLOT_LINES
 COLOR_PLOT_LINES_HOVERED = core.COLOR_PLOT_LINES_HOVERED
 COLOR_PLOT_HISTOGRAM = core.COLOR_PLOT_HISTOGRAM
@@ -240,7 +384,21 @@ COLOR_NAV_WINDOWING_DIM_BACKGROUND = core.COLOR_NAV_WINDOWING_DIM_BACKGROUND
 COLOR_MODAL_WINDOW_DIM_BACKGROUND = core.COLOR_MODAL_WINDOW_DIM_BACKGROUND
 COLOR_COUNT = core.COLOR_COUNT
 
+# === Data Type (redefines for autodoc)
+DATA_TYPE_S8     = core.DATA_TYPE_S8    
+DATA_TYPE_U8     = core.DATA_TYPE_U8    
+DATA_TYPE_S16    = core.DATA_TYPE_S16   
+DATA_TYPE_U16    = core.DATA_TYPE_U16   
+DATA_TYPE_S32    = core.DATA_TYPE_S32   
+DATA_TYPE_U32    = core.DATA_TYPE_U32   
+DATA_TYPE_S64    = core.DATA_TYPE_S64   
+DATA_TYPE_U64    = core.DATA_TYPE_U64   
+DATA_TYPE_FLOAT  = core.DATA_TYPE_FLOAT 
+DATA_TYPE_DOUBLE = core.DATA_TYPE_DOUBLE
+
+
 # === Selectable flag constants (redefines for autodoc)
+SELECTABLE_NONE = core.SELECTABLE_NONE
 #: Clicking this don't close parent popup window.
 SELECTABLE_DONT_CLOSE_POPUPS = core.SELECTABLE_DONT_CLOSE_POPUPS
 #: Selectable frame can span all columns
@@ -248,8 +406,11 @@ SELECTABLE_DONT_CLOSE_POPUPS = core.SELECTABLE_DONT_CLOSE_POPUPS
 SELECTABLE_SPAN_ALL_COLUMNS = core.SELECTABLE_SPAN_ALL_COLUMNS
 #: Generate press events on double clicks too.
 SELECTABLE_ALLOW_DOUBLE_CLICK = core.SELECTABLE_ALLOW_DOUBLE_CLICK
+SELECTABLE_DISABLED = core.SELECTABLE_DISABLED
+SELECTABLE_ALLOW_ITEM_OVERLAP = core.SELECTABLE_ALLOW_ITEM_OVERLAP
 
 # === Combo flag constants (redefines for autodoc)
+COMBO_NONE = core.COMBO_NONE
 #: Align the popup toward the left by default
 COMBO_POPUP_ALIGN_LEFT = core.COMBO_POPUP_ALIGN_LEFT
 #: Max ~4 items visible. Tip: If you want your combo popup to be a
@@ -313,6 +474,7 @@ TAB_ITEM_TRAILING = core.TAB_ITEM_TRAILING
 
 
 # === Focus flag constants (redefines for autodoc)
+FOCUS_NONE = core.FOCUS_NONE
 #: IsWindowFocused(): Return true if any children of the window is focused
 FOCUS_CHILD_WINDOWS = core.FOCUS_CHILD_WINDOWS
 #: IsWindowFocused(): Test from root window (top most parent of the current hierarchy)
@@ -339,12 +501,14 @@ HOVERED_ALLOW_WHEN_BLOCKED_BY_POPUP = core.HOVERED_ALLOW_WHEN_BLOCKED_BY_POPUP
 HOVERED_ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM = core.HOVERED_ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM
 #: Return true even if the position is overlapped by another window
 HOVERED_ALLOW_WHEN_OVERLAPPED = core.HOVERED_ALLOW_WHEN_OVERLAPPED
+HOVERED_ALLOW_WHEN_DISABLED = core.HOVERED_ALLOW_WHEN_DISABLED
 #: Shortcut: ``imgui.HOVERED_ALLOW_WHEN_BLOCKED_BY_POPUP | imgui.HOVERED_ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM | imgui.HOVERED_ALLOW_WHEN_OVERLAPPED``.
 HOVERED_RECT_ONLY = core.HOVERED_ALLOW_WHEN_BLOCKED_BY_POPUP | core.HOVERED_ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM | core.HOVERED_ALLOW_WHEN_OVERLAPPED
 #: Shortcut: ``imgui.HOVERED_ROOT_WINDOW | imgui.HOVERED_CHILD_WINDOWS``.
 HOVERED_ROOT_AND_CHILD_WINDOWS = core.HOVERED_ROOT_WINDOW | core.HOVERED_CHILD_WINDOWS
 
 # === Drag Drop flag constants (redefines for autodoc)
+DRAG_DROP_NONE = core.DRAG_DROP_NONE
 #: By default, a successful call to BeginDragDropSource opens a tooltip
 #: so you can display a preview or description of the source contents.
 #: This flag disable this behavior.
@@ -377,8 +541,9 @@ DRAG_DROP_SOURCE_AUTO_EXPIRE_PAYLOAD = core.DRAG_DROP_SOURCE_AUTO_EXPIRE_PAYLOAD
 DRAG_DROP_ACCEPT_BEFORE_DELIVERY = core.DRAG_DROP_ACCEPT_BEFORE_DELIVERY
 #: Do not draw the default highlight rectangle when hovering over target.
 DRAG_DROP_ACCEPT_NO_DRAW_DEFAULT_RECT = core.DRAG_DROP_ACCEPT_NO_DRAW_DEFAULT_RECT
+DRAG_DROP_ACCEPT_NO_PREVIEW_TOOLTIP = core.DRAG_DROP_ACCEPT_NO_PREVIEW_TOOLTIP
 #: For peeking ahead and inspecting the payload before delivery.
-DRAG_DROP_ACCEPT_PEEK_ONLY = core.DRAG_DROP_ACCEPT_BEFORE_DELIVERY | core.DRAG_DROP_ACCEPT_NO_DRAW_DEFAULT_RECT
+DRAG_DROP_ACCEPT_PEEK_ONLY = core.DRAG_DROP_ACCEPT_PEEK_ONLY
 
 # === Cardinal Direction
 #: Direction None
@@ -393,6 +558,7 @@ DIRECTION_UP = core.DIRECTION_UP
 DIRECTION_DOWN = core.DIRECTION_DOWN
 
 # === Mouse cursor flag constants (redefines for autodoc)
+MOUSE_CURSOR_NONE = core.MOUSE_CURSOR_NONE
 MOUSE_CURSOR_ARROW = core.MOUSE_CURSOR_ARROW
 #: When hovering over InputText, etc.
 MOUSE_CURSOR_TEXT_INPUT = core.MOUSE_CURSOR_TEXT_INPUT
@@ -406,8 +572,11 @@ MOUSE_CURSOR_RESIZE_EW = core.MOUSE_CURSOR_RESIZE_EW
 MOUSE_CURSOR_RESIZE_NESW = core.MOUSE_CURSOR_RESIZE_NESW
 #: When hovering over the bottom-right corner of a window
 MOUSE_CURSOR_RESIZE_NWSE = core.MOUSE_CURSOR_RESIZE_NWSE
+MOUSE_CURSOR_HAND = core.MOUSE_CURSOR_HAND
+MOUSE_CURSOR_NOT_ALLOWED = core.MOUSE_CURSOR_NOT_ALLOWED
 
 # === Text input flag constants (redefines for autodoc)
+INPUT_TEXT_NONE = core.INPUT_TEXT_NONE
 #: Allow ``0123456789.+-*/``
 INPUT_TEXT_CHARS_DECIMAL = core.INPUT_TEXT_CHARS_DECIMAL
 #: Allow ``0123456789ABCDEFabcdef``
@@ -448,6 +617,52 @@ INPUT_TEXT_PASSWORD = core.INPUT_TEXT_PASSWORD
 #: active, if you want to provide your own undo/redo stack you need
 #: e.g. to call clear_active_id().
 INPUT_TEXT_NO_UNDO_REDO = core.INPUT_TEXT_NO_UNDO_REDO
+INPUT_TEXT_CHARS_SCIENTIFIC = core.INPUT_TEXT_CHARS_SCIENTIFIC
+INPUT_TEXT_CALLBACK_RESIZE = core.INPUT_TEXT_CALLBACK_RESIZE
+INPUT_TEXT_CALLBACK_EDIT = core.INPUT_TEXT_CALLBACK_EDIT
+
+# === Draw Corner Flags (redefines for autodoc)
+DRAW_CORNER_NONE = core.DRAW_CORNER_NONE
+DRAW_CORNER_TOP_LEFT = core.DRAW_CORNER_TOP_LEFT
+DRAW_CORNER_TOP_RIGHT = core.DRAW_CORNER_TOP_RIGHT
+DRAW_CORNER_BOTTOM_LEFT = core.DRAW_CORNER_BOTTOM_LEFT
+DRAW_CORNER_BOTTOM_RIGHT = core.DRAW_CORNER_BOTTOM_RIGHT
+DRAW_CORNER_TOP = core.DRAW_CORNER_TOP
+DRAW_CORNER_BOTTOM = core.DRAW_CORNER_BOTTOM
+DRAW_CORNER_LEFT = core.DRAW_CORNER_LEFT
+DRAW_CORNER_RIGHT = core.DRAW_CORNER_RIGHT
+DRAW_CORNER_ALL = core.DRAW_CORNER_ALL
+
+# === Draw List Flags (redefines for autodoc)
+DRAW_LIST_NONE = core.DRAW_LIST_NONE
+DRAW_LIST_ANTI_ALIASED_LINES = core.DRAW_LIST_ANTI_ALIASED_LINES
+DRAW_LIST_ANTI_ALIASED_LINES_USE_TEX = core.DRAW_LIST_ANTI_ALIASED_LINES_USE_TEX
+DRAW_LIST_ANTI_ALIASED_FILL = core.DRAW_LIST_ANTI_ALIASED_FILL
+DRAW_LIST_ALLOW_VTX_OFFSET = core.DRAW_LIST_ALLOW_VTX_OFFSET
+
+# === Font Atlas Flags (redefines for autodoc)
+FONT_ATLAS_NONE = core.FONT_ATLAS_NONE
+FONT_ATLAS_NO_POWER_OF_TWO_HEIGHT = core.FONT_ATLAS_NO_POWER_OF_TWO_HEIGHT
+FONT_ATLAS_NO_MOUSE_CURSOR = core.FONT_ATLAS_NO_MOUSE_CURSOR
+FONT_ATLAS_NO_BAKED_LINES = core.FONT_ATLAS_NO_BAKED_LINES
+
+# === Config Flags (redefines for autodoc)
+CONFIG_NONE = core.CONFIG_NONE
+CONFIG_NAV_ENABLE_KEYBOARD = core.CONFIG_NAV_ENABLE_KEYBOARD
+CONFIG_NAV_ENABLE_GAMEPAD = core.CONFIG_NAV_ENABLE_GAMEPAD
+CONFIG_NAV_ENABLE_SET_MOUSE_POS = core.CONFIG_NAV_ENABLE_SET_MOUSE_POS
+CONFIG_NAV_NO_CAPTURE_KEYBOARD = core.CONFIG_NAV_NO_CAPTURE_KEYBOARD
+CONFIG_NO_MOUSE = core.CONFIG_NO_MOUSE
+CONFIG_NO_MOUSE_CURSOR_CHARGE = core.CONFIG_NO_MOUSE_CURSOR_CHARGE
+CONFIG_IS_RGB = core.CONFIG_IS_RGB
+CONFIG_IS_TOUCH_SCREEN = core.CONFIG_IS_TOUCH_SCREEN
+
+# === Backend Flags (redefines for autodoc)
+BACKEND_NONE = core.BACKEND_NONE
+BACKEND_HAS_GAMEPAD = core.BACKEND_HAS_GAMEPAD
+BACKEND_HAS_MOUSE_CURSORS = core.BACKEND_HAS_MOUSE_CURSORS
+BACKEND_HAS_SET_MOUSE_POS = core.BACKEND_HAS_SET_MOUSE_POS
+BACKEND_RENDERER_HAS_VTX_OFFSET = core.BACKEND_RENDERER_HAS_VTX_OFFSET
 
 # === Slider flag (redefines for autodoc)
 SLIDER_FLAGS_NONE
@@ -459,3 +674,8 @@ SLIDER_FLAGS_LOGARITHMIC
 SLIDER_FLAGS_NO_ROUND_TO_FORMAT 
 #: Disable CTRL+Click or Enter key allowing to input text directly into the widget
 SLIDER_FLAGS_NO_INPUT 
+
+# === Mouse Button (redefines for autodoc)
+MOUSE_BUTTON_LEFT = core.MOUSE_BUTTON_LEFT
+MOUSE_BUTTON_RIGHT = core.MOUSE_BUTTON_RIGHT
+MOUSE_BUTTON_MIDDLE = core.MOUSE_BUTTON_MIDDLE 
