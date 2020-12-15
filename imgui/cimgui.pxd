@@ -1386,11 +1386,6 @@ cdef extern from "imgui.h" namespace "ImGui":
     void TreePop() except +  # ✓
     void TreeAdvanceToLabelPos() except +  # ✗ # OBSOLETED in 1.72 (from April 2019)
     float GetTreeNodeToLabelSpacing() except +  # ✗
-    void SetNextTreeNodeOpen(  # ✗ # OBSOLETED in 1.72 (from April 2019)
-            bool is_open,
-            # note: optional
-            ImGuiCond cond
-    ) except +
     bool CollapsingHeader(  # ✓
             const char* label,
             # note: optional
@@ -1401,9 +1396,14 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiTreeNodeFlags flags
     ) except +  
-    void SetNextItemOpen( # ✗
+    void SetNextItemOpen( # ✓
             bool is_open, 
             # note: open
+            ImGuiCond cond
+    ) except +
+    void SetNextTreeNodeOpen(  # ✗ # OBSOLETED in 1.72 (from April 2019)
+            bool is_open,
+            # note: optional
             ImGuiCond cond
     ) except +
     

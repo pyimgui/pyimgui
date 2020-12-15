@@ -3272,6 +3272,18 @@ def collapsing_header(
         clicked = cimgui.CollapsingHeader(_bytes(text), &inout_opened, flags)
     return clicked, None if visible is None else inout_opened
 
+def set_next_item_open(bool is_open, cimgui.ImGuiCond condition = 0):
+    """Set next TreeNode/CollapsingHeader open state.
+    
+    Args:
+        is_open (bool):
+        condition (:ref:`condition flag <condition-options>`): defines on which
+            condition value should be set. Defaults to :any:`imgui.NONE`.
+    
+    .. wraps::
+        void SetNextItemOpen(bool is_open, ImGuiCond cond = 0)
+    """
+    cimgui.SetNextItemOpen(is_open, condition)
 
 def selectable(
     str label,
