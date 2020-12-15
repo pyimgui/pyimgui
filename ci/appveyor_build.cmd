@@ -6,6 +6,22 @@
 :: More details at:
 :: https://github.com/cython/cython/wiki/64BitCythonExtensionsOnWindows
 
+
+:: note: VS 2010 has stdint.h bundled so simply copy it. Cython should not
+::       depend on it for py27 (works fine when compiling using C code)
+::       but this works differently for C++ (maybe there is some other issue
+::       with environment setup).
+:: try to do a dirty workaround for Cython with C++ for py27
+IF "%PYTHON%"=="C:\Python27" SET _py27=1
+IF "%PYTHON%"=="C:\Python27-x64" SET _py27=1
+
+IF "%_py27%"=="1" (
+    ECHO "PYTHON 2.7 => copying stdint.h"
+    cp "c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdint.h" "C:\Users\appveyor\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include\stdint.h"
+) ELSE (
+    ECHO "NOT PYTHON 2.7"
+)
+
 IF "%DISTUTILS_USE_SDK%"=="1" (
     ECHO Configuring environment to build with MSVC on a 64bit architecture
     ECHO Using Windows SDK 7.1

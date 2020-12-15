@@ -6,6 +6,8 @@ but are useful in Python application.
 from . import core
 
 __all__ = (
+    "text_ansi",
+    "text_ansi_colored",
     "font",
     "styled",
     "istyled",
@@ -16,6 +18,9 @@ __all__ = (
     "vertex_buffer_vertex_size",
     "index_buffer_index_size",
 )
+
+text_ansi = core._ansifeed_text_ansi
+text_ansi_colored = core._ansifeed_text_ansi_colored
 
 font = core._py_font
 styled = core._py_styled

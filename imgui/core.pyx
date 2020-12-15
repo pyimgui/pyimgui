@@ -3659,30 +3659,6 @@ def text(str text):
     # note: "%s" required for safety and to favor of Python string formating
     cimgui.Text("%s", _bytes(text))
 
-def text_ansi(str text):
-    """Add ANSI-escape-formatted text to current widget stack.
-
-    Similar to imgui.text, but with ANSI parsing.
-    imgui.text documentation below:
-
-    .. visual-example::
-        :title: simple text widget
-        :height: 80
-        :auto_layout:
-
-        imgui.begin("Example: simple text")
-        imgui.text_ansi("Default \033[31m colored \033[m default")
-        imgui.end()
-
-    Args:
-        text (str): text to display.
-
-    .. wraps::
-        Text(const char* fmt, ...)
-    """
-    # note: "%s" required for safety and to favor of Python string formating
-    ansifeed.TextAnsi("%s", _bytes(text))
-
 
 def text_colored(str text, float r, float g, float b, float a=1.):
     """Add colored text to current widget stack.
@@ -3718,42 +3694,6 @@ def text_colored(str text, float r, float g, float b, float a=1.):
     # note: "%s" required for safety and to favor of Python string formating
     cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
 
-def text_ansi_colored(str text, float r, float g, float b, float a=1.):
-    """Add pre-colored ANSI-escape-formatted text to current widget stack.
-
-    Similar to imgui.text_colored, but with ANSI parsing.
-    imgui.text_colored documentation below:
-
-    It is a shortcut for:
-
-    .. code-block:: python
-
-        imgui.push_style_color(imgui.COLOR_TEXT, r, g, b, a)
-        imgui.text_ansi(text)
-        imgui.pop_style_color()
-
-
-    .. visual-example::
-        :title: colored text widget
-        :height: 100
-        :auto_layout:
-
-        imgui.begin("Example: colored text")
-        imgui.text_ansi_colored("Default \033[31m colored \033[m default", 1, 0, 0)
-        imgui.end()
-
-    Args:
-        text (str): text to display.
-        r (float): red color intensity.
-        g (float): green color intensity.
-        b (float): blue color instensity.
-        a (float): alpha intensity.
-
-    .. wraps::
-        TextColored(const ImVec4& col, const char* fmt, ...)
-    """
-    # note: "%s" required for safety and to favor of Python string formating
-    ansifeed.TextAnsiColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
 
 def text_disabled(str text):
     """Add disabled(grayed out) text to current widget stack.
@@ -6710,7 +6650,7 @@ def pop_font():
     """
     cimgui.PopFont()
 
-cpdef calc_text_size(str text, bool hide_text_after_double_hash = False, float wrap_width = 0.0):
+cpdef calc_text_size(str text, bool hide_text_after_double_hash = False, float wrap_width = -1.0):
     """Calculate text size.
     Text can be multi-line.
     Optionally ignore text after a ## marker.
@@ -7768,6 +7708,70 @@ cdef public _ImGuiError "ImGuiError" = PyErr_NewException(
 )
 
 ImGuiError = _ImGuiError # make visible to Python
+
+# === ansifeed extras ===
+
+def _ansifeed_text_ansi(str text):
+    """Add ANSI-escape-formatted text to current widget stack.
+
+    Similar to imgui.text, but with ANSI parsing.
+    imgui.text documentation below:
+
+    .. visual-example::
+        :title: simple text widget
+        :height: 80
+        :auto_layout:
+
+        imgui.begin("Example: simple text")
+        imgui.extra.text_ansi("Default \033[31m colored \033[m default")
+        imgui.end()
+
+    Args:
+        text (str): text to display.
+
+    .. wraps::
+        Text(const char* fmt, ...)
+    """
+    # note: "%s" required for safety and to favor of Python string formating
+    ansifeed.TextAnsi("%s", _bytes(text))
+
+
+def _ansifeed_text_ansi_colored(str text, float r, float g, float b, float a=1.):
+    """Add pre-colored ANSI-escape-formatted text to current widget stack.
+
+    Similar to imgui.text_colored, but with ANSI parsing.
+    imgui.text_colored documentation below:
+
+    It is a shortcut for:
+
+    .. code-block:: python
+
+        imgui.push_style_color(imgui.COLOR_TEXT, r, g, b, a)
+        imgui.extra.text_ansi(text)
+        imgui.pop_style_color()
+
+
+    .. visual-example::
+        :title: colored text widget
+        :height: 100
+        :auto_layout:
+
+        imgui.begin("Example: colored text")
+        imgui.text_ansi_colored("Default \033[31m colored \033[m default", 1, 0, 0)
+        imgui.end()
+
+    Args:
+        text (str): text to display.
+        r (float): red color intensity.
+        g (float): green color intensity.
+        b (float): blue color instensity.
+        a (float): alpha intensity.
+
+    .. wraps::
+        TextColored(const ImVec4& col, const char* fmt, ...)
+    """
+    # note: "%s" required for safety and to favor of Python string formating
+    ansifeed.TextAnsiColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
 
 
 # === Extra utilities ====
