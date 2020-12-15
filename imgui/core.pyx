@@ -5378,13 +5378,13 @@ def input_int4(
 
 def input_double(
     str label,
-    int value,
-    int step=1,
-    int step_fast=100,
+    double value,
+    double step=0.0,
+    double step_fast=0.0,
     str format = "%.6f",
     cimgui.ImGuiInputTextFlags flags=0
 ):
-    """Display integer input widget.
+    """Display double input widget.
 
     .. visual-example::
         :auto_layout:
@@ -5392,16 +5392,16 @@ def input_double(
         :height: 100
 
         double_val = 3.14159265358979323846
-        imgui.begin("Example: integer input")
+        imgui.begin("Example: double input")
         changed, double_val = imgui.input_double('Type multiplier:', double_val)
         imgui.text('You wrote: %i' % double_val)
         imgui.end()
 
     Args:
         label (str): widget label.
-        value (int): textbox value
-        step (int): incremental step
-        step_fast (int): fast incremental step
+        value (double): textbox value
+        step (double): incremental step
+        step_fast (double): fast incremental step
         format = (str): format string
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
@@ -5411,19 +5411,19 @@ def input_double(
         textbox state change and the current textbox content.
 
     .. wraps::
-        bool InputInt(
+        bool InputDouble(
             const char* label,
-            int* v,
-            int step = 1,
-            int step_fast = 100,
+            double* v,
+            double step = 0.0,
+            double step_fast = 0.0,
             _bytes(format),
             ImGuiInputTextFlags extra_flags = 0
         )
     """
-    cdef int inout_value = value
+    cdef double inout_value = value
 
-    return cimgui.InputInt(
-        _bytes(label), &inout_value, step, step_fast, flags
+    return cimgui.InputDouble(
+        _bytes(label), &inout_value, step, step_fast, _bytes(format), flags
     ), inout_value
 
 
@@ -6711,8 +6711,8 @@ def pop_font():
     cimgui.PopFont()
 
 cpdef calc_text_size(str text, bool hide_text_after_double_hash = False, float wrap_width = 0.0):
-    """Calculate text size. 
-    Text can be multi-line. 
+    """Calculate text size.
+    Text can be multi-line.
     Optionally ignore text after a ## marker.
 
     .. visual-example::
@@ -6734,7 +6734,7 @@ cpdef calc_text_size(str text, bool hide_text_after_double_hash = False, float w
         text (str): text
         hide_text_after_double_hash (bool): if True, text after '##' is ignored
         wrap_width (float): if > 0.0 calculate size using text wrapping
-    
+
     .. wraps::
         CalcTextSize(const char* text, const char* text_end, bool hide_text_after_double_hash, float wrap_width)
     """
