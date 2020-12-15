@@ -1,6 +1,6 @@
 # distutils: language = c++
 # distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp imgui-cpp/imgui_widgets.cpp config-cpp/py_imconfig.cpp
-# distutils: include_dirs = imgui-cpp
+# distutils: include_dirs = imgui-cpp ansifeed-cpp
 # cython: embedsignature=True
 """
 
@@ -29,6 +29,7 @@ from libcpp cimport bool
 
 cimport cimgui
 cimport enums
+cimport ansifeed
 
 from cpython.version cimport PY_MAJOR_VERSION
 
@@ -4041,6 +4042,7 @@ def text_colored(str text, float r, float g, float b, float a=1.):
     # note: "%s" required for safety and to favor of Python string formating
     cimgui.TextColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
 
+
 def text_disabled(str text):
     """Add disabled(grayed out) text to current widget stack.
 
@@ -7301,6 +7303,43 @@ def pop_font():
     """
     cimgui.PopFont()
 
+cpdef calc_text_size(str text, bool hide_text_after_double_hash = False, float wrap_width = -1.0):
+    """Calculate text size. 
+    Text can be multi-line. 
+    Optionally ignore text after a ## marker.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 300
+        :height: 100
+
+        imgui.begin("Text size calculation")
+        text_content = "This is a ##text##!"
+        text_size1 = imgui.calc_text_size(text_content)
+        imgui.text('"%s" has size %ix%i' % (text_content, text_size1[0], text_size1[1]))
+        text_size2 = imgui.calc_text_size(text_content, True)
+        imgui.text('"%s" has size %ix%i' % (text_content, text_size2[0], text_size2[1]))
+        text_size3 = imgui.calc_text_size(text_content, False, 30.0)
+        imgui.text('"%s" has size %ix%i' % (text_content, text_size3[0], text_size3[1]))
+        imgui.end()
+
+    Args:
+        text (str): text
+        hide_text_after_double_hash (bool): if True, text after '##' is ignored
+        wrap_width (float): if > 0.0 calculate size using text wrapping
+    
+    .. wraps::
+        CalcTextSize(const char* text, const char* text_end, bool hide_text_after_double_hash, float wrap_width)
+    """
+    return _cast_ImVec2_tuple(
+        cimgui.CalcTextSize(
+            _bytes(text),
+            NULL,
+            hide_text_after_double_hash,
+            wrap_width
+        )
+    )
+
 cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     """Push style variable on stack.
 
@@ -8516,6 +8555,70 @@ cdef public _ImGuiError "ImGuiError" = PyErr_NewException(
 )
 
 ImGuiError = _ImGuiError # make visible to Python
+
+# === ansifeed extras ===
+
+def _ansifeed_text_ansi(str text):
+    """Add ANSI-escape-formatted text to current widget stack.
+
+    Similar to imgui.text, but with ANSI parsing.
+    imgui.text documentation below:
+
+    .. visual-example::
+        :title: simple text widget
+        :height: 80
+        :auto_layout:
+
+        imgui.begin("Example: simple text")
+        imgui.extra.text_ansi("Default \033[31m colored \033[m default")
+        imgui.end()
+
+    Args:
+        text (str): text to display.
+
+    .. wraps::
+        Text(const char* fmt, ...)
+    """
+    # note: "%s" required for safety and to favor of Python string formating
+    ansifeed.TextAnsi("%s", _bytes(text))
+
+
+def _ansifeed_text_ansi_colored(str text, float r, float g, float b, float a=1.):
+    """Add pre-colored ANSI-escape-formatted text to current widget stack.
+
+    Similar to imgui.text_colored, but with ANSI parsing.
+    imgui.text_colored documentation below:
+
+    It is a shortcut for:
+
+    .. code-block:: python
+
+        imgui.push_style_color(imgui.COLOR_TEXT, r, g, b, a)
+        imgui.extra.text_ansi(text)
+        imgui.pop_style_color()
+
+
+    .. visual-example::
+        :title: colored text widget
+        :height: 100
+        :auto_layout:
+
+        imgui.begin("Example: colored text")
+        imgui.text_ansi_colored("Default \033[31m colored \033[m default", 1, 0, 0)
+        imgui.end()
+
+    Args:
+        text (str): text to display.
+        r (float): red color intensity.
+        g (float): green color intensity.
+        b (float): blue color instensity.
+        a (float): alpha intensity.
+
+    .. wraps::
+        TextColored(const ImVec4& col, const char* fmt, ...)
+    """
+    # note: "%s" required for safety and to favor of Python string formating
+    ansifeed.TextAnsiColored(_cast_args_ImVec4(r, g, b, a), "%s", _bytes(text))
 
 
 # === Extra utilities ====

@@ -1,29 +1,15 @@
 #!/usr/bin/env bash
+# stop on failures immediately
+set -e
+
 travis_fold() {
   local action=$1
   local name=$2
   echo -en "travis_fold:${action}:${name}\r"
 }
 
-if [[ $TRAVIS_OS_NAME == "osx" ]]; then
-
-    if [[ "$PY_VERSION" != "2.7" ]]; then
-        travis_fold start brew-update
-        brew update > /dev/null
-        travis_fold end brew-update
-
-        travis_fold start brew-upgrade
-        brew outdated pyenv || brew upgrade pyenv
-        travis_fold end brew-upgrade
-
-        travis_fold start pyenv-install
-        pyenv install --skip-existing $PY_VERSION
-        pyenv local $PY_VERSION
-        travis_fold end pyenv-install
-
-        eval "$(pyenv init -)"
-    fi
-
-elif [[ $DOCKER_IMAGE ]]; then
+if [[ $DOCKER_IMAGE ]]; then
+    travis_fold start docker-pull
     docker pull $DOCKER_IMAGE
+    travis_fold end docker-pull
 fi
