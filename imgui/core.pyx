@@ -6623,6 +6623,61 @@ def is_item_visible():
     """
     return cimgui.IsItemVisible()
 
+def is_item_edited():
+    """Did the last item modify its underlying value this frame? or was pressed? 
+    This is generally the same as the "bool" return value of many widgets.
+    
+    Returns:
+        bool: True if item is edited, otherwise False.
+    
+    .. wraps::
+        bool IsItemEdited()
+    """
+    return cimgui.IsItemEdited()
+
+def is_item_activated():
+    """Was the last item just made active (item was previously inactive)?
+    
+    Returns:
+        bool: True if item was just made active
+    
+    .. wraps::
+        bool IsItemActivated()
+    """
+    return cimgui.IsItemActivated()
+
+def is_item_deactivated():
+    """Was the last item just made inactive (item was previously active)? 
+    Useful for Undo/Redo patterns with widgets that requires continuous editing.
+        
+    Results:
+        bool: True if item just made inactive
+        
+    .. wraps:
+        bool IsItemDeactivated()
+    """
+    return cimgui.IsItemDeactivated
+
+def is_item_deactivated_after_edit():
+    """Was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved). 
+    Useful for Undo/Redo patterns with widgets that requires continuous editing. 
+    Note that you may get false positives (some widgets such as Combo()/ListBox()/Selectable() will return true even when clicking an already selected item).
+    
+    Results:
+        bool: True if item just made inactive after an edition
+    
+    .. wraps::
+        bool IsItemDeactivatedAfterEdit()
+    """
+    return cimgui.IsItemDeactivatedAfterEdit()
+
+def is_item_toggled_open():
+    """Was the last item open state toggled? set by TreeNode().
+    
+    .. wraps::
+        bool IsItemToggledOpen()
+    """
+    return cimgui.IsItemToggledOpen()
 
 def is_any_item_hovered():
     """Was any of the items hovered.

@@ -1697,11 +1697,11 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiMouseButton mouse_button # API CHANGE
     ) except +
     bool IsItemVisible() except +  # ✓
-    bool IsItemEdited() except + # ✗
-    bool IsItemActivated() except + # ✗
-    bool IsItemDeactivated() except + # ✗
-    bool IsItemDeactivatedAfterEdit() except + # ✗
-    bool IsItemToggledOpen() except + # ✗
+    bool IsItemEdited() except + # ✓
+    bool IsItemActivated() except + # ✓
+    bool IsItemDeactivated() except + # ✓
+    bool IsItemDeactivatedAfterEdit() except + # ✓
+    bool IsItemToggledOpen() except + # ✓
     bool IsAnyItemHovered() except +  # ✓
     bool IsAnyItemActive() except +  # ✓
     bool IsAnyItemFocused() except +  # ✓
