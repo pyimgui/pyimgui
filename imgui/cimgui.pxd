@@ -864,9 +864,9 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiInputTextFlags extra_flags
     ) except +  # Widgets: Sliders (tip: ctrl+click on a slider to input with keyboard.
     bool InputDouble(  # ✓
-            const char* label, double v,
+            const char* label, double* v,
             # note: optional
-            double step, int step_fast,
+            double step, double step_fast,
             const char* format,
             ImGuiInputTextFlags extra_flags
     ) except +
