@@ -1057,28 +1057,28 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             float v_speed, int v_min, int v_max,
             const char* format,
-            ImGuiSliderFlags flags # NEW
+            ImGuiSliderFlags flags
     ) except +
     bool DragInt2(  # ✓
             const char* label, int v[2],
             # note: optional
             float v_speed, int v_min, int v_max,
             const char* format,
-            ImGuiSliderFlags flags # NEW
+            ImGuiSliderFlags flags
     ) except +
     bool DragInt3(  # ✓
             const char* label, int v[3],
             # note: optional
             float v_speed, int v_min, int v_max,
             const char* format,
-            ImGuiSliderFlags flags # NEW
+            ImGuiSliderFlags flags
     ) except +
     bool DragInt4(  # ✓
             const char* label, int v[4],
             # note: optional
             float v_speed, int v_min, int v_max,
             const char* format,
-            ImGuiSliderFlags flags # NEW
+            ImGuiSliderFlags flags
     ) except +
     bool DragIntRange2(  # ✗
             const char* label, int* v_current_min, int* v_current_max,
@@ -1086,7 +1086,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             float v_speed, int v_min, int v_max,
             const char* format,
             const char* format_max,
-            ImGuiSliderFlags flags # NEW
+            ImGuiSliderFlags flags
     ) except +  # Widgets: Input with Keyboard
     bool DragScalar( # ✗
             const char* label, 
