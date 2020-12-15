@@ -7513,6 +7513,32 @@ cpdef pop_item_width():
     """
     cimgui.PopItemWidth()
 
+cpdef set_next_item_width(float item_width):
+    """Set width of the _next_ common large "item+label" widget. 
+    * ``>0.0`` - width in pixels
+    * ``<0.0`` - align xx pixels to the right of window
+      (so -1.0f always align width to the right side)
+      
+    Helper to avoid using ``push_item_width()``/``pop_item_width()`` for single items.
+    
+    Args:
+        item_width (float): width of the component
+    
+    .. visual-example::
+        :auto_layout:
+        :width: 200
+        :height: 200
+        
+        imgui.begin("Exemple: Next item width")
+        imgui.set_next_item_width(imgui.get_window_width() * 0.33)
+        imgui.slider_float('Slider 1', 10.2, 0.0, 20.0, '%.2f', 1.0)
+        imgui.slider_float('Slider 2', 10.2, 0.0, 20.0, '%.2f', 1.0)
+        imgui.end()
+    
+    .. wraps::
+        void SetNextItemWidth(float item_width)
+    """
+    cimgui.SetNextItemWidth(item_width)
 
 cpdef calculate_item_width():
     """Calculate and return the current item width.

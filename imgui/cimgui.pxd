@@ -879,7 +879,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     # Parameters stacks (current window)
     void PushItemWidth(float item_width) except +  # ✓
     void PopItemWidth() except +  # ✓
-    void SetNextItemWidth(float item_width) except + # ✗
+    void SetNextItemWidth(float item_width) except + # ✓
     float CalcItemWidth() except +  # ✓
     void PushTextWrapPos(float wrap_local_pos_x) except +  # ✓
     void PopTextWrapPos() except +  # ✓
