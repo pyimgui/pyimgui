@@ -151,8 +151,19 @@ for:
 
     init:
       - sh: |
-          source ~/venv${PY_VERSION}/bin/activate
-          python --version
+          set -x
+          if [[ "${PY_VERSION}" == "3.4" ]]; then
+              export HOMEBREW_NO_AUTO_UPDATE=1
+              brew update
+              brew install pyenv
+
+              pyenv install --skip-existing $PY_VERSION
+              pyenv local $PY_VERSION
+              eval "$(pyenv init -)"
+          else
+              source ~/venv${PY_VERSION}/bin/activate
+          fi
+           python --version
 
     install:
       # python requirements needed to create distribution
