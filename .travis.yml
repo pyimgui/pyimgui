@@ -1,5 +1,6 @@
 language: generic
 dist: focal
+os: linux
 
 env:
   global:
