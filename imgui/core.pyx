@@ -1435,6 +1435,21 @@ cdef class _DrawData(object):
     def total_vtx_count(self):
         self._require_pointer()
         return self._ptr.TotalVtxCount
+        
+    @property
+    def display_pos(self):
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.DisplayPos)
+        
+    @property
+    def display_size(self):
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.DisplaySize)
+        
+    @property
+    def frame_buffer_scale(self):
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.FramebufferScale)
 
     @property
     def total_idx_count(self):

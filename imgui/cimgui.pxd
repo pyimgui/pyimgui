@@ -512,9 +512,9 @@ cdef extern from "imgui.h":
         int             CmdListsCount  # ✓
         int             TotalIdxCount  # ✓
         int             TotalVtxCount  # ✓
-        ImVec2          DisplayPos # ✗
-        ImVec2          DisplaySize # ✗
-        ImVec2          FramebufferScale # ✗
+        ImVec2          DisplayPos # ✓
+        ImVec2          DisplaySize # ✓
+        ImVec2          FramebufferScale # ✓
         
         void            DeIndexAllBuffers() except +  # ✓
         void            ScaleClipRects(const ImVec2&) except +  # ✓
