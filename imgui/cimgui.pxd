@@ -1230,7 +1230,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             const ImVec2& size, ImGuiInputTextFlags flags,
             ImGuiInputTextCallback callback, void* user_data
     ) except +
-    bool InputTextWithHint( # ✗
+    bool InputTextWithHint( # ✓
             const char* label, const char* hint, char* buf, 
             size_t buf_size, 
             # note: optional

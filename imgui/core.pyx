@@ -5316,6 +5316,63 @@ def input_text_multiline(
 
     free(inout_text)
     return changed, output
+    
+def input_text_with_hint(
+    str label, 
+    str hint, 
+    str value,
+    int buffer_length,
+    cimgui.ImGuiInputTextFlags flags = 0):
+    """Display a text box, if the text is empty a hint on how to fill the box is given.
+    ``buffer_length`` is the maximum allowed length of the content.
+    
+    Args:
+        label (str): Widget label
+        hing (str): Hint displayed if text value empty
+        value (str): Text value
+        buffer_length (int): Length of the content buffer
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+            
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        textbox state change and the current text contents.
+    
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 200
+        
+        text_val = ''
+        imgui.begin("Example Text With hing")
+        changed, text_val = imgui.input_text_with_hint(
+            'Email', 'your@email.com', 
+            text_val, 255)
+        imgui.end()
+    
+    .. wraps::
+        bool InputTextWithHint(
+            const char* label, 
+            const char* hint, 
+            char* buf, 
+            size_t buf_size, 
+            ImGuiInputTextFlags flags = 0, 
+            ImGuiInputTextCallback callback = NULL, 
+            void* user_data = NULL
+        )
+    """
+    cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
+    strncpy(inout_text, _bytes(value), buffer_length)
+    
+    changed = cimgui.InputTextWithHint(
+        _bytes(label), _bytes(hint), inout_text, buffer_length,
+        flags, NULL, NULL
+    )
+    
+    output = _from_bytes(inout_text)
+    
+    free(inout_text)
+    return changed, output
 
 
 # OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
