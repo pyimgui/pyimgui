@@ -1194,7 +1194,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             const char* format, float power
     ) except +
-    bool SliderAngle(  # ✗
+    bool SliderAngle(  # ✓
             const char* label, float* v_rad,
             # note: optional
             float v_degrees_min, float v_degrees_max,

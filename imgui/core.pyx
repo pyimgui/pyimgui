@@ -5849,6 +5849,57 @@ def slider_float4(
         min_value, max_value, _bytes(format), power
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
+def slider_angle(str label, float rad_value,
+    float value_degrees_min = -360.0, float value_degrees_max = 360,
+    str format = "%.0f deg", cimgui.ImGuiSliderFlags flags = 0):
+    """Display angle slider widget.
+    
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+        
+        radian = 3.1415/4
+        
+        imgui.begin("Example: slider angle")
+        changed, radian = imgui.slider_angle(
+            "slider angle", radian,
+            value_degrees_min=0.0, value_degrees_max=180.0)
+        imgui.text("Changed: %s, Value: %s" % (changed, radian))
+        imgui.end()
+    
+    Args:
+        labal (str): widget label
+        rad_value (float): slider value in radian
+        value_degrees_min (float): min value allowed in degrees
+        value_degrees_max (float): max value allowed in degrees
+        format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+        
+    Returns:
+        tuple: a ``(changed, rad_value)`` tuple that contains indicator of
+        widget state change and the current slider value in radian.
+        
+    
+    .. wraps::
+        bool SliderAngle(
+            const char* label, 
+            float* v_rad, float 
+            v_degrees_min = -360.0f, 
+            float v_degrees_max = +360.0f, 
+            const char* format = "%.0f deg", 
+            ImGuiSliderFlags flags = 0
+        )
+    
+    """
+    cdef float inout_r_value = rad_value
+    return cimgui.SliderAngle(
+        _bytes(label), <float*>&inout_r_value,
+        value_degrees_min, value_degrees_max,
+        _bytes(format), flags
+    ), (inout_r_value)
 
 def slider_int(
     str label,
