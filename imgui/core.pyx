@@ -7719,6 +7719,157 @@ def get_columns_count():
     """
     return cimgui.GetColumnsCount()
 
+def begin_tab_bar(str identifier, cimgui.ImGuiTabBarFlags flags = 0):
+    """Create and append into a TabBar
+    
+    Args:
+        identifier(str): String identifier of the tab window
+        flags: ImGuiTabBarFlags flags. See:
+            :ref:`list of available flags <tabbar-flag-options>`.
+    
+    Returns:
+        bool: True if the Tab Bar is open
+        
+    .. wraps::
+        bool BeginTabBar(const char* str_id, ImGuiTabBarFlags flags = 0)
+    
+    """
+    return cimgui.BeginTabBar(_bytes(identifier), flags)
+    
+def end_tab_bar():
+    """Only call end_tab_bar() if begin_tab_bar() returns true!
+    
+    .. wraps::
+        void EndTabBar()
+    """
+    cimgui.EndTabBar()
+    
+def begin_tab_item(str label, opened = None, cimgui.ImGuiTabItemFlags flags = 0):
+    """Create a Tab. 
+    
+    Args:
+        label (str): Label of the tab item
+        removable (bool): If True, the tab item can be removed
+        flags: ImGuiTabItemFlags flags. See:
+            :ref:`list of available flags <tabitem-flag-options>`.
+        
+    Returns:
+        tuple: ``(slected, opened)`` tuple of bools. If tab item is selected
+        ``selected==True``. The value of ``opened`` is always True for
+        non-removable and open tab items but changes state to False on close
+        button click for removable tab items.
+        
+    .. visual-example::
+        :auto_layout:
+        :width: 300
+        
+        opened_state = True
+        
+        #...
+        
+        imgui.begin("Example Tab Bar")
+        if imgui.begin_tab_bar("MyTabBar"):
+            
+            if imgui.begin_tab_item("Item 1")[0]:
+                imgui.text("Here is the tab content!")
+                imgui.end_tab_item()
+                
+            if imgui.begin_tab_item("Item 2")[0]:
+                imgui.text("Another content...")
+                imgui.end_tab_item()
+                
+            selected, opened_state = imgui.begin_tab_item("Item 3", opened=opened_state)
+            if selected:
+                imgui.text("Hello Saylor!")
+                imgui.end_tab_item()
+                
+            imgui.end_tab_bar()
+        imgui.end()
+    
+    .. wraps::
+        bool BeginTabItem(
+            const char* label, 
+            bool* p_open = NULL, 
+            ImGuiTabItemFlags flags = 0
+        )
+    """
+    cdef cimgui.bool inout_opened = opened
+    return cimgui.BeginTabItem(_bytes(label), &inout_opened if opened is not None else NULL, flags), inout_opened
+
+def end_tab_item():
+    """Only call end_tab_item() if begin_tab_item() returns true!
+    
+    .. wraps::
+        void EndTabItem()
+    """
+    cimgui.EndTabItem()
+
+def tab_item_button(str label, cimgui.ImGuiTabItemFlags flags = 0):
+    """Create a Tab behaving like a button. 
+    Cannot be selected in the tab bar.
+    
+    Args:
+        label (str): Label of the button
+        flags: ImGuiTabItemFlags flags. See:
+            :ref:`list of available flags <tabitem-flag-options>`.
+    
+    Returns:
+        (bool): Return true when clicked.
+    
+    .. visual-example:
+        :auto_layout:
+        :width: 300
+        
+        imgui.begin("Example Tab Bar")
+        if imgui.begin_tab_bar("MyTabBar"):
+            
+            if imgui.begin_tab_item("Item 1")[0]:
+                imgui.text("Here is the tab content!")
+                imgui.end_tab_item()
+                
+            if imgui.tab_item_button("Click me!"):
+                print('Clicked!')
+                
+            imgui.end_tab_bar()
+        imgui.end()
+    
+    .. wraps::
+        bool TabItemButton(const char* label, ImGuiTabItemFlags flags = 0)
+    """
+    return cimgui.TabItemButton(_bytes(label), flags)
+    
+def set_tab_item_closed(str tab_or_docked_window_label):
+    """Notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). 
+    For tab-bar: call after BeginTabBar() and before Tab submissions. 
+    Otherwise call with a window name.
+    
+    Args:
+        tab_or_docked_window_label (str): Label of the targeted tab or docked window
+    
+    .. visual-example:
+        :auto_layout:
+        :width: 300
+        
+        imgui.begin("Example Tab Bar")
+        if imgui.begin_tab_bar("MyTabBar"):
+            
+            if imgui.begin_tab_item("Item 1")[0]:
+                imgui.text("Here is the tab content!")
+                imgui.end_tab_item()
+                
+            if imgui.begin_tab_item("Item 2")[0]:
+                imgui.text("This item won't whow !")
+                imgui.end_tab_item()
+                
+            imgui.set_tab_item_closed("Item 2")
+                
+            imgui.end_tab_bar()
+        imgui.end()
+    
+    .. wraps:
+        void SetTabItemClosed(const char* tab_or_docked_window_label)
+    """
+    cimgui.SetTabItemClosed(_bytes(tab_or_docked_window_label))
 
 def begin_drag_drop_source(cimgui.ImGuiDragDropFlags flags=0):
     """Set the current item as a drag and drop source. If this return True, you

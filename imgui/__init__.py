@@ -269,6 +269,49 @@ COMBO_NO_PREVIEW = core.COMBO_NO_PREVIEW
 #: Shortcut: ``imgui.COMBO_HEIGHT_SMALL | imgui.COMBO_HEIGHT_REGULAR | imgui.COMBO_HEIGHT_LARGE | imgui.COMBO_HEIGHT_LARGEST``.
 COMBO_HEIGHT_MASK = COMBO_HEIGHT_SMALL | COMBO_HEIGHT_REGULAR | COMBO_HEIGHT_LARGE | COMBO_HEIGHT_LARGEST
 
+# === Tab Bar Flags (redefines for autodoc)
+TAB_BAR_NONE = core.TAB_BAR_NONE
+#: Allow manually dragging tabs to re-order them + New tabs are appended at the end of list
+TAB_BAR_REORDERABLE = core.TAB_BAR_REORDERABLE
+#: Automatically select new tabs when they appear
+TAB_BAR_AUTO_SELECT_NEW_TABS = core.TAB_BAR_AUTO_SELECT_NEW_TABS
+#: Disable buttons to open the tab list popup
+TAB_BAR_TAB_LIST_POPUP_BUTTON = core.TAB_BAR_TAB_LIST_POPUP_BUTTON
+#: Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You can still repro this behavior on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
+TAB_BAR_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = core.TAB_BAR_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON
+#: Disable scrolling buttons (apply when fitting policy is ImGuiTabBarFlags_FittingPolicyScroll)
+TAB_BAR_NO_TAB_LIST_SCROLLING_BUTTONS = core.TAB_BAR_NO_TAB_LIST_SCROLLING_BUTTONS
+#: Disable tooltips when hovering a tab
+TAB_BAR_NO_TOOLTIP = core.TAB_BAR_NO_TOOLTIP
+#: Resize tabs when they don't fit
+TAB_BAR_FITTING_POLICY_RESIZE_DOWN = core.TAB_BAR_FITTING_POLICY_RESIZE_DOWN
+#: Add scroll buttons when tabs don't fit
+TAB_BAR_FITTING_POLICY_SCROLL = core.TAB_BAR_FITTING_POLICY_SCROLL
+#: TAB_BAR_FITTING_POLICY_RESIZE_DOWN | TAB_BAR_FITTING_POLICY_SCROLL
+TAB_BAR_FITTING_POLICY_MASK = core.TAB_BAR_FITTING_POLICY_MASK
+#: TAB_BAR_FITTING_POLICY_RESIZE_DOWN
+TAB_BAR_FITTING_POLICY_DEFAULT = core.TAB_BAR_FITTING_POLICY_DEFAULT
+
+# === Tab Item Flags (redefines for autodoc)
+TAB_ITEM_NONE = core.TAB_ITEM_NONE
+#: Append '*' to title without affecting the ID, as a convenience to avoid using the ### operator. Also: tab is selected on closure and closure is deferred by one frame to allow code to undo it without flicker.
+TAB_ITEM_UNSAVED_DOCUMENT = core.TAB_ITEM_UNSAVED_DOCUMENT
+#: Trigger flag to programmatically make the tab selected when calling BeginTabItem()
+TAB_ITEM_SET_SELECTED = core.TAB_ITEM_SET_SELECTED
+#: Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You can still repro this behavior on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
+TAB_ITEM_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = core.TAB_ITEM_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON
+#: Don't call PushID(tab->ID)/PopID() on BeginTabItem()/EndTabItem()
+TAB_ITEM_NO_PUSH_ID = core.TAB_ITEM_NO_PUSH_ID
+#: Disable tooltip for the given tab
+TAB_ITEM_NO_TOOLTIP = core.TAB_ITEM_NO_TOOLTIP
+#: Disable reordering this tab or having another tab cross over this tab
+TAB_ITEM_NO_REORDER = core.TAB_ITEM_NO_REORDER
+#: Enforce the tab position to the left of the tab bar (after the tab list popup button)
+TAB_ITEM_LEADING = core.TAB_ITEM_LEADING
+#: Enforce the tab position to the right of the tab bar (before the scrolling buttons)
+TAB_ITEM_TRAILING = core.TAB_ITEM_TRAILING
+
+
 # === Focus flag constants (redefines for autodoc)
 #: IsWindowFocused(): Return true if any children of the window is focused
 FOCUS_CHILD_WINDOWS = core.FOCUS_CHILD_WINDOWS

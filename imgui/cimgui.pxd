@@ -1625,25 +1625,25 @@ cdef extern from "imgui.h" namespace "ImGui":
     
     # ====
     # Tab Bars, Tabs
-    bool BeginTabBar( # ✗
+    bool BeginTabBar( # ✓
             const char* str_id, 
             # note: optional
             ImGuiTabBarFlags flags
     ) except +
-    void EndTabBar() except + # ✗                                                        // only call EndTabBar() if BeginTabBar() returns true!
-    bool BeginTabItem( # ✗
+    void EndTabBar() except + # ✓                                                        // only call EndTabBar() if BeginTabBar() returns true!
+    bool BeginTabItem( # ✓
             const char* label, 
             # note: optional
             bool* p_open, 
             ImGuiTabItemFlags flags
     ) except +
-    void EndTabItem() except + # ✗
-    bool TabItemButton(
+    void EndTabItem() except + # ✓
+    bool TabItemButton( # ✓
             const char* label, 
             # note: optional
             ImGuiTabItemFlags flags
     ) except +
-    void SetTabItemClosed(const char* tab_or_docked_window_label) except + # ✗
+    void SetTabItemClosed(const char* tab_or_docked_window_label) except + # ✓
     
     # ====
     # Logging/Capture
