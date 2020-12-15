@@ -1237,55 +1237,30 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiInputTextFlags flags, 
             ImGuiInputTextCallback callback, void* user_data
     ) except +
-    bool InputFloat(  # ✗
+    bool InputFloat(  # ✓
             const char* label, float* v,
             # note: optional
             float step, float step_fast,
             const char* format,
             ImGuiInputTextFlags flags
     ) except +
-    bool InputFloat(  # ✓ # OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
-            const char* label, float* v,
-            # note: optional
-            float step, float step_fast,
-            const char* format,
-            ImGuiInputTextFlags extra_flags
-    ) except +
-    bool InputFloat2(  # ✗
+    bool InputFloat2(  # ✓
             const char* label, float v[2],
             # note: optional
             const char* format,
             ImGuiInputTextFlags flags
     ) except +
-    bool InputFloat2(  # ✓ # OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
-            const char* label, float v[2],
-            # note: optional
-            const char* format,
-            ImGuiInputTextFlags extra_flags
-    ) except +
-    bool InputFloat3(  # ✗
+    bool InputFloat3(  # ✓
             const char* label, float v[3],
             # note: optional
             const char* format,
             ImGuiInputTextFlags flags
     ) except +
-    bool InputFloat3(  # ✓ # OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
-            const char* label, float v[3],
-            # note: optional
-            const char* format,
-            ImGuiInputTextFlags extra_flags
-    ) except +
-    bool InputFloat4(  # ✗
+    bool InputFloat4(  # ✓
             const char* label, float v[4],
             # note: optional
             const char* format,
             ImGuiInputTextFlags flags
-    ) except +
-    bool InputFloat4(  # ✓ # OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
-            const char* label, float v[4],
-            # note: optional
-            const char* format,
-            ImGuiInputTextFlags extra_flags
     ) except +
     bool InputInt(  # ✓
             const char* label, int* v,

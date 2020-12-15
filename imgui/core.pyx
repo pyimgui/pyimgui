@@ -5375,7 +5375,6 @@ def input_text_with_hint(
     return changed, output
 
 
-# OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
 def input_float(
     str label,
     float value,
@@ -5427,8 +5426,6 @@ def input_float(
         step_fast, _bytes(format), flags
     ), inout_value
 
-
-# OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
 def input_float2(
     str label,
     float value0, float value1,
@@ -5474,8 +5471,6 @@ def input_float2(
         _bytes(format), flags
     ), (inout_values[0], inout_values[1])
 
-
-# OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
 def input_float3(
     str label,
     float value0, float value1, float value2,
@@ -5521,8 +5516,6 @@ def input_float3(
         _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2])
 
-
-# OBSOLETED in 1.61 (between Apr 2018 and Aug 2018)
 def input_float4(
     str label,
     float value0, float value1, float value2, float value3,
