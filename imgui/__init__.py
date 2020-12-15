@@ -448,3 +448,14 @@ INPUT_TEXT_PASSWORD = core.INPUT_TEXT_PASSWORD
 #: active, if you want to provide your own undo/redo stack you need
 #: e.g. to call clear_active_id().
 INPUT_TEXT_NO_UNDO_REDO = core.INPUT_TEXT_NO_UNDO_REDO
+
+# === Slider flag (redefines for autodoc)
+SLIDER_FLAGS_NONE
+#: Clamp value to min/max bounds when input manually with CTRL+Click. By default CTRL+Click allows going out of bounds.
+SLIDER_FLAGS_ALWAYS_CLAMP 
+#: Make the widget logarithmic (linear otherwise). Consider using ImGuiSliderFlags_NoRoundToFormat with this if using a format-string with small amount of digits.
+SLIDER_FLAGS_LOGARITHMIC 
+#: Disable rounding underlying value to match precision of the display format string (e.g. %.3f values are rounded to those 3 digits)
+SLIDER_FLAGS_NO_ROUND_TO_FORMAT 
+#: Disable CTRL+Click or Enter key allowing to input text directly into the widget
+SLIDER_FLAGS_NO_INPUT 
