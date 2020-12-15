@@ -4589,14 +4589,14 @@ def color_edit4(
     ), (inout_color[0], inout_color[1], inout_color[2], inout_color[3])
 
 
-# OBSOLETED in 1.78 (from June 2020)
 def drag_float(
     str label, float value,
     float change_speed = 1.0,
     float min_value=0.0,
     float max_value=0.0,
     str format = "%.3f",
-    float power = 1.
+    cimgui.ImGuiSliderFlags flags = 0,
+    float power = 1. # OBSOLETED in 1.78 (from June 2020)
 ):
     """Display float drag widget.
 
@@ -4631,7 +4631,9 @@ def drag_float(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** Highly unsafe when used without care.
             May lead to segmentation faults and other memory violation issues.
-        power (float): index of the power function applied to the value.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+        power (float): OBSOLETED in ImGui 1.78 (from June 2020)
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
@@ -4645,25 +4647,26 @@ def drag_float(
             float v_min = 0.0f,
             float v_max = 0.0f,
             const char* format = "%.3f",
-            float power = 1.0f
+            ImGuiSliderFlags flags = 0
         )
     """
+    assert (power == 1), "power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead"
     cdef float inout_value = value
 
     return cimgui.DragFloat(
         _bytes(label), &inout_value,
-        change_speed, min_value, max_value, _bytes(format), power
+        change_speed, min_value, max_value, _bytes(format), flags
     ), inout_value
 
 
-# OBSOLETED in 1.78 (from June 2020)
 def drag_float2(
     str label, float value0, float value1,
     float change_speed = 1.0,
     float min_value=0.0,
     float max_value=0.0,
     str format = "%.3f",
-    float power = 1.
+    cimgui.ImGuiSliderFlags flags = 0,
+    float power = 1. # OBSOLETED in 1.78 (from June 2020)
 ):
     """Display float drag widget with 2 values.
 
@@ -4692,7 +4695,9 @@ def drag_float2(
         max_value (float): max value allowed by widget.
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_float()`.
-        power (float): index of the power function applied to the value.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+        power (float): OBSOLETED in ImGui 1.78 (from June 2020)
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -4706,24 +4711,25 @@ def drag_float2(
             float v_min = 0.0f,
             float v_max = 0.0f,
             const char* format = "%.3f",
-            float power = 1.0f
+            ImGuiSliderFlags flags = 0
         )
     """
+    assert (power == 1), "power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead"
     cdef float[2] inout_values = [value0, value1]
     return cimgui.DragFloat2(
         _bytes(label), <float*>&inout_values,
-        change_speed, min_value, max_value, _bytes(format), power
+        change_speed, min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1])
 
 
-# OBSOLETED in 1.78 (from June 2020)
 def drag_float3(
     str label, float value0, float value1, float value2,
     float change_speed = 1.0,
     float min_value=0.0,
     float max_value=0.0,
     str format = "%.3f",
-    float power = 1.
+    cimgui.ImGuiSliderFlags flags = 0,
+    float power = 1. # OBSOLETED in 1.78 (from June 2020)
 ):
     """Display float drag widget with 3 values.
 
@@ -4752,7 +4758,9 @@ def drag_float3(
         max_value (float): max value allowed by widget.
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_float()`.
-        power (float): index of the power function applied to the value.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+        power (float): OBSOLETED in ImGui 1.78 (from June 2020)
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -4766,24 +4774,25 @@ def drag_float3(
             float v_min = 0.0f,
             float v_max = 0.0f,
             const char* format = "%.3f",
-            float power = 1.0f
+            ImGuiSliderFlags flags = 0
         )
     """
+    assert (power == 1), "power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead"
     cdef float[3] inout_values = [value0, value1, value2]
     return cimgui.DragFloat3(
         _bytes(label), <float*>&inout_values,
-        change_speed, min_value, max_value, _bytes(format), power
+        change_speed, min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
-# OBSOLETED in 1.78 (from June 2020)
 def drag_float4(
     str label, float value0, float value1, float value2, float value3,
     float change_speed = 1.0,
     float min_value=0.0,
     float max_value=0.0,
     str format = "%.3f",
-    float power = 1.
+    cimgui.ImGuiSliderFlags flags = 0,
+    float power = 1. # OBSOLETED in 1.78 (from June 2020)
 ):
     """Display float drag widget with 4 values.
 
@@ -4812,7 +4821,9 @@ def drag_float4(
         max_value (float): max value allowed by widget.
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_float()`.
-        power (float): index of the power function applied to the value.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+        power (float): OBSOLETED in ImGui 1.78 (from June 2020)
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -4826,13 +4837,14 @@ def drag_float4(
             float v_min = 0.0f,
             float v_max = 0.0f,
             const char* format = "%.3f",
-            float power = 1.0f
+            ImGuiSliderFlags flags = 0
         )
     """
+    assert (power == 1), "power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead"
     cdef float[4] inout_values = [value0, value1, value2, value3]
     return cimgui.DragFloat4(
         _bytes(label), <float*>&inout_values,
-        change_speed, min_value, max_value, _bytes(format), power
+        change_speed, min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
@@ -4872,6 +4884,8 @@ def drag_int(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** Highly unsafe when used without care.
             May lead to segmentation faults and other memory violation issues.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
@@ -4928,6 +4942,8 @@ def drag_int2(
         max_value (int): max value allowed by widget.
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -4983,6 +4999,8 @@ def drag_int3(
         max_value (int): max value allowed by widget.
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -5038,6 +5056,8 @@ def drag_int4(
         max_value (int): max value allowed by widget.
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of

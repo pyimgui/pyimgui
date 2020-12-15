@@ -1013,53 +1013,29 @@ cdef extern from "imgui.h" namespace "ImGui":
     # functions, remember than a 'float v[3]' function argument is the same
     # as 'float* v'. You can pass address of your first element out of a
     # contiguous set, e.g. &myvector.x
-    bool DragFloat( # ✗
+    bool DragFloat( # ✓
             const char* label, float* v, 
             # note: optional
             float v_speed, float v_min, float v_max, 
             const char* format, ImGuiSliderFlags flags
     ) except +
-    bool DragFloat(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float* v,
-            # note: optional
-            float v_speed, float v_min, float v_max,
-            const char* format, float power
-    ) except +
-    bool DragFloat2( # ✗
+    bool DragFloat2( # ✓
             const char* label, float v[2], 
             # note: optional
             float v_speed, float v_min, float v_max, 
             const char* format, ImGuiSliderFlags flags
     ) except +
-    bool DragFloat2(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float v[2],
-            # note: optional
-            float v_speed, float v_min, float v_max,
-            const char* format, float power
-    ) except +
-    bool DragFloat3( # ✗
+    bool DragFloat3( # ✓
             const char* label, float v[3], 
             # note: optional
             float v_speed, float v_min, float v_max, 
             const char* format, ImGuiSliderFlags flags
     ) except +
-    bool DragFloat3(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float v[3],
-            # note: optional
-            float v_speed, float v_min, float v_max,
-            const char* format, float power
-    ) except +
-    bool DragFloat4( # ✗
+    bool DragFloat4( # ✓
             const char* label, float v[4], 
             # note: optional
             float v_speed, float v_min, float v_max, 
             const char* format, ImGuiSliderFlags flags
-    ) except +
-    bool DragFloat4(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float v[4],
-            # note: optional
-            float v_speed, float v_min, float v_max,
-            const char* format, float power
     ) except +
     bool DragFloatRange2( # ✗
             const char* label, float* v_current_min, float* v_current_max, 
