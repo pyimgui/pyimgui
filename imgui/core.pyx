@@ -1290,6 +1290,46 @@ cdef class GuiStyle(object):
     def grab_rounding(self, float value):
         self._check_ptr()
         self._ptr.GrabRounding = value
+        
+    @property
+    def log_slider_deadzone(self):
+        self._check_ptr()
+        return self._ptr.LogSliderDeadzone
+
+    @log_slider_deadzone.setter
+    def log_slider_deadzone(self, float value):
+        self._check_ptr()
+        self._ptr.LogSliderDeadzone = value
+    
+    @property
+    def tab_rounding(self):
+        self._check_ptr()
+        return self._ptr.TabRounding
+
+    @tab_rounding.setter
+    def tab_rounding(self, float value):
+        self._check_ptr()
+        self._ptr.TabRounding = value
+    
+    @property
+    def tab_border_size(self):
+        self._check_ptr()
+        return self._ptr.TabBorderSize
+
+    @tab_border_size.setter
+    def tab_border_size(self, float value):
+        self._check_ptr()
+        self._ptr.TabBorderSize= value
+    
+    @property
+    def tab_min_width_for_close_button(self):
+        self._check_ptr()
+        return self._ptr.TabMinWidthForCloseButton
+
+    @tab_min_width_for_close_button.setter
+    def tab_min_width_for_close_button(self, float value):
+        self._check_ptr()
+        self._ptr.TabMinWidthForCloseButton = value
 
     @property
     def button_text_align(self):
@@ -1300,6 +1340,16 @@ cdef class GuiStyle(object):
     def button_text_align(self, value):
         self._check_ptr()
         self._ptr.ButtonTextAlign = _cast_tuple_ImVec2(value)
+    
+    @property
+    def selectable_text_align(self):
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.SelectableTextAlign)
+
+    @selectable_text_align.setter
+    def selectable_text_align(self, value):
+        self._check_ptr()
+        self._ptr.SelectableTextAlign = _cast_tuple_ImVec2(value)
 
     @property
     def display_window_padding(self):
@@ -1340,6 +1390,16 @@ cdef class GuiStyle(object):
     def anti_aliased_lines(self, cimgui.bool value):
         self._check_ptr()
         self._ptr.AntiAliasedLines = value
+        
+    @property
+    def anti_aliased_line_use_tex(self):
+        self._check_ptr()
+        return self._ptr.AntiAliasedLinesUseTex
+
+    @anti_aliased_line_use_tex.setter
+    def anti_aliased_line_use_tex(self, cimgui.bool value):
+        self._check_ptr()
+        self._ptr.AntiAliasedLinesUseTex = value
 
     @property
     def anti_aliased_fill(self):
@@ -1360,6 +1420,16 @@ cdef class GuiStyle(object):
     def curve_tessellation_tolerance(self, float value):
         self._check_ptr()
         self._ptr.CurveTessellationTol = value
+        
+    @property
+    def circle_segment_max_error(self):
+        self._check_ptr()
+        return self._ptr.CircleSegmentMaxError
+
+    @circle_segment_max_error.setter
+    def circle_segment_max_error(self, float value):
+        self._check_ptr()
+        self._ptr.CircleSegmentMaxError = value
 
     def color(self, cimgui.ImGuiCol variable):
         if not (0 <= variable < enums.ImGuiCol_COUNT):

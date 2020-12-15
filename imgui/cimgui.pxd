@@ -651,21 +651,21 @@ cdef extern from "imgui.h":
         float       ScrollbarRounding  # ✓
         float       GrabMinSize  # ✓
         float       GrabRounding  # ✓
-        float       LogSliderDeadzone # ✗
-        float       TabRounding # ✗
-        float       TabBorderSize # ✗
-        float       TabMinWidthForCloseButton # ✗
+        float       LogSliderDeadzone # ✓
+        float       TabRounding # ✓
+        float       TabBorderSize # ✓
+        float       TabMinWidthForCloseButton # ✓
         ImGuiDir    ColorButtonPosition # ✗
         ImVec2      ButtonTextAlign  # ✓
-        ImVec2      SelectableTextAlign # ✗
+        ImVec2      SelectableTextAlign # ✓
         ImVec2      DisplayWindowPadding  # ✓
         ImVec2      DisplaySafeAreaPadding  # ✓
         float       MouseCursorScale   # ✓
         bool        AntiAliasedLines  # ✓
-        bool        AntiAliasedLinesUseTex # ✗
+        bool        AntiAliasedLinesUseTex # ✓
         bool        AntiAliasedFill  # ✓
         float       CurveTessellationTol  # ✓
-        float       CircleSegmentMaxError
+        float       CircleSegmentMaxError # ✓
 
         # note: originally Colors[ImGuiCol_COUNT]
         # todo: find a way to access enum var here
