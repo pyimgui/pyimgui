@@ -98,7 +98,7 @@ def backend_extras(*requirements):
 
 
 EXTRAS_REQUIRE = {
-    'Cython':  ['Cython>=0.24,<=0.28.2'],
+    'Cython':  ['Cython>=0.24,<0.30'],
     'cocos2d': backend_extras(
         "cocos2d",
         "pyglet>=1.5.6; sys_platform == 'darwin'",

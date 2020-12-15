@@ -1,4 +1,4 @@
-Cython>=0.24,<=0.29.21
+Cython>=0.24,<0.30
 Sphinx==1.4.8
 docutils<0.13.1
 PyOpenGL
