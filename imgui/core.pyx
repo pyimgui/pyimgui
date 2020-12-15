@@ -6650,7 +6650,7 @@ def pop_font():
     """
     cimgui.PopFont()
 
-cpdef calc_text_size(str text, bool hide_text_after_double_hash = False, float wrap_width = 0.0):
+cpdef calc_text_size(str text, bool hide_text_after_double_hash = False, float wrap_width = -1.0):
     """Calculate text size. 
     Text can be multi-line. 
     Optionally ignore text after a ## marker.
