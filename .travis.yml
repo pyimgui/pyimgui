@@ -6,30 +6,6 @@ env:
 
 matrix:
   include:
-    - os: osx
-      env: PY_VERSION=2.7
-
-    - os: osx
-      env: PY_VERSION=3.3.7
-
-    - os: osx
-      env: PY_VERSION=3.4.9
-
-    - os: osx
-      env: PY_VERSION=3.5.6
-
-    - os: osx
-      env: PY_VERSION=3.6.9
-
-    - os: osx
-      env: PY_VERSION=3.7.5
-
-    - os: osx
-      env: PY_VERSION=3.8.0
-
-    - os: osx
-      env: PY_VERSION=3.9.1
-
     - os: linux
       sudo: required
       dist: trusty
@@ -51,19 +27,14 @@ matrix:
       dist: xenial
       python: '3.7'
 
+
 cache:
   pip: true
-  directories:
-  - $HOME/.pyenv
+
 
 before_install:
   - source ci/travis_before.sh
 
-  # note: there is cython issue when python2.7 is installed using pyenv
-  # note: but it is required to run everything in virtualenv
-  - if [[ "$PY_VERSION" == "2.7" ]]; then pip install virtualenv; fi
-  - if [[ "$PY_VERSION" == "2.7" ]]; then virtualenv build-env; fi
-  - if [[ "$PY_VERSION" == "2.7" ]]; then source build-env/bin/activate; fi
 
 install:
   # simply for logging
@@ -71,8 +42,10 @@ install:
   # get all submodules (imgui-cpp)
   - git submodule update --init --recursive
 
+
 script:
   - ./ci/travis_build.sh
+
 
 after_success:
   # note: on certain environments there may be a problem with installing

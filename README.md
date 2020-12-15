@@ -49,7 +49,7 @@ ImGui library. The *completion badge* shows up-to-date status of that goal.
 
 # Project distribution
 
-This project has working build pipeline on Appveyor and Travis and builds 
+This project has a working build pipeline on Appveyor and Travis. It builds
 succesfully for all major operating systems with different architectures:
 
 * Windows (32bit & 64bit)
@@ -61,12 +61,14 @@ Right now we are ready to shipping the built wheels for these three systems
 Python versions:
 
 * py27
-* py33
+* py33 (macOS wheel not available on PyPI)
 * py34
 * py35
 * py36
 * py37
 * py38
+* py39
+
 
 **pyimgui** provides documentation with multiple visual examples.
 Thanks to custom Sphinx extensions we are able to render GUI examples off
