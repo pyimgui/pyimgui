@@ -716,6 +716,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     # Demo, Debug, Information
     void ShowDemoWindow(bool* p_open) except +  # ✓
     void ShowDemoWindow() except +  # ✓
+    void ShowAboutWindow(bool* p_open) except + # ✓
+    void ShowAboutWindow() except + # ✓
     void ShowMetricsWindow(bool* p_open) except +  # ✓
     void ShowMetricsWindow() except +  # ✓
     void ShowStyleEditor(ImGuiStyle* ref) except +  # ✓

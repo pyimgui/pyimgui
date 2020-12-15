@@ -2160,6 +2160,28 @@ def show_demo_window(closable=False):
         cimgui.ShowDemoWindow()
 
     return opened
+    
+def show_about_window(closable=False):
+    """ Create About window. 
+    Display Dear ImGui version, credits and build/system information.
+    
+    Args:
+        closable (bool): define if window is closable
+    
+    Return:
+        bool: True if window is not closed (False trigerred by close button).
+    
+    .. wraps::
+        void ShowAboutWindow(bool* p_open = NULL)
+    """
+    cdef cimgui.bool opened = True
+    
+    if closable:
+        cimgui.ShowAboutWindow(&opened)
+    else:
+        cimgui.ShowAboutWindow()
+    
+    return opened
 
 
 def show_test_window():
