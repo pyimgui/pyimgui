@@ -169,7 +169,7 @@ for:
           python -m pip wheel . -w dist
           ls dist
           python -m pip install -e .
-          python -m pytest -v --color=yes
+          PYTHONDEVMODE=1 python -m pytest -v --color=yes
 
 on_success:
   - ps: |

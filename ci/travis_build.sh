@@ -23,7 +23,7 @@ else
    python3 -m pip install coveralls
 
    _CYTHONIZE_WITH_COVERAGE=1 pip install -e .
-   python3 -m coverage run --source imgui -m pytest
+   PYTHONDEVMODE=1 python3 -m coverage run --source imgui -m pytest -v --color=yes
    python3 -m coverage report
    coveralls
 fi
