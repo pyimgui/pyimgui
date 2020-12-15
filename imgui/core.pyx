@@ -6900,6 +6900,31 @@ def get_time():
     """
     return cimgui.GetTime()
 
+    
+def get_background_draw_list():
+    """This draw list will be the first rendering one. 
+    Useful to quickly draw shapes/text behind dear imgui contents.
+    
+    Returns:
+        DrawList*
+        
+    .. wraps::
+        ImDrawList* GetBackgroundDrawList()
+    """
+    return _DrawList.from_ptr(cimgui.GetBackgroundDrawList())
+    
+def get_foreground_draw_list():
+    """This draw list will be the last rendered one. 
+    Useful to quickly draw shapes/text over dear imgui contents.
+    
+    Returns:
+        DrawList*
+        
+    .. wraps::
+        ImDrawList* GetForegroundDrawList()
+    """
+    return _DrawList.from_ptr(cimgui.GetForegroundDrawList())
+
 
 def is_mouse_hovering_rect(
     float r_min_x, float r_min_y,

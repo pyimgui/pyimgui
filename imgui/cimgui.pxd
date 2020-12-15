@@ -1716,8 +1716,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool IsRectVisible(const ImVec2& rect_min, const ImVec2& rect_max) except +  # ✗
     double GetTime() except +  # ✓
     int GetFrameCount() except +  # ✗
-    ImDrawList* GetBackgroundDrawList() except +  # ✗
-    ImDrawList* GetForegroundDrawList() except +  # ✗
+    ImDrawList* GetBackgroundDrawList() except +  # ✓
+    ImDrawList* GetForegroundDrawList() except +  # ✓
     ImDrawList* GetOverlayDrawList() except +  # ✗ # OBSOLETED in 1.69 (from Mar 2019)
     ImDrawListSharedData* GetDrawListSharedData() except +  # ✗
     const char* GetStyleColorName(ImGuiCol idx) except +  # ✓
