@@ -1154,45 +1154,25 @@ cdef extern from "imgui.h" namespace "ImGui":
     # ====
     # Widgets: Regular Sliders
     #  manually input values aren't clamped, can go off-bounds)
-    bool SliderFloat(  # ✗
+    bool SliderFloat(  # ✓
             const char* label, float* v, float v_min, float v_max,
             # note: optional
             const char* format, ImGuiSliderFlags flags
     ) except +
-    bool SliderFloat(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float* v, float v_min, float v_max,
-            # note: optional
-            const char* format, float power
-    ) except +
-    bool SliderFloat2(  # ✗
+    bool SliderFloat2(  # ✓
             const char* label, float v[2], float v_min, float v_max,
             # note: optional
             const char* format, ImGuiSliderFlags flags
     ) except +
-    bool SliderFloat2(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float v[2], float v_min, float v_max,
-            # note: optional
-            const char* format, float power
-    ) except +
-    bool SliderFloat3(  # ✗
+    bool SliderFloat3(  # ✓
             const char* label, float v[3], float v_min, float v_max,
             # note: optional
             const char* format, ImGuiSliderFlags flags
     ) except +
-    bool SliderFloat3(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float v[3], float v_min, float v_max,
-            # note: optional
-            const char* format, float power
-    ) except +
-    bool SliderFloat4(  # ✗
+    bool SliderFloat4(  # ✓
             const char* label, float v[4], float v_min, float v_max,
             # note: optional
             const char* format, ImGuiSliderFlags flags
-    ) except +
-    bool SliderFloat4(  # ✓ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, float v[4], float v_min, float v_max,
-            # note: optional
-            const char* format, float power
     ) except +
     bool SliderAngle(  # ✓
             const char* label, float* v_rad,
@@ -1204,25 +1184,25 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* label, int* v, int v_min, int v_max,
             # note: optional
             const char* format,
-            ImGuiSliderFlags flags # NEW
+            ImGuiSliderFlags flags
     ) except +
     bool SliderInt2(  # ✓
             const char* label, int v[2], int v_min, int v_max,
             # note: optional
             const char* format,
-            ImGuiSliderFlags flags # NEW
+            ImGuiSliderFlags flags
     ) except +
     bool SliderInt3(  # ✓
             const char* label, int v[3], int v_min, int v_max,
             # note: optional
             const char* format,
-            ImGuiSliderFlags flags # NEW
+            ImGuiSliderFlags flags
     ) except +
     bool SliderInt4(  # ✓
             const char* label, int v[4], int v_min, int v_max,
             # note: optional
             const char* format,
-            ImGuiSliderFlags flags # NEW
+            ImGuiSliderFlags flags
     ) except +
     bool SliderScalar( # ✗
             const char* label, ImGuiDataType data_type,

@@ -5610,18 +5610,17 @@ def input_double(
     ), inout_value
 
 
-
-# OBSOLETED in 1.78 (from June 2020)
 def slider_float(
     str label,
     float value,
     float min_value,
     float max_value,
-    str format = "%.3f",
-    float power=1.0
+    str format = "%.3f", 
+    cimgui.ImGuiSliderFlags flags = 0,
+    float power=1.0 # OBSOLETED in 1.78 (from June 2020)
 ):
     """Display float slider widget.
-    Use power different from 1.0 for logarithmic sliders.
+    Manually input values aren't clamped and can go off-bounds.
 
     .. visual-example::
         :auto_layout:
@@ -5634,8 +5633,7 @@ def slider_float(
         changed, value = imgui.slider_float(
             "slide floats", value,
             min_value=0.0, max_value=100.0,
-            format="%.0f",
-            power=1.0
+            format="%.0f"
         )
         imgui.text("Changed: %s, Value: %s" % (changed, value))
         imgui.end()
@@ -5648,7 +5646,9 @@ def slider_float(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_float()`.
-        power (float): how fast values changes on slide.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+        power (float): OBSOLETED in ImGui 1.78 (from June 2020)
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -5661,27 +5661,28 @@ def slider_float(
             float v_min,
             float v_max,
             const char* format = "%.3f",
-            float power = 1.0f
+            ImGuiSliderFlags flags = 0
         )
     """
+    assert (power == 1), "power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead"
     cdef float inout_value = value
     return cimgui.SliderFloat(
         _bytes(label), <float*>&inout_value,
-        min_value, max_value, _bytes(format), power
+        min_value, max_value, _bytes(format), flags
     ), inout_value
 
 
-# OBSOLETED in 1.78 (from June 2020)
 def slider_float2(
     str label,
     float value0, float value1,
     float min_value,
     float max_value,
     str format = "%.3f",
-    float power=1.0
+    cimgui.ImGuiSliderFlags flags = 0,
+    float power=1.0 # OBSOLETED in 1.78 (from June 2020)
 ):
     """Display float slider widget with 2 values.
-    Use power different from 1.0 for logarithmic sliders.
+    Manually input values aren't clamped and can go off-bounds.
 
     .. visual-example::
         :auto_layout:
@@ -5694,8 +5695,7 @@ def slider_float2(
         changed, values = imgui.slider_float2(
             "slide floats", *values,
             min_value=0.0, max_value=100.0,
-            format="%.0f",
-            power=1.0
+            format="%.0f"
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -5707,7 +5707,9 @@ def slider_float2(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_float()`.
-        power (float): how fast values changes on slide.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+        power (float): OBSOLETED in ImGui 1.78 (from June 2020)
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -5720,27 +5722,28 @@ def slider_float2(
             float v_min,
             float v_max,
             const char* format = "%.3f",
-            float power = 1.0f
+            ImGuiSliderFlags flags = 0
         )
     """
+    assert (power == 1), "power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead"
     cdef float[2] inout_values = [value0, value1]
     return cimgui.SliderFloat2(
         _bytes(label), <float*>&inout_values,
-        min_value, max_value, _bytes(format), power
+        min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1])
 
 
-# OBSOLETED in 1.78 (from June 2020)
 def slider_float3(
     str label,
     float value0, float value1, float value2,
     float min_value,
     float max_value,
     str format = "%.3f",
-    float power=1.0
+    cimgui.ImGuiSliderFlags flags = 0,
+    float power=1.0 # OBSOLETED in 1.78 (from June 2020)
 ):
     """Display float slider widget with 3 values.
-    Use power different from 1.0 for logarithmic sliders.
+    Manually input values aren't clamped and can go off-bounds.
 
     .. visual-example::
         :auto_layout:
@@ -5753,8 +5756,7 @@ def slider_float3(
         changed, values = imgui.slider_float3(
             "slide floats", *values,
             min_value=0.0, max_value=100.0,
-            format="%.0f",
-            power=1.0
+            format="%.0f"
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -5767,7 +5769,9 @@ def slider_float3(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_float()`.
-        power (float): how fast values changes on slide.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+        power (float): OBSOLETED in ImGui 1.78 (from June 2020)
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -5780,27 +5784,28 @@ def slider_float3(
             float v_min,
             float v_max,
             const char* format = "%.3f",
-            float power = 1.0f
+            ImGuiSliderFlags flags = 0
         )
     """
+    assert (power == 1), "power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead"
     cdef float[3] inout_values = [value0, value1, value2]
     return cimgui.SliderFloat3(
         _bytes(label), <float*>&inout_values,
-        min_value, max_value, _bytes(format), power
+        min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2])
 
 
-# OBSOLETED in 1.78 (from June 2020)
 def slider_float4(
     str label,
     float value0, float value1, float value2, float value3,
     float min_value,
     float max_value,
     str format = "%.3f",
-    float power=1.0
+    cimgui.ImGuiSliderFlags flags = 0,
+    float power=1.0 # OBSOLETED in 1.78 (from June 2020)
 ):
     """Display float slider widget with 4 values.
-    Use power different from 1.0 for logarithmic sliders.
+    Manually input values aren't clamped and can go off-bounds.
 
     .. visual-example::
         :auto_layout:
@@ -5813,8 +5818,7 @@ def slider_float4(
         changed, values = imgui.slider_float4(
             "slide floats", *values,
             min_value=0.0, max_value=100.0,
-            format="%.0f",
-            power=1.0
+            format="%.0f"
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
@@ -5827,7 +5831,9 @@ def slider_float4(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_float()`.
-        power (float): how fast values changes on slide.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+        power (float): OBSOLETED in ImGui 1.78 (from June 2020)
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -5840,13 +5846,14 @@ def slider_float4(
             float v_min,
             float v_max,
             const char* format = "%.3f",
-            float power = 1.0f
+            ImGuiSliderFlags flags = 0
         )
     """
+    assert (power == 1), "power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead"
     cdef float[4] inout_values = [value0, value1, value2, value3]
     return cimgui.SliderFloat4(
         _bytes(label), <float*>&inout_values,
-        min_value, max_value, _bytes(format), power
+        min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 def slider_angle(str label, float rad_value,
@@ -5935,6 +5942,8 @@ def slider_int(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_int()`.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
@@ -5991,6 +6000,8 @@ def slider_int2(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_int()`.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -6047,6 +6058,8 @@ def slider_int3(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_int()`.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -6102,6 +6115,8 @@ def slider_int4(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_int()`.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
 
     Returns:
         tuple: a ``(changed, values)`` tuple that contains indicator of
@@ -6120,7 +6135,7 @@ def slider_int4(
     cdef int[4] inout_values = [value0, value1, value2, value3]
     return cimgui.SliderInt4(
         _bytes(label), <int*>&inout_values,
-        min_value, max_value, _bytes(format), 0
+        min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 
@@ -6164,7 +6179,8 @@ def v_slider_float(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_float()`.
-        flags (ImGuiSliderFlags): Slider Flags.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
@@ -6228,6 +6244,8 @@ def v_slider_int(
         format (str): display format string as C-style ``printf``
             format string. **Warning:** highly unsafe.
             See :any:`slider_int()`.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
