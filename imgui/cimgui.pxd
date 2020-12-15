@@ -185,7 +185,7 @@ cdef extern from "imgui.h":
         ImWchar*    NavInputs  # ✗
 
         # Functions
-        void        AddInputCharacter(ImWchar c) except +  # ✓
+        void        AddInputCharacter(unsigned int c) except +  # ✓
         void        AddInputCharacterUTF16(ImWchar16 c) except + # ✗
         void        AddInputCharactersUTF8(const char* utf8_chars) except +  # ✓
         void        ClearInputCharacters() except +  # ✓

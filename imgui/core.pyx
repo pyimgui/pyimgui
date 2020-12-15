@@ -2018,7 +2018,7 @@ cdef class _IO(object):
         keys_down.data = <char*>self._ptr.KeysDown
         return keys_down
 
-    def add_input_character(self, cimgui.ImWchar c):
+    def add_input_character(self, unsigned int c):
         self._ptr.AddInputCharacter(c)
 
     def add_input_characters_utf8(self, str utf8_chars):
