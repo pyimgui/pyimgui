@@ -1536,10 +1536,11 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiInputTextFlags flags           # = 0
     ) except +  
     bool InputDouble(  # ✓
-            const char* label, double v,
+            const char* label, 
+            double* v,
             # note: optional
             double step,                        # = 0.0
-            int step_fast,                      # = 0.0
+            double step_fast,                   # = 0.0
             const char* format,                 # = "%.6f"
             ImGuiInputTextFlags flags           # = 0
     ) except +
