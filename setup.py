@@ -125,7 +125,7 @@ EXTENSIONS = [
             # note: for raising custom exceptions directly in ImGui code
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
         ] + os_specific_macros + general_macros,
-        include_dirs=['imgui', 'config-cpp', 'imgui-cpp'],
+        include_dirs=['imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp'],
     ),
 ]
 
