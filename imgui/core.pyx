@@ -2182,8 +2182,20 @@ cdef class _IO(object):
         return self._ptr.MetricsRenderVertices
 
     @property
+    def metrics_render_indices(self):
+        return self._ptr.MetricsRenderIndices
+
+    @property
+    def metrics_render_windows(self):
+        return self._ptr.MetricsRenderWindows
+
+    @property
     def metrics_active_windows(self):
         return self._ptr.MetricsActiveWindows
+
+    @property
+    def metrics_active_allocations(self):
+        return self._ptr.MetricsActiveAllocations
 
     @property
     def mouse_delta(self):

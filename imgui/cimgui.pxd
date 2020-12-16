@@ -204,9 +204,9 @@ cdef extern from "imgui.h":
         float       Framerate  # ✓
         int         MetricsRenderVertices  # ✓
         int         MetricsRenderIndices  # ✓
-        int         MetricsRenderWindows # ✗
+        int         MetricsRenderWindows # ✓
         int         MetricsActiveWindows  # ✓
-        int         MetricsActiveAllocations # ✗
+        int         MetricsActiveAllocations # ✓
         ImVec2      MouseDelta  # ✓
 
     cdef cppclass ImVector[T]:
