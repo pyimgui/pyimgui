@@ -7381,6 +7381,18 @@ def set_mouse_cursor(cimgui.ImGuiMouseCursor mouse_cursor_type):
     """
     return cimgui.SetMouseCursor(mouse_cursor_type)
 
+def capture_mouse_from_app(bool want_capture_mouse_value = True):
+    """Attention: misleading name! 
+    Manually override io.WantCaptureMouse flag next frame 
+    (said flag is entirely left for your application to handle). 
+    
+    This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse_value;" 
+    after the next NewFrame() call.
+    
+    .. wraps::
+        void CaptureMouseFromApp(bool want_capture_mouse_value = true)
+    """
+    cimgui.CaptureMouseFromApp(want_capture_mouse_value)
 
 # OBSOLETED in 1.66 (from Sep 2018)
 def set_scroll_here(float center_y_ratio = 0.5):

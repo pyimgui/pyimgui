@@ -2055,7 +2055,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     ImGuiMouseCursor GetMouseCursor() except +  # ✓
     void SetMouseCursor(ImGuiMouseCursor type) except +  # ✓
-    void CaptureMouseFromApp(  # ✗
+    void CaptureMouseFromApp(  # ✓
             # note: optional
             bool want_capture_mouse_value   # = True
     ) except +
