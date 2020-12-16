@@ -3998,7 +3998,7 @@ def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
     ), inout_visible
 
 
-def begin_popup_context_item(str label = None, int mouse_button = 1):
+def begin_popup_context_item(str label = None, cimgui.ImGuiPopupFlags mouse_button = 1):
     """This is a helper function to handle the most simple case of associating
     one named popup to one given widget.
 
@@ -4018,8 +4018,7 @@ def begin_popup_context_item(str label = None, int mouse_button = 1):
 
     Args:
         label (str): label of item.
-        mouse_button (int): mouse button identifier: 0 - left button,
-            1 - right button, 2 - middle button
+        mouse_button: ImGuiPopupFlags
 
     Returns:
         opened (bool): opened can be False when the popup is completely
@@ -4037,11 +4036,10 @@ def begin_popup_context_item(str label = None, int mouse_button = 1):
         return cimgui.BeginPopupContextItem(_bytes(label), mouse_button)
 
 
-# ✓ OBSOLETED in 1.77 (from June 2020)
 def begin_popup_context_window(
     str label = None,
-    bool also_over_items = True,
-    int mouse_button = 1
+    cimgui.ImGuiPopupFlags mouse_button = 1,
+    bool also_over_items = True # OBSOLETED in 1.77 (from June 2020)
 ):
     """Helper function to open and begin popup when clicked on current window.
 
@@ -4062,11 +4060,8 @@ def begin_popup_context_window(
 
     Args:
         label (str): label of the window
-        also_over_items (bool): display on top of widget.
-        mouse_button (int): mouse button identifier:
-            0 - left button
-            1 - right button
-            2 - middle button
+        mouse_button: ImGuiPopupFlags
+        also_over_items (bool): display on top of widget. OBSOLETED in ImGui 1.77 (from June 2020)
 
     Returns:
         opened (bool): if the context window is opened.
@@ -4074,21 +4069,19 @@ def begin_popup_context_window(
     .. wraps::
         bool BeginPopupContextWindow(
             const char* str_id = NULL,
-            bool also_over_items = true,
-            int mouse_button = 1
+            ImGuiPopupFlags mouse_button = 1
         )
     """
+    
     if label is None:
         return cimgui.BeginPopupContextWindow(
             NULL,
-            also_over_items,
-            mouse_button
+            mouse_button | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS )
         )
     else:
         return cimgui.BeginPopupContextWindow(
             _bytes(label),
-            also_over_items,
-            mouse_button
+            mouse_button | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS )
         )
 
 
