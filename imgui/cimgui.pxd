@@ -122,8 +122,8 @@ cdef extern from "imgui.h":
     
         # ====
         # Configuration (fill once)
-        ImGuiConfigFlags   ConfigFlags # ✗
-        ImGuiBackendFlags  BackendFlags # ✗
+        ImGuiConfigFlags   ConfigFlags # ✓
+        ImGuiBackendFlags  BackendFlags # ✓
         ImVec2        DisplaySize # ✓
         float         DeltaTime  # ✓
         float         IniSavingRate  # ✓
@@ -153,8 +153,8 @@ cdef extern from "imgui.h":
         bool          ConfigInputTextCursorBlink  # ✓
         #bool          ConfigResizeWindowsFromEdges  # ✓ # RENAMED
         bool          ConfigWindowsResizeFromEdges # ✓
-        bool          ConfigWindowsMoveFromTitleBarOnly # ✗
-        float         ConfigWindowsMemoryCompactTimer # ✗
+        bool          ConfigWindowsMoveFromTitleBarOnly # ✓
+        float         ConfigWindowsMemoryCompactTimer # ✓
         
         # ====
         # Platform Functions

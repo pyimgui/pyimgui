@@ -2007,6 +2007,22 @@ cdef class _IO(object):
     def config_windows_resize_from_edges(self, cimgui.bool value):
         self._ptr.ConfigWindowsResizeFromEdges = value
 
+    @property
+    def config_windows_move_from_title_bar_only(self):
+        return self._ptr.ConfigWindowsMoveFromTitleBarOnly
+    
+    @config_windows_move_from_title_bar_only.setter
+    def config_windows_move_from_title_bar_only(self, cimgui.bool value):
+        self._ptr.ConfigWindowsMoveFromTitleBarOnly = value
+
+    @property
+    def config_windows_memory_compact_timer(self):
+        return self._ptr.ConfigWindowsMemoryCompactTimer
+    
+    @config_windows_memory_compact_timer.setter
+    def config_windows_memory_compact_timer(self, float value):
+        self._ptr.ConfigWindowsMemoryCompactTimer = value
+
     @staticmethod
     cdef const char* _get_clipboard_text(void* user_data):
         text = _io.get_clipboard_text_fn()
