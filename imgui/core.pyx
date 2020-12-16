@@ -3896,6 +3896,22 @@ def open_popup(str label, cimgui.ImGuiPopupFlags flags=0):
     """
     cimgui.OpenPopup(_bytes(label), flags)
 
+def open_popup_on_item_click(str label = None, cimgui.ImGuiPopupFlags popup_flags = 1):
+    """Helper to open popup when clicked on last item. 
+    (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)
+    
+    Args:
+        label (str): label of the modal window
+        flags: ImGuiWindowFlags
+    
+    .. wraps::
+        void OpenPopupOnItemClick(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1)
+    """
+    if label is None:
+        cimgui.OpenPopupOnItemClick(NULL, popup_flags)
+    else:
+        cimgui.OpenPopupOnItemClick(_bytes(label), popup_flags)
+    
 
 def begin_popup(str label, cimgui.ImGuiWindowFlags flags=0):
     """Open a popup window.
@@ -4038,7 +4054,7 @@ def begin_popup_context_item(str label = None, cimgui.ImGuiPopupFlags mouse_butt
 
 def begin_popup_context_window(
     str label = None,
-    cimgui.ImGuiPopupFlags mouse_button = 1,
+    cimgui.ImGuiPopupFlags popup_flags = 1,
     bool also_over_items = True # OBSOLETED in 1.77 (from June 2020)
 ):
     """Helper function to open and begin popup when clicked on current window.
@@ -4053,14 +4069,14 @@ def begin_popup_context_window(
         :click: 40 40
 
         imgui.begin("Example: popup context window")
-        if imgui.begin_popup_context_window(mouse_button=0):
+        if imgui.begin_popup_context_window(popup_flags=imgui.POPUP_NONE):
             imgui.selectable("Clear")
             imgui.end_popup()
         imgui.end()
 
     Args:
         label (str): label of the window
-        mouse_button: ImGuiPopupFlags
+        popup_flags: ImGuiPopupFlags
         also_over_items (bool): display on top of widget. OBSOLETED in ImGui 1.77 (from June 2020)
 
     Returns:
@@ -4069,21 +4085,53 @@ def begin_popup_context_window(
     .. wraps::
         bool BeginPopupContextWindow(
             const char* str_id = NULL,
-            ImGuiPopupFlags mouse_button = 1
+            ImGuiPopupFlags popup_flags = 1
         )
     """
     
     if label is None:
         return cimgui.BeginPopupContextWindow(
             NULL,
-            mouse_button | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS )
+            popup_flags | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS )
         )
     else:
         return cimgui.BeginPopupContextWindow(
             _bytes(label),
-            mouse_button | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS )
+            popup_flags | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS )
         )
 
+def begin_popup_context_void(str label = None, cimgui.ImGuiPopupFlags popup_flags = 1):
+    """Open+begin popup when clicked in void (where there are no windows).
+
+    Args:
+        label (str): label of the window
+        popup_flags: ImGuiPopupFlags
+
+    Returns:
+        opened (bool): if the context window is opened.
+    
+    .. wraps::
+        bool BeginPopupContextVoid(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1)
+    """
+    
+    if label is None:
+        return cimgui.BeginPopupContextVoid( NULL, popup_flags )
+    else:
+        return cimgui.BeginPopupContextVoid( _bytes(label), popup_flags )
+
+def is_popup_open( str label,  cimgui.ImGuiPopupFlags flags = 0):
+    """Popups: test function
+    
+    * ``is_popup_open()`` with POPUP_ANY_POPUP_ID: return true if any popup is open at the current BeginPopup() level of the popup stack.
+    * ``is_popup_open()`` with POPUP_ANY_POPUP_ID + POPUP_ANY_POPUP_LEVEL: return true if any popup is open.
+    
+    Returns:
+        bool: True if the popup is open at the current ``begin_popup()`` level of the popup stack.
+    
+    .. wraps::
+        bool IsPopupOpen(const char* str_id, ImGuiPopupFlags flags = 0)
+    """
+    return cimgui.IsPopupOpen(_bytes(str), flags)
 
 def end_popup():
     """End a popup window.

@@ -1665,10 +1665,10 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiPopupFlags popup_flags # = 0
     ) except + 
-    bool OpenPopupOnItemClick( # ✗
-            const char* str_id, 
+    void OpenPopupOnItemClick( # ✓
             # note: optional
-            ImGuiPopupFlags popup_flags
+            const char* str_id,         # = NULL 
+            ImGuiPopupFlags popup_flags # = 1
     ) except +
     void CloseCurrentPopup() except +  # ✓
     bool BeginPopupContextItem(  # ✓
@@ -1678,20 +1678,20 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     bool BeginPopupContextWindow( # ✓
             # note: optional
-            const char* str_id, 
-            ImGuiPopupFlags popup_flags
+            const char* str_id,         # = NULL 
+            ImGuiPopupFlags popup_flags # = 1
     ) except +
-    bool BeginPopupContextVoid(  # ✗
+    bool BeginPopupContextVoid(  # ✓
             # note: optional
-            const char* str_id, 
-            ImGuiPopupFlags popup_flags
+            const char* str_id,         # = NULL
+            ImGuiPopupFlags popup_flags # = 1
     ) except +
-    bool IsPopupOpen( # ✗
+    bool IsPopupOpen( # ✓
             const char* str_id,
             # note: optional
             ImGuiPopupFlags flags
     ) except + 
-
+    
     # ====
     # Columns
     void Columns(  # ✓
