@@ -729,8 +729,8 @@ cdef extern from "imgui.h":
         const ImWchar* GetGlyphRangesChineseFull() except +  # ✓
         const ImWchar* GetGlyphRangesChineseSimplifiedCommon() except +  # ✓
         const ImWchar* GetGlyphRangesCyrillic() except +  # ✓
-        const ImWchar* GetGlyphRangesThai() except + # ✗
-        const ImWchar* GetGlyphRangesVietnamese() except + # ✗
+        const ImWchar* GetGlyphRangesThai() except + # ✓
+        const ImWchar* GetGlyphRangesVietnamese() except + # ✓
         
         # ====
         # [BETA] Custom Rectangles/Glyphs API

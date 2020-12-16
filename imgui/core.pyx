@@ -1752,6 +1752,12 @@ cdef class _FontAtlas(object):
 
     def get_glyph_ranges_cyrillic(self):
         return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesCyrillic())
+    
+    def get_glyph_ranges_thai(self):
+        return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesThai())
+    
+    def get_glyph_ranges_vietnamese(self):
+        return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesVietnamese())
 
     def get_glyph_ranges_latin(self):
         # note: this is a custom glyph range with full latin character set
