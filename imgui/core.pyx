@@ -2128,6 +2128,9 @@ cdef class _IO(object):
 
     def add_input_character(self, unsigned int c):
         self._ptr.AddInputCharacter(c)
+    
+    def add_input_character_utf16(self, str utf16_chars):
+        self._ptr.AddInputCharacterUTF16(_bytes(utf16_chars))
 
     def add_input_characters_utf8(self, str utf8_chars):
         self._ptr.AddInputCharactersUTF8(_bytes(utf8_chars))
