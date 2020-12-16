@@ -1045,7 +1045,13 @@ cdef class _DrawList(object):
     # channels
 
     def channels_split(self, int channels_count):
-        """
+        """Use to split render into layers. 
+        By switching channels to can render out-of-order (e.g. submit FG primitives before BG primitives)
+        Use to minimize draw calls (e.g. if going back-and-forth between multiple clipping rectangles, prefer to append into separate channels then merge at the end)
+        
+        Prefer using your own persistent instance of ImDrawListSplitter as you can stack them.
+        Using the ImDrawList::ChannelsXXXX you cannot stack a split over another.
+        
         Warning - be careful with using channels as "layers".
         Child windows are always drawn after their parent, so they will
         paint over its channels.
