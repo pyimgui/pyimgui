@@ -208,7 +208,13 @@ cdef extern from "imgui.h":
         int         MetricsActiveWindows  # ✓
         int         MetricsActiveAllocations # ✓
         ImVec2      MouseDelta  # ✓
-
+    
+    ctypedef struct ImGuiInputTextCallbackData: # ✗
+        pass
+    
+    ctypedef struct ImGuiSizeCallbackData: # ✗
+        pass
+    
     cdef cppclass ImVector[T]:
         int        Size
         int        Capacity
