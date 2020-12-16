@@ -4454,8 +4454,10 @@ def arrow_button(str label, cimgui.ImGuiDir direction = DIRECTION_NONE):
         raise ValueError("Direction wasn't specified.")
     return cimgui.ArrowButton(_bytes(label), direction)
 
-def invisible_button(str identifier, width, height):
+def invisible_button(str identifier, float width, float height, cimgui.ImGuiButtonFlags flags = 0):
     """Create invisible button.
+    
+    Flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with IsItemActive, IsItemHovered, etc.)
 
     .. visual-example::
         :auto_layout:
@@ -4472,16 +4474,18 @@ def invisible_button(str identifier, width, height):
             but it is not displayed.
         width (float): button width.
         height (float): button height.
+        flags: ImGuiButtonFlags
 
     Returns:
         bool: True if button is clicked.
 
     .. wraps::
-        bool InvisibleButton(const char* str_id, const ImVec2& size)
+        bool InvisibleButton(const char* str_id, const ImVec2& size, ImGuiButtonFlags flags = 0)
     """
     return cimgui.InvisibleButton(
         _bytes(identifier),
-        _cast_args_ImVec2(width, height)
+        _cast_args_ImVec2(width, height),
+        flags
     )
 
 

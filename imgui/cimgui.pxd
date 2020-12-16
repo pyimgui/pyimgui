@@ -1075,7 +1075,12 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool Button(const char*, const ImVec2& size) except +  # ✓
     bool Button(const char*) except +  # ✓
     bool SmallButton(const char*) except +  # ✓
-    bool InvisibleButton(const char*, const ImVec2& size) except +  # ✓
+    bool InvisibleButton( # ✓
+            const char*, 
+            const ImVec2& size, 
+            # note: optional
+            ImGuiButtonFlags flags      # = 0
+    ) except +
     bool ArrowButton(const char*, ImGuiDir) except +  # ✓
     void Image(  # ✓
             ImTextureID user_texture_id, const ImVec2& size,
