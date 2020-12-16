@@ -825,7 +825,88 @@ cdef class _DrawList(object):
             col,
             num_segments
         )
+    
+    def add_ngon(
+        self,
+        float centre_x, float centre_y,
+        float radius, 
+        cimgui.ImU32 col, 
+        int num_segments, 
+        float thickness = 1.0
+    ):
+        """Draw a regular Ngon
+        
+        Args:
+            centre_x (float): circle centre coordinates
+            centre_y (float): circle centre coordinates
+            radius (float): Distance of points to center
+            col (ImU32): RGBA color specification
+            num_segments (int): Number of segments
+            thickness (float): Line thickness
 
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Ngon Example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_ngon(100, 60, 30, imgui.get_color_u32_rgba(1,1,0,1), 5)
+            imgui.end()
+        
+        .. wraps::
+            void  AddNgon(
+                const ImVec2& center, 
+                float radius, 
+                ImU32 col, 
+                int num_segments, 
+                float thickness = 1.0f
+            )
+        """
+        self._ptr.AddNgon(
+            _cast_args_ImVec2(centre_x, centre_y),
+            radius, col, num_segments, thickness
+        )
+    
+    def add_ngon_filled(
+        self,
+        float centre_x, float centre_y,
+        float radius, 
+        cimgui.ImU32 col, 
+        int num_segments
+    ):
+        """Draw a regular Ngon
+        
+        Args:
+            centre_x (float): circle centre coordinates
+            centre_y (float): circle centre coordinates
+            radius (float): Distance of points to center
+            col (ImU32): RGBA color specification
+            num_segments (int): Number of segments
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Filled Ngon Example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_ngon_filled(100, 60, 30, imgui.get_color_u32_rgba(1,1,0,1), 5)
+            imgui.end()
+        
+        .. wraps::
+            void  AddNgonFilled(
+                const ImVec2& center, 
+                float radius, 
+                ImU32 col, 
+                int num_segments
+            )
+        """
+        self._ptr.AddNgonFilled(
+            _cast_args_ImVec2(centre_x, centre_y),
+            radius, col, num_segments
+        )
+    
     def add_text(
             self,
             float pos_x, float pos_y,

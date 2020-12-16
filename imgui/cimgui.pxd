@@ -366,7 +366,7 @@ cdef extern from "imgui.h":
            int num_segments            # = 0        # UPDATE
         ) except + 
         
-        void AddNgon( # ✗
+        void AddNgon( # ✓
             const ImVec2& center, 
             float radius, 
             ImU32 col, 
@@ -375,7 +375,7 @@ cdef extern from "imgui.h":
             float thickness            # = 1.0f
         ) except +
         
-        void AddNgonFilled( # ✗
+        void AddNgonFilled( # ✓
             const ImVec2& center, 
             float radius, 
             ImU32 col, 
