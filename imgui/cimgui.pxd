@@ -79,11 +79,13 @@ cdef extern from "imgui.h":
     ctypedef int (*ImGuiInputTextCallback)(ImGuiInputTextCallbackData *data);
     ctypedef void (*ImGuiSizeCallback)(ImGuiSizeCallbackData* data);
     
-    # ====
+    # ==== # TODO: Find a way to check IMGUI_USE_WCHAR32 define
     # Decoded character types
     ctypedef unsigned short ImWchar16
     ctypedef unsigned int ImWchar32
-    ctypedef unsigned short ImWchar
+    ctypedef ImWchar16 ImWchar # Default is 16, if IMGUI_USE_WCHAR32 is set in imconfig.h this should be 32
+    cdef enum: # No const in cython
+        IM_UNICODE_CODEPOINT_MAX = 0xFFFF # Default is 16, if IMGUI_USE_WCHAR32 is set in imconfig.h this should be 0x10FFFF
     
     # ====
     # Basic scalar data types
@@ -518,9 +520,6 @@ cdef extern from "imgui.h":
         
         void            DeIndexAllBuffers() except +  # ✓
         void            ScaleClipRects(const ImVec2&) except +  # ✓
-        
-    ctypedef struct ImFontAtlasCustomRect: # TODO
-        pass
 
     ctypedef struct ImFontConfig:
         void*           FontData # ✗
@@ -543,9 +542,112 @@ cdef extern from "imgui.h":
         
         # ImFontConfig()  # ✗
         
-
-    ctypedef struct ImFont: # TODO
-        pass
+    ctypedef struct ImFontGlyph: # ✗
+        unsigned int    Codepoint # bitfield : 31 # ✗
+        unsigned int    Visible # bitfield   : 1 # ✗
+        float           AdvanceX # ✗
+        float           X0 # ✗
+        float           Y0 # ✗
+        float           X1 # ✗
+        float           Y1 # ✗
+        float           U0 # ✗
+        float           V0 # ✗
+        float           U1 # ✗
+        float           V1 # ✗
+    
+    ctypedef struct ImFontGlyphRangesBuilder: # ✗
+        ImVector[ImU32] UsedChars 
+        
+        # ImFontGlyphRangesBuilder() # ✗
+        void Clear() except + # ✗
+        bool GetBit(size_t n) except + # ✗
+        void SetBit(size_t n) except + # ✗
+        void AddChar(ImWchar c) except + # ✗
+        void AddText( # ✗
+                const char* text, 
+                # note: optional
+                const char* text_end        # = NULL
+        ) except +
+        void AddRanges(const ImWchar* ranges) except + # ✗
+        void BuildRanges(ImVector[ImWchar]* out_ranges) except + # ✗
+        
+    ctypedef struct ImFontAtlasCustomRect: # ✗        
+        unsigned short  Width, Height;  # ✗
+        unsigned short  X, Y;           # ✗
+        unsigned int    GlyphID;        # ✗
+        float           GlyphAdvanceX;  # ✗
+        ImVec2          GlyphOffset;    # ✗
+        ImFont*         Font;           # ✗
+        ImFontAtlasCustomRect() except + # ✗
+        bool IsPacked() except + # ✗
+        
+ 
+    ctypedef struct ImFont: # ✗
+        
+        # Members: Hot ~20/24 bytes (for CalcTextSize)
+        ImVector[float]             IndexAdvanceX # ✗
+        float                       FallbackAdvanceX# ✗
+        float                       FontSize # ✗
+        
+        # Members: Hot ~28/40 bytes (for CalcTextSize + render loop)
+        ImVector[ImWchar]           IndexLookup # ✗
+        ImVector[ImFontGlyph]       Glyphs # ✗
+        const ImFontGlyph*          FallbackGlyph # ✗
+        
+        # Members: Cold ~32/40 bytes
+        ImFontAtlas*                ContainerAtlas # ✗
+        const ImFontConfig*         ConfigData # ✗
+        short                       ConfigDataCount # ✗
+        ImWchar                     FallbackChar # ✗
+        ImWchar                     EllipsisChar # ✗
+        bool                        DirtyLookupTables # ✗
+        float                       Scale # ✗
+        float                       Ascent # ✗
+        float                       Descent # ✗
+        int                         MetricsTotalSurface # ✗
+        ImU8                        Used4kPagesMap[(IM_UNICODE_CODEPOINT_MAX+1)/4096/8] # ✗
+        
+        # Methods
+        const ImFontGlyph*FindGlyph(ImWchar c) except + # ✗
+        const ImFontGlyph*FindGlyphNoFallback(ImWchar c) except + # ✗
+        float GetCharAdvance(ImWchar c) except + # ✗
+        bool IsLoaded() except + # ✗
+        const char* GetDebugName() except + # ✗
+        
+        ImVec2 CalcTextSizeA( # ✗
+                float size, 
+                float max_width, 
+                float wrap_width, 
+                const char* text_begin, 
+                # note: optional
+                const char* text_end,           # = NULL, 
+                const char** remaining          # = NULL
+        ) except +
+        const char* CalcWordWrapPositionA( # ✗
+                float scale, 
+                const char* text, 
+                const char* text_end, 
+                float wrap_width
+        ) except +
+        void RenderChar( # ✗ 
+                ImDrawList* draw_list, 
+                float size, 
+                ImVec2 pos, 
+                ImU32 col, 
+                ImWchar c
+        ) except +
+        void RenderText( # ✗
+                ImDrawList* draw_list, 
+                float size, 
+                ImVec2 pos, 
+                ImU32 col, 
+                const ImVec4& clip_rect, 
+                const char* text_begin, 
+                const char* text_end, 
+                # note: optional
+                float wrap_width,               # = 0.0f, 
+                bool cpu_fine_clip              # = false
+        ) except +
 
     ctypedef struct ImFontAtlas:  # ✓
         
