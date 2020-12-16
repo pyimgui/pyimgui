@@ -1171,6 +1171,16 @@ cdef class GuiStyle(object):
     def window_title_align(self, value):
         self._check_ptr()
         self._ptr.WindowTitleAlign = _cast_tuple_ImVec2(value)
+        
+    @property
+    def window_menu_button_position(self):
+        self._check_ptr()
+        return self._ptr.WindowMenuButtonPosition
+
+    @window_menu_button_position.setter
+    def window_menu_button_position(self, cimgui.ImGuiDir value):
+        self._check_ptr()
+        self._ptr.WindowMenuButtonPosition = value
 
     @property
     def frame_padding(self):
@@ -1331,6 +1341,16 @@ cdef class GuiStyle(object):
     def tab_min_width_for_close_button(self, float value):
         self._check_ptr()
         self._ptr.TabMinWidthForCloseButton = value
+        
+    @property
+    def color_button_position(self):
+        self._check_ptr()
+        return self._ptr.ColorButtonPosition
+
+    @color_button_position.setter
+    def color_button_position(self, cimgui.ImGuiDir value):
+        self._check_ptr()
+        self._ptr.ColorButtonPosition = value
 
     @property
     def button_text_align(self):

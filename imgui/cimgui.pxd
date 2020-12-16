@@ -736,7 +736,7 @@ cdef extern from "imgui.h":
         float       WindowBorderSize  # ✓
         ImVec2      WindowMinSize  # ✓
         ImVec2      WindowTitleAlign  # ✓
-        ImGuiDir    WindowMenuButtonPosition # ✗
+        ImGuiDir    WindowMenuButtonPosition # ✓
         float       ChildRounding  # ✓
         float       ChildBorderSize  # ✓
         float       PopupRounding  # ✓
@@ -757,7 +757,7 @@ cdef extern from "imgui.h":
         float       TabRounding # ✓
         float       TabBorderSize # ✓
         float       TabMinWidthForCloseButton # ✓
-        ImGuiDir    ColorButtonPosition # ✗
+        ImGuiDir    ColorButtonPosition # ✓
         ImVec2      ButtonTextAlign  # ✓
         ImVec2      SelectableTextAlign # ✓
         ImVec2      DisplayWindowPadding  # ✓
