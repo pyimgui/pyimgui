@@ -644,7 +644,7 @@ cdef class _DrawList(object):
             cimgui.ImU32 col,
             # note: optional
             float rounding = 0.0,
-            cimgui.ImGuiWindowFlags rounding_corners_flags = 0xF,
+            cimgui.ImGuiWindowFlags rounding_corners_flags = DRAW_CORNER_ALL,
             float thickness = 1.0,
         ):
         """Add a rectangle outline to the draw list.
@@ -696,7 +696,7 @@ cdef class _DrawList(object):
             cimgui.ImU32 col,
             # note: optional
             float rounding = 0.0,
-            cimgui.ImGuiWindowFlags rounding_corners_flags = 0xF,
+            cimgui.ImGuiWindowFlags rounding_corners_flags = DRAW_CORNER_ALL,
         ):
         """Add a filled rectangle to the draw list.
 
@@ -743,7 +743,7 @@ cdef class _DrawList(object):
             float radius,
             cimgui.ImU32 col,
             # note: optional
-            int num_segments = 12,
+            int num_segments = 0,
             float thickness = 1.0
         ):
         """Add a circle to the draw list.
@@ -763,7 +763,7 @@ cdef class _DrawList(object):
             centre_y (float): circle centre coordinates
             radius (float): circle radius
             col (ImU32): RGBA color specification
-            num_segments (ImU32): Number of segments, defaults to 12
+            num_segments (ImU32): Number of segments, defaults to 0 meaning auto-tesselation
             thickness (float): Line thickness
 
         .. wraps::
@@ -771,7 +771,7 @@ cdef class _DrawList(object):
                 const ImVec2& centre,
                 float radius,
                 ImU32 col,
-                int num_segments = 12,
+                int num_segments = 0,
                 float thickness = 1.0
             )
         """
@@ -789,7 +789,7 @@ cdef class _DrawList(object):
             float radius,
             cimgui.ImU32 col,
             # note: optional
-            cimgui.ImU32 num_segments = 12
+            cimgui.ImU32 num_segments = 0
         ):
 
         """Add a filled circle to the draw list.
@@ -809,14 +809,14 @@ cdef class _DrawList(object):
             centre_y (float): circle centre coordinates
             radius (float): circle radius
             col (ImU32): RGBA color specification
-            num_segments (ImU32): Number of segments, defaults to 12
+            num_segments (ImU32): Number of segments, defaults to 0 meaning auto-tesselation
 
         .. wraps::
             void ImDrawList::AddCircleFilled(
                 const ImVec2& centre,
                 float radius,
                 ImU32 col,
-                int num_segments = 12
+                int num_segments = 0
             )
         """
         self._ptr.AddCircleFilled(

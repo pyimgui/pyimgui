@@ -353,7 +353,7 @@ cdef extern from "imgui.h":
            float radius,
            ImU32 col,
            # note:optional
-           int num_segments,           # = 0        # UPDATE
+           int num_segments,           # = 0        
            float thickness             # = 1.0f
         ) except + 
 
@@ -363,7 +363,7 @@ cdef extern from "imgui.h":
            float radius,
            ImU32 col,
            # note:optional
-           int num_segments            # = 0        # UPDATE
+           int num_segments            # = 0      
         ) except + 
         
         void AddNgon( # ✓
