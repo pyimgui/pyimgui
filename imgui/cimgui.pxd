@@ -1171,13 +1171,6 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format_max, 
             ImGuiSliderFlags flags
     ) except +
-    bool DragFloatRange2(  # ✗
-            const char* label, float* v_current_min, float* v_current_max,
-            # note: optional
-            float v_speed, float v_min, float v_max,
-            const char* format,
-            const char* format_max, float power
-    ) except +
     bool DragInt(  # ✓
             const char* label, int* v,
             # note: optional
@@ -1223,16 +1216,6 @@ cdef extern from "imgui.h" namespace "ImGui":
             const void* p_min, const void* p_max, 
             const char* format, ImGuiSliderFlags flags
     ) except +
-    bool DragScalar(  # ✗ # OBSOLETED in 1.78 (from June 2020)
-            const char* label,
-            ImGuiDataType data_type, void* v,
-            float v_speed,
-            # note: optional
-            const void* v_min,
-            const void* v_max,
-            const char* format,
-            float power
-    )
     bool DragScalarN( # ✗
             const char* label, 
             ImGuiDataType data_type, 
@@ -1243,15 +1226,6 @@ cdef extern from "imgui.h" namespace "ImGui":
             const void* p_min, const void* p_max, 
             const char* format, ImGuiSliderFlags flags
     ) except +
-    bool DragScalarN(  # ✗ # OBSOLETED in 1.78 (from June 2020)
-            const char* label,
-            ImGuiDataType data_type, void* v,
-            int components, float v_speed,
-            # note: optional
-            const void* v_min,
-            const void* v_max,
-            const char* format,
-            float power)
     
     # ====
     # Widgets: Regular Sliders
@@ -1310,13 +1284,15 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* label, ImGuiDataType data_type,
             void* v, const void* v_min, const void* v_max,
             # note: optional
-            const char* format, ImGuiSliderFlags flags);
+            const char* format, ImGuiSliderFlags flags
+    ) except +
     bool SliderScalarN( # ✗
             const char* label, ImGuiDataType data_type,
             void *v,
             int components, const void* v_min, const void* v_max,
             # note: optional
-            const char* format, ImGuiSliderFlags flags);
+            const char* format, ImGuiSliderFlags flags
+    ) except +
     bool VSliderFloat(  # ✓
             const char* label, const ImVec2& size, float* v,
             float v_min, float v_max,
