@@ -276,16 +276,16 @@ cdef extern from "imgui.h":
         void PopTextureID() except + # ✗
         
 
-        void AddLine(
+        void AddLine( # ✓
             const ImVec2& a,
             const ImVec2& b,
             ImU32 col,
             # note: optional
             float thickness            # = 1.0f
-        ) except +  # ✓
+        ) except + 
 
 
-        void AddRect(
+        void AddRect( # ✓
             const ImVec2& a,
             const ImVec2& b,
             ImU32 col,
@@ -293,17 +293,17 @@ cdef extern from "imgui.h":
             float rounding,             # = 0.0f,
             ImDrawCornerFlags rounding_corners_flags, # = ImDrawCornerFlags_All,
             float thickness             # = 1.0f
-        ) except +  # ✓
+        ) except + 
 
 
-        void AddRectFilled(
+        void AddRectFilled( # ✓
             const ImVec2& a,
             const ImVec2& b,
             ImU32 col,
             # note: optional
             float rounding,            # = 0.0f
             ImDrawCornerFlags rounding_corners_flags # = ImDrawCornerFlags_All
-        ) except +  # ✓
+        ) except + 
         
         void AddRectFilledMultiColor( # ✗
             const ImVec2& p_min, 
@@ -348,23 +348,23 @@ cdef extern from "imgui.h":
             ImU32 col
         ) except +
     
-        void  AddCircle(
+        void  AddCircle( # ✓
            const ImVec2& centre,
            float radius,
            ImU32 col,
            # note:optional
            int num_segments,           # = 0        # UPDATE
            float thickness             # = 1.0f
-        ) except +  # ✓
+        ) except + 
 
 
-        void AddCircleFilled(
+        void AddCircleFilled( # ✓
            const ImVec2& centre,
            float radius,
            ImU32 col,
            # note:optional
            int num_segments            # = 0        # UPDATE
-        ) except +  # ✓
+        ) except + 
         
         void AddNgon( # ✗
             const ImVec2& center, 
@@ -403,13 +403,13 @@ cdef extern from "imgui.h":
         #) except +
 
 
-        void AddPolyline(
+        void AddPolyline( # ✓
             const ImVec2* points,
             int num_points,
             ImU32 col,
             bool closed,
             float thickness
-        ) except +  # ✓
+        ) except + 
         
         void AddConvexPolyFilled( # ✗
             const ImVec2* points, 
