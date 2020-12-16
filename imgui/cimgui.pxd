@@ -233,11 +233,29 @@ cdef extern from "imgui.h":
     ctypedef unsigned int ImDrawIdx
 
 
-    ctypedef struct ImDrawVert:  # ✗
+    ctypedef struct ImDrawVert: # ✗
         ImVec2 pos  # ✗
         ImVec2 uv  # ✗
         ImU32  col  # ✗
-
+        
+    ctypedef struct ImDrawChannel: # ✗
+        ImVector[ImDrawCmd]         _CmdBuffer # ✗
+        ImVector[ImDrawIdx]         _IdxBuffer # ✗
+        
+    ctypedef struct ImDrawListSplitter: # ✗
+        int                         _Current # ✗
+        int                         _Count # ✗
+        ImVector[ImDrawChannel]     _Channels # ✗
+        
+        #inline ImDrawListSplitter()
+        #inline ~ImDrawListSplitter()
+        
+        void Clear() except + # ✗
+        void ClearFreeMemory() except + # ✗
+        void Split(ImDrawList* draw_list, int count) except + # ✗
+        void Merge(ImDrawList* draw_list) except + # ✗
+        void SetCurrentChannel(ImDrawList* draw_list, int channel_idx) except + # ✗
+    
     ctypedef struct ImDrawList:
         # we map only buffer vectors since everything else is internal
         # and right now we dont want to suport it.
