@@ -7206,7 +7206,7 @@ def is_mouse_down(int button = 0):
     return cimgui.IsMouseDown(button)
 
 
-def is_mouse_dragging(int button = 0, float lock_threshold = -1.0):
+def is_mouse_dragging(int button, float lock_threshold = -1.0):
     """Returns if mouse is dragging.
 
     Args:

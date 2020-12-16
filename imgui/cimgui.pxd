@@ -1849,13 +1849,13 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool IsKeyPressed(  # ✓
             int key_index,
             # note: optional
-            bool repeat
+            bool repeat                         # = True
     ) except +
     bool IsKeyReleased(int key_index) except +  # ✓
     int GetKeyPressedAmount(int key_index, float repeat_delay, float rate) except +  # ✗
     void CaptureKeyboardFromApp(  # ✗
             # note: optional
-            bool want_capture_keyboard_value
+            bool want_capture_keyboard_value    # = True
     ) except +
     
     # ====
@@ -1864,36 +1864,38 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool IsMouseClicked(  # ✓
             int button,
             # note: optional
-            bool repeat
+            bool repeat             # = False
     ) except +
     bool IsMouseDoubleClicked(int button) except +  # ✓
     bool IsMouseReleased(int button) except +  # ✓
     bool IsMouseHoveringRect(  # ✓
             const ImVec2& r_min, const ImVec2& r_max,
             # note: optional
-            bool clip
+            bool clip               # = True
     ) except +
     bool IsMousePosValid(const ImVec2* mouse_pos) except +  # ✗
     bool IsAnyMouseDown() except +  # ✗
     ImVec2 GetMousePos() except +  # ✓
     ImVec2 GetMousePosOnOpeningCurrentPopup() except +  # ✗
     bool IsMouseDragging(  # ✓
+            int button,
             # note: optional
-            int button, float lock_threshold
+            float lock_threshold        # = -1.0f
     ) except +
     ImVec2 GetMouseDragDelta(  # ✓
             # note: optional
-            int button, float lock_threshold
+            int button,                 # = 0
+            float lock_threshold        # = -1.0f
     ) except +
     void ResetMouseDragDelta(  # ✓
             # note: optional
-            int button
+            int button                  # = 0
     ) except +
     ImGuiMouseCursor GetMouseCursor() except +  # ✓
     void SetMouseCursor(ImGuiMouseCursor type) except +  # ✓
     void CaptureMouseFromApp(  # ✗
             # note: optional
-            bool want_capture_mouse_value
+            bool want_capture_mouse_value   # = True
     ) except +
     
     # ====
