@@ -6857,9 +6857,12 @@ def is_item_active():
     return cimgui.IsItemActive()
 
 
-def is_item_clicked(int mouse_button = 0):
+def is_item_clicked(cimgui.ImGuiMouseButton mouse_button = 0):
     """Was the last item clicked? For ex. button or node that was
     just being clicked on.
+    
+    Args:
+        mouse_button: ImGuiMouseButton
 
     Returns:
         bool: True if item is clicked, otherwise False.
