@@ -3217,6 +3217,30 @@ def tree_pop():
     """
     cimgui.TreePop()
 
+def get_tree_node_to_label_spacing():
+    """Horizontal distance preceding label when using ``tree_node*()`` 
+    or ``bullet() == (g.FontSize + style.FramePadding.x*2)`` for a 
+    regular unframed TreeNode
+    
+    Returns:
+        float: spacing
+        
+    .. visual-example::
+        :auto_layout:
+        :height: 100
+        :width: 200
+        
+        imgui.begin("TreeNode")
+        imgui.text("<- 0px offset here")
+        if imgui.tree_node("Expand me!", imgui.TREE_NODE_DEFAULT_OPEN):
+            imgui.text("<- %.2fpx offset here" % imgui.get_tree_node_to_label_spacing())
+            imgui.tree_pop()
+        imgui.end()
+    
+    .. wraps::
+        float GetTreeNodeToLabelSpacing()
+    """
+    return cimgui.GetTreeNodeToLabelSpacing()
 
 def collapsing_header(
     str text,
@@ -4137,7 +4161,7 @@ def text_unformatted(str text):
 def bullet():
     """Display a small circle and keep the cursor on the same line.
 
-    .. advance cursor x position by GetTreeNodeToLabelSpacing(),
+    .. advance cursor x position by ``get_tree_node_to_label_spacing()``,
        same distance that TreeNode() uses
 
     .. visual-example::

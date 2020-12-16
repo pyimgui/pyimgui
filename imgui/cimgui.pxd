@@ -1487,7 +1487,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void TreePop() except +  # ✓
     void TreeAdvanceToLabelPos() except +  # ✗ # OBSOLETED in 1.72 (from April 2019)
-    float GetTreeNodeToLabelSpacing() except +  # ✗
+    float GetTreeNodeToLabelSpacing() except +  # ✓
     bool CollapsingHeader(  # ✓
             const char* label,
             # note: optional
