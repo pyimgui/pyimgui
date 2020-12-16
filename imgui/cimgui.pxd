@@ -213,7 +213,29 @@ cdef extern from "imgui.h":
         int        Size
         int        Capacity
         T*         Data
-
+        
+    ctypedef struct ImGuiListClipper: # ✗
+        int     DisplayStart # ✗
+        int     DisplayEnd # ✗
+        
+        void Begin( # ✗
+            int items_count, 
+            float items_height      #= -1.0f
+        ) except +
+        void End() except + # ✗
+        bool Step() except + # ✗
+        
+    ctypedef struct ImColor: # ✗
+        ImVec4              Value # ✗
+        
+        #ImColor() except + # ✗
+        #ImColor(int r, int g, int b, int a = 255) except + # ✗
+        #ImColor(ImU32 rgba) except + # ✗
+        #ImColor(float r, float g, float b, float a = 1.0) except + # ✗
+        #ImColor(const ImVec4& col) except + # ✗
+        
+        #operator ImU32() except + # ✗
+        #operator ImVec4() except + # ✗
 
     ctypedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd)  # ✗
 
