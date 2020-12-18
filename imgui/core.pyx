@@ -2025,7 +2025,14 @@ cdef class _IO(object):
 
     @staticmethod
     cdef const char* _get_clipboard_text(void* user_data):
+        
         text = _io.get_clipboard_text_fn()
+        
+        # get_clipboard_text_fn() may return None
+        # (e.g. if the user copied non text data)
+        if text is None:
+            return ""
+        
         if type(text) is bytes:
             return text
         return _bytes(text)
@@ -7393,6 +7400,29 @@ def capture_mouse_from_app(bool want_capture_mouse_value = True):
         void CaptureMouseFromApp(bool want_capture_mouse_value = true)
     """
     cimgui.CaptureMouseFromApp(want_capture_mouse_value)
+    
+def get_clipboard_text():
+    """Also see the ``log_to_clipboard()`` function to capture GUI into clipboard, 
+    or easily output text data to the clipboard.
+    
+    Returns:
+        str: Text content of the clipboard
+    
+    .. wraps::
+        const char* GetClipboardText()
+    """
+    return _from_bytes(cimgui.GetClipboardText())
+
+def set_clipboard_text(str text):
+    """Set the clipboard content
+    
+    Args:
+        text (str): Text to copy in clipboard
+    
+    .. wraps:
+        void SetClipboardText(const char* text)
+    """
+    cimgui.SetClipboardText(_bytes(text))
 
 # OBSOLETED in 1.66 (from Sep 2018)
 def set_scroll_here(float center_y_ratio = 0.5):

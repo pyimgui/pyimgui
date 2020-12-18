@@ -2062,8 +2062,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     
     # ====
     # Clipboard Utilities
-    const char* GetClipboardText() except +  # ✗
-    void SetClipboardText(const char* text) except +  # ✗
+    const char* GetClipboardText() except +  # ✓
+    void SetClipboardText(const char* text) except +  # ✓
 
     # ====
     # Settings/.Ini Utilities
