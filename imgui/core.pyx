@@ -5367,6 +5367,54 @@ def input_double(
     ), inout_value
 
 
+def slider_angle(
+    str label,
+    float value,
+    float min_value,
+    float max_value,
+):
+    """Display angle slider widget.
+
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        value = 88.2
+
+        imgui.begin("Example: slider angle")
+        changed, value = imgui.slider_angle(
+            "slide angles", value,
+            min_value=0.0, max_value=100.0,
+        )
+        imgui.text("Changed: %s, Value: %s" % (changed, value))
+        imgui.end()
+
+    Args:
+        label (str): widget label.
+        value (float): slider values.
+        min_value (float): min value allowed by widget.
+        max_value (float): max value allowed by widget.
+
+    Returns:
+        tuple: a ``(changed, values)`` tuple that contains indicator of
+        widget state change and the current slider value.
+
+    .. wraps::
+        bool SliderAngle(
+            const char* label,
+            float v,
+            float v_min,
+            float v_max,
+        )
+    """
+    cdef float inout_value = value
+    return cimgui.SliderAngle(
+        _bytes(label), <float*>&inout_value,
+        min_value, max_value
+    ), inout_value
+
+
 
 def slider_float(
     str label,
