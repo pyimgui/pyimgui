@@ -2185,7 +2185,7 @@ cdef class _IO(object):
         return self._ptr.WantSetMousePos
 
     @property
-    def want_save_ini_setting(self):
+    def want_save_ini_settings(self):
         return self._ptr.WantSaveIniSettings
 
     @property
@@ -7450,8 +7450,8 @@ def save_ini_settings_to_disk(str ini_file_name):
     
 def save_ini_settings_to_memory():
     """Return a string with the .ini data which you can save by your own mean. 
-    Call when ``io.want_save_ini_setting`` is set, then save data by your own mean 
-    and clear ``io.want_save_ini_setting``. 
+    Call when ``io.want_save_ini_settings`` is set, then save data by your own mean 
+    and clear ``io.want_save_ini_settings``. 
     
     Returns:
         str: Settings data
