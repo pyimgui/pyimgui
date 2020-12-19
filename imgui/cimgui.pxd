@@ -2067,18 +2067,18 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # ====
     # Settings/.Ini Utilities
-    void LoadIniSettingsFromDisk(  # ✗
+    void LoadIniSettingsFromDisk(  # ✓
             const char* ini_filename
     ) except +
-    void LoadIniSettingsFromMemory(  # ✗
+    void LoadIniSettingsFromMemory(  # ✓
             const char* ini_data,
             # note: optional
-            size_t ini_size
+            size_t ini_size                 # = 0    
     ) except +
-    void SaveIniSettingsToDisk(  # ✗
+    void SaveIniSettingsToDisk(  # ✓
             const char* ini_filename
     ) except +
-    const char* SaveIniSettingsToMemory(  # ✗
+    const char* SaveIniSettingsToMemory(  # ✓
             # note: optional
             size_t* out_ini_size            # = NULL
     ) except +

@@ -2064,7 +2064,7 @@ cdef class _IO(object):
             self._ptr.SetClipboardTextFn = self._set_clipboard_text
         else:
             raise ValueError("func is not a callable: %s" % str(func))
-
+    
     @property
     def mouse_pos(self):
         return _cast_ImVec2_tuple(self._ptr.MousePos)
@@ -7412,6 +7412,54 @@ def get_clipboard_text():
         const char* GetClipboardText()
     """
     return _from_bytes(cimgui.GetClipboardText())
+    
+def load_ini_settings_from_disk(str ini_file_name):
+    """Call after ``create_context()`` and before the first call to ``new_frame()``. 
+    ``new_frame()`` automatically calls ``load_ini_settings_from_disk(io.ini_file_name)``.
+    
+    Args:
+        ini_file_name (str): Filename to load settings from.
+    
+    .. wraps::
+        void LoadIniSettingsFromDisk(const char* ini_filename)
+    """
+    cimgui.LoadIniSettingsFromDisk(_bytes(ini_file_name))
+
+def load_ini_settings_from_memory(str ini_data):
+    """Call after ``create_context()`` and before the first call to ``new_frame()`` 
+    to provide .ini data from your own data source.
+    
+    .. wraps::
+        void LoadIniSettingsFromMemory(const char* ini_data, size_t ini_size=0)
+    """
+    #cdef size_t ini_size = len(ini_data)
+    cimgui.LoadIniSettingsFromMemory(_bytes(ini_data), 0)
+    
+def save_ini_settings_to_disk(str ini_file_name):
+    """This is automatically called (if ``io.ini_file_name`` is not empty) 
+    a few seconds after any modification that should be reflected in the .ini file 
+    (and also by ``destroy_context``).
+    
+    Args:
+        ini_file_name (str): Filename to save settings to.
+    
+    .. wraps::
+        void SaveIniSettingsToDisk(const char* ini_filename)
+    """
+    cimgui.SaveIniSettingsToDisk(_bytes(ini_file_name))
+    
+def save_ini_settings_to_memory():
+    """Return a string with the .ini data which you can save by your own mean. 
+    Call when ``io.want_save_ini_setting`` is set, then save data by your own mean 
+    and clear ``io.want_save_ini_setting``. 
+    
+    Returns:
+        str: Settings data
+    
+    .. wraps::
+       const char* SaveIniSettingsToMemory(size_t* out_ini_size = NULL)
+    """
+    return _from_bytes(cimgui.SaveIniSettingsToMemory(NULL))
 
 def set_clipboard_text(str text):
     """Set the clipboard content
