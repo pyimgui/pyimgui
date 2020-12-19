@@ -7645,6 +7645,67 @@ cpdef calc_text_size(str text, bool hide_text_after_double_hash = False, float w
             wrap_width
         )
     )
+    
+def color_convert_u32_to_float4(cimgui.ImU32 in_):
+    """Convert an unsigned int 32 to 4 component r, g, b, a
+    
+    Args:
+        in_ (ImU32): Color in unsigned int 32 format
+    
+    Return:
+        tuple: r, g, b, a components of the color
+    
+    .. wraps::
+        ImVec4 ColorConvertU32ToFloat4(ImU32 in)
+    """
+    return _cast_ImVec4_tuple(cimgui.ColorConvertU32ToFloat4(in_))
+
+def color_convert_float4_to_u32(float r, float g, float b, float a):
+    """Convert a set of r, g, b, a floats to unsigned int 32 color
+    
+    Args:
+        r, g, b, a (float): Components of the color
+    
+    Returns:
+        ImU32: Unsigned int 32 color format
+    
+    .. wraps::
+        ImU32 ColorConvertFloat4ToU32(const ImVec4& in)
+    """
+    cdef cimgui.ImVec4 color = _cast_args_ImVec4(r,g,b,a)
+    return cimgui.ColorConvertFloat4ToU32(color)
+
+def color_convert_rgb_to_hsv(float r, float g, float b):
+    """Convert color from RGB space to HSV space
+    
+    Args:
+        r, g, b (float): RGB color format
+    
+    Returns:
+        tuple: h, s, v HSV color format
+    
+    .. wraps::
+        void ColorConvertRGBtoHSV(float r, float g, float b, float& out_h, float& out_s, float& out_v)
+    """
+    cdef float out_h, out_s, out_v
+    cimgui.ColorConvertRGBtoHSV(r,g,b,out_h,out_s,out_v)
+    return out_h, out_s, out_v
+    
+def color_convert_hsv_to_rgb(float h, float s, float v):
+    """Convert color from HSV space to RGB space
+    
+    Args:
+        h, s, v (float): HSV color format
+    
+    Returns:
+        tuple: r, g, b RGB color format
+    
+    .. wraps::
+        void ColorConvertHSVtoRGB(float h, float s, float v, float& out_r, float& out_g, float& out_b)
+    """
+    cdef float out_r, out_g, out_b
+    cimgui.ColorConvertHSVtoRGB(h,s,v,out_r,out_g,out_b)
+    return out_r, out_g, out_b
 
 cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     """Push style variable on stack.
