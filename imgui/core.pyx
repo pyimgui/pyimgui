@@ -6292,7 +6292,7 @@ def input_scalar_N(
     )
     
     return changed, data
-
+    
 def slider_float(
     str label,
     float value,
@@ -6539,9 +6539,13 @@ def slider_float4(
         min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
-def slider_angle(str label, float rad_value,
-    float value_degrees_min = -360.0, float value_degrees_max = 360,
-    str format = "%.0f deg", cimgui.ImGuiSliderFlags flags = 0):
+def slider_angle(
+    str label, 
+    float rad_value,
+    float value_degrees_min = -360.0, 
+    float value_degrees_max = 360,
+    str format = "%.0f deg", 
+    cimgui.ImGuiSliderFlags flags = 0):
     """Display angle slider widget.
     
     .. visual-example::
@@ -6589,7 +6593,7 @@ def slider_angle(str label, float rad_value,
         _bytes(label), <float*>&inout_r_value,
         value_degrees_min, value_degrees_max,
         _bytes(format), flags
-    ), (inout_r_value)
+    ), inout_r_value
 
 def slider_int(
     str label,
