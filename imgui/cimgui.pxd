@@ -1344,7 +1344,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format_max, # = NULL
             ImGuiSliderFlags flags  # = 0
     ) except +  # Widgets: Input with Keyboard
-    bool DragScalar( # ✗
+    bool DragScalar( # ✓
             const char* label, 
             ImGuiDataType data_type, 
             void* p_data, 
@@ -1355,7 +1355,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format,     # = NULL    
             ImGuiSliderFlags flags  # = 0
     ) except +
-    bool DragScalarN( # ✗
+    bool DragScalarN( # ✓
             const char* label, 
             ImGuiDataType data_type, 
             void* p_data, 
@@ -1427,14 +1427,14 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format,     # = "%d"
             ImGuiSliderFlags flags  # = 0
     ) except +
-    bool SliderScalar( # ✗
+    bool SliderScalar( # ✓
             const char* label, ImGuiDataType data_type,
             void* v, const void* v_min, const void* v_max,
             # note: optional
             const char* format,     # = NULL
             ImGuiSliderFlags flags  # = 0
     ) except +
-    bool SliderScalarN( # ✗
+    bool SliderScalarN( # ✓
             const char* label, ImGuiDataType data_type,
             void *v,
             int components, const void* v_min, const void* v_max,
@@ -1455,8 +1455,11 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format,     # = "%d"
             ImGuiSliderFlags flags  # = 0       # NEW
     ) except +  # Widgets: Trees
-    bool VSliderScalar(  # ✗
-            const char* label, const ImVec2& size, ImGuiDataType data_type, void* v, const void* v_min, const void* v_max,
+    bool VSliderScalar(  # ✓
+            const char* label, 
+            const ImVec2& size, 
+            ImGuiDataType data_type, void* v
+            , const void* v_min, const void* v_max,
             # note: optional
             const char* format,     # = NULL
             ImGuiSliderFlags flags  # = 0
@@ -1544,7 +1547,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format,                 # = "%.6f"
             ImGuiInputTextFlags flags           # = 0
     ) except +
-    bool InputScalar( # ✗
+    bool InputScalar( # ✓
             const char* label, ImGuiDataType data_type, void* p_data, 
             # note: optional
             const void* p_step,                 # = NULL
@@ -1552,15 +1555,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format,                 # = NULL
             ImGuiInputTextFlags flags           # = 0
     ) except +
-    bool InputScalar(  # ✗ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, ImGuiDataType data_type, void* v,
-            # note: optional
-            const void* step,
-            const void* step_fast,
-            const char* format,
-            ImGuiInputTextFlags extra_flags
-    ) except +
-    bool InputScalarN( # ✗
+    bool InputScalarN( # ✓
             const char* label, ImGuiDataType data_type, 
             void* p_data, int components, 
             # note: optional
@@ -1568,15 +1563,6 @@ cdef extern from "imgui.h" namespace "ImGui":
             const void* p_step_fast,            # = NULL
             const char* format,                 # = NULL
             ImGuiInputTextFlags flags           # = 0
-    ) except +
-    bool InputScalarN(  # ✗ # OBSOLETED in 1.78 (from June 2020)
-            const char* label, ImGuiDataType data_type,
-            void* v, int components,
-            # note: optional
-            const void* step,
-            const void* step_fast,
-            const char* format,
-            ImGuiInputTextFlags extra_flags
     ) except +
     
     # ====

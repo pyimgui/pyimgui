@@ -5421,6 +5421,147 @@ def drag_int4(
         change_speed, min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
+def drag_scalar(
+    str label,
+    cimgui.ImGuiDataType data_type,
+    bytes data,
+    float change_speed,
+    bytes min_value = None,
+    bytes max_value = None,
+    str format = None,
+    cimgui.ImGuiSliderFlags flags = 0):
+    """Display scalar drag widget.
+    Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
+    like when interfacing with Numpy. 
+    
+    Args:
+        label (str): widget label
+        data_type: ImGuiDataType enum, type of the given data
+        data (bytes): data value as a bytes array
+        change_speed (float): how fast values change on drag
+        min_value (bytes): min value allowed by widget
+        max_value (bytes): max value allowed by widget
+        format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe. See :any:`drag_int()`.
+        flags: ImGuiSlider flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+    
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        drag state change and the current drag content.
+    
+    .. wraps::
+        bool DragScalar(
+            const char* label, 
+            ImGuiDataType data_type, 
+            void* p_data, 
+            float v_speed, 
+            const void* p_min = NULL,
+            const void* p_max = NULL,
+            const char* format = NULL,
+            ImGuiSliderFlags flags = 0
+        )
+    """
+    
+    cdef char* p_data = data
+    cdef char* p_min = NULL
+    if min_value is not None:
+        p_min = min_value
+    cdef char* p_max = NULL 
+    if max_value is not None:
+        p_max = max_value
+    cdef char* fmt = NULL
+    cdef bytes fmt_data;
+    if format is not None:
+        fmt_data = _bytes(format)
+        fmt = fmt_data
+        
+    cdef changed = cimgui.DragScalar(
+        _bytes(label),
+        data_type,
+        p_data,
+        change_speed,
+        p_min,
+        p_max,
+        fmt,
+        flags
+    )
+    
+    return changed, data
+
+def drag_scalar_N(
+    str label,
+    cimgui.ImGuiDataType data_type,
+    bytes data,
+    int components,
+    float change_speed,
+    bytes min_value = None,
+    bytes max_value = None,
+    str format = None,
+    cimgui.ImGuiSliderFlags flags = 0):
+    """Display multiple scalar drag widget.
+    Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
+    like when interfacing with Numpy. 
+    
+    Args:
+        label (str): widget label
+        data_type: ImGuiDataType enum, type of the given data
+        data (bytes): data value as a bytes array
+        components (int): number of widgets
+        change_speed (float): how fast values change on drag
+        min_value (bytes): min value allowed by widget
+        max_value (bytes): max value allowed by widget
+        format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe. See :any:`drag_int()`.
+        flags: ImGuiSlider flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+    
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        drag state change and the current drag content.
+    
+    .. wraps::
+        bool DragScalarN(
+            const char* label, 
+            ImGuiDataType data_type, 
+            void* p_data,
+            int components,
+            float v_speed, 
+            const void* p_min = NULL,
+            const void* p_max = NULL,
+            const char* format = NULL,
+            ImGuiSliderFlags flags = 0
+        )
+    """
+    
+    cdef char* p_data = data
+    cdef char* p_min = NULL
+    if min_value is not None:
+        p_min = min_value
+    cdef char* p_max = NULL 
+    if max_value is not None:
+        p_max = max_value
+    cdef char* fmt = NULL
+    cdef bytes fmt_data;
+    if format is not None:
+        fmt_data = _bytes(format)
+        fmt = fmt_data
+        
+    cdef changed = cimgui.DragScalarN(
+        _bytes(label),
+        data_type,
+        p_data,
+        components,
+        change_speed,
+        p_min,
+        p_max,
+        fmt,
+        flags
+    )
+    
+    return changed, data
 
 def input_text(
     str label,
@@ -6020,6 +6161,137 @@ def input_double(
         _bytes(label), &inout_value, step, step_fast, _bytes(format), flags
     ), inout_value
 
+def input_scalar(
+    str label,
+    cimgui.ImGuiDataType data_type,
+    bytes data,
+    bytes step = None,
+    bytes step_fast = None,
+    str format = None,
+    cimgui.ImGuiInputTextFlags flags = 0):
+    """Display scalar input widget.
+    Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
+    like when interfacing with Numpy. 
+    
+    Args:
+        label (str): widget label
+        data_type: ImGuiDataType enum, type of the given data
+        data (bytes): data value as a bytes array
+        step (bytes): incremental step
+        step_fast (bytes): fast incremental step
+        format (str): format string
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+    
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        input state change and the current input content.
+    
+    .. wraps::
+        bool InputScalar(
+            const char* label, 
+            ImGuiDataType data_type, 
+            void* p_data, 
+            const void* p_step = NULL, 
+            const void* p_step_fast = NULL, 
+            const char* format = NULL, 
+            ImGuiInputTextFlags flags = 0
+        )
+    """
+    
+    cdef char* p_data = data
+    cdef char* p_step = NULL
+    if step is not None:
+        p_step = step
+    cdef char* p_step_fast = NULL 
+    if step_fast is not None:
+        p_step_fast = step_fast
+    cdef char* fmt = NULL
+    cdef bytes fmt_data;
+    if format is not None:
+        fmt_data = _bytes(format)
+        fmt = fmt_data
+        
+    cdef changed = cimgui.InputScalar(
+        _bytes(label),
+        data_type,
+        p_data,
+        p_step,
+        p_step_fast,
+        fmt,
+        flags
+    )
+    
+    return changed, data
+
+def input_scalar_N(
+    str label,
+    cimgui.ImGuiDataType data_type,
+    bytes data,
+    int components,
+    bytes step = None,
+    bytes step_fast = None,
+    str format = None,
+    cimgui.ImGuiInputTextFlags flags = 0):
+    """Display multiple scalar input widget.
+    Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
+    like when interfacing with Numpy. 
+    
+    Args:
+        label (str): widget label
+        data_type: ImGuiDataType enum, type of the given data
+        data (bytes): data value as a bytes array
+        components (int): number of components to display
+        step (bytes): incremental step
+        step_fast (bytes): fast incremental step
+        format (str): format string
+        flags: InputText flags. See:
+            :ref:`list of available flags <inputtext-flag-options>`.
+    
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        input state change and the current input content.
+    
+    .. wraps::
+        bool InputScalarN(
+            const char* label, 
+            ImGuiDataType data_type, 
+            void* p_data,
+            int components,
+            const void* p_step = NULL, 
+            const void* p_step_fast = NULL, 
+            const char* format = NULL, 
+            ImGuiInputTextFlags flags = 0
+        )
+    """
+    
+    cdef char* p_data = data
+    cdef char* p_step = NULL
+    if step is not None:
+        p_step = step
+    cdef char* p_step_fast = NULL 
+    if step_fast is not None:
+        p_step_fast = step_fast
+    cdef char* fmt = NULL
+    cdef bytes fmt_data;
+    if format is not None:
+        fmt_data = _bytes(format)
+        fmt = fmt_data
+        
+    cdef changed = cimgui.InputScalarN(
+        _bytes(label),
+        data_type,
+        p_data,
+        components,
+        p_step,
+        p_step_fast,
+        fmt,
+        flags
+    )
+    
+    return changed, data
 
 def slider_float(
     str label,
@@ -6549,6 +6821,133 @@ def slider_int4(
         min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
+def slider_scalar(
+    str label,
+    cimgui.ImGuiDataType data_type,
+    bytes data,
+    bytes min_value,
+    bytes max_value,
+    str format = None,
+    cimgui.ImGuiSliderFlags flags = 0):
+    """Display scalar slider widget.
+    Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
+    like when interfacing with Numpy. 
+    
+    Args:
+        label (str): widget label
+        data_type: ImGuiDataType enum, type of the given data
+        data (bytes): data value as a bytes array
+        min_value (bytes): min value allowed by widget
+        max_value (bytes): max value allowed by widget
+        format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe. See :any:`drag_int()`.
+        flags: ImGuiSlider flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+    
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        slider state change and the current slider content.
+    
+    .. wraps::
+        bool SliderScalar(
+            const char* label, 
+            ImGuiDataType data_type, 
+            void* p_data,
+            const void* p_min,
+            const void* p_max,
+            const char* format = NULL,
+            ImGuiSliderFlags flags = 0
+        )
+    """
+    
+    cdef char* p_data = data
+    cdef char* p_min = min_value
+    cdef char* p_max = max_value 
+    
+    cdef char* fmt = NULL
+    cdef bytes fmt_data;
+    if format is not None:
+        fmt_data = _bytes(format)
+        fmt = fmt_data
+        
+    cdef changed = cimgui.SliderScalar(
+        _bytes(label),
+        data_type,
+        p_data,
+        p_min,
+        p_max,
+        fmt,
+        flags
+    )
+    
+    return changed, data
+    
+def slider_scalar_N(
+    str label,
+    cimgui.ImGuiDataType data_type,
+    bytes data,
+    int components,
+    bytes min_value,
+    bytes max_value,
+    str format = None,
+    cimgui.ImGuiSliderFlags flags = 0):
+    """Display multiple scalar slider widget.
+    Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
+    like when interfacing with Numpy. 
+    
+    Args:
+        label (str): widget label
+        data_type: ImGuiDataType enum, type of the given data
+        data (bytes): data value as a bytes array
+        components (int): number of widgets
+        min_value (bytes): min value allowed by widget
+        max_value (bytes): max value allowed by widget
+        format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe. See :any:`drag_int()`.
+        flags: ImGuiSlider flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+    
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        slider state change and the current slider content.
+    
+    .. wraps::
+        bool SliderScalarN(
+            const char* label, 
+            ImGuiDataType data_type, 
+            void* p_data, 
+            int components,
+            const void* p_min,
+            const void* p_max,
+            const char* format = NULL,
+            ImGuiSliderFlags flags = 0
+        )
+    """
+    
+    cdef char* p_data = data
+    cdef char* p_min = min_value
+    cdef char* p_max = max_value 
+    
+    cdef char* fmt = NULL
+    cdef bytes fmt_data;
+    if format is not None:
+        fmt_data = _bytes(format)
+        fmt = fmt_data
+        
+    cdef changed = cimgui.SliderScalarN(
+        _bytes(label),
+        data_type,
+        p_data,
+        components,
+        p_min,
+        p_max,
+        fmt,
+        flags
+    )
+    
+    return changed, data
 
 def v_slider_float(
     str label,
@@ -6680,6 +7079,74 @@ def v_slider_int(
         min_value, max_value, _bytes(format), flags
     ), inout_value
 
+    
+def v_slider_scalar(
+    str label,
+    float width,
+    float height,
+    cimgui.ImGuiDataType data_type,
+    bytes data,
+    bytes min_value,
+    bytes max_value,
+    str format = None,
+    cimgui.ImGuiSliderFlags flags = 0):
+    """Display vertical scalar slider widget.
+    Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
+    like when interfacing with Numpy. 
+    
+    Args:
+        label (str): widget label
+        width (float): width of the slider
+        height (float): height of the slider
+        data_type: ImGuiDataType enum, type of the given data
+        data (bytes): data value as a bytes array
+        min_value (bytes): min value allowed by widget
+        max_value (bytes): max value allowed by widget
+        format (str): display format string as C-style ``printf``
+            format string. **Warning:** highly unsafe. See :any:`drag_int()`.
+        flags: ImGuiSlider flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+    
+    Returns:
+        tuple: a ``(changed, value)`` tuple that contains indicator of
+        slider state change and the current slider content.
+    
+    .. wraps::
+        bool VSliderScalar(
+            const char* label, 
+            const ImVec2& size,
+            ImGuiDataType data_type, 
+            void* p_data, 
+            const void* p_min,
+            const void* p_max,
+            const char* format = NULL,
+            ImGuiSliderFlags flags = 0
+        )
+    """
+    
+    cdef char* p_data = data
+    cdef char* p_min = min_value
+    cdef char* p_max = max_value
+    
+    cdef char* fmt = NULL
+    cdef bytes fmt_data;
+    if format is not None:
+        fmt_data = _bytes(format)
+        fmt = fmt_data
+        
+    cdef changed = cimgui.VSliderScalar(
+        _bytes(label),
+        _cast_args_ImVec2(width, height),
+        data_type,
+        p_data,
+        p_min,
+        p_max,
+        fmt,
+        flags
+    )
+    
+    return changed, data
 
 def plot_lines(
         str label not None,
