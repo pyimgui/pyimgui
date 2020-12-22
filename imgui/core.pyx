@@ -5188,6 +5188,87 @@ def drag_float4(
         change_speed, min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
+def drag_float_range2(
+    str label,
+    float current_min,
+    float current_max,
+    float speed = 1.0,
+    float min_value = 0.0,
+    float max_value = 0.0,
+    str format = "%.3f",
+    str format_max = None,
+    cimgui.ImGuiSliderFlags flags = 0
+    ):
+    """Display drag float range widget
+    
+    Args:
+        label (str): widget label
+        current_min (float): current value of minimum
+        current_max (float): current value of maximum
+        speed (float): widget speed of change
+        min_value (float): minimal possible value
+        max_value (float): maximal possible value
+        format (str): display format
+        format_max (str): display format for maximum. If None, ``format`` parameter is used.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+            
+    Returns:
+        tuple: a (changed, current_min, current_max) tuple, where ``changed`` indicate
+               that the value has been updated.
+    
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        vmin = 0
+        vmax = 100
+        
+        imgui.begin("Example: drag float range")
+        changed, vmin, vmax = imgui.drag_float_range2( "Drag Range", vmin, vmax )
+        imgui.text("Changed: %s, Range: (%.2f, %.2f)" % (changed, vmin, vmax))
+        imgui.end()
+   
+    
+    .. wraps::
+        bool DragFloatRange2(
+            const char* label, 
+            float* v_current_min, 
+            float* v_current_max, 
+            float v_speed = 1.0f, 
+            float v_min = 0.0f, 
+            float v_max = 0.0f, 
+            const char* format = "%.3f", 
+            const char* format_max = NULL, 
+            ImGuiSliderFlags flags = 0
+        )
+    """
+    
+    cdef float inout_current_min = current_min
+    cdef float inout_current_max = current_max
+    
+    cdef bytes b_format_max;
+    cdef char* p_format_max = NULL
+    if format_max is not None:
+        b_format_max = _bytes(format_max)
+        p_format_max = b_format_max
+    
+    changed = cimgui.DragFloatRange2(
+        _bytes(label),
+        &inout_current_min,
+        &inout_current_max,
+        speed,
+        min_value,
+        max_value,
+        _bytes(format),
+        p_format_max,
+        flags
+    )
+    
+    return changed, inout_current_min, inout_current_max
+    
+    
 
 def drag_int(
     str label, int value,
@@ -5420,6 +5501,87 @@ def drag_int4(
         _bytes(label), <int*>&inout_values,
         change_speed, min_value, max_value, _bytes(format), flags
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
+
+def drag_int_range2(
+    str label,
+    int current_min,
+    int current_max,
+    float speed = 1.0,
+    int min_value = 0,
+    int max_value = 0,
+    str format = "%d",
+    str format_max = None,
+    cimgui.ImGuiSliderFlags flags = 0
+    ):
+    """Display drag int range widget
+    
+    Args:
+        label (str): widget label
+        current_min (int): current value of minimum
+        current_max (int): current value of maximum
+        speed (float): widget speed of change
+        min_value (int): minimal possible value
+        max_value (int): maximal possible value
+        format (str): display format
+        format_max (str): display format for maximum. If None, ``format`` parameter is used.
+        flags: SliderFlags flags. See:
+            :ref:`list of available flags <slider-flag-options>`.
+            
+    Returns:
+        tuple: a (changed, current_min, current_max) tuple, where ``changed`` indicate
+               that the value has been updated.
+    
+    .. visual-example::
+        :auto_layout:
+        :width: 400
+        :height: 130
+
+        vmin = 0
+        vmax = 100
+        
+        imgui.begin("Example: drag float range")
+        changed, vmin, vmax = imgui.drag_int_range2( "Drag Range", vmin, vmax )
+        imgui.text("Changed: %s, Range: (%d, %d)" % (changed, vmin, vmax))
+        imgui.end()
+   
+    
+    .. wraps::
+        bool DragIntRange2(
+            const char* label, 
+            int* v_current_min, 
+            int* v_current_max, 
+            float v_speed = 1.0f, 
+            int v_min = 0, 
+            int v_max = 0, 
+            const char* format = "%d", 
+            const char* format_max = NULL, 
+            ImGuiSliderFlags flags = 0
+        )
+    """
+    
+    cdef int inout_current_min = current_min
+    cdef int inout_current_max = current_max
+    
+    cdef bytes b_format_max;
+    cdef char* p_format_max = NULL
+    if format_max is not None:
+        b_format_max = _bytes(format_max)
+        p_format_max = b_format_max
+    
+    changed = cimgui.DragIntRange2(
+        _bytes(label),
+        &inout_current_min,
+        &inout_current_max,
+        speed,
+        min_value,
+        max_value,
+        _bytes(format),
+        p_format_max,
+        flags
+    )
+    
+    return changed, inout_current_min, inout_current_max
+
 
 def drag_scalar(
     str label,

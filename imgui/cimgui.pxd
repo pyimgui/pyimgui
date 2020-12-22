@@ -1282,7 +1282,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format,     # = "%.3f"
             ImGuiSliderFlags flags  # = 0
     ) except +
-    bool DragFloatRange2( # ✗
+    bool DragFloatRange2( # ✓
             const char* label, float* v_current_min, float* v_current_max, 
             # note: optional
             float v_speed,          # = 1.0
@@ -1332,7 +1332,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             const char* format,     # = "%d"
             ImGuiSliderFlags flags  # = 0
     ) except +
-    bool DragIntRange2(  # ✗
+    bool DragIntRange2(  # ✓
             const char* label, 
             int* v_current_min, 
             int* v_current_max,
