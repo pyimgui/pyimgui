@@ -3579,7 +3579,7 @@ def listbox(
         _bytes(label),
         &inout_current,
         in_items,
-        len(items),
+        <int>len(items),
         height_in_items
     )
 
@@ -7385,7 +7385,7 @@ def plot_lines(
             )
     """
     if values_count == -1:
-        values_count = values.shape[0]
+        values_count = <int>values.shape[0]
 
     # Would be nicer as something like
     #   _bytes(overlay_text) if overlay_text is not None else NULL
@@ -7477,7 +7477,7 @@ def plot_histogram(
             )
     """
     if values_count == -1:
-        values_count = values.shape[0]
+        values_count = <int>values.shape[0]
 
     # Would be nicer as something like
     #   _bytes(overlay_text) if overlay_text is not None else NULL
@@ -8321,6 +8321,7 @@ def color_convert_rgb_to_hsv(float r, float g, float b):
         void ColorConvertRGBtoHSV(float r, float g, float b, float& out_h, float& out_s, float& out_v)
     """
     cdef float out_h, out_s, out_v
+    out_h = out_s = out_v = 0
     cimgui.ColorConvertRGBtoHSV(r,g,b,out_h,out_s,out_v)
     return out_h, out_s, out_v
     
@@ -8337,6 +8338,7 @@ def color_convert_hsv_to_rgb(float h, float s, float v):
         void ColorConvertHSVtoRGB(float h, float s, float v, float& out_r, float& out_g, float& out_b)
     """
     cdef float out_r, out_g, out_b
+    out_r = out_g = out_b = 0
     cimgui.ColorConvertHSVtoRGB(h,s,v,out_r,out_g,out_b)
     return out_r, out_g, out_b
 
@@ -8381,7 +8383,7 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
         if isinstance(value, (tuple, list)):
             cimgui.PushStyleVar(variable, _cast_tuple_ImVec2(value))
         else:
-            cimgui.PushStyleVar(variable, float(value))
+            cimgui.PushStyleVar(variable, <float>(float(value)))
     except ValueError:
         raise ValueError(
             "Style value must be float or two-elements list/tuple"
