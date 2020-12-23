@@ -296,21 +296,22 @@ cdef extern from "imgui.h":
         ImVector[ImDrawCmd]  CmdBuffer  # ✓
         ImVector[ImDrawIdx]  IdxBuffer  # ✓
         ImVector[ImDrawVert] VtxBuffer  # ✓
-        ImDrawListFlags      Flags # ✗
+        ImDrawListFlags      Flags # ✓
         
         ImDrawList(const ImDrawListSharedData* shared_data) # ✗
         
-        void PushClipRect( # ✗
+        void PushClipRect( # ✓
             ImVec2 clip_rect_min, 
             ImVec2 clip_rect_max, 
             # note: optional
             bool intersect_with_current_clip_rect # = false
         ) except + 
-        void PushClipRectFullScreen() except + # ✗
-        void PopClipRect() except + # ✗
-        void PushTextureID(ImTextureID texture_id) except + # ✗
-        void PopTextureID() except + # ✗
-        
+        void PushClipRectFullScreen() except + # ✓
+        void PopClipRect() except + # ✓
+        void PushTextureID(ImTextureID texture_id) except + # ✓
+        void PopTextureID() except + # ✓
+        ImVec2 GetClipRectMin() except + # ✓
+        ImVec2 GetClipRectMax() except + # ✓
 
         void AddLine( # ✓
             const ImVec2& a,

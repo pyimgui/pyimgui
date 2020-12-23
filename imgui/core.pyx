@@ -591,8 +591,78 @@ cdef class _DrawList(object):
     @property
     def idx_buffer_data(self):
         return <uintptr_t>self._ptr.IdxBuffer.Data
-
-
+    
+    @property
+    def flags(self):
+        return self._ptr.Flags
+        
+    @flags.setter
+    def flags(self, cimgui.ImDrawListFlags flags):
+        self._ptr.Flags = flags
+    
+    def push_clip_rect(
+        self,
+        float clip_rect_min_x, float clip_rect_min_y,
+        float clip_rect_max_x, float clip_rect_max_y,
+        bool intersect_with_current_clip_rect = False
+        ):
+        """Render-level scissoring. This is passed down to your render function 
+        but not used for CPU-side coarse clipping. Prefer using higher-level :func:`push_clip_rect()` 
+        to affect logic (hit-testing and widget culling)
+        
+        .. wraps::
+            void PushClipRect(ImVec2 clip_rect_min, ImVec2 clip_rect_max, bool intersect_with_current_clip_rect = false)
+        """
+        self._ptr.PushClipRect(
+            _cast_args_ImVec2(clip_rect_min_x, clip_rect_min_y),
+            _cast_args_ImVec2(clip_rect_max_x, clip_rect_max_y),
+            intersect_with_current_clip_rect
+        )
+    
+    def push_clip_rect_full_screen(self):
+        """
+        .. wraps::
+            void PushClipRectFullScreen()
+        """
+        self._ptr.PushClipRectFullScreen()
+    
+    def pop_clip_rect(self):
+        """Render-level scisoring. 
+        
+        .. wraps::
+            void PopClipRect()
+        """
+        self._ptr.PopClipRect()
+    
+    def push_texture_id(self, texture_id):
+        """
+        .. wraps::
+            void PushTextureID(ImTextureID texture_id)
+        """
+        self._ptr.PushTextureID(<void*>texture_id)
+    
+    
+    def pop_texture_id(self):
+        """
+        .. wraps::
+            void PopTextureID()
+        """
+        self._ptr.PopTextureID()
+    
+    def get_clip_rect_min(self):
+        """
+        .. wraps::
+            ImVec2 GetClipRectMin()
+        """
+        return _cast_ImVec2_tuple(self._ptr.GetClipRectMin())
+    
+    def get_clip_rect_max(self):
+        """
+        .. wraps::
+            ImVec2 GetClipRectMax()
+        """
+        return _cast_ImVec2_tuple(self._ptr.GetClipRectMax())
+    
     def add_line(
             self,
             float start_x, float start_y,
