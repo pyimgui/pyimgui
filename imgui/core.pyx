@@ -28,8 +28,10 @@ from libc.float  cimport FLT_MAX
 from libcpp cimport bool
 
 cimport cimgui
+cimport core
 cimport enums
 cimport ansifeed
+cimport internal
 
 from cpython.version cimport PY_MAJOR_VERSION
 
@@ -449,65 +451,7 @@ MOUSE_BUTTON_LEFT = enums.ImGuiMouseButton_Left
 MOUSE_BUTTON_RIGHT = enums.ImGuiMouseButton_Right 
 MOUSE_BUTTON_MIDDLE = enums.ImGuiMouseButton_Middle
 
-
-
-Vec2 = namedtuple("Vec2", ['x', 'y'])
-Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
-
-
-cdef bytes _bytes(str text):
-    return <bytes>(text if PY_MAJOR_VERSION < 3 else text.encode('utf-8'))
-
-
-cdef str _from_bytes(bytes text):
-    return <str>(text if PY_MAJOR_VERSION < 3 else text.decode('utf-8', errors='ignore'))
-
-
-cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
-    return Vec2(vec.x, vec.y)
-
-
-cdef cimgui.ImVec2 _cast_tuple_ImVec2(pair) except *:  # noqa
-    cdef cimgui.ImVec2 vec
-
-    if len(pair) != 2:
-        raise ValueError("pair param must be length of 2")
-
-    vec.x, vec.y = pair
-
-    return vec
-
-
-cdef cimgui.ImVec2 _cast_args_ImVec2(float x, float y) except *:  # noqa
-    cdef cimgui.ImVec2 vec
-
-    vec.x, vec.y = x, y
-
-    return vec
-
-
-cdef cimgui.ImVec4 _cast_tuple_ImVec4(quadruple):  # noqa
-    cdef cimgui.ImVec4 vec
-
-    if len(quadruple) != 4:
-        raise ValueError("quadruple param must be length of 4")
-
-    vec.x, vec.y, vec.z, vec.w = quadruple
-
-    return vec
-
-
-cdef cimgui.ImVec4 _cast_args_ImVec4(float x, float y, float z, float w):  # noqa
-    cdef cimgui.ImVec4 vec
-
-    vec.x, vec.y, vec.z, vec.w = x, y, z, w
-
-    return vec
-
-
-cdef _cast_ImVec4_tuple(cimgui.ImVec4 vec):  # noqa
-    return Vec4(vec.x, vec.y, vec.z, vec.w)
-
+include "imgui/common.pyx"
 
 cdef class _ImGuiContext(object):
     cdef cimgui.ImGuiContext* _ptr
@@ -9783,6 +9727,9 @@ def create_context(_FontAtlas shared_font_atlas = None):
     else:
         _ptr = cimgui.CreateContext(NULL)
 
+    # Update submodules:
+    internal.UpdateImGuiContext(_ptr)
+
     return _ImGuiContext.from_ptr(_ptr)
 
 
@@ -9798,6 +9745,9 @@ def destroy_context(_ImGuiContext ctx = None):
     if ctx and ctx._ptr != NULL:
         cimgui.DestroyContext(ctx._ptr)
         ctx._ptr = NULL
+        
+        # Update submodules:
+        internal.UpdateImGuiContext(NULL)
     else:
         raise RuntimeError("Context invalid (None or destroyed)")
 
@@ -9822,6 +9772,9 @@ def set_current_context(_ImGuiContext ctx):
                 ImGuiContext *ctx);
     """
     cimgui.SetCurrentContext(ctx._ptr)
+    
+    # Update submodules:
+    internal.UpdateImGuiContext(ctx._ptr)
 
 
 def push_id(str str_id):
@@ -9843,18 +9796,6 @@ def pop_id():
         PopID()
     """
     cimgui.PopID()
-
-
-# === Python/C++ cross API for error handling ===
-from cpython.exc cimport PyErr_NewException
-
-cdef public _ImGuiError "ImGuiError" = PyErr_NewException(
-    "imgui.core.ImGuiError", Exception, {}
-)
-
-ImGuiError = _ImGuiError # make visible to Python
-
-# === ansifeed extras ===
 
 def _ansifeed_text_ansi(str text):
     """Add ANSI-escape-formatted text to current widget stack.

@@ -7,7 +7,7 @@ from imgui import core
 from imgui.extra import *  # noqa
 from imgui import extra
 from imgui import _compat
-
+from imgui import internal
 
 # TODO: Complete and correcte doc text for ImGui v1.79
 
