@@ -1916,8 +1916,8 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # ====
     # Clipping
-    void PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect) except +  # ✗
-    void PopClipRect() except +  # ✗
+    void PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect) except +  # ✓
+    void PopClipRect() except +  # ✓
 
     # ====
     # Focus, Activation

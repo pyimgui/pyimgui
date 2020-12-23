@@ -3360,8 +3360,8 @@ def tree_node(str text, cimgui.ImGuiTreeNodeFlags flags=0):
 def tree_pop():
     """Called to clear the tree nodes stack and return back the identation.
 
-    Same as calls to :func:`unindent()` and :func:`pop_id()`.
     For a tree example see :func:`tree_node()`.
+    Same as calls to :func:`unindent()` and :func:`pop_id()`.
 
     .. wraps::
         void TreePop()
@@ -9309,6 +9309,64 @@ def get_drag_drop_payload():
     cdef const char* data = <const char *>payload.Data
     return <bytes>data[:payload.DataSize]
 
+def push_clip_rect(
+        float clip_rect_min_x,
+        float clip_rect_min_y,
+        float clip_rect_max_x,
+        float clip_rect_max_y,
+        bool intersect_with_current_clip_rect = False
+    ):
+    """Push the clip region, i.e. the area of the screen to be rendered,on the stack. 
+    If ``intersect_with_current_clip_rect`` is ``True``, the intersection between pushed 
+    clip region and previous one is added on the stack. 
+    See: :func:`pop_clip_rect()`
+    
+    Args:
+        clip_rect_min_x, clip_rect_min_y (float): Position of the minimum point of the rectangle
+        clip_rect_max_x, clip_rect_max_y (float): Position of the maximum point of the rectangle
+        intersect_with_current_clip_rect (bool): If True, intersection with current clip region is pushed on stack.
+    
+    .. visual-example::
+        :auto_layout:
+        :width: 150
+        :height: 150
+
+        imgui.begin("Example Cliprect")
+        
+        winpos = imgui.get_window_position()
+        imgui.push_clip_rect(0+winpos.x,0+winpos.y,100+winpos.x,100+winpos.y)
+        imgui.push_clip_rect(50+winpos.x,50+winpos.y,100+winpos.x,100+winpos.y, True)
+        
+        imgui.text('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+        imgui.text('Vivamus mattis velit ac ex auctor gravida.')
+        imgui.text('Quisque varius erat finibus porta interdum.')
+        imgui.text('Nam neque magna, dapibus placerat urna eget, facilisis malesuada ipsum.')
+        
+        imgui.pop_clip_rect()
+        imgui.pop_clip_rect()
+        
+        imgui.end()
+    
+    .. wraps::
+        void PushClipRect(
+            const ImVec2& clip_rect_min, 
+            const ImVec2& clip_rect_max, 
+            bool intersect_with_current_clip_rect
+        )
+    """
+    cimgui.PushClipRect(
+        _cast_args_ImVec2(clip_rect_min_x, clip_rect_min_y),
+        _cast_args_ImVec2(clip_rect_max_x, clip_rect_max_y),
+        intersect_with_current_clip_rect
+    )
+    
+def pop_clip_rect():
+    """Pop the last clip region from the stack. See: :func:`push_clip_rect()`.
+    
+    .. wraps::
+        void PopClipRect()
+    """
+    cimgui.PopClipRect()
 
 def begin_group():
     """Start item group and lock its horizontal starting position.
