@@ -1137,7 +1137,175 @@ cdef class _DrawList(object):
     def channels_merge(self):
         # TODO: document
         self._ptr.ChannelsMerge()
-
+        
+    def prim_reserve(self, int idx_count, int vtx_count):
+        """Reserve space for a number of vertices and indices.
+        You must finish filling your reserved data before calling `prim_reserve()` again, as it may 
+        reallocate or submit the intermediate results. `prim_unreserve()` can be used to release 
+        unused allocations.
+        
+        Drawing a quad is 6 idx (2 triangles) with 2 sharing vertices for a total of 4 vertices.
+        
+        Args:
+            idx_count (int): Number of indices to add to IdxBuffer
+            vtx_count (int): Number of verticies to add to VtxBuffer
+        
+        .. wraps::
+            void PrimReserve(int idx_count, int vtx_count)
+        """
+        self._ptr.PrimReserve(idx_count, vtx_count)
+    
+    def prim_unreserve(self, int idx_count, int vtx_count):
+        """Release the a number of reserved vertices/indices from the end of the 
+        last reservation made with `prim_reserve()`.
+        
+        Args:
+            idx_count (int): Number of indices to remove from IdxBuffer
+            vtx_count (int): Number of verticies to remove from VtxBuffer
+        
+        .. wraps::
+            void PrimUnreserve(int idx_count, int vtx_count)
+        """
+        self._ptr.PrimUnreserve(idx_count, vtx_count)
+    
+    def prim_rect(self, float a_x, float a_y, float b_x, float b_y, cimgui.ImU32 color = 0xFFFFFFFF):
+        """Axis aligned rectangle (2 triangles)
+        Reserve primitive space with `prim_rect()` before calling `prim_quad_UV()`.
+        Each call to `prim_rect()` is 6 idx and 4 vtx.
+        
+        Args:
+            a_x, a_y (float): First rectangle point coordinates
+            b_x, b_y (float): Opposite rectangle point coordinates
+            color (ImU32): Color
+        
+        .. wraps::
+            void PrimRect(const ImVec2& a, const ImVec2& b, ImU32 col)
+        """
+        self._ptr.PrimRect(
+            _cast_args_ImVec2(a_x, a_y),
+            _cast_args_ImVec2(b_x, b_y),
+            color
+        )
+    
+    def prim_rect_UV(
+        self, 
+        float a_x, float a_y, 
+        float b_x, float b_y,
+        float uv_a_u, float uv_a_v,
+        float uv_b_u, float uv_b_v,
+        cimgui.ImU32 color = 0xFFFFFFFF
+        ):
+        """Axis aligned rectangle (2 triangles) with custom UV coordinates.
+        Reserve primitive space with `prim_reserve()` before calling `prim_rect_UV()`.
+        Each call to `prim_rect_UV()` is 6 idx and 4 vtx.
+        Set the texture ID using `push_texture_id()`.
+        
+        Args:
+            a_x, a_y (float): First rectangle point coordinates
+            b_x, b_y (float): Opposite rectangle point coordinates
+            uv_a_u, uv_a_v (float): First rectangle point UV coordinates
+            uv_b_u, uv_b_v (float): Opposite rectangle point UV coordinates
+            color (ImU32): Color
+        
+        .. wraps::
+            void PrimRectUV(const ImVec2& a, const ImVec2& b, const ImVec2& uv_a, const ImVec2& uv_b, ImU32 col)
+        """
+        self._ptr.PrimRectUV(
+            _cast_args_ImVec2(a_x, a_y),
+            _cast_args_ImVec2(b_x, b_y),
+            _cast_args_ImVec2(uv_a_u, uv_a_v),
+            _cast_args_ImVec2(uv_b_u, uv_b_v),
+            color
+        )
+    
+    def prim_quad_UV(
+        self, 
+        float a_x, float a_y, 
+        float b_x, float b_y, 
+        float c_x, float c_y, 
+        float d_x, float d_y,
+        float uv_a_u, float uv_a_v,
+        float uv_b_u, float uv_b_v,
+        float uv_c_u, float uv_c_v,
+        float uv_d_u, float uv_d_v,
+        cimgui.ImU32 color = 0xFFFFFFFF
+        ):
+        """Custom quad (2 triangles) with custom UV coordinates.
+        Reserve primitive space with `prim_reserve()` before calling `prim_quad_UV()`.
+        Each call to `prim_quad_UV()` is 6 idx and 4 vtx.
+        Set the texture ID using `push_texture_id()`.
+        
+        Args:
+            a_x, a_y (float): Point 1 coordinates
+            b_x, b_y (float): Point 2 coordinates
+            c_x, c_y (float): Point 3 coordinates
+            d_x, d_y (float): Point 4 coordinates
+            uv_a_u, uv_a_v (float): Point 1 UV coordinates
+            uv_b_u, uv_b_v (float): Point 2 UV coordinates
+            uv_c_u, uv_c_v (float): Point 3 UV coordinates
+            uv_d_u, uv_d_v (float): Point 4 UV coordinates
+            color (ImU32): Color
+        
+        .. wraps::
+            void PrimQuadUV(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& d, const ImVec2& uv_a, const ImVec2& uv_b, const ImVec2& uv_c, const ImVec2& uv_d, ImU32 col)
+        """
+        self._ptr.PrimQuadUV(
+            _cast_args_ImVec2(a_x, a_y),
+            _cast_args_ImVec2(b_x, b_y),
+            _cast_args_ImVec2(c_x, c_y),
+            _cast_args_ImVec2(d_x, d_y),
+            _cast_args_ImVec2(uv_a_u, uv_a_v),
+            _cast_args_ImVec2(uv_b_u, uv_b_v),
+            _cast_args_ImVec2(uv_c_u, uv_c_v),
+            _cast_args_ImVec2(uv_d_u, uv_d_v),
+            color
+        )
+    
+    def prim_write_vtx(self, float pos_x, float pos_y, float u, float v, cimgui.ImU32 color = 0xFFFFFFFF):
+        """Write a vertex
+        
+        Args:
+            pos_x, pos_y (float): Point coordinates
+            u, v (float): Point UV coordinates
+            color (ImU32): Color
+        
+        .. wraps::
+            void  PrimWriteVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)
+        """
+        self._ptr.PrimWriteVtx(
+            _cast_args_ImVec2(pos_x, pos_y),
+            _cast_args_ImVec2(u, v),
+            color
+        )
+    
+    def prim_write_idx(self, cimgui.ImDrawIdx idx):
+        """Write index
+        
+        Args:
+            idx (ImDrawIdx): index to write
+        
+        .. wraps::
+            void  PrimWriteIdx(ImDrawIdx idx)
+        """
+        self._ptr.PrimWriteIdx(idx)
+    
+    def prim_vtx(self, float pos_x, float pos_y, float u, float v, cimgui.ImU32 color = 0xFFFFFFFF):
+        """Write vertex with unique index
+        
+        Args:
+            pos_x, pos_y (float): Point coordinates
+            u, v (float): Point UV coordinates
+            color (ImU32): Color
+        
+        .. wraps::
+            void PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)
+        """
+        self._ptr.PrimVtx(
+            _cast_args_ImVec2(pos_x, pos_y),
+            _cast_args_ImVec2(u,v),
+            color
+        )
+    
     @property
     def commands(self):
         return [

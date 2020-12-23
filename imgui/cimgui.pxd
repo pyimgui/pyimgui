@@ -552,14 +552,14 @@ cdef extern from "imgui.h":
         void ChannelsSetCurrent(int idx) except + # ✓
         
         # Advanced: Primitives allocations
-        void PrimReserve(int idx_count, int vtx_count) except + # ✗
-        void PrimUnreserve(int idx_count, int vtx_count) except + # ✗
-        void PrimRect(const ImVec2& a, const ImVec2& b, ImU32 col) except + # ✗
-        void PrimRectUV(const ImVec2& a, const ImVec2& b, const ImVec2& uv_a, const ImVec2& uv_b, ImU32 col) except + # ✗
-        void PrimQuadUV(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& d, const ImVec2& uv_a, const ImVec2& uv_b, const ImVec2& uv_c, const ImVec2& uv_d, ImU32 col) except + # ✗
-        inline void  PrimWriteVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col) except + # ✗
-        inline void  PrimWriteIdx(ImDrawIdx idx) except + # ✗
-        inline void  PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col) except + # ✗
+        void PrimReserve(int idx_count, int vtx_count) except + # ✓
+        void PrimUnreserve(int idx_count, int vtx_count) except + # ✓
+        void PrimRect(const ImVec2& a, const ImVec2& b, ImU32 col) except + # ✓
+        void PrimRectUV(const ImVec2& a, const ImVec2& b, const ImVec2& uv_a, const ImVec2& uv_b, ImU32 col) except + # ✓
+        void PrimQuadUV(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& d, const ImVec2& uv_a, const ImVec2& uv_b, const ImVec2& uv_c, const ImVec2& uv_d, ImU32 col) except + # ✓
+        inline void  PrimWriteVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col) except + # ✓
+        inline void  PrimWriteIdx(ImDrawIdx idx) except + # ✓
+        inline void  PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col) except + # ✓
 
 
     ctypedef struct ImDrawData:  # ✓
