@@ -11,27 +11,57 @@ from libcpp cimport bool
 from enums cimport ImGuiKey_, ImGuiCol_, ImGuiSliderFlags_
 
 cimport cimgui
+cimport enums_internal
 
 cdef UpdateImGuiContext(cimgui.ImGuiContext* _ptr)
 
 cdef extern from "imgui_internal.h":
     
-    # TODO: Import full API
     
+    # ====
+    # Forward declarations
+    ctypedef struct ImBitVector
+    ctypedef struct ImRect
+    ctypedef struct ImDrawDataBuilder
+    ctypedef struct ImDrawListSharedData
+    ctypedef struct ImGuiColorMod
+    ctypedef struct ImGuiColumns
+    ctypedef struct ImGuiColumnData
+    ctypedef struct ImGuiContext
+    ctypedef struct ImGuiDataTypeInfo
+    ctypedef struct ImGuiGroupData
+    ctypedef struct ImGuiInputTextState
+    ctypedef struct ImGuiLastItemDataBackup
+    ctypedef struct ImGuiMenuColumns
+    ctypedef struct ImGuiNavMoveResult
+    ctypedef struct ImGuiNextWindowData
+    ctypedef struct ImGuiNextItemData
+    ctypedef struct ImGuiPopupData
+    ctypedef struct ImGuiSettingsHandler
+    ctypedef struct ImGuiStyleMod
+    ctypedef struct ImGuiTabBar
+    ctypedef struct ImGuiTabItem
+    ctypedef struct ImGuiWindow
+    ctypedef struct ImGuiWindowTempData
+    ctypedef struct ImGuiWindowSettings
+    
+    
+    # ====
+    # Enums/Flags
+    ctypedef int ImGuiLayoutType
+    ctypedef int ImGuiButtonFlags
+    ctypedef int ImGuiColumnsFlags
     ctypedef int ImGuiItemFlags
+    ctypedef int ImGuiItemStatusFlags
+    ctypedef int ImGuiNavHighlightFlags
+    ctypedef int ImGuiNavDirSourceFlags
+    ctypedef int ImGuiNavMoveFlags
+    ctypedef int ImGuiNextItemDataFlags
+    ctypedef int ImGuiNextWindowDataFlags
+    ctypedef int ImGuiSeparatorFlags
+    ctypedef int ImGuiTextFlags
+    ctypedef int ImGuiTooltipFlags
     
-    # TODO: internal_enum.pxd ?
-    ctypedef enum ImGuiItemFlags_:
-        ImGuiItemFlags_None                     #
-        ImGuiItemFlags_NoTabStop                # false
-        ImGuiItemFlags_ButtonRepeat             # false    # Button() will return true multiple times based on io.KeyRepeatDelay and io.KeyRepeatRate settings.
-        ImGuiItemFlags_Disabled                 # false    # [BETA] Disable interactions but doesn't affect visuals yet. See github.com/ocornut/imgui/issues/211
-        ImGuiItemFlags_NoNav                    # false
-        ImGuiItemFlags_NoNavDefaultFocus        # false
-        ImGuiItemFlags_SelectableDontClosePopup # false    # MenuItem/Selectable() automatically closes current Popup window
-        ImGuiItemFlags_MixedValue               # false    # [BETA] Represent a mixed/indeterminate value, generally multi-selection where values differ. Currently only supported by Checkbox() (later should support all sorts of widgets)
-        ImGuiItemFlags_ReadOnly                 # false    # [ALPHA] Allow hovering interactions but underlying value is not changed.
-        ImGuiItemFlags_Default_                 #
 
 
 cdef extern from "imgui_internal.h" namespace "ImGui":
