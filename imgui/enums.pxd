@@ -50,7 +50,7 @@ cdef extern from "imgui.h":
         ImGuiNavInput_FocusNext,     # prev window (w/ PadMenu)                     # e.g. R1 or R2 (PS4), RB or RT (Xbox), R or ZL (Switch)
         ImGuiNavInput_TweakSlow,     # slower tweaks                                # e.g. L1 or L2 (PS4), LB or LT (Xbox), L or ZL (Switch)
         ImGuiNavInput_TweakFast,     # faster tweaks                                # e.g. R1 or R2 (PS4), RB or RT (Xbox), R or ZL (Switch)
-    
+        ImGuiNavInput_COUNT
 
     ctypedef enum ImGuiConfigFlags_:
         ImGuiConfigFlags_None                   #

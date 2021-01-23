@@ -126,6 +126,7 @@ NAV_INPUT_FOCUS_PREV = enums.ImGuiNavInput_FocusPrev
 NAV_INPUT_FOCUS_NEXT = enums.ImGuiNavInput_FocusNext
 NAV_INPUT_TWEAK_SLOW = enums.ImGuiNavInput_TweakSlow
 NAV_INPUT_TEWAK_FAST = enums.ImGuiNavInput_TweakFast
+NAV_INPUT_COUNT = enums.ImGuiNavInput_COUNT
 
 # ==== Window flags enum redefines ====
 WINDOW_NONE = enums.ImGuiWindowFlags_None
@@ -2336,6 +2337,17 @@ cdef class _IO(object):
         )
         keys_down.data = <char*>self._ptr.KeysDown
         return keys_down
+        
+    @property
+    def nav_inputs(self):
+        cdef cvarray nav_inputs = cvarray(
+            shape=(enums.ImGuiNavInput_COUNT,),
+            format='f',
+            itemsize=sizeof(float),
+            allocate_buffer=False
+        )
+        nav_inputs.data = <char*>self._ptr.NavInputs
+        return nav_inputs
 
     def add_input_character(self, unsigned int c):
         self._ptr.AddInputCharacter(c)

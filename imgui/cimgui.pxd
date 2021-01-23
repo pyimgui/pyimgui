@@ -189,7 +189,7 @@ cdef extern from "imgui.h":
         bool        KeysDown[512]  # ✓
         # note: originally NavInputs[ImGuiNavInput_COUNT]
         # todo: find a way to access enum var here
-        ImWchar*    NavInputs  # ✗
+        float*    NavInputs  # ✓
 
         # Functions
         void        AddInputCharacter(unsigned int c) except +  # ✓
