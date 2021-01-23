@@ -23,11 +23,13 @@ class PygletMixin(object):
         key.PAGEDOWN: imgui.KEY_PAGE_DOWN,
         key.HOME: imgui.KEY_HOME,
         key.END: imgui.KEY_END,
+        key.INSERT: imgui.KEY_INSERT,
         key.DELETE: imgui.KEY_DELETE,
-        key.SPACE: imgui.KEY_SPACE,
         key.BACKSPACE: imgui.KEY_BACKSPACE,
+        key.SPACE: imgui.KEY_SPACE,
         key.RETURN: imgui.KEY_ENTER,
         key.ESCAPE: imgui.KEY_ESCAPE,
+        key.NUM_ENTER: imgui.KEY_PAD_ENTER,
         key.A: imgui.KEY_A,
         key.C: imgui.KEY_C,
         key.V: imgui.KEY_V,
@@ -84,7 +86,7 @@ class PygletMixin(object):
                             key_pressed in (key.LALT, key.RALT)
         self.io.key_shift = mods & key.MOD_SHIFT or \
                             key_pressed in (key.LSHIFT, key.RSHIFT)
-        print(self.io.key_ctrl, self.io.key_super, self.io.key_alt, self.io.key_shift)
+        #print(self.io.key_ctrl, self.io.key_super, self.io.key_alt, self.io.key_shift)
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.io.mouse_pos = x, self.io.display_size.y - y

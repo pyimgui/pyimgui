@@ -25,8 +25,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-
             impl.process_event(event)
+        impl.process_inputs()
 
         imgui.new_frame()
 
