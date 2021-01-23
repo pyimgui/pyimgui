@@ -125,7 +125,7 @@ NAV_INPUT_L_STICK_DOWN = enums.ImGuiNavInput_LStickDown
 NAV_INPUT_FOCUS_PREV = enums.ImGuiNavInput_FocusPrev
 NAV_INPUT_FOCUS_NEXT = enums.ImGuiNavInput_FocusNext
 NAV_INPUT_TWEAK_SLOW = enums.ImGuiNavInput_TweakSlow
-NAV_INPUT_TEWAK_FAST = enums.ImGuiNavInput_TweakFast
+NAV_INPUT_TWEAK_FAST = enums.ImGuiNavInput_TweakFast
 NAV_INPUT_COUNT = enums.ImGuiNavInput_COUNT
 
 # ==== Window flags enum redefines ====
