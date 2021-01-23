@@ -5,6 +5,7 @@ from distutils.version import LooseVersion
 
 from pyglet.window import key, mouse
 import pyglet
+import pyglet.clock
 
 import imgui
 
@@ -37,6 +38,7 @@ class PygletMixin(object):
         key.Y: imgui.KEY_Y,
         key.Z: imgui.KEY_Z,
     }
+    _gui_time = None
 
     def _set_pixel_ratio(self, window):
         window_size = window.get_size()
@@ -148,6 +150,18 @@ class PygletMixin(object):
 
     def on_resize(self, width, height):
         self.io.display_size = width, height
+    
+    def process_inputs(self):
+        io = imgui.get_io()
+        
+        current_time = pyglet.clock.tick()
+
+        if self._gui_time:
+            io.delta_time = current_time - self._gui_time
+        else:
+            io.delta_time = 1. / 60.
+        if(io.delta_time <= 0.0): io.delta_time = 1./ 1000.
+        self._gui_time = current_time
 
 
 class PygletFixedPipelineRenderer(PygletMixin, FixedPipelineRenderer):

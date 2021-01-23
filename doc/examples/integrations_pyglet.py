@@ -18,6 +18,7 @@ def main():
     impl = create_renderer(window)
 
     def update(dt):
+        impl.process_inputs()
         imgui.new_frame()
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):

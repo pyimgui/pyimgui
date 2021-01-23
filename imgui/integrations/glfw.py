@@ -128,5 +128,6 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             self.io.delta_time = current_time - self._gui_time
         else:
             self.io.delta_time = 1. / 60.
+        if(io.delta_time <= 0.0): io.delta_time = 1./ 1000.
 
         self._gui_time = current_time

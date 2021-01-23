@@ -170,9 +170,10 @@ class GlumpyRenderer(BaseOpenGLRenderer):
         current_time = glfw.get_time()
 
         if self._gui_time:
-            self.io.delta_time = current_time - self._gui_time
+            io.delta_time = current_time - self._gui_time
         else:
-            self.io.delta_time = 1. / 60.
+            io.delta_time = 1. / 60.
+        if(io.delta_time <= 0.0): io.delta_time = 1./ 1000.
 
         self._gui_time = current_time
     

@@ -105,6 +105,7 @@ def main_pygame():
             if event.type == pygame.QUIT:
                 sys.exit()
             renderer.process_event(event)
+        renderer.process_inputs()
         imgui.new_frame()
         on_frame()
         # note: cannot use screen.fill((1, 1, 1)) because pygame's screen
@@ -162,6 +163,7 @@ def main_cocos2d():
             self._text = "Input text here"
 
         def draw(self, *args, **kwargs):
+            self.process_inputs()
             imgui.new_frame()
             on_frame()
             gl.glClearColor(1., 1., 1., 1)

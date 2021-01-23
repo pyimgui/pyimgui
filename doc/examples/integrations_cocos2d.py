@@ -17,6 +17,7 @@ class HelloWorld(ImguiLayer):
         self._text = "Input text here"
 
     def draw(self, *args, **kwargs):
+        self.process_inputs()
         imgui.new_frame()
 
         if imgui.begin_main_menu_bar():
