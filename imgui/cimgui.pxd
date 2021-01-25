@@ -314,6 +314,8 @@ cdef extern from "imgui.h":
 
     ctypedef struct ImFontAtlas:  # ✓
         void*   TexID  # ✓
+        int   TexWidth  # ✓
+        int   TexHeight  # ✓
 
         ImFont* AddFontDefault(  # ✓
                    # note: optional
