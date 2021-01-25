@@ -2623,20 +2623,7 @@ cdef class _ImGuiSizeCallbackData(object):
     def desired_size(self, tuple size):
         self._require_pointer()
         self._ptr.DesiredSize = _cast_args_ImVec2(size[0], size[1])
-        
-
-#def foo(callback, data = None):
-#    # Example of callback use
-#    cdef _callback_user_info callback_data = _callback_user_info.create(callback, data, NULL)
-#    
-#    # Example of passing
-#    # cimgui.Foo(_ImGuiInputTextCallback, callback_data)
-#    
-#    cdef cimgui.ImGuiInputTextCallbackData input_text_callback_data = cimgui.ImGuiInputTextCallbackData()
-#    input_text_callback_data.UserData = <void*>callback_data
-#    _ImGuiInputTextCallback(&input_text_callback_data)
-#        
-
+       
 _io = None
 def get_io():
     global _io
