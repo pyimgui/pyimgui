@@ -108,7 +108,7 @@ NAV_INPUT_FOCUS_NEXT = core.NAV_INPUT_FOCUS_NEXT
 #: slower tweaks                                 e.g. L1 or L2 (PS4), LB or LT (Xbox), L or ZL (Switch)
 NAV_INPUT_TWEAK_SLOW = core.NAV_INPUT_TWEAK_SLOW
 #: faster tweaks                                 e.g. R1 or R2 (PS4), RB or RT (Xbox), R or ZL (Switch)
-NAV_INPUT_TEWAK_FAST    = core.NAV_INPUT_TEWAK_FAST
+NAV_INPUT_TWEAK_FAST    = core.NAV_INPUT_TWEAK_FAST
 
 
 # === Key Mode Flags (redefines for autodoc)
