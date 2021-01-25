@@ -1982,7 +1982,6 @@ cdef class _FontAtlas(object):
     def texture_id(self, value):
         self._ptr.TexID = <void *> value
 
-
 cdef class _IO(object):
     """Main ImGui I/O context class used for ImGui configuration.
 
@@ -2417,6 +2416,105 @@ cdef class _IO(object):
     @property
     def mouse_delta(self):
         return _cast_ImVec2_tuple(self._ptr.MouseDelta)
+        
+cdef class _callback_user_info(object):
+    
+    cdef object callback_fn
+    cdef user_data
+    
+    def __init__(self):
+        pass
+    
+    def populate(self, callback_fn, user_data):
+        if callable(callback_fn):
+            self.callback_fn = callback_fn
+            self.user_data = user_data
+        else:
+            raise ValueError("callback_fn is not a callable: %s" % str(callback_fn))
+    
+cdef int _ImGuiInputTextCallback(cimgui.ImGuiInputTextCallbackData* data):
+    cdef _ImGuiInputTextCallbackData callback_data = _ImGuiInputTextCallbackData.from_ptr(data)
+    callback_data._require_pointer()
+    cdef ret = (<_callback_user_info>callback_data._ptr.UserData).callback_fn(callback_data)
+    return ret if ret is not None else 0
+    
+cdef class _ImGuiInputTextCallbackData(object):
+    
+    cdef cimgui.ImGuiInputTextCallbackData* _ptr
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    cdef from_ptr(cimgui.ImGuiInputTextCallbackData* ptr):
+        if ptr == NULL:
+            return None
+
+        instance = _ImGuiInputTextCallbackData()
+        instance._ptr = ptr
+        return instance
+
+    def _require_pointer(self):
+        if self._ptr == NULL:
+            raise RuntimeError(
+                "%s improperly initialized" % self.__class__.__name__
+            )
+
+        return self._ptr != NULL
+        
+    @property
+    def user_data(self):
+        self._require_pointer()
+        return (<_callback_user_info>self._ptr.UserData).user_data
+        
+
+cdef void _ImGuiSizeCallback(cimgui.ImGuiSizeCallbackData* data):
+    cdef _ImGuiSizeCallbackData callback_data = _ImGuiSizeCallbackData.from_ptr(data)
+    callback_data._require_pointer()
+    (<_callback_user_info>callback_data._ptr.UserData).callback_fn(callback_data)
+    return
+    
+cdef class _ImGuiSizeCallbackData(object):
+    
+    cdef cimgui.ImGuiSizeCallbackData* _ptr
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    cdef from_ptr(cimgui.ImGuiSizeCallbackData* ptr):
+        if ptr == NULL:
+            return None
+
+        instance = _ImGuiSizeCallbackData()
+        instance._ptr = ptr
+        return instance
+
+    def _require_pointer(self):
+        if self._ptr == NULL:
+            raise RuntimeError(
+                "%s improperly initialized" % self.__class__.__name__
+            )
+
+        return self._ptr != NULL
+        
+    @property
+    def user_data(self):
+        self._require_pointer()
+        return (<_callback_user_info>self._ptr.UserData).user_data
+        
+
+#def foo(callback, data = None):
+#    # Example of callback use
+#    cdef _callback_user_info callback_data = _callback_user_info.create(callback, data, NULL)
+#    
+#    # Example of passing
+#    # cimgui.Foo(_ImGuiInputTextCallback, callback_data)
+#    
+#    cdef cimgui.ImGuiInputTextCallbackData input_text_callback_data = cimgui.ImGuiInputTextCallbackData()
+#    input_text_callback_data.UserData = <void*>callback_data
+#    _ImGuiInputTextCallback(&input_text_callback_data)
+#        
 
 _io = None
 def get_io():
@@ -3317,17 +3415,25 @@ def set_next_window_size(
     """
     cimgui.SetNextWindowSize(_cast_args_ImVec2(width, height), condition)
 
-# TODO: Callbacks
 # Useful for non trivial constraints
-def set_next_window_size_constraints(tuple size_min, tuple size_max):
+cdef _callback_user_info _global_next_window_size_constraints_callback_user_info = _callback_user_info()
+def set_next_window_size_constraints(
+    tuple size_min, 
+    tuple size_max,
+    object callback = None,
+    user_data = None):
     """Set next window size limits. use -1,-1 on either X/Y axis to preserve the current size. 
     Sizes will be rounded down.
 
     Call before :func:`begin()`.
     
     Args:
-        size_min (tuple): Minimum window size
-        size_max (tuple): Maximum window size
+        size_min (tuple): Minimum window size, use -1 to conserve current size
+        size_max (tuple): Maximum window size, use -1 to conserve current size
+        callback (callable): a callable. 
+            Callable takes an imgui._ImGuiSizeCallbackData object as argument
+            Callable should return None
+        user_data: Any data that the user want to use in the callback.
     
     .. visual-example::
         :title: Window size constraints
@@ -3347,10 +3453,17 @@ def set_next_window_size_constraints(tuple size_min, tuple size_max):
         )
 
     """
+    cdef cimgui.ImGuiSizeCallback _callback = NULL
+    cdef void *_user_data = NULL
+    if callback is not None:
+        _callback = _ImGuiSizeCallback
+        _global_next_window_size_constraints_callback_user_info.populate(callback, user_data)
+        _user_data = <void*>_global_next_window_size_constraints_callback_user_info
+        
     cimgui.SetNextWindowSizeConstraints(
         _cast_tuple_ImVec2(size_min), 
         _cast_tuple_ImVec2(size_max), 
-        NULL, NULL)
+        _callback, _user_data)
 
 def set_next_window_content_size(float width, float height):
     """Set content size of the next window. Show scrollbars
@@ -5923,7 +6036,9 @@ def input_text(
     str label,
     str value,
     int buffer_length,
-    cimgui.ImGuiInputTextFlags flags=0
+    cimgui.ImGuiInputTextFlags flags=0,
+    object callback = None,
+    user_data = None
 ):
     """Display text input widget.
 
@@ -5952,6 +6067,10 @@ def input_text(
         buffer_length (int): length of the content buffer
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
+        callback (callable): a callable that is called depending on choosen flags. 
+            Callable takes an imgui._ImGuiInputTextCallbackData object as argument
+            Callable should return None or integer
+        user_data: Any data that the user want to use in the callback.
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
@@ -5967,13 +6086,22 @@ def input_text(
             void* user_data = NULL
         )
     """
+    
+    cdef _callback_user_info _user_info = _callback_user_info()
+    cdef cimgui.ImGuiInputTextCallback _callback = NULL
+    cdef void *_user_data = NULL
+    if callback is not None:
+        _callback = _ImGuiInputTextCallback
+        _user_info.populate(callback, user_data)
+        _user_data = <void*>_user_info
+    
     # todo: pymalloc
     cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
     # todo: take special care of terminating char
     strncpy(inout_text, _bytes(value), buffer_length)
 
     changed = cimgui.InputText(
-        _bytes(label), inout_text, buffer_length, flags, NULL, NULL
+        _bytes(label), inout_text, buffer_length, flags, _callback, _user_data
     )
     output = _from_bytes(inout_text)
 
@@ -5987,7 +6115,9 @@ def input_text_multiline(
     int buffer_length,
     float width=0,
     float height=0,
-    cimgui.ImGuiInputTextFlags flags=0
+    cimgui.ImGuiInputTextFlags flags=0,
+    object callback = None,
+    user_data = None
 ):
     """Display multiline text input widget.
 
@@ -6018,6 +6148,10 @@ def input_text_multiline(
         height (float): height of the textbox
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
+        callback (callable): a callable that is called depending on choosen flags. 
+            Callable takes an imgui._ImGuiInputTextCallbackData object as argument
+            Callable should return None or integer
+        user_data: Any data that the user want to use in the callback.
 
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
@@ -6034,6 +6168,15 @@ def input_text_multiline(
             void* user_data = NULL
         )
     """
+    
+    cdef _callback_user_info _user_info = _callback_user_info()
+    cdef cimgui.ImGuiInputTextCallback _callback = NULL
+    cdef void *_user_data = NULL
+    if callback is not None:
+        _callback = _ImGuiInputTextCallback
+        _user_info.populate(callback, user_data)
+        _user_data = <void*>_user_info
+        
     cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
     # todo: take special care of terminating char
     strncpy(inout_text, _bytes(value), buffer_length)
@@ -6041,7 +6184,7 @@ def input_text_multiline(
     changed = cimgui.InputTextMultiline(
         _bytes(label), inout_text, buffer_length,
         _cast_args_ImVec2(width, height), flags,
-        NULL, NULL
+        _callback, _user_data
     )
     output = _from_bytes(inout_text)
 
@@ -6053,7 +6196,9 @@ def input_text_with_hint(
     str hint, 
     str value,
     int buffer_length,
-    cimgui.ImGuiInputTextFlags flags = 0):
+    cimgui.ImGuiInputTextFlags flags = 0,
+    object callback = None,
+    user_data = None):
     """Display a text box, if the text is empty a hint on how to fill the box is given.
     ``buffer_length`` is the maximum allowed length of the content.
     
@@ -6064,6 +6209,10 @@ def input_text_with_hint(
         buffer_length (int): Length of the content buffer
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
+        callback (callable): a callable that is called depending on choosen flags. 
+            Callable takes an imgui._ImGuiInputTextCallbackData object as argument
+            Callable should return None or integer
+        user_data: Any data that the user want to use in the callback.
             
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
@@ -6092,12 +6241,21 @@ def input_text_with_hint(
             void* user_data = NULL
         )
     """
+    
+    cdef _callback_user_info _user_info = _callback_user_info()
+    cdef cimgui.ImGuiInputTextCallback _callback = NULL
+    cdef void *_user_data = NULL
+    if callback is not None:
+        _callback = _ImGuiInputTextCallback
+        _user_info.populate(callback, user_data)
+        _user_data = <void*>_user_info
+        
     cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
     strncpy(inout_text, _bytes(value), buffer_length)
     
     changed = cimgui.InputTextWithHint(
         _bytes(label), _bytes(hint), inout_text, buffer_length,
-        flags, NULL, NULL
+        flags, _callback, _user_data
     )
     
     output = _from_bytes(inout_text)

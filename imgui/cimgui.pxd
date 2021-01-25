@@ -214,11 +214,32 @@ cdef extern from "imgui.h":
         int         MetricsActiveAllocations # ✓
         ImVec2      MouseDelta  # ✓
     
-    ctypedef struct ImGuiInputTextCallbackData: # ✗
-        pass
+    ctypedef struct ImGuiInputTextCallbackData: # ✓
+        ImGuiInputTextFlags EventFlag       # Read-only # ✗
+        ImGuiInputTextFlags Flags           # Read-only # ✗
+        void*               UserData        # Read-only # ✓
+        ImWchar             EventChar       # Read-write #✗
+        ImGuiKey            EventKey        # Read-only # ✗
+        char*               Buf             # Read-write #✗
+        int                 BufTextLen      # Read-write #✗
+        int                 BufSize         # Read-only # ✗
+        bool                BufDirty        # Write #✗
+        int                 CursorPos       # Read-write #✗
+        int                 SelectionStart  # Read-write #✗
+        int                 SelectionEnd    # Read-write #✗
+
+        ImGuiInputTextCallbackData() except + #✗
+        DeleteChars(int pos, int bytes_count) except + #✗
+        InsertChars(int pos, const char* text, const char* text_end = NULL) except + #✗
+        void SelectAll() except + #✗
+        void ClearSelection() except + #✗
+        bool HasSelection() except + #✗
     
-    ctypedef struct ImGuiSizeCallbackData: # ✗
-        pass
+    ctypedef struct ImGuiSizeCallbackData: # ✓
+        void*   UserData        # Read-only #✓
+        ImVec2  Pos             # Read-only #✗
+        ImVec2  CurrentSize     # Read-only #✗
+        ImVec2  DesiredSize     # Read-write #✗
     
     cdef cppclass ImVector[T]:
         int        Size
