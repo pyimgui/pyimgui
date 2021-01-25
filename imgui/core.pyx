@@ -2502,6 +2502,26 @@ cdef class _ImGuiSizeCallbackData(object):
     def user_data(self):
         self._require_pointer()
         return (<_callback_user_info>self._ptr.UserData).user_data
+    
+    @property
+    def pos(self):
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.Pos)
+        
+    @property
+    def current_size(self):
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.CurrentSize)
+    
+    @property
+    def desired_size(self):
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.DesiredSize)
+    
+    @desired_size.setter
+    def desired_size(self, tuple size):
+        self._require_pointer()
+        self._ptr.DesiredSize = _cast_args_ImVec2(size[0], size[1])
         
 
 #def foo(callback, data = None):

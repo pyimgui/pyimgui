@@ -236,10 +236,10 @@ cdef extern from "imgui.h":
         bool HasSelection() except + #✗
     
     ctypedef struct ImGuiSizeCallbackData: # ✓
-        void*   UserData        # Read-only #✓
-        ImVec2  Pos             # Read-only #✗
-        ImVec2  CurrentSize     # Read-only #✗
-        ImVec2  DesiredSize     # Read-write #✗
+        void*   UserData        # Read-only # ✓
+        ImVec2  Pos             # Read-only # ✓
+        ImVec2  CurrentSize     # Read-only # ✓
+        ImVec2  DesiredSize     # Read-write # ✓
     
     cdef cppclass ImVector[T]:
         int        Size
