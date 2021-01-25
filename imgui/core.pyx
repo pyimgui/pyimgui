@@ -2463,9 +2463,110 @@ cdef class _ImGuiInputTextCallbackData(object):
         return self._ptr != NULL
         
     @property
+    def event_flag(self):
+        self._require_pointer()
+        return self._ptr.EventFlag
+    
+    @property
+    def flags(self):
+        self._require_pointer()
+        return self._ptr.Flags
+        
+    @property
     def user_data(self):
         self._require_pointer()
         return (<_callback_user_info>self._ptr.UserData).user_data
+    
+    @property
+    def event_char(self):
+        self._require_pointer()
+        return chr(self._ptr.EventChar)
+    
+    @event_char.setter
+    def event_char(self, str event_char):
+        self._require_pointer()
+        self._ptr.EventChar = ord(event_char)
+    
+    @property
+    def event_key(self):
+        self._require_pointer()
+        return self._ptr.EventKey
+    
+    @property
+    def buffer(self):
+        self._require_pointer()
+        return _from_bytes(self._ptr.Buf)
+        
+    @property
+    def buffer_text_length(self):
+        self._require_pointer()
+        return self._ptr.BufTextLen
+    
+    @property
+    def buffer_size(self):
+        self._require_pointer()
+        return self._ptr.BufSize
+    
+    @property
+    def buffer_dirty(self):
+        self._require_pointer()
+        return self._ptr.BufDirty
+        
+    @buffer_dirty.setter
+    def buffer_dirty(self, bool dirty):
+        self._require_pointer()
+        self._ptr.BufDirty = dirty
+    
+    @property
+    def cursor_pos(self):
+        self._require_pointer()
+        return self._ptr.CursorPos
+        
+    @cursor_pos.setter
+    def cursor_pos(self, int pos):
+        self._require_pointer()
+        self._ptr.CursorPos = pos
+    
+    @property
+    def selection_start(self):
+        self._require_pointer()
+        return self._ptr.SelectionStart
+        
+    @selection_start.setter
+    def selection_start(self, int start):
+        self._require_pointer()
+        self._ptr.SelectionStart = start
+    
+    @property
+    def selection_end(self):
+        self._require_pointer()
+        return self._ptr.SelectionEnd
+        
+    @selection_end.setter
+    def selection_end(self, int end):
+        self._require_pointer()
+        self._ptr.SelectionEnd = end
+    
+    def delete_chars(self, int pos, int bytes_count):
+        self._require_pointer()
+        self._ptr.DeleteChars(pos, bytes_count)
+        
+    def insert_chars(self, int pos, str text):
+        self._require_pointer()
+        self._ptr.InsertChars(pos, _bytes(text))
+    
+    def select_all(self):
+        self._require_pointer()
+        self._ptr.SelectAll()
+    
+    def clear_selection(self):
+        self._require_pointer()
+        self._ptr.ClearSelection()
+        
+    def has_selection(self):
+        self._require_pointer()
+        return self._ptr.HasSelection()
+        
         
 
 cdef void _ImGuiSizeCallback(cimgui.ImGuiSizeCallbackData* data):
