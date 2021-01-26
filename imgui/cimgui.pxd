@@ -10,7 +10,6 @@ from libcpp cimport bool
 
 from enums cimport ImGuiKey_, ImGuiCol_, ImGuiSliderFlags_
 
-
 cdef extern from "imgui.h":
     # ====
     # Forward declarations
@@ -1265,7 +1264,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void ProgressBar(  # ✓
             float fraction,
             # note: optional
-            const ImVec2& size_arg,     # = ImVec2(-FLT_MIN, 0) # TODO: change from -1 to -FLT_MIN
+            const ImVec2& size_arg,     # = ImVec2(-FLT_MIN, 0)
             const char* overlay         # = NULL
     ) except +  
     void Bullet() except +  # ✓

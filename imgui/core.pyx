@@ -24,8 +24,12 @@ from libc.stdlib cimport malloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
 from libc.string cimport strncpy
+from libc.float  cimport FLT_MIN
 from libc.float  cimport FLT_MAX
 from libcpp cimport bool
+
+FLOAT_MIN = FLT_MIN
+FLOAT_MAX = FLT_MAX
 
 cimport cimgui
 cimport core
@@ -7900,8 +7904,8 @@ def plot_lines(
         int values_count  = -1,
         int values_offset = 0,
         str overlay_text = None,
-        float scale_min = FLT_MAX,
-        float scale_max = FLT_MAX,
+        float scale_min = FLOAT_MAX,
+        float scale_max = FLOAT_MAX,
         graph_size = (0, 0),
         int stride = sizeof(float),
     ):
@@ -8078,7 +8082,7 @@ def plot_histogram(
         stride
     )
 
-def progress_bar(float fraction, size = (0,0), str overlay = ""):
+def progress_bar(float fraction, size = (-FLOAT_MIN,0), str overlay = ""):
     """ Show a progress bar
 
     .. visual-example::
@@ -8098,10 +8102,11 @@ def progress_bar(float fraction, size = (0,0), str overlay = ""):
         overlay (str): Optional text that will be shown in the progress bar
 
     .. wraps::
-            void ProgressBar(
+        void ProgressBar(
             float fraction,
-            const ImVec2& size_arg, const char* overlay
-    )
+            const ImVec2& size_arg = ImVec2(-FLT_MIN, 0), 
+            const char* overlay = NULL
+        )
 
     """
     cimgui.ProgressBar(fraction, _cast_tuple_ImVec2(size), _bytes(overlay))
@@ -9099,7 +9104,7 @@ cpdef push_item_width(float item_width):
     * ``0.0`` - default to ~2/3 of windows width
     * ``>0.0`` - width in pixels
     * ``<0.0`` - align xx pixels to the right of window
-      (so -1.0f always align width to the right side)
+      (so -FLOAT_MIN always align width to the right side)
 
     **Note:** width pushed on stack need to be poped using
     :func:`pop_item_width()` or it will be applied to all subsequent
@@ -9150,7 +9155,7 @@ cpdef set_next_item_width(float item_width):
     """Set width of the _next_ common large "item+label" widget. 
     * ``>0.0`` - width in pixels
     * ``<0.0`` - align xx pixels to the right of window
-      (so -1.0f always align width to the right side)
+      (so -FLOAT_MIN always align width to the right side)
       
     Helper to avoid using ``push_item_width()``/``pop_item_width()`` for single items.
     
