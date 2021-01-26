@@ -117,13 +117,11 @@ cdef extern from "imgui.h":
         ImGuiCol_PlotLinesHovered,
         ImGuiCol_PlotHistogram,
         ImGuiCol_PlotHistogramHovered,
-        # TODO: Implement
         ImGuiCol_TableHeaderBg,         # Table header background
         ImGuiCol_TableBorderStrong,     # Table outer and header borders (prefer using Alpha=1.0 here)
         ImGuiCol_TableBorderLight,      # Table inner borders (prefer using Alpha=1.0 here)
         ImGuiCol_TableRowBg,            # Table row background (even rows)
         ImGuiCol_TableRowBgAlt,         # Table row background (odd rows)
-        # ENDTODO
         ImGuiCol_TextSelectedBg,
         ImGuiCol_DragDropTarget,
         ImGuiCol_NavHighlight,          # Gamepad/keyboard: current highlighted item
@@ -164,9 +162,7 @@ cdef extern from "imgui.h":
         ImGuiStyleVar_ItemSpacing,         # ImVec2    ItemSpacing
         ImGuiStyleVar_ItemInnerSpacing,    # ImVec2    ItemInnerSpacing
         ImGuiStyleVar_IndentSpacing,       # float     IndentSpacing
-        # TODO: Implement
         ImGuiStyleVar_CellPadding,         # ImVec2    CellPadding
-        # ENDTODO
         ImGuiStyleVar_ScrollbarSize,       # float     ScrollbarSize
         ImGuiStyleVar_ScrollbarRounding,   # float     ScrollbarRounding
         ImGuiStyleVar_GrabMinSize,         # float     GrabMinSize
@@ -345,7 +341,6 @@ cdef extern from "imgui.h":
         ImGuiTabItemFlags_Trailing                      # Enforce the tab position to the right of the tab bar (before the scrolling buttons)
     
     # [BETA API] API may evolve slightly!
-    # TODO: Implement
     ctypedef enum ImGuiTableFlags_:
         # Features
         ImGuiTableFlags_None                       #
@@ -391,7 +386,6 @@ cdef extern from "imgui.h":
         ImGuiTableFlags_SortMulti                  # Hold shift when clicking headers to sort on multiple column. TableGetSortSpecs() may return specs where (SpecsCount > 1).
         ImGuiTableFlags_SortTristate               # Allow no sorting, disable default sorting. TableGetSortSpecs() may return specs where (SpecsCount == 0).
     
-    # TODO: Implement
     ctypedef enum ImGuiTableColumnFlags_:
         # Input configuration flags
         ImGuiTableColumnFlags_None                  #
@@ -418,12 +412,10 @@ cdef extern from "imgui.h":
         ImGuiTableColumnFlags_IsSorted              # Status: is currently part of the sort specs
         ImGuiTableColumnFlags_IsHovered             # Status: is hovered by mouse
     
-    # TODO: Implement
     ctypedef enum ImGuiTableRowFlags_:
         ImGuiTableRowFlags_None                         #
         ImGuiTableRowFlags_Headers                      # Identify header row (set default background color + width of its contents accounted different for auto column width)
     
-    # TODO: Implement
     ctypedef enum ImGuiTableBgTarget_:
         ImGuiTableBgTarget_None                         #
         ImGuiTableBgTarget_RowBg0                       # Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)
@@ -476,7 +468,6 @@ cdef extern from "imgui.h":
         ImGuiDir_Down   
         ImGuiDir_COUNT
     
-    # TODO: Implement
     ctypedef enum ImGuiSortDirection_:
         ImGuiSortDirection_None         #
         ImGuiSortDirection_Ascending    # Ascending = 0->9, A->Z etc.

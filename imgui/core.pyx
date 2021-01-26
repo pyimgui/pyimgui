@@ -64,6 +64,7 @@ STYLE_FRAME_BORDERSIZE = enums.ImGuiStyleVar_FrameBorderSize  # float
 STYLE_ITEM_SPACING = enums.ImGuiStyleVar_ItemSpacing # Vec2
 STYLE_ITEM_INNER_SPACING = enums.ImGuiStyleVar_ItemInnerSpacing # Vec2
 STYLE_INDENT_SPACING = enums.ImGuiStyleVar_IndentSpacing # float
+STYLE_CELL_PADDING = enums.ImGuiStyleVar_CellPadding # ImVec2    CellPadding
 STYLE_SCROLLBAR_SIZE = enums.ImGuiStyleVar_ScrollbarSize # float
 STYLE_SCROLLBAR_ROUNDING = enums.ImGuiStyleVar_ScrollbarRounding # float
 STYLE_GRAB_MIN_SIZE = enums.ImGuiStyleVar_GrabMinSize # float
@@ -255,7 +256,88 @@ TAB_ITEM_NO_PUSH_ID = enums.ImGuiTabItemFlags_NoPushId
 TAB_ITEM_NO_TOOLTIP = enums.ImGuiTabItemFlags_NoTooltip                     
 TAB_ITEM_NO_REORDER = enums.ImGuiTabItemFlags_NoReorder                     
 TAB_ITEM_LEADING = enums.ImGuiTabItemFlags_Leading                       
-TAB_ITEM_TRAILING = enums.ImGuiTabItemFlags_Trailing                      
+TAB_ITEM_TRAILING = enums.ImGuiTabItemFlags_Trailing        
+
+# === Table Flags ===
+# Features
+TABLE_NONE = enums.ImGuiTableFlags_None
+TABLE_RESIZABLE = enums.ImGuiTableFlags_Resizable
+TABLE_REORDERABLE = enums.ImGuiTableFlags_Reorderable
+TABLE_HIDEABLE = enums.ImGuiTableFlags_Hideable
+TABLE_SORTABLE = enums.ImGuiTableFlags_Sortable
+TABLE_NO_SAVED_SETTINGS = enums.ImGuiTableFlags_NoSavedSettings
+TABLE_CONTEXT_MENU_IN_BODY = enums.ImGuiTableFlags_ContextMenuInBody
+# Decorations
+TABLE_ROW_BACKGROUND = enums.ImGuiTableFlags_RowBg
+TABLE_BORDERS_INNER_HORIZONTAL = enums.ImGuiTableFlags_BordersInnerH
+TABLE_BORDERS_OUTER_HORIZONTAL = enums.ImGuiTableFlags_BordersOuterH
+TABLE_BORDERS_INNER_VERTICAL = enums.ImGuiTableFlags_BordersInnerV
+TABLE_BORDERS_OUTER_VERTICAL = enums.ImGuiTableFlags_BordersOuterV
+TABLE_BORDERS_HORIZONTAL = enums.ImGuiTableFlags_BordersH
+TABLE_BORDERS_VERTICAL = enums.ImGuiTableFlags_BordersV
+TABLE_BORDERS_INNER = enums.ImGuiTableFlags_BordersInner
+TABLE_BORDERS_OUTER = enums.ImGuiTableFlags_BordersOuter
+TABLE_BORDERS = enums.ImGuiTableFlags_Borders
+TABLE_NO_BORDERS_IN_BODY = enums.ImGuiTableFlags_NoBordersInBody
+TABLE_NO_BORDERS_IN_BODY_UTIL_RESIZE = enums.ImGuiTableFlags_NoBordersInBodyUntilResize
+# Sizing Policy (read above for defaults)
+TABLE_SIZING_FIXED_FIT = enums.ImGuiTableFlags_SizingFixedFit
+TABLE_SIZING_FIXED_SAME = enums.ImGuiTableFlags_SizingFixedSame
+TABLE_SIZING_STRETCH_PROP = enums.ImGuiTableFlags_SizingStretchProp
+TABLE_SIZING_STRETCH_SAME = enums.ImGuiTableFlags_SizingStretchSame
+# Sizing Extra Options
+TABLE_NO_HOST_EXTEND_X = enums.ImGuiTableFlags_NoHostExtendX
+TABLE_NO_HOST_EXTEND_Y = enums.ImGuiTableFlags_NoHostExtendY
+TABLE_NO_KEEP_COLUMNS_VISIBLE = enums.ImGuiTableFlags_NoKeepColumnsVisible
+TABLE_PRECISE_WIDTHS = enums.ImGuiTableFlags_PreciseWidths
+# Clipping
+TABLE_NO_CLIP = enums.ImGuiTableFlags_NoClip
+# Padding
+TABLE_PAD_OUTER_X = enums.ImGuiTableFlags_PadOuterX
+TABLE_NO_PAD_OUTER_X = enums.ImGuiTableFlags_NoPadOuterX
+TABLE_NO_PAD_INNER_X = enums.ImGuiTableFlags_NoPadInnerX
+# Scrolling
+TABLE_SCROLL_X = enums.ImGuiTableFlags_ScrollX
+TABLE_SCROLL_Y = enums.ImGuiTableFlags_ScrollY
+# Sorting
+TABLE_SORT_MULTI = enums.ImGuiTableFlags_SortMulti
+TABLE_SORT_TRISTATE = enums.ImGuiTableFlags_SortTristate
+
+# === Table Column Flags ===
+# Input configuration flags
+TABLE_COLUMN_NONE = enums.ImGuiTableColumnFlags_None
+TABLE_COLUMN_DEFAULT_HIDE = enums.ImGuiTableColumnFlags_DefaultHide
+TABLE_COLUMN_DEFAULT_SORT = enums.ImGuiTableColumnFlags_DefaultSort
+TABLE_COLUMN_WIDTH_STRETCH = enums.ImGuiTableColumnFlags_WidthStretch
+TABLE_COLUMN_WIDTH_FIXED = enums.ImGuiTableColumnFlags_WidthFixed
+TABLE_COLUMN_NO_RESIZE = enums.ImGuiTableColumnFlags_NoResize
+TABLE_COLUMN_NO_REORDER = enums.ImGuiTableColumnFlags_NoReorder
+TABLE_COLUMN_NO_HIDE = enums.ImGuiTableColumnFlags_NoHide
+TABLE_COLUMN_NO_CLIP = enums.ImGuiTableColumnFlags_NoClip
+TABLE_COLUMN_NO_SORT = enums.ImGuiTableColumnFlags_NoSort
+TABLE_COLUMN_NO_SORT_ASCENDING = enums.ImGuiTableColumnFlags_NoSortAscending
+TABLE_COLUMN_NO_SORT_DESCENDING = enums.ImGuiTableColumnFlags_NoSortDescending
+TABLE_COLUMN_NO_HEADER_WIDTH = enums.ImGuiTableColumnFlags_NoHeaderWidth
+TABLE_COLUMN_PREFER_SORT_ASCENDING = enums.ImGuiTableColumnFlags_PreferSortAscending
+TABLE_COLUMN_PREFER_SORT_DESCENDING = enums.ImGuiTableColumnFlags_PreferSortDescending
+TABLE_COLUMN_INDENT_ENABLE = enums.ImGuiTableColumnFlags_IndentEnable
+TABLE_COLUMN_INDENT_DISABLE = enums.ImGuiTableColumnFlags_IndentDisable
+# Output status flags, read-only via TableGetColumnFlags()
+TABLE_COLUMN_IS_ENABLED = enums.ImGuiTableColumnFlags_IsEnabled
+TABLE_COLUMN_IS_VISIBLE = enums.ImGuiTableColumnFlags_IsVisible
+TABLE_COLUMN_IS_SORTED = enums.ImGuiTableColumnFlags_IsSorted
+TABLE_COLUMN_IS_HOVERED = enums.ImGuiTableColumnFlags_IsHovered
+
+# === Table Row Flags ===
+TABLE_ROW_NONE = enums.ImGuiTableRowFlags_None
+TABLE_ROW_HEADERS = enums.ImGuiTableRowFlags_Headers
+
+# === Table Background Target ===
+TABLE_BACKGROUND_TARGET_NONE = enums.ImGuiTableBgTarget_None
+TABLE_BACKGROUND_TARGET_ROW_BG0 = enums.ImGuiTableBgTarget_RowBg0
+TABLE_BACKGROUND_TARGET_ROW_BG1 = enums.ImGuiTableBgTarget_RowBg1
+TABLE_BACKGROUND_TARGET_CELL_BG = enums.ImGuiTableBgTarget_CellBg
+
 
 # === Focus flag enum redefines ====
 # TODO: Change to FOCUSED_ ?
@@ -298,6 +380,11 @@ DIRECTION_LEFT = enums.ImGuiDir_Left
 DIRECTION_RIGHT = enums.ImGuiDir_Right
 DIRECTION_UP = enums.ImGuiDir_Up
 DIRECTION_DOWN = enums.ImGuiDir_Down
+
+# === Sorting Direction ===
+SORT_DIRECTION_NONE = enums.ImGuiSortDirection_None      
+SORT_DIRECTION_ASCENDING = enums.ImGuiSortDirection_Ascending 
+SORT_DIRECTION_DESCENDING = enums.ImGuiSortDirection_Descending
 
 # ==== Mouse Cursors ====
 MOUSE_CURSOR_NONE = enums.ImGuiMouseCursor_None
@@ -354,6 +441,11 @@ COLOR_PLOT_LINES = enums.ImGuiCol_PlotLines
 COLOR_PLOT_LINES_HOVERED = enums.ImGuiCol_PlotLinesHovered
 COLOR_PLOT_HISTOGRAM = enums.ImGuiCol_PlotHistogram
 COLOR_PLOT_HISTOGRAM_HOVERED = enums.ImGuiCol_PlotHistogramHovered
+COLOR_TABLE_HEADER_BACKGROUND = enums.ImGuiCol_TableHeaderBg
+COLOR_TABLE_BORDER_STRONG = enums.ImGuiCol_TableBorderStrong
+COLOR_TABLE_BORDER_LIGHT = enums.ImGuiCol_TableBorderLight
+COLOR_TABLE_ROW_BACKGROUND = enums.ImGuiCol_TableRowBg
+COLOR_TABLE_ROW_BACKGROUND_ALT = enums.ImGuiCol_TableRowBgAlt
 COLOR_TEXT_SELECTED_BACKGROUND = enums.ImGuiCol_TextSelectedBg
 COLOR_DRAG_DROP_TARGET = enums.ImGuiCol_DragDropTarget
 COLOR_NAV_HIGHLIGHT = enums.ImGuiCol_NavHighlight

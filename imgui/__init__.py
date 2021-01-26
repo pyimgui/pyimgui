@@ -151,6 +151,8 @@ STYLE_ITEM_SPACING = core.STYLE_ITEM_SPACING
 STYLE_ITEM_INNER_SPACING = core.STYLE_ITEM_INNER_SPACING
 #: associated type: ``float``.
 STYLE_INDENT_SPACING = core.STYLE_INDENT_SPACING
+#: associated type: ``Vec2``.
+STYLE_CELL_PADDING = core.STYLE_CELL_PADDING
 #: associated type: ``float``.
 STYLE_SCROLLBAR_SIZE = core.STYLE_SCROLLBAR_SIZE
 #: associated type: ``float``.
@@ -376,6 +378,11 @@ COLOR_PLOT_LINES = core.COLOR_PLOT_LINES
 COLOR_PLOT_LINES_HOVERED = core.COLOR_PLOT_LINES_HOVERED
 COLOR_PLOT_HISTOGRAM = core.COLOR_PLOT_HISTOGRAM
 COLOR_PLOT_HISTOGRAM_HOVERED = core.COLOR_PLOT_HISTOGRAM_HOVERED
+COLOR_TABLE_HEADER_BACKGROUND = core.COLOR_TABLE_HEADER_BACKGROUND
+COLOR_TABLE_BORDER_STRONG = core.COLOR_TABLE_BORDER_STRONG
+COLOR_TABLE_BORDER_LIGHT = core.COLOR_TABLE_BORDER_LIGHT
+COLOR_TABLE_ROW_BACKGROUND = core.COLOR_TABLE_ROW_BACKGROUND
+COLOR_TABLE_ROW_BACKGROUND_ALT = core.COLOR_TABLE_ROW_BACKGROUND_ALT
 COLOR_TEXT_SELECTED_BACKGROUND = core.COLOR_TEXT_SELECTED_BACKGROUND
 COLOR_DRAG_DROP_TARGET = core.COLOR_DRAG_DROP_TARGET
 COLOR_NAV_HIGHLIGHT = core.COLOR_NAV_HIGHLIGHT
@@ -473,6 +480,148 @@ TAB_ITEM_LEADING = core.TAB_ITEM_LEADING
 TAB_ITEM_TRAILING = core.TAB_ITEM_TRAILING
 
 
+# === Table Flags ===
+#: # Features
+#: None
+TABLE_NONE                   = core.TABLE_NONE
+#: Enable resizing columns.
+TABLE_RESIZABLE              = core.TABLE_RESIZABLE
+#: Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)
+TABLE_REORDERABLE            = core.TABLE_REORDERABLE
+#: Enable hiding/disabling columns in context menu.
+TABLE_HIDEABLE               = core.TABLE_HIDEABLE
+#: Enable sorting. Call TableGetSortSpecs() to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.
+TABLE_SORTABLE               = core.TABLE_SORTABLE
+#: Disable persisting columns order, width and sort settings in the .ini file.
+TABLE_NO_SAVED_SETTINGS      = core.TABLE_NO_SAVED_SETTINGS
+#: Right-click on columns body/contents will display table context menu. By default it is available in TableHeadersRow().
+TABLE_CONTEXT_MENU_IN_BODY   = core.TABLE_CONTEXT_MENU_IN_BODY
+#: # Decorations
+#: Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling TableSetBgColor with ImGuiTableBgFlags_RowBg0 on each row manually)
+TABLE_ROW_BACKGROUND                    = core.TABLE_ROW_BACKGROUND
+#: Draw horizontal borders between rows.
+TABLE_BORDERS_INNER_HORIZONTAL          = core.TABLE_BORDERS_INNER_HORIZONTAL
+#: Draw horizontal borders at the top and bottom.
+TABLE_BORDERS_OUTER_HORIZONTAL          = core.TABLE_BORDERS_OUTER_HORIZONTAL
+#: Draw vertical borders between columns.
+TABLE_BORDERS_INNER_VERTICAL            = core.TABLE_BORDERS_INNER_VERTICAL
+#: Draw vertical borders on the left and right sides.
+TABLE_BORDERS_OUTER_VERTICAL            = core.TABLE_BORDERS_OUTER_VERTICAL
+#: Draw horizontal borders.
+TABLE_BORDERS_HORIZONTAL                = core.TABLE_BORDERS_HORIZONTAL
+#: Draw vertical borders.
+TABLE_BORDERS_VERTICAL                  = core.TABLE_BORDERS_VERTICAL
+#: Draw inner borders.
+TABLE_BORDERS_INNER                     = core.TABLE_BORDERS_INNER
+#: Draw outer borders.
+TABLE_BORDERS_OUTER                     = core.TABLE_BORDERS_OUTER
+#: Draw all borders.
+TABLE_BORDERS                           = core.TABLE_BORDERS
+#: [ALPHA] Disable vertical borders in columns Body (borders will always appears in Headers). -> May move to style
+TABLE_NO_BORDERS_IN_BODY                = core.TABLE_NO_BORDERS_IN_BODY
+#: [ALPHA] Disable vertical borders in columns Body until hovered for resize (borders will always appears in Headers). -> May move to style
+TABLE_NO_BORDERS_IN_BODY_UTIL_RESIZE    = core.TABLE_NO_BORDERS_IN_BODY_UTIL_RESIZE
+#: # Sizing Policy (read above for defaults)
+#: Columns default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching contents width.
+TABLE_SIZING_FIXED_FIT      = core.TABLE_SIZING_FIXED_FIT
+#: Columns default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.
+TABLE_SIZING_FIXED_SAME     = core.TABLE_SIZING_FIXED_SAME
+#: Columns default to _WidthStretch with default weights proportional to each columns contents widths.
+TABLE_SIZING_STRETCH_PROP   = core.TABLE_SIZING_STRETCH_PROP
+#: Columns default to _WidthStretch with default weights all equal, unless overriden by TableSetupColumn().
+TABLE_SIZING_STRETCH_SAME   = core.TABLE_SIZING_STRETCH_SAME
+#: # Sizing Extra Options
+#: Make outer width auto-fit to columns, overriding outer_size.x value. Only available when ScrollX/ScrollY are disabled and Stretch columns are not used.
+TABLE_NO_HOST_EXTEND_X          = core.TABLE_NO_HOST_EXTEND_X
+#: Make outer height stop exactly at outer_size.y (prevent auto-extending table past the limit). Only available when ScrollX/ScrollY are disabled. Data below the limit will be clipped and not visible.
+TABLE_NO_HOST_EXTEND_Y          = core.TABLE_NO_HOST_EXTEND_Y
+#: Disable keeping column always minimally visible when ScrollX is off and table gets too small. Not recommended if columns are resizable.
+TABLE_NO_KEEP_COLUMNS_VISIBLE   = core.TABLE_NO_KEEP_COLUMNS_VISIBLE
+#: Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth.
+TABLE_PRECISE_WIDTHS            = core.TABLE_PRECISE_WIDTHS
+#: # Clipping
+#: Disable clipping rectangle for every individual columns (reduce draw command count, items will be able to overflow into other columns). Generally incompatible with TableSetupScrollFreeze().
+TABLE_NO_CLIP = core.TABLE_NO_CLIP
+#: # Padding
+#: Default if BordersOuterV is on. Enable outer-most padding. Generally desirable if you have headers.
+TABLE_PAD_OUTER_X       = core.TABLE_PAD_OUTER_X
+#: Default if BordersOuterV is off. Disable outer-most padding.
+TABLE_NO_PAD_OUTER_X    = core.TABLE_NO_PAD_OUTER_X
+#: Disable inner padding between columns (double inner padding if BordersOuterV is on, single inner padding if BordersOuterV is off).
+TABLE_NO_PAD_INNER_X    = core.TABLE_NO_PAD_INNER_X
+#: # Scrolling
+#: Enable horizontal scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size. Changes default sizing policy. Because this create a child window, ScrollY is currently generally recommended when using ScrollX.
+TABLE_SCROLL_X = core.TABLE_SCROLL_X 
+#: Enable vertical scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size.
+TABLE_SCROLL_Y = core.TABLE_SCROLL_Y
+#: # Sorting
+#: Hold shift when clicking headers to sort on multiple column. TableGetSortSpecs() may return specs where (SpecsCount > 1).
+TABLE_SORT_MULTI    = core.TABLE_SORT_MULTI
+#: Allow no sorting, disable default sorting. TableGetSortSpecs() may return specs where (SpecsCount == 0).
+TABLE_SORT_TRISTATE = core.TABLE_SORT_TRISTATE
+
+# === Table Column Flags ===
+#: # Input configuration flags
+#: None
+TABLE_COLUMN_NONE                   = core.TABLE_COLUMN_NONE
+#: Default as a hidden/disabled column.
+TABLE_COLUMN_DEFAULT_HIDE           = core.TABLE_COLUMN_DEFAULT_HIDE
+#: Default as a sorting column.
+TABLE_COLUMN_DEFAULT_SORT           = core.TABLE_COLUMN_DEFAULT_SORT
+#: Column will stretch. Preferable with horizontal scrolling disabled (default if table sizing policy is _SizingStretchSame or _SizingStretchProp).
+TABLE_COLUMN_WIDTH_STRETCH          = core.TABLE_COLUMN_WIDTH_STRETCH
+#: Column will not stretch. Preferable with horizontal scrolling enabled (default if table sizing policy is _SizingFixedFit and table is resizable).
+TABLE_COLUMN_WIDTH_FIXED            = core.TABLE_COLUMN_WIDTH_FIXED
+#: Disable manual resizing.
+TABLE_COLUMN_NO_RESIZE              = core.TABLE_COLUMN_NO_RESIZE
+#: Disable manual reordering this column, this will also prevent other columns from crossing over this column.
+TABLE_COLUMN_NO_REORDER             = core.TABLE_COLUMN_NO_REORDER
+#: Disable ability to hide/disable this column.
+TABLE_COLUMN_NO_HIDE                = core.TABLE_COLUMN_NO_HIDE
+#: Disable clipping for this column (all NoClip columns will render in a same draw command).
+TABLE_COLUMN_NO_CLIP                = core.TABLE_COLUMN_NO_CLIP
+#: Disable ability to sort on this field (even if ImGuiTableFlags_Sortable is set on the table).
+TABLE_COLUMN_NO_SORT                = core.TABLE_COLUMN_NO_SORT
+#: Disable ability to sort in the ascending direction.
+TABLE_COLUMN_NO_SORT_ASCENDING      = core.TABLE_COLUMN_NO_SORT_ASCENDING
+#: Disable ability to sort in the descending direction.
+TABLE_COLUMN_NO_SORT_DESCENDING     = core.TABLE_COLUMN_NO_SORT_DESCENDING
+#: Disable header text width contribution to automatic column width.
+TABLE_COLUMN_NO_HEADER_WIDTH        = core.TABLE_COLUMN_NO_HEADER_WIDTH
+#: Make the initial sort direction Ascending when first sorting on this column (default).
+TABLE_COLUMN_PREFER_SORT_ASCENDING  = core.TABLE_COLUMN_PREFER_SORT_ASCENDING
+#: Make the initial sort direction Descending when first sorting on this column.
+TABLE_COLUMN_PREFER_SORT_DESCENDING = core.TABLE_COLUMN_PREFER_SORT_DESCENDING
+#: Use current Indent value when entering cell (default for column 0).
+TABLE_COLUMN_INDENT_ENABLE          = core.TABLE_COLUMN_INDENT_ENABLE
+#: Ignore current Indent value when entering cell (default for columns > 0). Indentation changes _within_ the cell will still be honored.
+TABLE_COLUMN_INDENT_DISABLE         = core.TABLE_COLUMN_INDENT_DISABLE
+#: # Output status flags, read-only via TableGetColumnFlags()
+#: Status: is enabled == not hidden by user/api (referred to as "Hide" in _DefaultHide and _NoHide) flags.
+TABLE_COLUMN_IS_ENABLED     = core.TABLE_COLUMN_IS_ENABLED
+#: Status: is visible == is enabled AND not clipped by scrolling.
+TABLE_COLUMN_IS_VISIBLE     = core.TABLE_COLUMN_IS_VISIBLE
+#: Status: is currently part of the sort specs
+TABLE_COLUMN_IS_SORTED      = core.TABLE_COLUMN_IS_SORTED
+#: Status: is hovered by mouse
+TABLE_COLUMN_IS_HOVERED     = core.TABLE_COLUMN_IS_HOVERED
+
+# === Table Row Flags ===
+#: None
+TABLE_ROW_NONE      = core.TABLE_ROW_NONE
+#: Identify header row (set default background color + width of its contents accounted different for auto column width)
+TABLE_ROW_HEADERS   = core.TABLE_ROW_HEADERS
+
+# === Table Background Target ===
+#: None
+TABLE_BACKGROUND_TARGET_NONE        = core.TABLE_BACKGROUND_TARGET_NONE
+#: Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)
+TABLE_BACKGROUND_TARGET_ROW_BG0     = core.TABLE_BACKGROUND_TARGET_ROW_BG0
+#: Set row background color 1 (generally used for selection marking)
+TABLE_BACKGROUND_TARGET_ROW_BG1     = core.TABLE_BACKGROUND_TARGET_ROW_BG1
+#: Set cell background color (top-most color)
+TABLE_BACKGROUND_TARGET_CELL_BG     = core.TABLE_BACKGROUND_TARGET_CELL_BG
+
 # === Focus flag constants (redefines for autodoc)
 FOCUS_NONE = core.FOCUS_NONE
 #: IsWindowFocused(): Return true if any children of the window is focused
@@ -556,6 +705,13 @@ DIRECTION_RIGHT = core.DIRECTION_RIGHT
 DIRECTION_UP = core.DIRECTION_UP
 #: Direction Down
 DIRECTION_DOWN = core.DIRECTION_DOWN
+
+# === Sorting direction
+SORT_DIRECTION_NONE  = core.SORT_DIRECTION_NONE 
+#: Ascending = 0->9, A->Z etc.
+SORT_DIRECTION_ASCENDING = core.SORT_DIRECTION_ASCENDING
+#: Descending = 9->0, Z->A etc.
+SORT_DIRECTION_DESCENDING = core.SORT_DIRECTION_DESCENDING
 
 # === Mouse cursor flag constants (redefines for autodoc)
 MOUSE_CURSOR_NONE = core.MOUSE_CURSOR_NONE
