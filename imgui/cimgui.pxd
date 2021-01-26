@@ -884,20 +884,18 @@ cdef extern from "imgui.h":
         bool IsPreview() except + # ✗
         bool IsDelivery() except + # ✗
     
-    # TODO: Implements
-    ctypedef struct ImGuiTableColumnSortSpecs: # ✗
-        ImGuiID ColumnUserID # ✗
-        ImS16 ColumnIndex # ✗
-        ImS16 SortOrder # ✗
-        ImGuiSortDirection SortDirection # ✗
+    ctypedef struct ImGuiTableColumnSortSpecs: # ✓
+        ImGuiID ColumnUserID # ✓
+        ImS16 ColumnIndex # ✓
+        ImS16 SortOrder # ✓
+        ImGuiSortDirection SortDirection # ✓
         
         ImGuiTableColumnSortSpecs() except +  # ✗
     
-    # TODO: Implements
-    ctypedef struct ImGuiTableSortSpecs: # ✗
-        const ImGuiTableColumnSortSpecs* Specs # ✗
-        int SpecsCount # ✗
-        bool SpecsDirty # ✗
+    ctypedef struct ImGuiTableSortSpecs: # ✓
+        const ImGuiTableColumnSortSpecs* Specs # ✓
+        int SpecsCount # ✓
+        bool SpecsDirty # ✓
         
         ImGuiTableSortSpecs() except + # ✗
     
@@ -1897,7 +1895,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     # ====
     # Tables
     # [BETA API] API may evolve slightly!
-    bool BeginTable( # ✗
+    bool BeginTable( # ✓
             const char* str_id, 
             int column, 
             # note: optional
@@ -1905,40 +1903,40 @@ cdef extern from "imgui.h" namespace "ImGui":
             const ImVec2& outer_size,   # = ImVec2(0.0f, 0.0f)
             float inner_width           # = 0.0f
     ) except +
-    void EndTable() except + # ✗
-    void TableNextRow( # ✗
+    void EndTable() except + # ✓
+    void TableNextRow( # ✓
             # note: optional
             ImGuiTableRowFlags row_flags,   # = 0
             float min_row_height            # = 0.0f
     ) except +
-    bool TableNextColumn() except + # ✗
-    bool TableSetColumnIndex(int column_n) except + # ✗
+    bool TableNextColumn() except + # ✓
+    bool TableSetColumnIndex(int column_n) except + # ✓
     
-    void TableSetupColumn( # ✗
+    void TableSetupColumn( # ✓
             const char* label, 
             # note: optional
             ImGuiTableColumnFlags flags,    # = 0
             float init_width_or_weight,     # = 0.0f
             ImU32 user_id                   # = 0
     ) except +
-    void TableSetupScrollFreeze(int cols, int rows) except + # ✗
-    void TableHeadersRow() except + # ✗
-    void TableHeader(const char* label) except + # ✗
+    void TableSetupScrollFreeze(int cols, int rows) except + # ✓
+    void TableHeadersRow() except + # ✓
+    void TableHeader(const char* label) except + # ✓
     
-    ImGuiTableSortSpecs* TableGetSortSpecs() except + # ✗
+    ImGuiTableSortSpecs* TableGetSortSpecs() except + # ✓
     
-    int TableGetColumnCount() except + # ✗
-    int TableGetColumnIndex() except + # ✗
-    int TableGetRowIndex() except + # ✗
-    const char* TableGetColumnName( # ✗
+    int TableGetColumnCount() except + # ✓
+    int TableGetColumnIndex() except + # ✓
+    int TableGetRowIndex() except + # ✓
+    const char* TableGetColumnName( # ✓
             # note: optional
             int column_n                    # = -1
     ) except +        
-    ImGuiTableColumnFlags TableGetColumnFlags( # ✗
+    ImGuiTableColumnFlags TableGetColumnFlags( # ✓
             # note: optional
             int column_n                    # = -1
     ) except +
-    void TableSetBgColor( # ✗
+    void TableSetBgColor( # ✓
             ImGuiTableBgTarget target, 
             ImU32 color, 
             # note: optional

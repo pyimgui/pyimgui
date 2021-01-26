@@ -1858,6 +1858,158 @@ cdef class GuiStyle(object):
         self._check_ptr()
         return self._colors
 
+cdef class _ImGuiTableColumnSortSpecs(object):
+    cdef cimgui.ImGuiTableColumnSortSpecs* _ptr
+
+    def __init__(self):
+        pass
+
+    def _require_pointer(self):
+        if self._ptr == NULL:
+            raise RuntimeError(
+                "%s improperly initialized" % self.__class__.__name__
+            )
+
+    @staticmethod
+    cdef from_ptr(cimgui.ImGuiTableColumnSortSpecs* ptr):
+        if ptr == NULL:
+            return None
+        instance = _ImGuiTableColumnSortSpecs()
+        instance._ptr = ptr
+        return instance
+    
+    @property
+    def column_user_id(self):
+        self._require_pointer()
+        return self._ptr.ColumnUserID
+    
+    @column_user_id.setter
+    def column_user_id(self, cimgui.ImGuiID column_user_id):
+        self._require_pointer()
+        self._ptr.ColumnUserID = column_user_id
+    
+    @property
+    def column_index(self):
+        self._require_pointer()
+        return self._ptr.ColumnIndex
+    
+    @column_index.setter
+    def column_index(self, cimgui.ImS16 column_index):
+        self._require_pointer()
+        self._ptr.ColumnIndex = column_index
+    
+    @property
+    def sort_order(self):
+        self._require_pointer()
+        return self._ptr.SortOrder
+    
+    @sort_order.setter
+    def sort_order(self, cimgui.ImS16 sort_order):
+        self._require_pointer()
+        self._ptr.SortOrder = sort_order
+    
+    @property
+    def sort_direction(self):
+        self._require_pointer()
+        return self._ptr.SortDirection
+    
+    @sort_direction.setter
+    def sort_direction(self, cimgui.ImGuiSortDirection sort_direction):
+        self._require_pointer()
+        self._ptr.SortDirection = sort_direction
+
+
+    
+cdef class _ImGuiTableColumnSortSpecs_array(object):
+    
+    cdef cimgui.ImGuiTableSortSpecs* _ptr
+    cdef size_t idx
+    
+    def __init__(self):
+        self.idx = 0
+        pass
+
+    def _require_pointer(self):
+        if self._ptr == NULL:
+            raise RuntimeError(
+                "%s improperly initialized" % self.__class__.__name__
+            )
+
+    @staticmethod
+    cdef from_ptr(cimgui.ImGuiTableSortSpecs* ptr):
+        if ptr == NULL:
+            return None
+        instance = _ImGuiTableColumnSortSpecs_array()
+        instance._ptr = ptr
+        return instance
+    
+    cdef _get_item(self, size_t idx):
+        self._require_pointer()
+        if idx >= self._ptr.SpecsCount:
+            raise ValueError("Out of bound access to idx %i of an array of size %i" % (idx, self._ptr.SpecsCount))
+        cdef size_t offset = idx*sizeof(cimgui.ImGuiTableColumnSortSpecs)
+        cdef size_t pointer = <size_t>self._ptr.Specs + offset
+        return _ImGuiTableColumnSortSpecs.from_ptr(<cimgui.ImGuiTableColumnSortSpecs *>pointer)
+    
+    def __getitem__(self, idx):
+        return self._get_item(idx)
+    
+    def __iter__(self):
+        self.idx = 0
+        return self
+        
+    def __next__(self):
+        if self.idx < self._ptr.SpecsCount:
+            item = self._get_item(self.idx)
+            self.idx += 1
+            return item
+        else:
+            raise StopIteration
+    
+    #def __setitem__(self, idx):
+    #    self._table_sort_specs._require_pointer()
+
+cdef class _ImGuiTableSortSpecs(object):
+    cdef cimgui.ImGuiTableSortSpecs* _ptr
+    cdef _ImGuiTableColumnSortSpecs_array specs
+    
+    def __init__(self):
+        #self.specs = _ImGuiTableColumnSortSpecs_array(self)
+        pass
+
+    def _require_pointer(self):
+        if self._ptr == NULL:
+            raise RuntimeError(
+                "%s improperly initialized" % self.__class__.__name__
+            )
+
+    @staticmethod
+    cdef from_ptr(cimgui.ImGuiTableSortSpecs* ptr):
+        if ptr == NULL:
+            return None
+        instance = _ImGuiTableSortSpecs()
+        instance._ptr = ptr
+        instance.specs = _ImGuiTableColumnSortSpecs_array.from_ptr(ptr)
+        return instance
+    
+    @property
+    def specs(self):
+        return self.specs
+    
+    @property
+    def specs_count(self):
+        self._require_pointer()
+        return self._ptr.SpecsCount
+    
+    @property
+    def specs_dirty(self):
+        self._require_pointer()
+        return self._ptr.SpecsDirty
+    
+    @specs_dirty.setter
+    def specs_dirty(self, cimgui.bool specs_dirty):
+        self._require_pointer()
+        self._ptr.SpecsDirty = specs_dirty
 
 cdef class _DrawData(object):
     cdef cimgui.ImDrawData* _ptr
@@ -4740,6 +4892,188 @@ def close_current_popup():
     """
     cimgui.CloseCurrentPopup()
 
+def begin_table(
+    str label,
+    int column,
+    cimgui.ImGuiTableFlags flags = 0,
+    float outer_size_width = 0.0,
+    float outer_size_height = 0.0,
+    float inner_width = 0.0
+    ):
+    """
+    
+    .. wraps::
+        bool BeginTable(
+            const char* str_id, 
+            int column, 
+            ImGuiTableFlags flags = 0,
+            const ImVec2& outer_size = ImVec2(0.0f, 0.0f),
+            float inner_width = 0.0f
+        )
+    """
+    return cimgui.BeginTable(
+        _bytes(label),
+        column,
+        flags,
+        _cast_args_ImVec2(outer_size_width, outer_size_height),
+        inner_width
+    )
+
+def end_table():
+    """
+    
+    .. wraps::
+        void EndTable()
+    """
+    cimgui.EndTable()
+
+def table_next_row(
+        cimgui.ImGuiTableRowFlags row_flags = 0,
+        float min_row_height = 0.0
+    ):
+    """
+    
+    .. wraps::
+        void TableNextRow( 
+            ImGuiTableRowFlags row_flags = 0,
+            float min_row_height = 0.0f
+        )
+    """
+    cimgui.TableNextRow(row_flags, min_row_height)
+
+def table_next_column():
+    """
+    
+    .. wraps::
+        bool TableNextColumn()
+    """
+    return cimgui.TableNextColumn()
+
+def table_set_column_index(int column_n):
+    """
+    
+    .. wraps::
+        bool TableSetColumnIndex(int column_n)
+    """
+    return cimgui.TableSetColumnIndex(column_n)
+    
+def table_setup_column(
+        str label,
+        cimgui.ImGuiTableColumnFlags flags = 0,
+        float init_width_or_weight = 0.0,
+        cimgui.ImU32 user_id = 0
+    ):
+    """
+    
+    .. wraps::
+        void TableSetupColumn(
+            const char* label, 
+            ImGuiTableColumnFlags flags = 0,
+            float init_width_or_weight = 0.0f,
+            ImU32 user_id  = 0
+        )
+    """
+    cimgui.TableSetupColumn(
+        _bytes(label),
+        flags,
+        init_width_or_weight,
+        user_id)
+
+def table_setup_scroll_freez(int cols, int rows):
+    """
+    
+    .. wraps::
+        void TableSetupScrollFreeze(int cols, int rows)
+    """
+    cimgui.TableSetupScrollFreeze(cols, rows)
+
+def table_headers_row():
+    """
+    
+    .. wraps::
+        void TableHeadersRow()
+    """
+    cimgui.TableHeadersRow()
+
+def table_header(str label):
+    """
+    
+    .. wraps::
+        void TableHeader(const char* label)
+    """
+    cimgui.TableHeader(_bytes(label))
+    
+def table_get_sort_specs():
+    """
+    
+    .. wraps::
+        ImGuiTableSortSpecs* TableGetSortSpecs()
+    """
+    cdef cimgui.ImGuiTableSortSpecs* imgui_sort_spec = cimgui.TableGetSortSpecs()
+    if imgui_sort_spec == NULL:
+        return None
+    else:
+        return _ImGuiTableSortSpecs.from_ptr(imgui_sort_spec)
+
+def table_get_column_count():
+    """
+    
+    .. wraps::
+        int TableGetColumnCount()
+    """
+    return cimgui.TableGetColumnCount()
+
+def table_get_column_index():
+    """
+    
+    .. wraps::
+        int TableGetColumnIndex()
+    """
+    return cimgui.TableGetColumnIndex()
+    
+def table_get_row_index():
+    """
+    
+    .. wraps::
+        int TableGetRowIndex()
+    """
+    return cimgui.TableGetRowIndex()
+    
+def table_get_column_name(int column_n = -1):
+    """
+    
+    .. wraps::
+        const char* TableGetColumnName( 
+            int column_n  = -1
+        )
+    """
+    return _from_bytes(cimgui.TableGetColumnName(column_n))
+
+def table_get_column_flags(int column_n = -1):
+    """
+    
+    .. wraps::
+        ImGuiTableColumnFlags TableGetColumnFlags(
+            int column_n = -1
+        )
+    """
+    return cimgui.TableGetColumnFlags(column_n)
+    
+def table_set_background_color(
+        cimgui.ImGuiTableBgTarget target,
+        cimgui.ImU32 color,
+        int column_n = -1
+    ):
+    """
+    
+    .. wraps::
+        void TableSetBgColor(
+            ImGuiTableBgTarget target, 
+            ImU32 color, 
+            int column_n  = -1
+        )
+    """
+    cimgui.TableSetBgColor(target, color, column_n)
 
 def text(str text):
     """Add text to current widget stack.
@@ -9437,6 +9771,8 @@ def unindent(float width=0.0):
 def columns(int count=1, str identifier=None, bool border=True):
     """Setup number of columns. Use an identifier to distinguish multiple
     column sets. close with ``columns(1)``.
+    
+    Legacy Columns API (2020: prefer using Tables!)
 
     .. visual-example::
         :auto_layout:
@@ -9498,6 +9834,8 @@ def next_column():
     """Move to the next column drawing.
 
     For a complete example see :func:`columns()`.
+    
+    Legacy Columns API (2020: prefer using Tables!)
 
     .. wraps::
         void NextColumn()
@@ -9509,6 +9847,8 @@ def get_column_index():
     """Returns the current column index.
 
     For a complete example see :func:`columns()`.
+    
+    Legacy Columns API (2020: prefer using Tables!)
 
     Returns:
         int: the current column index.
@@ -9526,6 +9866,8 @@ def get_column_offset(int column_index=-1):
     unless you call this method.
 
     For a complete example see :func:`columns()`.
+    
+    Legacy Columns API (2020: prefer using Tables!)
 
     Args:
         column_index (int): index of the column to get the offset for.
@@ -9544,6 +9886,8 @@ def set_column_offset(int column_index, float offset_x):
     contents region). Pass -1 to use current column.
 
     For a complete example see :func:`columns()`.
+    
+    Legacy Columns API (2020: prefer using Tables!)
 
     Args:
         column_index (int): index of the column to get the offset for.
@@ -9559,6 +9903,8 @@ def get_column_width(int column_index=-1):
     """Return the column width.
 
     For a complete example see :func:`columns()`.
+    
+    Legacy Columns API (2020: prefer using Tables!)
 
     Args:
         column_index (int): index of the column to get the width for.
@@ -9574,6 +9920,8 @@ def set_column_width(int column_index, float width):
     contents region). Pass -1 to use current column.
 
     For a complete example see :func:`columns()`.
+    
+    Legacy Columns API (2020: prefer using Tables!)
 
     Args:
         column_index (int): index of the column to set the width for.
@@ -9589,6 +9937,8 @@ def get_columns_count():
     """Get count of the columns in the current table.
 
     For a complete example see :func:`columns()`.
+    
+    Legacy Columns API (2020: prefer using Tables!)
 
     Returns:
         int: columns count.
