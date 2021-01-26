@@ -724,16 +724,18 @@ cdef extern from "imgui.h":
                 bool cpu_fine_clip              # = false
         ) except +
 
-    ctypedef struct ImFontAtlas:  # ✓
-        
+    ctypedef struct ImFontAtlas:  # ✓ 
         bool                Locked # ✗
         ImFontAtlasFlags    Flags # ✗
         void*               TexID  # ✓
         int                 TexDesiredWidth # ✗
         int                 TexGlyphPadding # ✗
+        int                 TexWidth  # ✓
+        int                 TexHeight  # ✓
 
         ImFont* AddFont(const ImFontConfig* font_cfg) except + # ✗
-        
+       
+
         ImFont* AddFontDefault(  # ✓
                    # note: optional
                    const ImFontConfig* font_cfg

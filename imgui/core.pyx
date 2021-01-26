@@ -1978,6 +1978,16 @@ cdef class _FontAtlas(object):
         """
         return <object>self._ptr.TexID
 
+
+    @property
+    def texture_width(self):
+        return <int>self._ptr.TexWidth
+
+    @property
+    def texture_height(self):
+        return <int>self._ptr.TexHeight
+
+
     @texture_id.setter
     def texture_id(self, value):
         self._ptr.TexID = <void *> value

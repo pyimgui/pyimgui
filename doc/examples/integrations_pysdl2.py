@@ -62,7 +62,7 @@ def impl_pysdl2_init():
     window_name = "minimal ImGui/SDL2 example"
 
     if SDL_Init(SDL_INIT_EVERYTHING) < 0:
-        print("Error: SDL could not initialize! SDL Error: " + SDL_GetError())
+        print("Error: SDL could not initialize! SDL Error: " + SDL_GetError().decode("utf-8"))
         exit(1)
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)
@@ -85,17 +85,17 @@ def impl_pysdl2_init():
                               SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE)
 
     if window is None:
-        print("Error: Window could not be created! SDL Error: " + SDL_GetError())
+        print("Error: Window could not be created! SDL Error: " + SDL_GetError().decode("utf-8"))
         exit(1)
 
     gl_context = SDL_GL_CreateContext(window)
     if gl_context is None:
-        print("Error: Cannot create OpenGL Context! SDL Error: " + SDL_GetError())
+        print("Error: Cannot create OpenGL Context! SDL Error: " + SDL_GetError().decode("utf-8"))
         exit(1)
 
     SDL_GL_MakeCurrent(window, gl_context)
     if SDL_GL_SetSwapInterval(1) < 0:
-        print("Warning: Unable to set VSync! SDL Error: " + SDL_GetError())
+        print("Warning: Unable to set VSync! SDL Error: " + SDL_GetError().decode("utf-8"))
         exit(1)
 
     return window, gl_context
