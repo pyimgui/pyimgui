@@ -1699,7 +1699,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiTreeNodeFlags flags            # = 0
     ) except +
     bool CollapsingHeader(  # ✓
-            const char* label, bool* p_visible,     # TODO: Change p_open to p_visible
+            const char* label, bool* p_visible,
             # note: optional
             ImGuiTreeNodeFlags flags            # = 0
     ) except +  

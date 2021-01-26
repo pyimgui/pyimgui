@@ -3976,7 +3976,7 @@ def collapsing_header(
 
         bool CollapsingHeader(
             const char* label,
-            bool* p_open,
+            bool* p_visible,
             ImGuiTreeNodeFlags flags = 0
         )
     """
