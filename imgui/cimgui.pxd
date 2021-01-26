@@ -158,7 +158,7 @@ cdef extern from "imgui.h":
         bool          MouseDrawCursor  # ✓
         bool          ConfigMacOSXBehaviors  # ✓
         bool          ConfigInputTextCursorBlink  # ✓
-        bool          ConfigDragClickToInputText # ✗ # TODO: Add
+        bool          ConfigDragClickToInputText # ✓
         #bool          ConfigResizeWindowsFromEdges  # ✓ # RENAMED
         bool          ConfigWindowsResizeFromEdges # ✓
         bool          ConfigWindowsMoveFromTitleBarOnly # ✓
@@ -847,7 +847,7 @@ cdef extern from "imgui.h":
         float       FrameBorderSize  # ✓
         ImVec2      ItemSpacing  # ✓
         ImVec2      ItemInnerSpacing  # ✓
-        ImVec2      CellPadding # ✗ # TODO: add
+        ImVec2      CellPadding # ✓
         ImVec2      TouchExtraPadding  # ✓
         float       IndentSpacing  # ✓
         float       ColumnsMinSpacing  # ✓

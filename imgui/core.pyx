@@ -1593,6 +1593,16 @@ cdef class GuiStyle(object):
     def item_inner_spacing(self, value):
         self._check_ptr()
         self._ptr.ItemInnerSpacing = _cast_tuple_ImVec2(value)
+    
+    @property
+    def cell_padding(self):
+        self._check_ptr()
+        return _cast_ImVec2_tuple(self._ptr.CellPadding)
+    
+    @cell_padding.setter
+    def cell_padding(self, value):
+        self._check_ptr()
+        self._ptr.CellPadding = _cast_tuple_ImVec2(value)
 
     @property
     def touch_extra_padding(self):
@@ -2280,6 +2290,14 @@ cdef class _IO(object):
     @config_cursor_blink.setter
     def config_cursor_blink(self, cimgui.bool value):
         self._ptr.ConfigInputTextCursorBlink = value
+    
+    @property
+    def config_drag_click_to_input_text(self):
+        return self._ptr.ConfigDragClickToInputText
+    
+    @config_drag_click_to_input_text.setter
+    def config_drag_click_to_input_text(self, cimgui.bool value):
+        self._ptr.ConfigDragClickToInputText = value
 
     # RENAMED from config_resize_windows_from_edges
     @property
