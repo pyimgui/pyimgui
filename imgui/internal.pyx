@@ -1,5 +1,5 @@
 # distutils: language = c++
-# distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp imgui-cpp/imgui_widgets.cpp config-cpp/py_imconfig.cpp
+# distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp imgui-cpp/imgui_widgets.cpp imgui-cpp/imgui_tables.cpp config-cpp/py_imconfig.cpp
 # distutils: include_dirs = imgui-cpp ansifeed-cpp
 # cython: embedsignature=True
 
@@ -181,12 +181,12 @@ NEXT_ITEM_DATA_HAS_WIDTH = enums_internal.ImGuiNextItemDataFlags_HasWidth
 NEXT_ITEM_DATA_HAS_OPEN = enums_internal.ImGuiNextItemDataFlags_HasOpen  
 
 # Columns Flags
-COLUMNS_NONE = enums_internal.ImGuiColumnsFlags_None
-COLUMNS_NO_BORDER = enums_internal.ImGuiColumnsFlags_NoBorder
-COLUMNS_NO_RESIZE = enums_internal.ImGuiColumnsFlags_NoResize
-COLUMNS_NO_PRESERVE_WIDTHS = enums_internal.ImGuiColumnsFlags_NoPreserveWidths
-COLUMNS_NO_FORCE_WIDTHIN_WINDOW = enums_internal.ImGuiColumnsFlags_NoForceWithinWindow
-COLUMNS_GROW_PARENT_CONTENTS_SIZE = enums_internal.ImGuiColumnsFlags_GrowParentContentsSize
+OLD_COLUMNS_NONE = enums_internal.ImGuiOldColumnFlags_None
+OLD_COLUMNS_NO_BORDER = enums_internal.ImGuiOldColumnFlags_NoBorder
+OLD_COLUMNS_NO_RESIZE = enums_internal.ImGuiOldColumnFlags_NoResize
+OLD_COLUMNS_NO_PRESERVE_WIDTHS = enums_internal.ImGuiOldColumnFlags_NoPreserveWidths
+OLD_COLUMNS_NO_FORCE_WIDTHIN_WINDOW = enums_internal.ImGuiOldColumnFlags_NoForceWithinWindow
+OLD_COLUMNS_GROW_PARENT_CONTENTS_SIZE = enums_internal.ImGuiOldColumnFlags_GrowParentContentsSize
 
 # Tab Bar Flags Private
 TAB_BAR_DOCK_NODE = enums_internal.ImGuiTabBarFlags_DockNode

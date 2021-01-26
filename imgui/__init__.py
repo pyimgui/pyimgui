@@ -230,19 +230,19 @@ WINDOW_NO_INPUTS = core.WINDOW_NO_INPUTS
 COLOR_EDIT_NONE = core.COLOR_EDIT_NONE
 #: ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will only read 3 components from the input pointer).
 COLOR_EDIT_NO_ALPHA = core.COLOR_EDIT_NO_ALPHA
-#: ColorEdit: disable picker when clicking on colored square.
+#: ColorEdit: disable picker when clicking on color square.
 COLOR_EDIT_NO_PICKER = core.COLOR_EDIT_NO_PICKER
 #: ColorEdit: disable toggling options menu when right-clicking on inputs/small preview.
 COLOR_EDIT_NO_OPTIONS = core.COLOR_EDIT_NO_OPTIONS
-#: ColorEdit, ColorPicker: disable colored square preview next to the inputs. (e.g. to show only the inputs)
+#: ColorEdit, ColorPicker: disable color square preview next to the inputs. (e.g. to show only the inputs)
 COLOR_EDIT_NO_SMALL_PREVIEW = core.COLOR_EDIT_NO_SMALL_PREVIEW
-#: ColorEdit, ColorPicker: disable inputs sliders/text widgets (e.g. to show only the small preview colored square).
+#: ColorEdit, ColorPicker: disable inputs sliders/text widgets (e.g. to show only the small preview color square).
 COLOR_EDIT_NO_INPUTS = core.COLOR_EDIT_NO_INPUTS
 #: ColorEdit, ColorPicker, ColorButton: disable tooltip when hovering the preview.
 COLOR_EDIT_NO_TOOLTIP = core.COLOR_EDIT_NO_TOOLTIP
 #: ColorEdit, ColorPicker: disable display of inline text label (the label is still forwarded to the tooltip and picker).
 COLOR_EDIT_NO_LABEL = core.COLOR_EDIT_NO_LABEL
-#: ColorPicker: disable bigger color preview on right side of the picker, use small colored square preview instead.
+#: ColorPicker: disable bigger color preview on right side of the picker, use small color square preview instead.
 COLOR_EDIT_NO_SIDE_PREVIEW = core.COLOR_EDIT_NO_SIDE_PREVIEW
 #: ColorEdit: disable drag and drop target. ColorButton: disable drag and drop source.
 COLOR_EDIT_NO_DRAG_DROP = core.COLOR_EDIT_NO_DRAG_DROP
@@ -284,7 +284,7 @@ COLOR_EDIT_DEFAULT_OPTIONS = core.COLOR_EDIT_DEFAULT_OPTIONS
 TREE_NODE_NONE = core.TREE_NODE_NONE
 #: Draw as selected
 TREE_NODE_SELECTED = core.TREE_NODE_SELECTED
-#: Full colored frame (e.g. for :func:`imgui.core.collapsing_header`).
+#: Draw frame with background (e.g. for :func:`imgui.core.collapsing_header`).
 TREE_NODE_FRAMED = core.TREE_NODE_FRAMED
 #: Hit testing to allow subsequent widgets to overlap this one
 TREE_NODE_ALLOW_ITEM_OVERLAP = core.TREE_NODE_ALLOW_ITEM_OVERLAP

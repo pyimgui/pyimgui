@@ -36,6 +36,8 @@ cdef extern from "imgui.h":
     ctypedef struct ImGuiSizeCallbackData
     ctypedef struct ImGuiStorage
     # ctypedef struct ImGuiStyle  # declared later
+    ctypedef struct ImGuiTableSortSpecs
+    ctypedef struct ImGuiTableColumnSortSpecs
     ctypedef struct ImGuiTextBuffer
     ctypedef struct ImGuiTextFilter
     
@@ -49,7 +51,9 @@ cdef extern from "imgui.h":
     ctypedef int ImGuiNavInput
     ctypedef int ImGuiMouseButton
     ctypedef int ImGuiMouseCursor
+    ctypedef int ImGuiSortDirection
     ctypedef int ImGuiStyleVar
+    ctypedef int ImGuiTableBgTarget
     ctypedef int ImDrawCornerFlags
     ctypedef int ImDrawListFlags
     ctypedef int ImFontAtlasFlags
@@ -68,6 +72,9 @@ cdef extern from "imgui.h":
     ctypedef int ImGuiSliderFlags
     ctypedef int ImGuiTabBarFlags
     ctypedef int ImGuiTabItemFlags
+    ctypedef int ImGuiTableFlags
+    ctypedef int ImGuiTableColumnFlags
+    ctypedef int ImGuiTableRowFlags
     ctypedef int ImGuiTreeNodeFlags
     ctypedef int ImGuiWindowFlags
     # ctypedef int ImGuiColumnsFlags # DEPRECIATED
@@ -151,10 +158,11 @@ cdef extern from "imgui.h":
         bool          MouseDrawCursor  # ✓
         bool          ConfigMacOSXBehaviors  # ✓
         bool          ConfigInputTextCursorBlink  # ✓
+        bool          ConfigDragClickToInputText # ✗ # TODO: Add
         #bool          ConfigResizeWindowsFromEdges  # ✓ # RENAMED
         bool          ConfigWindowsResizeFromEdges # ✓
         bool          ConfigWindowsMoveFromTitleBarOnly # ✓
-        float         ConfigWindowsMemoryCompactTimer # ✓
+        float         ConfigMemoryCompactTimer # ✓ # RENAMED
         
         # ====
         # Platform Functions
@@ -474,14 +482,24 @@ cdef extern from "imgui.h":
             ImU32 col
         ) except +
         
-        void AddBezierCurve( # ✗
+        void AddBezierCubic( # ✗
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 
             const ImVec2& p4, 
             ImU32 col, 
             float thickness, 
-            # note:optional
+            # note: optional
+            int num_segments        # = 0
+        ) except +
+        
+        void  AddBezierQuadratic( # ✗
+            const ImVec2& p1, 
+            const ImVec2& p2, 
+            const ImVec2& p3, 
+            ImU32 col, 
+            float thickness, 
+            # note: optional
             int num_segments        # = 0
         ) except +
         
@@ -547,13 +565,19 @@ cdef extern from "imgui.h":
             int a_min_of_12, 
             int a_max_of_12
         ) except +
-        void PathBezierCurveTo( # ✗
+        void PathBezierCubicCurveTo( # ✗
             const ImVec2& p2, 
             const ImVec2& p3, 
             const ImVec2& p4, 
             # note: optional
             int num_segments        # = 0
         ) except +
+        void  PathBezierQuadraticCurveTo( # ✗
+            const ImVec2& p2, 
+            const ImVec2& p3, 
+            # note: optional
+            int num_segments        # = 0
+        ) except +    
         void PathRect( # ✗ 
             const ImVec2& rect_min, 
             const ImVec2& rect_max, 
@@ -823,6 +847,7 @@ cdef extern from "imgui.h":
         float       FrameBorderSize  # ✓
         ImVec2      ItemSpacing  # ✓
         ImVec2      ItemInnerSpacing  # ✓
+        ImVec2      CellPadding # ✗ # TODO: add
         ImVec2      TouchExtraPadding  # ✓
         float       IndentSpacing  # ✓
         float       ColumnsMinSpacing  # ✓
@@ -859,7 +884,24 @@ cdef extern from "imgui.h":
         bool IsDataType(const char* type) except + # ✗
         bool IsPreview() except + # ✗
         bool IsDelivery() except + # ✗
-
+    
+    # TODO: Implements
+    ctypedef struct ImGuiTableColumnSortSpecs: # ✗
+        ImGuiID ColumnUserID # ✗
+        ImS16 ColumnIndex # ✗
+        ImS16 SortOrder # ✗
+        ImGuiSortDirection SortDirection # ✗
+        
+        ImGuiTableColumnSortSpecs() except +  # ✗
+    
+    # TODO: Implements
+    ctypedef struct ImGuiTableSortSpecs: # ✗
+        const ImGuiTableColumnSortSpecs* Specs # ✗
+        int SpecsCount # ✗
+        bool SpecsDirty # ✗
+        
+        ImGuiTableSortSpecs() except + # ✗
+    
     ctypedef struct ImGuiContext:
         pass
 
@@ -896,10 +938,10 @@ cdef extern from "imgui.h" namespace "ImGui":
     # Demo, Debug, Information
     void ShowDemoWindow(bool* p_open) except +  # ✓
     void ShowDemoWindow() except +  # ✓
-    void ShowAboutWindow(bool* p_open) except + # ✓
-    void ShowAboutWindow() except + # ✓
     void ShowMetricsWindow(bool* p_open) except +  # ✓
     void ShowMetricsWindow() except +  # ✓
+    void ShowAboutWindow(bool* p_open) except + # ✓
+    void ShowAboutWindow() except + # ✓
     void ShowStyleEditor(ImGuiStyle* ref) except +  # ✓
     void ShowStyleEditor() except +  # ✓
     bool ShowStyleSelector(const char* label) except +  # ✓
@@ -910,8 +952,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     # ====
     # Styles
     void StyleColorsDark(ImGuiStyle* dst) except +  # ✓
-    void StyleColorsClassic(ImGuiStyle* dst) except +  # ✓
     void StyleColorsLight(ImGuiStyle* dst) except +  # ✓
+    void StyleColorsClassic(ImGuiStyle* dst) except +  # ✓
 
     # ====
     # Window
@@ -1028,8 +1070,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     
     # ====
     # Content region
-    ImVec2 GetContentRegionMax() except +  # ✓
     ImVec2 GetContentRegionAvail() except +  # ✓
+    ImVec2 GetContentRegionMax() except +  # ✓
     float GetContentRegionAvailWidth() except +  # ✓ # OBSOLETED in 1.70 (from May 2019)
     ImVec2 GetWindowContentRegionMin() except +  # ✓
     ImVec2 GetWindowContentRegionMax() except +  # ✓
@@ -1039,10 +1081,10 @@ cdef extern from "imgui.h" namespace "ImGui":
     # Windows Scrolling
     float GetScrollX() except +  # ✓
     float GetScrollY() except +  # ✓
-    float GetScrollMaxX() except +  # ✓
-    float GetScrollMaxY() except +  # ✓
     void SetScrollX(float scroll_x) except +  # ✓
     void SetScrollY(float scroll_y) except +  # ✓
+    float GetScrollMaxX() except +  # ✓
+    float GetScrollMaxY() except +  # ✓
     void SetScrollHere(  # ✓ # OBSOLETED in 1.66 (from Sep 2018)
             # note: optional
             float center_y_ratio        # = 0.5    
@@ -1082,17 +1124,11 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             int count                   # = 1
     ) except +
-    ImVec4& GetStyleColorVec4(ImGuiCol idx) except +  # ✓
-    ImFont* GetFont() except +  # ✗
-    float GetFontSize() except +  # ✓
-    ImVec2 GetFontTexUvWhitePixel() except +  # ✓
-    ImU32 GetColorU32( # ✓
-            ImGuiCol idx, 
-            # note: optional
-            float alpha_mul             # = 1.0
-    ) except +
-    ImU32 GetColorU32(const ImVec4& col) except +  # ✓
-    ImU32 GetColorU32(ImU32 col) except +  # ✓
+    
+    void PushAllowKeyboardFocus(bool allow_keyboard_focus) except +  # ✓
+    void PopAllowKeyboardFocus() except +  # ✓
+    void PushButtonRepeat(bool repeat) except +  # ✓
+    void PopButtonRepeat() except +  # ✓
 
     # ====
     # Parameters stacks (current window)
@@ -1105,10 +1141,20 @@ cdef extern from "imgui.h" namespace "ImGui":
             float wrap_local_pos_x      # = 0.0
     ) except +
     void PopTextWrapPos() except +  # ✓
-    void PushAllowKeyboardFocus(bool allow_keyboard_focus) except +  # ✓
-    void PopAllowKeyboardFocus() except +  # ✓
-    void PushButtonRepeat(bool repeat) except +  # ✓
-    void PopButtonRepeat() except +  # ✓
+    
+    # ===
+    # Style read access
+    ImFont* GetFont() except +  # ✗
+    float GetFontSize() except +  # ✓
+    ImVec2 GetFontTexUvWhitePixel() except +  # ✓
+    ImU32 GetColorU32( # ✓
+            ImGuiCol idx, 
+            # note: optional
+            float alpha_mul             # = 1.0
+    ) except +
+    ImU32 GetColorU32(const ImVec4& col) except +  # ✓
+    ImU32 GetColorU32(ImU32 col) except +  # ✓
+    ImVec4& GetStyleColorVec4(ImGuiCol idx) except +  # ✓
 
     # ====
     # Cursor / Layout
@@ -1209,6 +1255,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             const ImVec4& tint_col      # = ImVec4(1,1,1,1)
     ) except +
     bool Checkbox(const char* label, bool* v) except +  # ✓
+    bool CheckboxFlags( const char* label, int* flags, int flags_value ) except + # ✗
     bool CheckboxFlags(  # ✓
             const char* label, unsigned int* flags, unsigned int flags_value
     ) except +
@@ -1218,7 +1265,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void ProgressBar(  # ✓
             float fraction,
             # note: optional
-            const ImVec2& size_arg,     # = ImVec2(-1, 0)
+            const ImVec2& size_arg,     # = ImVec2(-FLT_MIN, 0) # TODO: change from -1 to -FLT_MIN
             const char* overlay         # = NULL
     ) except +  
     void Bullet() except +  # ✓
@@ -1653,7 +1700,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiTreeNodeFlags flags            # = 0
     ) except +
     bool CollapsingHeader(  # ✓
-            const char* label, bool* p_open,
+            const char* label, bool* p_visible,     # TODO: Change p_open to p_visible
             # note: optional
             ImGuiTreeNodeFlags flags            # = 0
     ) except +  
@@ -1849,7 +1896,60 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except + 
     
     # ====
+    # Tables
+    # [BETA API] API may evolve slightly!
+    bool BeginTable( # ✗
+            const char* str_id, 
+            int column, 
+            # note: optional
+            ImGuiTableFlags flags,      # = 0
+            const ImVec2& outer_size,   # = ImVec2(0.0f, 0.0f)
+            float inner_width           # = 0.0f
+    ) except +
+    void EndTable() except + # ✗
+    void TableNextRow( # ✗
+            # note: optional
+            ImGuiTableRowFlags row_flags,   # = 0
+            float min_row_height            # = 0.0f
+    ) except +
+    bool TableNextColumn() except + # ✗
+    bool TableSetColumnIndex(int column_n) except + # ✗
+    
+    void TableSetupColumn( # ✗
+            const char* label, 
+            # note: optional
+            ImGuiTableColumnFlags flags,    # = 0
+            float init_width_or_weight,     # = 0.0f
+            ImU32 user_id                   # = 0
+    ) except +
+    void TableSetupScrollFreeze(int cols, int rows) except + # ✗
+    void TableHeadersRow() except + # ✗
+    void TableHeader(const char* label) except + # ✗
+    
+    ImGuiTableSortSpecs* TableGetSortSpecs() except + # ✗
+    
+    int TableGetColumnCount() except + # ✗
+    int TableGetColumnIndex() except + # ✗
+    int TableGetRowIndex() except + # ✗
+    const char* TableGetColumnName( # ✗
+            # note: optional
+            int column_n                    # = -1
+    ) except +        
+    ImGuiTableColumnFlags TableGetColumnFlags( # ✗
+            # note: optional
+            int column_n                    # = -1
+    ) except +
+    void TableSetBgColor( # ✗
+            ImGuiTableBgTarget target, 
+            ImU32 color, 
+            # note: optional
+            int column_n                    # = -1
+    ) except + 
+    
+    
+    # ====
     # Columns
+    # Legacy Columns API (2020: prefer using Tables!)
     void Columns(  # ✓
             # note: optional
             int count,                  # = 1
@@ -1916,7 +2016,6 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # ====
     # Drag and Drop
-    # - [BETA API] API may evolve!
     bool BeginDragDropSource( # ✓
             # note: optional
             ImGuiDragDropFlags flags    # = 0

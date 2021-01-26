@@ -168,14 +168,24 @@ cdef extern from "imgui_internal.h":
         ImGuiNextItemDataFlags_HasWidth 
         ImGuiNextItemDataFlags_HasOpen  
     
-    ctypedef enum ImGuiColumnsFlags_:
+    ctypedef enum ImGuiOldColumnFlags_:
         # Default: 0
-        ImGuiColumnsFlags_None                   #
-        ImGuiColumnsFlags_NoBorder               # Disable column dividers
-        ImGuiColumnsFlags_NoResize               # Disable resizing columns when clicking on the dividers
-        ImGuiColumnsFlags_NoPreserveWidths       # Disable column width preservation when adjusting columns
-        ImGuiColumnsFlags_NoForceWithinWindow    # Disable forcing columns to fit within window
-        ImGuiColumnsFlags_GrowParentContentsSize # (WIP) Restore pre-1.51 behavior of extending the parent window contents size but _without affecting the columns width at all_. Will eventually remove.
+        ImGuiOldColumnFlags_None                   #
+        ImGuiOldColumnFlags_NoBorder               # Disable column dividers
+        ImGuiOldColumnFlags_NoResize               # Disable resizing columns when clicking on the dividers
+        ImGuiOldColumnFlags_NoPreserveWidths       # Disable column width preservation when adjusting columns
+        ImGuiOldColumnFlags_NoForceWithinWindow    # Disable forcing columns to fit within window
+        ImGuiOldColumnFlags_GrowParentContentsSize # (WIP) Restore pre-1.51 behavior of extending the parent window contents size but _without affecting the columns width at all_. Will eventually remove.
+    
+    ctypedef enum ImGuiContextHookType:
+        ImGuiContextHookType_NewFramePre 
+        ImGuiContextHookType_NewFramePost 
+        ImGuiContextHookType_EndFramePre 
+        ImGuiContextHookType_EndFramePost 
+        ImGuiContextHookType_RenderPre 
+        ImGuiContextHookType_RenderPost 
+        ImGuiContextHookType_Shutdown
+
     
     ctypedef enum ImGuiTabBarFlagsPrivate_:
         ImGuiTabBarFlags_DockNode                   # Part of a dock node [we don't use this in the master branch but it facilitate branch syncing to keep this around]

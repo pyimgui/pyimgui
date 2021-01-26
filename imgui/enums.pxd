@@ -55,25 +55,23 @@ cdef extern from "imgui.h":
     ctypedef enum ImGuiConfigFlags_:
         ImGuiConfigFlags_None                   #
         ImGuiConfigFlags_NavEnableKeyboard      # Master keyboard navigation enable flag. NewFrame() will automatically fill io.NavInputs[] based on io.KeysDown[].
-        ImGuiConfigFlags_NavEnableGamepad       # Master gamepad navigation enable flag. This is mostly to instruct your imgui back-end to fill io.NavInputs[]. Back-end also needs to set ImGuiBackendFlags_HasGamepad.
-        ImGuiConfigFlags_NavEnableSetMousePos   # Instruct navigation to move the mouse cursor. May be useful on TV/console systems where moving a virtual mouse is awkward. Will update io.MousePos and set io.WantSetMousePos=true. If enabled you MUST honor io.WantSetMousePos requests in your binding, otherwise ImGui will react as if the mouse is jumping around back and forth.
+        ImGuiConfigFlags_NavEnableGamepad       # Master gamepad navigation enable flag. This is mostly to instruct your imgui backend to fill io.NavInputs[]. Backend also needs to set ImGuiBackendFlags_HasGamepad.
+        ImGuiConfigFlags_NavEnableSetMousePos   # Instruct navigation to move the mouse cursor. May be useful on TV/console systems where moving a virtual mouse is awkward. Will update io.MousePos and set io.WantSetMousePos=true. If enabled you MUST honor io.WantSetMousePos requests in your backend, otherwise ImGui will react as if the mouse is jumping around back and forth.
         ImGuiConfigFlags_NavNoCaptureKeyboard   # Instruct navigation to not set the io.WantCaptureKeyboard flag when io.NavActive is set.
-        ImGuiConfigFlags_NoMouse                # Instruct imgui to clear mouse position/buttons in NewFrame(). This allows ignoring the mouse information set by the back-end.
-        ImGuiConfigFlags_NoMouseCursorChange    # Instruct back-end to not alter mouse cursor shape and visibility. Use if the back-end cursor changes are interfering with yours and you don't want to use SetMouseCursor() to change mouse cursor. You may want to honor requests from imgui by reading GetMouseCursor() yourself instead.
+        ImGuiConfigFlags_NoMouse                # Instruct imgui to clear mouse position/buttons in NewFrame(). This allows ignoring the mouse information set by the backend.
+        ImGuiConfigFlags_NoMouseCursorChange    # Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use SetMouseCursor() to change mouse cursor. You may want to honor requests from imgui by reading GetMouseCursor() yourself instead.
 
-        # User storage (to allow your back-end/engine to communicate to code that may be shared between multiple projects. Those flags are not used by core Dear ImGui)
+        # User storage (to allow your backend/engine to communicate to code that may be shared between multiple projects. Those flags are not used by core Dear ImGui)
         ImGuiConfigFlags_IsSRGB                 # Application is SRGB-aware.
         ImGuiConfigFlags_IsTouchScreen          # Application is using a touch screen instead of a mouse.
 
-
-
+    
     ctypedef enum ImGuiBackendFlags_:
         ImGuiBackendFlags_None                  #
-        ImGuiBackendFlags_HasGamepad            # Back-end Platform supports gamepad and currently has one connected.
-        ImGuiBackendFlags_HasMouseCursors       # Back-end Platform supports honoring GetMouseCursor() value to change the OS cursor shape.
-        ImGuiBackendFlags_HasSetMousePos        # Back-end Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if ImGuiConfigFlags_NavEnableSetMousePos is set).
-        ImGuiBackendFlags_RendererHasVtxOffset  # Back-end Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.
-
+        ImGuiBackendFlags_HasGamepad            # Backend Platform supports gamepad and currently has one connected.
+        ImGuiBackendFlags_HasMouseCursors       # Backend Platform supports honoring GetMouseCursor() value to change the OS cursor shape.
+        ImGuiBackendFlags_HasSetMousePos        # Backend Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if ImGuiConfigFlags_NavEnableSetMousePos is set).
+        ImGuiBackendFlags_RendererHasVtxOffset  # Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.
 
 
     ctypedef enum ImGuiCol_:
@@ -119,6 +117,13 @@ cdef extern from "imgui.h":
         ImGuiCol_PlotLinesHovered,
         ImGuiCol_PlotHistogram,
         ImGuiCol_PlotHistogramHovered,
+        # TODO: Implement
+        ImGuiCol_TableHeaderBg,         # Table header background
+        ImGuiCol_TableBorderStrong,     # Table outer and header borders (prefer using Alpha=1.0 here)
+        ImGuiCol_TableBorderLight,      # Table inner borders (prefer using Alpha=1.0 here)
+        ImGuiCol_TableRowBg,            # Table row background (even rows)
+        ImGuiCol_TableRowBgAlt,         # Table row background (odd rows)
+        # ENDTODO
         ImGuiCol_TextSelectedBg,
         ImGuiCol_DragDropTarget,
         ImGuiCol_NavHighlight,          # Gamepad/keyboard: current highlighted item
@@ -159,6 +164,9 @@ cdef extern from "imgui.h":
         ImGuiStyleVar_ItemSpacing,         # ImVec2    ItemSpacing
         ImGuiStyleVar_ItemInnerSpacing,    # ImVec2    ItemInnerSpacing
         ImGuiStyleVar_IndentSpacing,       # float     IndentSpacing
+        # TODO: Implement
+        ImGuiStyleVar_CellPadding,         # ImVec2    CellPadding
+        # ENDTODO
         ImGuiStyleVar_ScrollbarSize,       # float     ScrollbarSize
         ImGuiStyleVar_ScrollbarRounding,   # float     ScrollbarRounding
         ImGuiStyleVar_GrabMinSize,         # float     GrabMinSize
@@ -211,13 +219,13 @@ cdef extern from "imgui.h":
     ctypedef enum ImGuiColorEditFlags_:
         ImGuiColorEditFlags_None            #
         ImGuiColorEditFlags_NoAlpha         #              # ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will only read 3 components from the input pointer).
-        ImGuiColorEditFlags_NoPicker        #              # ColorEdit: disable picker when clicking on colored square.
+        ImGuiColorEditFlags_NoPicker        #              # ColorEdit: disable picker when clicking on color square.
         ImGuiColorEditFlags_NoOptions       #              # ColorEdit: disable toggling options menu when right-clicking on inputs/small preview.
-        ImGuiColorEditFlags_NoSmallPreview  #              # ColorEdit, ColorPicker: disable colored square preview next to the inputs. (e.g. to show only the inputs)
-        ImGuiColorEditFlags_NoInputs        #              # ColorEdit, ColorPicker: disable inputs sliders/text widgets (e.g. to show only the small preview colored square).
+        ImGuiColorEditFlags_NoSmallPreview  #              # ColorEdit, ColorPicker: disable color square preview next to the inputs. (e.g. to show only the inputs)
+        ImGuiColorEditFlags_NoInputs        #              # ColorEdit, ColorPicker: disable inputs sliders/text widgets (e.g. to show only the small preview color square).
         ImGuiColorEditFlags_NoTooltip       #              # ColorEdit, ColorPicker, ColorButton: disable tooltip when hovering the preview.
         ImGuiColorEditFlags_NoLabel         #              # ColorEdit, ColorPicker: disable display of inline text label (the label is still forwarded to the tooltip and picker).
-        ImGuiColorEditFlags_NoSidePreview   #              # ColorPicker: disable bigger color preview on right side of the picker, use small colored square preview instead.
+        ImGuiColorEditFlags_NoSidePreview   #              # ColorPicker: disable bigger color preview on right side of the picker, use small color square preview instead.
         ImGuiColorEditFlags_NoDragDrop      #              # ColorEdit: disable drag and drop target. ColorButton: disable drag and drop source.
         ImGuiColorEditFlags_NoBorder        #              # ColorButton: disable border (which is enforced by default)
 
@@ -259,7 +267,7 @@ cdef extern from "imgui.h":
     ctypedef enum ImGuiTreeNodeFlags_:
         ImGuiTreeNodeFlags_None                 
         ImGuiTreeNodeFlags_Selected             # Draw as selected
-        ImGuiTreeNodeFlags_Framed               # Full colored frame (e.g. for CollapsingHeader)
+        ImGuiTreeNodeFlags_Framed               # Draw frame with background (e.g. for CollapsingHeader)
         ImGuiTreeNodeFlags_AllowItemOverlap     # Hit testing to allow subsequent widgets to overlap this one
         ImGuiTreeNodeFlags_NoTreePushOnOpen     # Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra indent nor pushing on ID stack
         ImGuiTreeNodeFlags_NoAutoOpenOnLog      # Don't automatically and temporarily open node when Logging is active (by default logging will automatically open tree nodes)
@@ -335,6 +343,92 @@ cdef extern from "imgui.h":
         ImGuiTabItemFlags_NoReorder                     # Disable reordering this tab or having another tab cross over this tab
         ImGuiTabItemFlags_Leading                       # Enforce the tab position to the left of the tab bar (after the tab list popup button)
         ImGuiTabItemFlags_Trailing                      # Enforce the tab position to the right of the tab bar (before the scrolling buttons)
+    
+    # [BETA API] API may evolve slightly!
+    # TODO: Implement
+    ctypedef enum ImGuiTableFlags_:
+        # Features
+        ImGuiTableFlags_None                       #
+        ImGuiTableFlags_Resizable                  # Enable resizing columns.
+        ImGuiTableFlags_Reorderable                # Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)
+        ImGuiTableFlags_Hideable                   # Enable hiding/disabling columns in context menu.
+        ImGuiTableFlags_Sortable                   # Enable sorting. Call TableGetSortSpecs() to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.
+        ImGuiTableFlags_NoSavedSettings            # Disable persisting columns order, width and sort settings in the .ini file.
+        ImGuiTableFlags_ContextMenuInBody          # Right-click on columns body/contents will display table context menu. By default it is available in TableHeadersRow().
+        # Decorations
+        ImGuiTableFlags_RowBg                      # Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling TableSetBgColor with ImGuiTableBgFlags_RowBg0 on each row manually)
+        ImGuiTableFlags_BordersInnerH              # Draw horizontal borders between rows.
+        ImGuiTableFlags_BordersOuterH              # Draw horizontal borders at the top and bottom.
+        ImGuiTableFlags_BordersInnerV              # Draw vertical borders between columns.
+        ImGuiTableFlags_BordersOuterV              # Draw vertical borders on the left and right sides.
+        ImGuiTableFlags_BordersH                   = ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersOuterH  # Draw horizontal borders.
+        ImGuiTableFlags_BordersV                   = ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersOuterV  # Draw vertical borders.
+        ImGuiTableFlags_BordersInner               = ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersInnerH  # Draw inner borders.
+        ImGuiTableFlags_BordersOuter               = ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_BordersOuterH  # Draw outer borders.
+        ImGuiTableFlags_Borders                    = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersOuter    # Draw all borders.
+        ImGuiTableFlags_NoBordersInBody            # [ALPHA] Disable vertical borders in columns Body (borders will always appears in Headers). -> May move to style
+        ImGuiTableFlags_NoBordersInBodyUntilResize # [ALPHA] Disable vertical borders in columns Body until hovered for resize (borders will always appears in Headers). -> May move to style
+        # Sizing Policy (read above for defaults)
+        ImGuiTableFlags_SizingFixedFit             # Columns default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching contents width.
+        ImGuiTableFlags_SizingFixedSame            # Columns default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.
+        ImGuiTableFlags_SizingStretchProp          # Columns default to _WidthStretch with default weights proportional to each columns contents widths.
+        ImGuiTableFlags_SizingStretchSame          # Columns default to _WidthStretch with default weights all equal, unless overriden by TableSetupColumn().
+        # Sizing Extra Options
+        ImGuiTableFlags_NoHostExtendX              # Make outer width auto-fit to columns, overriding outer_size.x value. Only available when ScrollX/ScrollY are disabled and Stretch columns are not used.
+        ImGuiTableFlags_NoHostExtendY              # Make outer height stop exactly at outer_size.y (prevent auto-extending table past the limit). Only available when ScrollX/ScrollY are disabled. Data below the limit will be clipped and not visible.
+        ImGuiTableFlags_NoKeepColumnsVisible       # Disable keeping column always minimally visible when ScrollX is off and table gets too small. Not recommended if columns are resizable.
+        ImGuiTableFlags_PreciseWidths              # Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth.
+        # Clipping
+        ImGuiTableFlags_NoClip                     # Disable clipping rectangle for every individual columns (reduce draw command count, items will be able to overflow into other columns). Generally incompatible with TableSetupScrollFreeze().
+        # Padding
+        ImGuiTableFlags_PadOuterX                  # Default if BordersOuterV is on. Enable outer-most padding. Generally desirable if you have headers.
+        ImGuiTableFlags_NoPadOuterX                # Default if BordersOuterV is off. Disable outer-most padding.
+        ImGuiTableFlags_NoPadInnerX                # Disable inner padding between columns (double inner padding if BordersOuterV is on, single inner padding if BordersOuterV is off).
+        # Scrolling
+        ImGuiTableFlags_ScrollX                    # Enable horizontal scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size. Changes default sizing policy. Because this create a child window, ScrollY is currently generally recommended when using ScrollX.
+        ImGuiTableFlags_ScrollY                    # Enable vertical scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size.
+        # Sorting
+        ImGuiTableFlags_SortMulti                  # Hold shift when clicking headers to sort on multiple column. TableGetSortSpecs() may return specs where (SpecsCount > 1).
+        ImGuiTableFlags_SortTristate               # Allow no sorting, disable default sorting. TableGetSortSpecs() may return specs where (SpecsCount == 0).
+    
+    # TODO: Implement
+    ctypedef enum ImGuiTableColumnFlags_:
+        # Input configuration flags
+        ImGuiTableColumnFlags_None                  #
+        ImGuiTableColumnFlags_DefaultHide           # Default as a hidden/disabled column.
+        ImGuiTableColumnFlags_DefaultSort           # Default as a sorting column.
+        ImGuiTableColumnFlags_WidthStretch          # Column will stretch. Preferable with horizontal scrolling disabled (default if table sizing policy is _SizingStretchSame or _SizingStretchProp).
+        ImGuiTableColumnFlags_WidthFixed            # Column will not stretch. Preferable with horizontal scrolling enabled (default if table sizing policy is _SizingFixedFit and table is resizable).
+        ImGuiTableColumnFlags_NoResize              # Disable manual resizing.
+        ImGuiTableColumnFlags_NoReorder             # Disable manual reordering this column, this will also prevent other columns from crossing over this column.
+        ImGuiTableColumnFlags_NoHide                # Disable ability to hide/disable this column.
+        ImGuiTableColumnFlags_NoClip                # Disable clipping for this column (all NoClip columns will render in a same draw command).
+        ImGuiTableColumnFlags_NoSort                # Disable ability to sort on this field (even if ImGuiTableFlags_Sortable is set on the table).
+        ImGuiTableColumnFlags_NoSortAscending       # Disable ability to sort in the ascending direction.
+        ImGuiTableColumnFlags_NoSortDescending      # Disable ability to sort in the descending direction.
+        ImGuiTableColumnFlags_NoHeaderWidth         # Disable header text width contribution to automatic column width.
+        ImGuiTableColumnFlags_PreferSortAscending   # Make the initial sort direction Ascending when first sorting on this column (default).
+        ImGuiTableColumnFlags_PreferSortDescending  # Make the initial sort direction Descending when first sorting on this column.
+        ImGuiTableColumnFlags_IndentEnable          # Use current Indent value when entering cell (default for column 0).
+        ImGuiTableColumnFlags_IndentDisable         # Ignore current Indent value when entering cell (default for columns > 0). Indentation changes _within_ the cell will still be honored.
+
+        # Output status flags, read-only via TableGetColumnFlags()
+        ImGuiTableColumnFlags_IsEnabled             # Status: is enabled == not hidden by user/api (referred to as "Hide" in _DefaultHide and _NoHide) flags.
+        ImGuiTableColumnFlags_IsVisible             # Status: is visible == is enabled AND not clipped by scrolling.
+        ImGuiTableColumnFlags_IsSorted              # Status: is currently part of the sort specs
+        ImGuiTableColumnFlags_IsHovered             # Status: is hovered by mouse
+    
+    # TODO: Implement
+    ctypedef enum ImGuiTableRowFlags_:
+        ImGuiTableRowFlags_None                         #
+        ImGuiTableRowFlags_Headers                      # Identify header row (set default background color + width of its contents accounted different for auto column width)
+    
+    # TODO: Implement
+    ctypedef enum ImGuiTableBgTarget_:
+        ImGuiTableBgTarget_None                         #
+        ImGuiTableBgTarget_RowBg0                       # Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)
+        ImGuiTableBgTarget_RowBg1                       # Set row background color 1 (generally used for selection marking)
+        ImGuiTableBgTarget_CellBg                       # Set cell background color (top-most color)
 
     
     ctypedef enum ImGuiFocusedFlags_:
@@ -373,8 +467,7 @@ cdef extern from "imgui.h":
         ImGuiDragDropFlags_AcceptNoDrawDefaultRect      # Do not draw the default highlight rectangle when hovering over target.
         ImGuiDragDropFlags_AcceptNoPreviewTooltip       # Request hiding the BeginDragDropSource tooltip from the BeginDragDropTarget site.
         ImGuiDragDropFlags_AcceptPeekOnly               = ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect  # For peeking ahead and inspecting the payload before delivery.
-
-        
+  
     ctypedef enum ImGuiDir_:
         ImGuiDir_None   
         ImGuiDir_Left   
@@ -382,7 +475,12 @@ cdef extern from "imgui.h":
         ImGuiDir_Up     
         ImGuiDir_Down   
         ImGuiDir_COUNT
-
+    
+    # TODO: Implement
+    ctypedef enum ImGuiSortDirection_:
+        ImGuiSortDirection_None         #
+        ImGuiSortDirection_Ascending    # Ascending = 0->9, A->Z etc.
+        ImGuiSortDirection_Descending   # Descending = 9->0, Z->A etc.
 
     ctypedef enum ImGuiMouseCursor_:
         ImGuiMouseCursor_None 
@@ -436,7 +534,7 @@ cdef extern from "imgui.h":
     ctypedef enum ImDrawListFlags_:
         ImDrawListFlags_None                    #
         ImDrawListFlags_AntiAliasedLines        # Enable anti-aliased lines/borders (*2 the number of triangles for 1.0f wide line or lines thin enough to be drawn using textures, otherwise *3 the number of triangles)
-        ImDrawListFlags_AntiAliasedLinesUseTex  # Enable anti-aliased lines/borders using textures when possible. Require back-end to render with bilinear filtering.
+        ImDrawListFlags_AntiAliasedLinesUseTex  # Enable anti-aliased lines/borders using textures when possible. Require backend to render with bilinear filtering.
         ImDrawListFlags_AntiAliasedFill         # Enable anti-aliased edge around filled shapes (rounded rectangles, circles).
         ImDrawListFlags_AllowVtxOffset          # Can emit 'VtxOffset > 0' to allow large meshes. Set when 'ImGuiBackendFlags_RendererHasVtxOffset' is enabled.
     

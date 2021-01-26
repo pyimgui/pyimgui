@@ -24,22 +24,29 @@ cdef extern from "imgui_internal.h":
     ctypedef struct ImDrawDataBuilder
     ctypedef struct ImDrawListSharedData
     ctypedef struct ImGuiColorMod
-    ctypedef struct ImGuiColumns
-    ctypedef struct ImGuiColumnData
     ctypedef struct ImGuiContext
+    ctypedef struct ImGuiContextHook
     ctypedef struct ImGuiDataTypeInfo
     ctypedef struct ImGuiGroupData
     ctypedef struct ImGuiInputTextState
     ctypedef struct ImGuiLastItemDataBackup
     ctypedef struct ImGuiMenuColumns
     ctypedef struct ImGuiNavMoveResult
+    ctypedef struct ImGuiMetricsConfig
     ctypedef struct ImGuiNextWindowData
     ctypedef struct ImGuiNextItemData
+    ctypedef struct ImGuiOldColumnData
+    ctypedef struct ImGuiOldColumns
     ctypedef struct ImGuiPopupData
     ctypedef struct ImGuiSettingsHandler
+    ctypedef struct ImGuiStackSizes
     ctypedef struct ImGuiStyleMod
     ctypedef struct ImGuiTabBar
     ctypedef struct ImGuiTabItem
+    ctypedef struct ImGuiTable
+    ctypedef struct ImGuiTableColumn
+    ctypedef struct ImGuiTableSettings
+    ctypedef struct ImGuiTableColumnsSettings
     ctypedef struct ImGuiWindow
     ctypedef struct ImGuiWindowTempData
     ctypedef struct ImGuiWindowSettings
@@ -48,14 +55,16 @@ cdef extern from "imgui_internal.h":
     # ====
     # Enums/Flags
     ctypedef int ImGuiLayoutType
-    ctypedef int ImGuiButtonFlags
-    ctypedef int ImGuiColumnsFlags
+    # ctypedef int ImGuiButtonFlags # REMOVED
+    # ctypedef int ImGuiColumnsFlags # REMOVED
     ctypedef int ImGuiItemFlags
     ctypedef int ImGuiItemStatusFlags
+    ctypedef int ImGuiOldColumnFlags
     ctypedef int ImGuiNavHighlightFlags
     ctypedef int ImGuiNavDirSourceFlags
     ctypedef int ImGuiNavMoveFlags
     ctypedef int ImGuiNextItemDataFlags
+    ctypedef int ImGuiContextHookType
     ctypedef int ImGuiNextWindowDataFlags
     ctypedef int ImGuiSeparatorFlags
     ctypedef int ImGuiTextFlags
@@ -68,6 +77,7 @@ cdef extern from "imgui_internal.h":
     ctypedef int ImGuiNavForward
     ctypedef int ImGuiNavLayer
     ctypedef int ImGuiPopupPositionPolicy
+    ctypedef void (*ImGuiErrorLogCallback)(void* user_data, const char* fmt, ...)
     
     # ===
     # Various forward declarations
@@ -85,7 +95,9 @@ cdef extern from "imgui_internal.h":
     ctypedef int ImGuiNavInput
     ctypedef int ImGuiMouseButton
     ctypedef int ImGuiMouseCursor
+    ctypedef int ImGuiSortDirection
     ctypedef int ImGuiStyleVar
+    ctypedef int ImGuiTableBgTarget
     ctypedef int ImDrawCornerFlags
     ctypedef int ImDrawListFlags
     ctypedef int ImFontAtlasFlags
@@ -104,6 +116,9 @@ cdef extern from "imgui_internal.h":
     ctypedef int ImGuiSliderFlags
     ctypedef int ImGuiTabBarFlags
     ctypedef int ImGuiTabItemFlags
+    ctypedef int ImGuiTableFlags
+    ctypedef int ImGuiTableColumnFlags
+    ctypedef int ImGuiTableRowFlags
     ctypedef int ImGuiTreeNodeFlags
     ctypedef int ImGuiWindowFlags
     
@@ -142,8 +157,9 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     ImGuiWindow* FindWindowByID(ImGuiID id) except + # ✗
     ImGuiWindow* FindWindowByName(const char* name) except + # ✗
     void UpdateWindowParentAndRootLinks(ImGuiWindow* window, ImGuiWindowFlags flags, ImGuiWindow* parent_window) except + # ✗
-    ImVec2 CalcWindowExpectedSize(ImGuiWindow* window) except + # ✗
+    ImVec2 CalcWindowNextAutoFitSize(ImGuiWindow* window) except + # ✗
     bool IsWindowChildOf(ImGuiWindow* window, ImGuiWindow* potential_parent) except + # ✗
+    bool IsWindowAbove(ImGuiWindow* potential_above, ImGuiWindow* potential_below) except + # ✗
     bool IsWindowNavFocusable(ImGuiWindow* window) except + # ✗
     ImRect GetWindowAllowedExtentRect(ImGuiWindow* window) except + # ✗
     void SetWindowPos( # ✗
@@ -195,7 +211,14 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     void StartMouseMovingWindow(ImGuiWindow* window) except + # ✗
     void UpdateMouseMovingWindowNewFrame() except + # ✗
     void UpdateMouseMovingWindowEndFrame() except + # ✗
+    
+    # ====
+    # Generic context hooks
+    # ====
+    void AddContextHook(ImGuiContext* context, const ImGuiContextHook* hook) except + # ✗
+    void CallContextHooks(ImGuiContext* context, ImGuiContextHookType type) except + # ✗
 
+    
     # ====
     # Settings
     # ====
@@ -224,6 +247,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     ImGuiItemStatusFlags GetItemStatusFlags() except + # ✗
     ImGuiID GetActiveID() except + # ✗
     ImGuiID GetFocusID() except + # ✗
+    ImGuiItemFlags GetItemsFlags() except + # ✗
     void SetFocusID(ImGuiID id, ImGuiWindow* window) except + # ✗
     void SetActiveID(ImGuiID id, ImGuiWindow* window) except + # ✗
     void ClearActiveID() except + # ✗
@@ -320,11 +344,13 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # ====
     void PushFocusScope(ImGuiID id) except + # ✗
     void PopFocusScope() except + # ✗
-    ImGuiID GetFocusScopeID() except + # ✗
+    ImGuiID GetFocusedFocusScope() except + # ✗
+    ImGuiID GetFocusScope() except + # ✗
     
     # ====
     # Inputs
     # ====
+    void SetItemUsingMouseWheel() except + # ✗
     bool IsActiveIdUsingNavDir(ImGuiDir dir) except + # ✗
     bool IsActiveIdUsingNavInput(ImGuiNavInput input) except + # ✗
     bool IsActiveIdUsingKey(ImGuiKey key) except + # ✗
@@ -357,16 +383,81 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
         const char* str_id, 
         int count, 
         # note: optional
-        ImGuiColumnsFlags flags             # = 0
+        ImGuiOldColumnFlags flags             # = 0
     ) except +
     void EndColumns() except + # ✗
     void PushColumnClipRect(int column_index) except + # ✗
     void PushColumnsBackground() except + # ✗
     void PopColumnsBackground() except + # ✗
     ImGuiID GetColumnsID(const char* str_id, int count) except + # ✗
-    ImGuiColumns* FindOrCreateColumns(ImGuiWindow* window, ImGuiID id) except + # ✗
-    float GetColumnOffsetFromNorm(const ImGuiColumns* columns, float offset_norm) except + # ✗
-    float GetColumnNormFromOffset(const ImGuiColumns* columns, float offset) except + # ✗
+    ImGuiOldColumns* FindOrCreateColumns(ImGuiWindow* window, ImGuiID id) except + # ✗
+    float GetColumnOffsetFromNorm(const ImGuiOldColumns* columns, float offset_norm) except + # ✗
+    float GetColumnNormFromOffset(const ImGuiOldColumns* columns, float offset) except + # ✗
+
+    # ====
+    # Tables: Candidates for public API
+    # ====
+    void TableOpenContextMenu( # ✗
+        int column_n                # = -1
+    ) except +
+    void TableSetColumnWidth(int column_n, float width) except + # ✗
+    void TableSetColumnSortDirection(int column_n, ImGuiSortDirection sort_direction, bool append_to_sort_specs) except + # ✗
+    int TableGetHoveredColumn() except + # ✗
+    float TableGetHeaderRowHeight() except + # ✗
+    void TablePushBackgroundChannel() except + # ✗
+    void TablePopBackgroundChannel() except + # ✗
+
+    # ====
+    # Tables: Internals
+    # ====
+    ImGuiTable* TableFindByID(ImGuiID id) except + # ✗
+    bool BeginTableEx( # ✗
+        const char* name, ImGuiID id, int columns_count, 
+        ImGuiTableFlags flags,      # = 0
+        const ImVec2& outer_size,   # = ImVec2(0, 0)
+        float inner_width           # = 0.0f
+    ) except +
+    void TableBeginInitMemory(ImGuiTable* table, int columns_count) except + # ✗
+    void TableBeginApplyRequests(ImGuiTable* table) except + # ✗
+    void TableSetupDrawChannels(ImGuiTable* table) except + # ✗
+    void TableUpdateLayout(ImGuiTable* table) except + # ✗
+    void TableUpdateBorders(ImGuiTable* table) except + # ✗
+    void TableUpdateColumnsWeightFromWidth(ImGuiTable* table) except + # ✗
+    void TableDrawBorders(ImGuiTable* table) except + # ✗
+    void TableDrawContextMenu(ImGuiTable* table) except + # ✗
+    void TableMergeDrawChannels(ImGuiTable* table) except + # ✗
+    void TableSortSpecsSanitize(ImGuiTable* table) except + # ✗
+    void TableSortSpecsBuild(ImGuiTable* table) except + # ✗
+    ImGuiSortDirection TableGetColumnNextSortDirection(ImGuiTableColumn* column) except + # ✗
+    void TableFixColumnSortDirection(ImGuiTable* table, ImGuiTableColumn* column) except + # ✗
+    float TableGetColumnWidthAuto(ImGuiTable* table, ImGuiTableColumn* column) except + # ✗
+    void TableBeginRow(ImGuiTable* table) except + # ✗
+    void TableEndRow(ImGuiTable* table) except + # ✗
+    void TableBeginCell(ImGuiTable* table, int column_n) except + # ✗
+    void TableEndCell(ImGuiTable* table) except + # ✗
+    ImRect TableGetCellBgRect(const ImGuiTable* table, int column_n) except + # ✗
+    const char* TableGetColumnName(const ImGuiTable* table, int column_n) except + # ✗
+    ImGuiID TableGetColumnResizeID( # ✗
+        const ImGuiTable* table, int column_n, 
+        int instance_no                 # = 0
+    ) except +
+    float TableGetMaxColumnWidth(const ImGuiTable* table, int column_n) except + # ✗
+    void TableSetColumnWidthAutoSingle(ImGuiTable* table, int column_n) except + # ✗
+    void TableSetColumnWidthAutoAll(ImGuiTable* table) except + # ✗
+    void TableRemove(ImGuiTable* table) except + # ✗
+    void TableGcCompactTransientBuffers(ImGuiTable* table) except + # ✗
+    void TableGcCompactSettings() except + # ✗
+
+    # ====
+    # Tables: Settings
+    # ====
+    void TableLoadSettings(ImGuiTable* table) except + # ✗
+    void TableSaveSettings(ImGuiTable* table) except + # ✗
+    void TableResetSettings(ImGuiTable* table) except + # ✗
+    ImGuiTableSettings* TableGetBoundSettings(ImGuiTable* table) except + # ✗
+    void TableSettingsInstallHandler(ImGuiContext* context) except + # ✗
+    ImGuiTableSettings* TableSettingsCreate(ImGuiID id, int columns_count) except + # ✗
+    ImGuiTableSettings* TableSettingsFindByID(ImGuiID id) except + # ✗
 
     # ==== 
     # Tab Bars
@@ -446,6 +537,8 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     ImGuiID GetWindowScrollbarID(ImGuiWindow* window, ImGuiAxis axis) except + # ✗
     ImGuiID GetWindowResizeID(ImGuiWindow* window, int n) except + # ✗
     void SeparatorEx(ImGuiSeparatorFlags flags) except + # ✗
+    bool CheckboxFlags(const char* label, ImS64* flags, ImS64 flags_value) except + # ✗
+    bool CheckboxFlags(const char* label, ImU64* flags, ImU64 flags_value) except + # ✗
 
     # ==== 
     # Widgets low-level behaviors
@@ -496,6 +589,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     #template<typename T, typename SIGNED_T, typename FLOAT_T>   IMGUI_API bool  DragBehaviorT(ImGuiDataType data_type, T* v, float v_speed, T v_min, T v_max, const char* format, ImGuiSliderFlags flags);
     #template<typename T, typename SIGNED_T, typename FLOAT_T>   IMGUI_API bool  SliderBehaviorT(const ImRect& bb, ImGuiID id, ImGuiDataType data_type, T* v, T v_min, T v_max, const char* format, ImGuiSliderFlags flags, ImRect* out_grab_bb);
     #template<typename T, typename SIGNED_T>                     IMGUI_API T     RoundScalarWithFormatT(const char* format, ImGuiDataType data_type, T v);
+    #template<typename T>                                        IMGUI_API bool  CheckboxFlagsT(const char* label, T* flags, T flags_value);
 
     # ====
     # Data type helpers
@@ -557,6 +651,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # ====
     # Garbage collection
     # ====
+    void GcCompactTransientMiscBuffers() except + # ✗
     void GcCompactTransientWindowBuffers(ImGuiWindow* window) except + # ✗
     void GcAwakeTransientWindowBuffers(ImGuiWindow* window) except + # ✗
 
