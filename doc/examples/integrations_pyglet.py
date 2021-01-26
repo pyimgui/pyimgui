@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 import pyglet
 from pyglet import gl
+from testwindow import show_test_window
 
 import imgui
 # Note that we could explicitly choose to use PygletFixedPipelineRenderer
@@ -32,12 +33,13 @@ def main():
                 imgui.end_menu()
             imgui.end_main_menu_bar()
 
-        imgui.show_test_window()
+        show_test_window()
+        #imgui.show_test_window()
 
         imgui.begin("Custom window", True)
         imgui.text("Bar")
         imgui.text_colored("Eggs", 0.2, 1., 0.)
-        
+
         imgui.text_ansi("B\033[31marA\033[mnsi ")
         imgui.text_ansi_colored("Eg\033[31mgAn\033[msi ", 0.2, 1., 0.)
 

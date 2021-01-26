@@ -4,7 +4,7 @@ import OpenGL.GL as gl
 
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
-
+from testwindow import show_test_window
 
 def main():
     imgui.create_context()
@@ -30,7 +30,6 @@ def main():
                 imgui.end_menu()
             imgui.end_main_menu_bar()
 
-        imgui.show_test_window()
 
         imgui.begin("Custom window", True)
         imgui.text("Bar")
@@ -38,6 +37,9 @@ def main():
         imgui.text_ansi_colored("Eg\033[31mgAn\033[msi ", 0.2, 1., 0.)
         imgui.extra.text_ansi_colored("Eggs", 0.2, 1., 0.)
         imgui.end()
+
+        show_test_window()
+        #imgui.show_test_window()
 
         gl.glClearColor(1., 1., 1., 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
