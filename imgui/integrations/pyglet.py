@@ -84,7 +84,6 @@ class PygletMixin(object):
                             key_pressed in (key.LALT, key.RALT)
         self.io.key_shift = mods & key.MOD_SHIFT or \
                             key_pressed in (key.LSHIFT, key.RSHIFT)
-        print(self.io.key_ctrl, self.io.key_super, self.io.key_alt, self.io.key_shift)
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.io.mouse_pos = x, self.io.display_size.y - y
