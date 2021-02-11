@@ -835,3 +835,14 @@ SLIDER_FLAGS_NO_INPUT
 MOUSE_BUTTON_LEFT = core.MOUSE_BUTTON_LEFT
 MOUSE_BUTTON_RIGHT = core.MOUSE_BUTTON_RIGHT
 MOUSE_BUTTON_MIDDLE = core.MOUSE_BUTTON_MIDDLE 
+
+# === Viewport Flags (redifines for autodoc)
+#: None
+VIEWPORT_FLAGS_NONE                = core.VIEWPORT_FLAGS_NONE
+#: Represent a Platform Window
+VIEWPORT_FLAGS_IS_PLATFORM_WINDOW  = core.VIEWPORT_FLAGS_IS_PLATFORM_WINDOW
+#: Represent a Platform Monitor (unused yet)
+VIEWPORT_FLAGS_IS_PLATFORM_MONITOR = core.VIEWPORT_FLAGS_IS_PLATFORM_MONITOR
+#: Platform Window: is created/managed by the application (rather than a dear imgui backend)
+VIEWPORT_FLAGS_OWNED_BY_APP        = core.VIEWPORT_FLAGS_OWNED_BY_APP         
+

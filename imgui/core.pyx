@@ -548,6 +548,12 @@ MOUSE_BUTTON_LEFT = enums.ImGuiMouseButton_Left
 MOUSE_BUTTON_RIGHT = enums.ImGuiMouseButton_Right 
 MOUSE_BUTTON_MIDDLE = enums.ImGuiMouseButton_Middle
 
+# ==== Viewport Flags ====
+VIEWPORT_FLAGS_NONE = enums.ImGuiViewportFlags_None                     #
+VIEWPORT_FLAGS_IS_PLATFORM_WINDOW = enums.ImGuiViewportFlags_IsPlatformWindow         # Represent a Platform Window
+VIEWPORT_FLAGS_IS_PLATFORM_MONITOR = enums.ImGuiViewportFlags_IsPlatformMonitor        # Represent a Platform Monitor (unused yet)
+VIEWPORT_FLAGS_OWNED_BY_APP = enums.ImGuiViewportFlags_OwnedByApp               # Platform Window: is created/managed by the application (rather than a dear imgui backend)
+
 include "imgui/common.pyx"
 
 cdef class _ImGuiContext(object):
@@ -2010,6 +2016,72 @@ cdef class _ImGuiTableSortSpecs(object):
     def specs_dirty(self, cimgui.bool specs_dirty):
         self._require_pointer()
         self._ptr.SpecsDirty = specs_dirty
+
+cdef class _ImGuiViewport(object):
+    """Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.
+       
+       About Main Area vs Work Area:
+       - Main Area = entire viewport.
+       - Work Area = entire viewport minus sections used by main menu bars (for platform windows), or by task bar (for platform monitor).
+       - Windows are generally trying to stay within the Work Area of their host viewport.
+    """
+    
+    cdef cimgui.ImGuiViewport* _ptr
+
+    def __init__(self):
+        pass
+
+    def _require_pointer(self):
+        if self._ptr == NULL:
+            raise RuntimeError(
+                "%s improperly initialized" % self.__class__.__name__
+            )
+
+    @staticmethod
+    cdef from_ptr(cimgui.ImGuiViewport* ptr):
+        if ptr == NULL:
+            return None
+
+        instance = _ImGuiViewport()
+        instance._ptr = ptr
+        return instance
+    
+    @property
+    def flags(self):
+        self._require_pointer()
+        return self._ptr.Flags
+    
+    @property
+    def pos(self):
+        """Main Area: Position of the viewport (Dear Imgui coordinates are the same as OS desktop/native coordinates)"""
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.Pos)
+    
+    @property
+    def size(self):
+        """Main Area: Size of the viewport."""
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.Size)
+    
+    @property
+    def work_pos(self):
+        """Work Area: Position of the viewport minus task bars, menus bars, status bars (>= Pos)"""
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.WorkPos)
+    
+    @property
+    def work_size(self):
+        """Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)"""
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.WorkSize)
+        
+    def get_center(self):
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.GetCenter())
+    
+    def get_work_center(self):
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.GetWorkCenter())
 
 cdef class _DrawData(object):
     cdef cimgui.ImDrawData* _ptr
@@ -4281,14 +4353,15 @@ def listbox(
 
     return opened, inout_current
 
-
-def listbox_header(
+def begin_list_box(
     str label,
-    width=0,
-    height=0
+    width = 0,
+    height = 0
 ):
-    """For use if you want to reimplement :func:`listbox()` with custom data
-    or interactions. You need to call :func:`listbox_footer()` at the end.
+    """Open a framed scrolling region.
+    
+    For use if you want to reimplement :func:`listbox()` with custom data
+    or interactions. You need to call :func:`end_list_box()` at the end.
 
     .. visual-example::
         :auto_layout:
@@ -4298,14 +4371,44 @@ def listbox_header(
 
         imgui.begin("Example: custom listbox")
 
-        imgui.listbox_header("List", 200, 100)
+        imgui.begin_list_box("List", 200, 100)
 
         imgui.selectable("Selected", True)
         imgui.selectable("Not Selected", False)
 
-        imgui.listbox_footer()
+        imgui.end_list_box()
 
         imgui.end()
+
+    Args:
+        label (str): The label.
+        width (float): Button width. w > 0.0f: custom; w < 0.0f or -FLT_MIN: right-align; w = 0.0f (default): use current ItemWidth
+        height (float): Button height. h > 0.0f: custom; h < 0.0f or -FLT_MIN: bottom-align; h = 0.0f (default): arbitrary default height which can fit ~7 items
+
+    Returns:
+        opened (bool): If the item is opened or closed.
+
+    .. wraps::
+        bool BeginListBox(
+            const char* label,
+            const ImVec2& size = ImVec2(0,0)
+        )
+    
+    """
+    return cimgui.BeginListBox(
+        _bytes(label),
+        _cast_args_ImVec2(width, height)
+    )
+    
+def listbox_header( # OBSOLETED in 1.81 (from February 2021)
+    str label,
+    width=0,
+    height=0
+):
+    """*Obsoleted in imgui v1.81 from February 2021, refer to :func:`begin_list_box()`*
+    
+    For use if you want to reimplement :func:`listbox()` with custom data
+    or interactions. You need to call :func:`listbox_footer()` at the end.
 
     Args:
         label (str): The label.
@@ -4321,21 +4424,30 @@ def listbox_header(
             const ImVec2& size = ImVec2(0,0)
         )
     """
-    return cimgui.ListBoxHeader(
-        _bytes(label),
-        _cast_args_ImVec2(width, height)
-    )
+    return begin_list_box(label, width, height)
 
+def end_list_box():
+    """
+    
+    Closing the listbox, previously opened by :func:`begin_list_box()`.
 
-def listbox_footer():
-    """Closing the listbox, previously opened by :func:`listbox_header()`.
+    See :func:`begin_list_box()` for usage example.
+
+    .. wraps::
+        void EndListBox()
+    """
+    cimgui.EndListBox()
+def listbox_footer(): # OBSOLETED in 1.81 (from February 2021)
+    """*Obsoleted in imgui v1.81 from February 2021, refer to :func:`end_list_box()`*
+    
+    Closing the listbox, previously opened by :func:`listbox_header()`.
 
     See :func:`listbox_header()` for usage example.
 
     .. wraps::
         void ListBoxFooter()
     """
-    cimgui.ListBoxFooter()
+    end_list_box()
 
 
 def set_tooltip(str text):
@@ -8670,6 +8782,20 @@ def set_item_allow_overlap():
     """
     cimgui.SetItemAllowOverlap()
 
+def get_main_viewport():
+    """Currently represents the Platform Window created by the application which is hosting 
+    our Dear ImGui windows.
+    
+    In the future we will extend this concept further to also represent Platform Monitor 
+    and support a "no main platform window" operation mode.
+    
+    Returns:
+        _ImGuiViewport: Viewport
+    
+    .. wraps::
+        ImGuiViewport* GetMainViewport()
+    """
+    return _ImGuiViewport.from_ptr(cimgui.GetMainViewport())
 
 def is_window_hovered(
         cimgui.ImGuiHoveredFlags flags=0

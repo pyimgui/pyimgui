@@ -534,5 +534,10 @@ cdef extern from "imgui.h":
         ImFontAtlasFlags_NoPowerOfTwoHeight # Don't round the height to next power of two
         ImFontAtlasFlags_NoMouseCursors     # Don't build software mouse cursors into the atlas (save a little texture memory)
         ImFontAtlasFlags_NoBakedLines       # Don't build thick line textures into the atlas (save a little texture memory). The AntiAliasedLinesUseTex features uses them, otherwise they will be rendered using polygons (more expensive for CPU/GPU).
-
+    
+    ctypedef enum ImGuiViewportFlags_:
+        ImGuiViewportFlags_None                     #
+        ImGuiViewportFlags_IsPlatformWindow         # Represent a Platform Window
+        ImGuiViewportFlags_IsPlatformMonitor        # Represent a Platform Monitor (unused yet)
+        ImGuiViewportFlags_OwnedByApp               # Platform Window: is created/managed by the application (rather than a dear imgui backend)
         

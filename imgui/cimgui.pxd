@@ -39,6 +39,7 @@ cdef extern from "imgui.h":
     ctypedef struct ImGuiTableColumnSortSpecs
     ctypedef struct ImGuiTextBuffer
     ctypedef struct ImGuiTextFilter
+    # ctypedef struct ImGuiViewport # declared later
     
     # ====
     # Enums/Flags
@@ -56,6 +57,7 @@ cdef extern from "imgui.h":
     ctypedef int ImDrawCornerFlags
     ctypedef int ImDrawListFlags
     ctypedef int ImFontAtlasFlags
+    ctypedef int ImGuiViewportFlags
     ctypedef int ImGuiBackendFlags
     ctypedef int ImGuiButtonFlags
     ctypedef int ImGuiColorEditFlags
@@ -901,6 +903,16 @@ cdef extern from "imgui.h":
     
     ctypedef struct ImGuiContext:
         pass
+        
+    ctypedef struct ImGuiViewport:  # ✓
+        ImGuiViewportFlags  Flags  # ✓
+        ImVec2              Pos  # ✓
+        ImVec2              Size  # ✓
+        ImVec2              WorkPos # ✓
+        ImVec2              WorkSize # ✓
+        
+        ImVec2 GetCenter() except + # ✓
+        ImVec2 GetWorkCenter() except + # ✓
 
 cdef extern from "imgui.h" namespace "ImGui":
 
@@ -1738,22 +1750,29 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     bool ListBox(  # ✗
             const char* label, int* current_item,
-            bool (*items_getter)(void* data, int idx, const char** out_text),
+            bool (*items_getter)(void* data, int idx, const char** out_text), # TODO: Callback
             void* data, int items_count,
             # note: optional
             int height_in_items                 # = -1
     ) except +
-    bool ListBoxHeader(  # ✓
-            const char* label,
+    
+    bool BeginListBox( # ✓
+            const char* label, 
             # note: optional
             const ImVec2& size                  # = ImVec2(0,0)
     ) except +
-    bool ListBoxHeader(  # ✗
-            const char* label, int items_count,
-            # note: optional
-            int height_in_items                 # = -1
-    ) except +
-    void ListBoxFooter() except +  # ✓
+    #bool ListBoxHeader(  # OBSOLETED in 1.81 (from February 2021)
+    #        const char* label,
+    #        # note: optional
+    #        const ImVec2& size                  # = ImVec2(0,0)
+    #) except +
+    #bool ListBoxHeader(  # REMOVED in 1.81 (from February 2021)
+    #        const char* label, int items_count,
+    #        # note: optional
+    #        int height_in_items                 # = -1
+    #) except +
+    void EndListBox() except + # ✓
+    #void ListBoxFooter() except +  # OBSOLETED in 1.81 (from February 2021)
 
     # ====
     # Widgets: Data Plotting
@@ -2072,6 +2091,10 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImVec2 GetItemRectMax() except +  # ✓
     ImVec2 GetItemRectSize() except +  # ✓
     void SetItemAllowOverlap() except +  # ✓
+    
+    # ====
+    # Viewports
+    ImGuiViewport* GetMainViewport() except + # ✓
     
     # ====
     # Miscellaneous Utilities
