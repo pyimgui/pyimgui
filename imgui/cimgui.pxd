@@ -182,7 +182,7 @@ cdef extern from "imgui.h":
         void*       ClipboardUserData  # ✗
         
         # Optional: Notify OS Input Method Editor of the screen position of your cursor for text input position
-        void        (*ImeSetInputScreenPosFn)(int x, int y) except +  # ✗
+        void        (*ImeSetInputScreenPosFn)(int x, int y) except +  # ✗  # TODO: Callback
         void*       ImeWindowHandle  # ✗
 
         # ====
@@ -279,7 +279,7 @@ cdef extern from "imgui.h":
         #operator ImU32() except + # ✗
         #operator ImVec4() except + # ✗
 
-    ctypedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd)  # ✗
+    ctypedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd)  # ✗ # TODO: Callback
 
     ctypedef struct ImDrawCmd:  # ✓
         ImVec4         ClipRect  # ✓
@@ -1308,7 +1308,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     bool Combo(  # ✗
             const char* label, 
             int* current_item,
-            bool (*items_getter)(void* data, 
+            bool (*items_getter)(void* data,  # TODO: Callback
             int idx, 
             const char** out_text),
             void* data, int items_count,
@@ -1788,7 +1788,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void PlotLines( # ✗
             const char* label, 
-            float(*values_getter)(void* data, int idx), 
+            float(*values_getter)(void* data, int idx), # TODO: Callback
             void* data, int values_count, 
             # note: optional
             int values_offset,          # = 0
@@ -1808,7 +1808,8 @@ cdef extern from "imgui.h" namespace "ImGui":
             int stride                  # = sizeof(float)
     ) except +
     void PlotHistogram(  # ✗
-            const char* label, float (*values_getter)(void* data, int idx),
+            const char* label, 
+            float (*values_getter)(void* data, int idx), # TODO: Callback
             void* data, int values_count,
             # note: optional
             int values_offset,          # = 0
@@ -2219,8 +2220,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     # ====
     # Memory Allocators
     void SetAllocatorFunctions( # ✗
-            void* (*alloc_func)(size_t sz, void* user_data), 
-            void (*free_func)(void* ptr, void* user_data), 
+            void* (*alloc_func)(size_t sz, void* user_data),  # TODO: Callback
+            void (*free_func)(void* ptr, void* user_data),  # TODO: Callback
             # note: optional
             void* user_data                 # = NULL
     ) except +
