@@ -284,6 +284,7 @@ cdef extern from "imgui.h":
         ImGuiMouseCursor_ResizeEW               # When hovering over a column
         ImGuiMouseCursor_ResizeNESW             # Unused
         ImGuiMouseCursor_ResizeNWSE             # When hovering over the bottom-right corner of a window
+        ImGuiMouseCursor_Hand
         ImGuiMouseCursor_Count_
 
     ctypedef enum ImGuiInputTextFlags_:
