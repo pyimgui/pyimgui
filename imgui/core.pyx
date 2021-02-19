@@ -181,6 +181,7 @@ DIRECTION_UP = enums.ImGuiDir_Up
 DIRECTION_DOWN = enums.ImGuiDir_Down
 
 # ==== Mouse Cursors ====
+MOUSE_CURSOR_NONE = enums.ImGuiMouseCursor_None
 MOUSE_CURSOR_ARROW = enums.ImGuiMouseCursor_Arrow
 MOUSE_CURSOR_TEXT_INPUT = enums.ImGuiMouseCursor_TextInput
 MOUSE_CURSOR_RESIZE_ALL = enums.ImGuiMouseCursor_ResizeAll
@@ -188,6 +189,7 @@ MOUSE_CURSOR_RESIZE_NS = enums.ImGuiMouseCursor_ResizeNS
 MOUSE_CURSOR_RESIZE_EW = enums.ImGuiMouseCursor_ResizeEW
 MOUSE_CURSOR_RESIZE_NESW = enums.ImGuiMouseCursor_ResizeNESW
 MOUSE_CURSOR_RESIZE_NWSE = enums.ImGuiMouseCursor_ResizeNWSE
+MOUSE_CURSOR_HAND = enums.ImGuiMouseCursor_Hand
 
 # ==== Color identifiers for styling ====
 COLOR_TEXT = enums.ImGuiCol_Text

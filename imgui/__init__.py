@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-VERSION = (1, 3, 0)  # PEP 386
+VERSION = (1, 3, 1)  # PEP 386
 __version__ = ".".join([str(x) for x in VERSION])
 
 from imgui.core import *  # noqa
@@ -350,6 +350,7 @@ DIRECTION_UP = core.DIRECTION_UP
 DIRECTION_DOWN = core.DIRECTION_DOWN
 
 # === Mouse cursor flag constants (redefines for autodoc)
+MOUSE_CURSOR_NONE = core.MOUSE_CURSOR_NONE
 MOUSE_CURSOR_ARROW = core.MOUSE_CURSOR_ARROW
 #: When hovering over InputText, etc.
 MOUSE_CURSOR_TEXT_INPUT = core.MOUSE_CURSOR_TEXT_INPUT
@@ -363,6 +364,8 @@ MOUSE_CURSOR_RESIZE_EW = core.MOUSE_CURSOR_RESIZE_EW
 MOUSE_CURSOR_RESIZE_NESW = core.MOUSE_CURSOR_RESIZE_NESW
 #: When hovering over the bottom-right corner of a window
 MOUSE_CURSOR_RESIZE_NWSE = core.MOUSE_CURSOR_RESIZE_NWSE
+#: (Unused by imgui functions. Use for e.g. hyperlinks)
+MOUSE_CURSOR_HAND = core.MOUSE_CURSOR_HAND
 
 # === Text input flag constants (redefines for autodoc)
 #: Allow ``0123456789.+-*/``
