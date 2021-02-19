@@ -24,6 +24,7 @@ from libc.stdlib cimport malloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
 from libc.string cimport strncpy
+from libc.string cimport memcpy
 from libc.float  cimport FLT_MAX
 from libcpp cimport bool
 
@@ -259,7 +260,7 @@ CONFIG_NAV_ENABLE_GAMEPAD = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavEnableGa
 CONFIG_NAV_ENABLE_SET_MOUSE_POS = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavEnableSetMousePos
 CONFIG_NAV_NO_CAPTURE_KEYBOARD = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavNoCaptureKeyboard
 CONFIG_NO_MOUSE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouse
-CONFIG_NO_MOUSE_CURSOR_CHARGE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouseCursorChange
+CONFIG_NO_MOUSE_CURSOR_CHANGE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouseCursorChange
 CONFIG_IS_RGB = enums.ImGuiConfigFlags_.ImGuiConfigFlags_IsSRGB
 CONFIG_IS_TOUCH_SCREEN = enums.ImGuiConfigFlags_.ImGuiConfigFlags_IsTouchScreen
 
@@ -865,9 +866,12 @@ cdef class GuiStyle(object):
     def __eq__(GuiStyle self, GuiStyle other):
         return other._ptr == self._ptr
 
+    def __copy__(GuiStyle self):
+        return GuiStyle._create(self)
+
     @staticmethod
-    def create():
-        return GuiStyle._create()
+    def create(other=None):
+        return GuiStyle._create(other)
 
     @staticmethod
     cdef GuiStyle from_ref(cimgui.ImGuiStyle& ref):
@@ -877,9 +881,12 @@ cdef class GuiStyle(object):
         return instance
 
     @staticmethod
-    cdef GuiStyle _create():
+    cdef GuiStyle _create(other=None):
         cdef cimgui.ImGuiStyle* _ptr = new cimgui.ImGuiStyle()
-        cdef GuiStyle instance = GuiStyle.from_ref(deref(_ptr))
+        cdef GuiStyle instance
+        if other and type(other) is GuiStyle:
+            memcpy(_ptr, other._ptr, sizeof(cimgui.ImGuiStyle))        
+        instance = GuiStyle.from_ref(deref(_ptr))
         instance._owner = True
         instance._colors = _Colors(instance)
         return instance
@@ -977,7 +984,7 @@ cdef class GuiStyle(object):
     @popup_border_size.setter
     def popup_border_size(self, float value):
         self._check_ptr()
-        self._ptr.ChildBorderSize = value
+        self._ptr.PopupBorderSize = value
 
     @property
     def window_title_align(self):
@@ -1811,6 +1818,7 @@ cdef class _IO(object):
 
 _io = None
 def get_io():
+    return _IO()
     global _io
 
     if not _io:
@@ -6496,6 +6504,17 @@ def is_mouse_double_clicked(int button = 0):
     return cimgui.IsMouseDoubleClicked(button)
 
 
+def get_key_index(int key):
+    return cimgui.GetKeyIndex(key)
+
+def is_key_pressed(int key_index, bool repeat = False):
+    """Returns if the key was pressed this frame"""
+    return cimgui.IsKeyPressed(key_index, repeat)
+
+def is_key_down(int key_index):
+    """Returns if the key was down this frame"""
+    return cimgui.IsKeyDown(key_index)
+
 def is_mouse_clicked(int button = 0, bool repeat = False):
     """Returns if the mouse was clicked this frame.
 
@@ -6855,6 +6874,11 @@ cpdef pop_style_var(unsigned int count=1):
     """
     cimgui.PopStyleVar(count)
 
+
+def get_font():
+    instance = _Font()
+    instance._ptr = cimgui.GetFont()
+    return instance
 
 cpdef get_font_size():
     """get current font size (= height in pixels) of current font with current scale applied
