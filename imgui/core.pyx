@@ -977,7 +977,7 @@ cdef class GuiStyle(object):
     @popup_border_size.setter
     def popup_border_size(self, float value):
         self._check_ptr()
-        self._ptr.ChildBorderSize = value
+        self._ptr.PopupBorderSize = value
 
     @property
     def window_title_align(self):
