@@ -9,7 +9,7 @@ help:
 	@echo "  completion  to get detailed overview on completion progress"
 	@echo "  coverage    to run tests with coverage"
 
-PYTHON=python3
+PYTHON=python
 
 # note: empty recipe as alias for .bootstrapped target
 bootstrap: .bootstrapped ;
