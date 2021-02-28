@@ -700,11 +700,10 @@ def show_test_window():
             ):  # Create a way to restore this flag otherwise we could be stuck completely!
                 if math.fmod(imgui.get_time(), 0.40) < 0.20:
                     imgui.same_line()
-                    # TODO - for some reason this causes an error about space not being mapped, which doesn't happen in the C++ version
                     imgui.text("<<PRESS SPACE TO DISABLE>>")
-                # TODO - figure is what the deal is with is_key_pressed, I can't find it anywhere
-                # if imgui.is_key_pressed(imgui.get_key_index(imgui.KEY_SPACE)):
-                #     io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+
+                if imgui.is_key_pressed(imgui.get_key_index(imgui.KEY_SPACE)):
+                    io.config_flags &= ~ imgui.CONFIG_NO_MOUSE
                 #     clicked, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", io.config_flags, imgui.CONFIG_NO_MOUSE_CURSOR_CHARGE)
             imgui.same_line()
             show_help_marker(
