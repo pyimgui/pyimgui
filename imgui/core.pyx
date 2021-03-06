@@ -1453,8 +1453,10 @@ cdef class _IO(object):
     def __init__(self):
         self._ptr = &cimgui.GetIO()
         self._fonts = _FontAtlas.from_ptr(self._ptr.Fonts)
-        self._get_clipboard_text_fn = None
-        self._set_clipboard_text_fn = None
+        
+        if <uintptr_t>cimgui.GetCurrentContext() not in _io_clipboard:
+            _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()] = {'_get_clipboard_text_fn': None,
+                                                                    '_set_clipboard_text_fn': None}
 
     # ... maping of input properties ...
     @property
@@ -1634,35 +1636,35 @@ cdef class _IO(object):
 
     @staticmethod
     cdef const char* _get_clipboard_text(void* user_data):
-        text = _io.get_clipboard_text_fn()
+        text = _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_get_clipboard_text_fn']()
         if type(text) is bytes:
             return text
         return _bytes(text)
 
     @property
     def get_clipboard_text_fn(self):
-        return self._get_clipboard_text_fn
+        return _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_get_clipboard_text_fn']
 
     @get_clipboard_text_fn.setter
     def get_clipboard_text_fn(self, func):
         if callable(func):
-            self._get_clipboard_text_fn = func
+            _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_get_clipboard_text_fn'] = func
             self._ptr.GetClipboardTextFn = self._get_clipboard_text
         else:
             raise ValueError("func is not a callable: %s" % str(func))
 
     @staticmethod
     cdef void _set_clipboard_text(void* user_data, const char* text):
-        _io.set_clipboard_text_fn(_from_bytes(text))
+        _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_set_clipboard_text_fn'](_from_bytes(text))
 
     @property
     def set_clipboard_text_fn(self):
-        return self._set_clipboard_text_fn
+        return _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_set_clipboard_text_fn']
 
     @set_clipboard_text_fn.setter
     def set_clipboard_text_fn(self, func):
         if callable(func):
-            self._set_clipboard_text_fn = func
+            _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_set_clipboard_text_fn'] = func
             self._ptr.SetClipboardTextFn = self._set_clipboard_text
         else:
             raise ValueError("func is not a callable: %s" % str(func))
@@ -1811,14 +1813,9 @@ cdef class _IO(object):
     def mouse_delta(self):
         return _cast_ImVec2_tuple(self._ptr.MouseDelta)
 
-_io = None
+_io_clipboard = {}
 def get_io():
-    global _io
-
-    if not _io:
-        _io = _IO()
-
-    return _io
+    return _IO()
 
 def get_style():
     return GuiStyle.from_ref(cimgui.GetStyle())
