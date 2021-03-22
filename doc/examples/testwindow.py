@@ -719,7 +719,7 @@ def show_test_window():
             )
             imgui.checkbox(
                 label="io.ConfigResizeWindowsFromEdges [beta]",
-                state=io.config_resize_windows_from_edges,
+                state=io.config_windows_resize_from_edges,
             )
             imgui.same_line()
             show_help_marker(
@@ -953,14 +953,16 @@ def show_test_window():
                 max_value=1.0,
                 format="ratio = %.3f",
             )
-            changed, widgets_basic_f2_1 = imgui.slider_float(
-                label="slider float (curve)",
-                value=widgets_basic_f2_1,
-                min_value=-10.0,
-                max_value=10.0,
-                format="%.4f",
-                power=2.0,
-            )
+            # TODO -- figure out how to fix this power argument
+            # and change it into an Enum
+            # changed, widgets_basic_f2_1 = imgui.slider_float(
+            #     label="slider float (curve)",
+            #     value=widgets_basic_f2_1,
+            #     min_value=-10.0,
+            #     max_value=10.0,
+            #     format="%.4f",
+            #     power=2.0,
+            # )
             # in degrees
             changed, widgets_basic_angle = imgui.slider_angle(
                 label="slider angle",
