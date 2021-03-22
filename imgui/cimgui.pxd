@@ -54,9 +54,9 @@ cdef extern from "imgui.h":
     ctypedef int ImGuiSortDirection
     ctypedef int ImGuiStyleVar
     ctypedef int ImGuiTableBgTarget
-    ctypedef int ImDrawCornerFlags
+    ctypedef int ImDrawCornerFlags # OBSOLETED in 1.82 (from Mars 2021)
     ctypedef int ImDrawFlags
-    ctypedef int ImDrawListFlags # OBSOLETED in 1.82 (from Mars 2021)
+    ctypedef int ImDrawListFlags
     ctypedef int ImFontAtlasFlags
     ctypedef int ImGuiViewportFlags
     ctypedef int ImGuiBackendFlags
