@@ -55,7 +55,8 @@ cdef extern from "imgui.h":
     ctypedef int ImGuiStyleVar
     ctypedef int ImGuiTableBgTarget
     ctypedef int ImDrawCornerFlags
-    ctypedef int ImDrawListFlags
+    ctypedef int ImDrawFlags
+    ctypedef int ImDrawListFlags # OBSOLETED in 1.82 (from Mars 2021)
     ctypedef int ImFontAtlasFlags
     ctypedef int ImGuiViewportFlags
     ctypedef int ImGuiBackendFlags
@@ -86,6 +87,8 @@ cdef extern from "imgui.h":
     ctypedef unsigned int ImGuiID
     ctypedef int (*ImGuiInputTextCallback)(ImGuiInputTextCallbackData *data);
     ctypedef void (*ImGuiSizeCallback)(ImGuiSizeCallbackData* data);
+    ctypedef void* (*ImGuiMemAllocFunc)(size_t sz, void* user_data);
+    ctypedef void (*ImGuiMemFreeFunc)(void* ptr, void* user_data);
     
     # ==== # TODO: Find a way to check IMGUI_USE_WCHAR32 define
     # Decoded character types
@@ -358,7 +361,7 @@ cdef extern from "imgui.h":
             ImU32 col,
             # note: optional
             float rounding,             # = 0.0f,
-            ImDrawCornerFlags rounding_corners_flags, # = ImDrawCornerFlags_All,
+            ImDrawFlags flags,          # = 0,
             float thickness             # = 1.0f
         ) except + 
 
@@ -369,7 +372,7 @@ cdef extern from "imgui.h":
             ImU32 col,
             # note: optional
             float rounding,             # = 0.0f
-            ImDrawCornerFlags rounding_corners_flags # = ImDrawCornerFlags_All
+            ImDrawFlags flags           # = 0
         ) except + 
         
         void AddRectFilledMultiColor( # ✗
@@ -473,7 +476,7 @@ cdef extern from "imgui.h":
             const ImVec2* points,
             int num_points,
             ImU32 col,
-            bool closed,
+            ImDrawFlags flags,
             float thickness
         ) except + 
         
@@ -538,7 +541,7 @@ cdef extern from "imgui.h":
             ImU32 col, 
             float rounding, 
             # note:optional
-            ImDrawCornerFlags rounding_corners # = ImDrawCornerFlags_All
+            ImDrawFlags flags # = 0
         ) except +
 
         # Stateful path API, add points then finish with PathFillConvex() or PathStroke()
@@ -548,8 +551,8 @@ cdef extern from "imgui.h":
         void PathFillConvex(ImU32 col) except + # ✗
         void PathStroke( # ✗
             ImU32 col, 
-            bool closed, 
             # note: optional
+            ImDrawFlags flags,      # = 0
             float thickness         # = 1.0f
         ) except +
         void PathArcTo( # ✗
@@ -558,7 +561,7 @@ cdef extern from "imgui.h":
             float a_min, 
             float a_max, 
             # note: optional
-            int num_segments        # = 10
+            int num_segments        # = 0
         ) except +
         void PathArcToFast( # ✗
             const ImVec2& center, 
@@ -584,7 +587,7 @@ cdef extern from "imgui.h":
             const ImVec2& rect_max, 
             # note: optional
             float rounding,         # = 0.0f
-            ImDrawCornerFlags rounding_corners # = ImDrawCornerFlags_All
+            ImDrawFlags flags       # = 0
         ) except +
 
         # Advanced
@@ -750,11 +753,13 @@ cdef extern from "imgui.h":
         ) except +
 
     ctypedef struct ImFontAtlas:  # ✓ 
-        bool                Locked # ✗
         ImFontAtlasFlags    Flags # ✗
         void*               TexID  # ✓
         int                 TexDesiredWidth # ✗
         int                 TexGlyphPadding # ✗
+        bool                Locked # ✗
+        
+        # Internals
         int                 TexWidth  # ✓
         int                 TexHeight  # ✓
 
@@ -870,7 +875,7 @@ cdef extern from "imgui.h":
         bool        AntiAliasedLinesUseTex # ✓
         bool        AntiAliasedFill  # ✓
         float       CurveTessellationTol  # ✓
-        float       CircleSegmentMaxError # ✓
+        float       CircleTessellationMaxError # ✓
 
         # note: originally Colors[ImGuiCol_COUNT]
         # todo: find a way to access enum var here
@@ -1094,10 +1099,10 @@ cdef extern from "imgui.h" namespace "ImGui":
     void SetScrollY(float scroll_y) except +  # ✓
     float GetScrollMaxX() except +  # ✓
     float GetScrollMaxY() except +  # ✓
-    void SetScrollHere(  # ✓ # OBSOLETED in 1.66 (from Sep 2018)
-            # note: optional
-            float center_y_ratio        # = 0.5    
-    ) except +
+    # void SetScrollHere(  # ✓ # OBSOLETED in 1.66 (from Sep 2018) # REMOVED in 1.82 (from Mars 2021)
+    #        # note: optional
+    #        float center_y_ratio        # = 0.5    
+    #) except +
     void SetScrollHereX( # ✓
             # note: optional
             float center_x_ratio        # = 0.5
@@ -1937,7 +1942,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             ImGuiTableColumnFlags flags,    # = 0
             float init_width_or_weight,     # = 0.0f
-            ImU32 user_id                   # = 0
+            ImGuiID user_id                 # = 0
     ) except +
     void TableSetupScrollFreeze(int cols, int rows) except + # ✓
     void TableHeadersRow() except + # ✓
@@ -2030,6 +2035,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     void LogFinish() except +  # ✗
     void LogButtons() except +  # ✗
     void LogText(const char* fmt, ...) except +  # ✗
+    # void LogTextV(const char* fmt, va_list args) except + # ✗
 
     # ====
     # Drag and Drop
@@ -2224,6 +2230,11 @@ cdef extern from "imgui.h" namespace "ImGui":
             void (*free_func)(void* ptr, void* user_data),  # TODO: Callback
             # note: optional
             void* user_data                 # = NULL
+    ) except +
+    void GetAllocatorFunctions( # ✗
+        ImGuiMemAllocFunc* p_alloc_func, # TODO: Callback
+        ImGuiMemFreeFunc* p_free_func, # TODO: Callback
+        void** p_user_data
     ) except +
     void* MemAlloc(size_t size) except + # ✗
     void MemFree(void* ptr) except + # ✗

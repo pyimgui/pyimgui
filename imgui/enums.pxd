@@ -501,7 +501,8 @@ cdef extern from "imgui.h":
         ImGuiInputTextFlags_AllowTabInput       # Pressing TAB input a '\t' character into the text field
         ImGuiInputTextFlags_CtrlEnterForNewLine # In multi-line mode, unfocus with Enter, add new line with Ctrl+Enter (default is opposite: unfocus with Ctrl+Enter, add line with Enter).
         ImGuiInputTextFlags_NoHorizontalScroll  # Disable following the cursor horizontally
-        ImGuiInputTextFlags_AlwaysInsertMode    # Insert mode
+        ImGuiInputTextFlags_AlwaysOverwrite     # Overwrite mode
+        ImGuiInputTextFlags_AlwaysInsertMode    # OBSOLETED in 1.82
         ImGuiInputTextFlags_ReadOnly            # Read-only mode
         ImGuiInputTextFlags_Password            # Password mode, display all characters as '*'
         ImGuiInputTextFlags_NoUndoRedo          # Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call ClearActiveID().
@@ -509,6 +510,7 @@ cdef extern from "imgui.h":
         ImGuiInputTextFlags_CallbackResize      # Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)
         ImGuiInputTextFlags_CallbackEdit        # Callback on any edit (note that InputText() already returns true on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)
         
+    # OBSOLETED in 1.82 (from Mars 2021) -> use ImDrawFlags_
     ctypedef enum ImDrawCornerFlags_:
         ImDrawCornerFlags_None      #
         ImDrawCornerFlags_TopLeft   # 0x1
@@ -520,7 +522,24 @@ cdef extern from "imgui.h":
         ImDrawCornerFlags_Left      = ImDrawCornerFlags_TopLeft | ImDrawCornerFlags_BotLeft,    # 0x5
         ImDrawCornerFlags_Right     = ImDrawCornerFlags_TopRight | ImDrawCornerFlags_BotRight,  # 0xA
         ImDrawCornerFlags_All       # In your function calls you may use ~0 (= all bits sets) instead of ImDrawCornerFlags_All, as a convenience
+    
+    ctypedef enum ImDrawFlags_:
+        ImDrawFlags_None                        #
+        ImDrawFlags_Closed                      # PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)
+        ImDrawFlags_RoundCornersTopLeft         # AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0f, we default to all corners). Was 0x01.
+        ImDrawFlags_RoundCornersTopRight        # AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0f, we default to all corners). Was 0x02.
+        ImDrawFlags_RoundCornersBottomLeft      # AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0f, we default to all corners). Was 0x04.
+        ImDrawFlags_RoundCornersBottomRight     # AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0f, we default to all corners). Wax 0x08.
+        ImDrawFlags_RoundCornersNone            # AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0f). This is NOT zero, NOT an implicit flag!
+        ImDrawFlags_RoundCornersTop             = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight,
+        ImDrawFlags_RoundCornersBottom          = ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,
+        ImDrawFlags_RoundCornersLeft            = ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersTopLeft,
+        ImDrawFlags_RoundCornersRight           = ImDrawFlags_RoundCornersBottomRight | ImDrawFlags_RoundCornersTopRight,
+        ImDrawFlags_RoundCornersAll             = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight | ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,
+        ImDrawFlags_RoundCornersDefault_        = ImDrawFlags_RoundCornersAll, # Default to ALL corners if none of the _RoundCornersXX flags are specified.
+        ImDrawFlags_RoundCornersMask_           = ImDrawFlags_RoundCornersAll | ImDrawFlags_RoundCornersNone
 
+    
     ctypedef enum ImDrawListFlags_:
         ImDrawListFlags_None                    #
         ImDrawListFlags_AntiAliasedLines        # Enable anti-aliased lines/borders (*2 the number of triangles for 1.0f wide line or lines thin enough to be drawn using textures, otherwise *3 the number of triangles)

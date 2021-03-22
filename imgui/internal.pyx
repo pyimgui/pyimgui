@@ -113,9 +113,9 @@ PLOT_TYPE_HISTOGRAM = enums_internal.ImGuiPlotType_Histogram
 # Input Source
 INPUT_SOURCE_NONE = enums_internal.ImGuiInputSource_None
 INPUT_SOURCE_MOUSE = enums_internal.ImGuiInputSource_Mouse
+INPUT_SOURCE_KEYBOARD = enums_internal.ImGuiInputSource_Keyboard
+INPUT_SOURCE_GAMEPAD = enums_internal.ImGuiInputSource_Gamepad
 INPUT_SOURCE_NAV = enums_internal.ImGuiInputSource_Nav
-INPUT_SOURCE_NAV_KEYBOARD = enums_internal.ImGuiInputSource_NavKeyboard
-INPUT_SOURCE_NAV_GAMEPAD = enums_internal.ImGuiInputSource_NavGamepad
 INPUT_SOURCE_COUNT = enums_internal.ImGuiInputSource_COUNT
 
 # Input Read Mode

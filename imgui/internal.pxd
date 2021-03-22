@@ -99,6 +99,7 @@ cdef extern from "imgui_internal.h":
     ctypedef int ImGuiSortDirection
     ctypedef int ImGuiStyleVar
     ctypedef int ImGuiTableBgTarget
+    ctypedef int ImDrawFlags
     ctypedef int ImDrawCornerFlags
     ctypedef int ImDrawListFlags
     ctypedef int ImFontAtlasFlags
@@ -337,9 +338,8 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     ) except +
     int CalcTypematicRepeatAmount(float t0, float t1, float repeat_delay, float repeat_rate) except + # ?
     void ActivateItem(ImGuiID id) except + # ?
-    void SetNavID(ImGuiID id, int nav_layer, ImGuiID focus_scope_id) except + # ?
-    void SetNavIDWithRectRel(ImGuiID id, int nav_layer, ImGuiID focus_scope_id, const ImRect& rect_rel) except + # ?
-
+    void SetNavID(ImGuiID id, int nav_layer, ImGuiID focus_scope_id, const ImRect& rect_rel) except + # ?
+    
     # ====
     # Focus Scope (WIP)
     # ====
@@ -411,6 +411,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # ====
     # Tables: Internals
     # ====
+    ImGuiTable* GetCurrentTable() except + # ?
     ImGuiTable* TableFindByID(ImGuiID id) except + # ?
     bool BeginTableEx( # ?
         const char* name, ImGuiID id, int columns_count, 
@@ -484,7 +485,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     #IMGUI_API void          RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, float clip_max_x, float ellipsis_max_x, const char* text, const char* text_end, const ImVec2* text_size_if_known);
     #IMGUI_API void          RenderFrame(ImVec2 p_min, ImVec2 p_max, ImU32 fill_col, bool border = true, float rounding = 0.0f);
     #IMGUI_API void          RenderFrameBorder(ImVec2 p_min, ImVec2 p_max, float rounding = 0.0f);
-    #IMGUI_API void          RenderColorRectWithAlphaCheckerboard(ImDrawList* draw_list, ImVec2 p_min, ImVec2 p_max, ImU32 fill_col, float grid_step, ImVec2 grid_off, float rounding = 0.0f, int rounding_corners_flags = ~0);
+    #IMGUI_API void          RenderColorRectWithAlphaCheckerboard(ImDrawList* draw_list, ImVec2 p_min, ImVec2 p_max, ImU32 fill_col, float grid_step, ImVec2 grid_off, float rounding = 0.0f, ImDrawFlags flags = 0);
     #IMGUI_API void          RenderNavHighlight(const ImRect& bb, ImGuiID id, ImGuiNavHighlightFlags flags = ImGuiNavHighlightFlags_TypeDefault); // Navigation highlight
     #IMGUI_API const char*   FindRenderedTextEnd(const char* text, const char* text_end = NULL); // Find the optional ## from which we stop displaying text.
     #IMGUI_API void          LogRenderedText(const ImVec2* ref_pos, const char* text, const char* text_end = NULL);
@@ -532,7 +533,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
         ImGuiButtonFlags flags          # = 0
     ) except +
     void Scrollbar(ImGuiAxis axis) except + # ?
-    bool ScrollbarEx(const ImRect& bb, ImGuiID id, ImGuiAxis axis, float* p_scroll_v, float avail_v, float contents_v, ImDrawCornerFlags rounding_corners) except + # ?
+    bool ScrollbarEx(const ImRect& bb, ImGuiID id, ImGuiAxis axis, float* p_scroll_v, float avail_v, float contents_v, ImDrawFlags flags) except + # ?
     bool ImageButtonEx(ImGuiID id, ImTextureID texture_id, const ImVec2& size, const ImVec2& uv0, const ImVec2& uv1, const ImVec2& padding, const ImVec4& bg_col, const ImVec4& tint_col) except + # ?
     ImRect GetWindowScrollbarRect(ImGuiWindow* window, ImGuiAxis axis) except + # ?
     ImGuiID GetWindowScrollbarID(ImGuiWindow* window, ImGuiAxis axis) except + # ?

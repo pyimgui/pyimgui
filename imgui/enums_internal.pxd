@@ -100,9 +100,9 @@ cdef extern from "imgui_internal.h":
     ctypedef enum ImGuiInputSource:
         ImGuiInputSource_None
         ImGuiInputSource_Mouse
-        ImGuiInputSource_Nav
-        ImGuiInputSource_NavKeyboard    # Only used occasionally for storage, not tested/handled by most code
-        ImGuiInputSource_NavGamepad     # "
+        ImGuiInputSource_Keyboard
+        ImGuiInputSource_Gamepad
+        ImGuiInputSource_Nav            # Stored in g.ActiveIdSource only
         ImGuiInputSource_COUNT
     
     # FIXME-NAV: Clarify/expose various repeat delay/rate

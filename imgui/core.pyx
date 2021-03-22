@@ -485,7 +485,8 @@ INPUT_TEXT_CALLBACK_CHAR_FILTER = enums.ImGuiInputTextFlags_CallbackCharFilter
 INPUT_TEXT_ALLOW_TAB_INPUT = enums.ImGuiInputTextFlags_AllowTabInput
 INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE = enums.ImGuiInputTextFlags_CtrlEnterForNewLine
 INPUT_TEXT_NO_HORIZONTAL_SCROLL = enums.ImGuiInputTextFlags_NoHorizontalScroll
-INPUT_TEXT_ALWAYS_INSERT_MODE = enums.ImGuiInputTextFlags_AlwaysInsertMode
+INPUT_TEXT_ALWAYS_OVERWRITE = enums.ImGuiInputTextFlags_AlwaysOverwrite
+INPUT_TEXT_ALWAYS_INSERT_MODE = enums.ImGuiInputTextFlags_AlwaysInsertMode # OBSOLETED in 1.82 (from Mars 2021)
 INPUT_TEXT_READ_ONLY = enums.ImGuiInputTextFlags_ReadOnly
 INPUT_TEXT_PASSWORD = enums.ImGuiInputTextFlags_Password
 INPUT_TEXT_NO_UNDO_REDO = enums.ImGuiInputTextFlags_NoUndoRedo
@@ -494,6 +495,7 @@ INPUT_TEXT_CALLBACK_RESIZE = enums.ImGuiInputTextFlags_CallbackResize
 INPUT_TEXT_CALLBACK_EDIT = enums.ImGuiInputTextFlags_CallbackEdit
 
 # ==== Draw Corner Flags ===
+# OBSOLETED in 1.82 (from Mars 2021), use ImDrawFlags_xxx
 DRAW_CORNER_NONE = enums.ImDrawCornerFlags_None      
 DRAW_CORNER_TOP_LEFT = enums.ImDrawCornerFlags_TopLeft   
 DRAW_CORNER_TOP_RIGHT = enums.ImDrawCornerFlags_TopRight  
@@ -504,6 +506,21 @@ DRAW_CORNER_BOTTOM = enums.ImDrawCornerFlags_Bot
 DRAW_CORNER_LEFT = enums.ImDrawCornerFlags_Left      
 DRAW_CORNER_RIGHT = enums.ImDrawCornerFlags_Right     
 DRAW_CORNER_ALL = enums.ImDrawCornerFlags_All       
+
+
+# ==== Draw Flags ====
+DRAW_NONE = enums.ImDrawFlags_None
+DRAW_CLOSED = enums.ImDrawFlags_Closed
+DRAW_ROUND_CORNERS_TOP_LEFT = enums.ImDrawFlags_RoundCornersTopLeft
+DRAW_ROUND_CORNERS_TOP_RIGHT = enums.ImDrawFlags_RoundCornersTopRight
+DRAW_ROUND_CORNERS_BOTTOM_LEFT = enums.ImDrawFlags_RoundCornersBottomLeft
+DRAW_ROUND_CORNERS_BOTTOM_RIGHT = enums.ImDrawFlags_RoundCornersBottomRight
+DRAW_ROUND_CORNERS_NONE = enums.ImDrawFlags_RoundCornersNone
+DRAW_ROUND_CORNERS_TOP = enums.ImDrawFlags_RoundCornersTop
+DRAW_ROUND_CORNERS_BOTTOM = enums.ImDrawFlags_RoundCornersBottom
+DRAW_ROUND_CORNERS_LEFT = enums.ImDrawFlags_RoundCornersLeft
+DRAW_ROUND_CORNERS_RIGHT = enums.ImDrawFlags_RoundCornersRight
+DRAW_ROUND_CORNERS_ALL = enums.ImDrawFlags_RoundCornersAll
 
 # ==== Draw List Flags ====
 DRAW_LIST_NONE = enums.ImDrawListFlags_None                    
@@ -761,7 +778,7 @@ cdef class _DrawList(object):
             cimgui.ImU32 col,
             # note: optional
             float rounding = 0.0,
-            cimgui.ImGuiWindowFlags rounding_corners_flags = DRAW_CORNER_ALL,
+            cimgui.ImDrawFlags flags = 0,
             float thickness = 1.0,
         ):
         """Add a rectangle outline to the draw list.
@@ -784,7 +801,7 @@ cdef class _DrawList(object):
             lower_right_y (float): Y coordinate of lower-right corner
             col (ImU32): RGBA color specification
             rounding (float): Degree of rounding, defaults to 0.0
-            rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
+            flags (ImDrawFlags): Draw flags, defaults to 0
             thickness (float): Line thickness, defaults to 1.0
 
         .. wraps::
@@ -793,7 +810,7 @@ cdef class _DrawList(object):
                 const ImVec2& b,
                 ImU32 col,
                 float rounding = 0.0f,
-                int rounding_corners_flags = ImDrawCornerFlags_All,
+                ImDrawFlags flags = 0,
                 float thickness = 1.0f
             )
         """
@@ -802,7 +819,7 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(lower_right_x, lower_right_y),
             col,
             rounding,
-            rounding_corners_flags,
+            flags,
             thickness,
         )
 
@@ -813,7 +830,7 @@ cdef class _DrawList(object):
             cimgui.ImU32 col,
             # note: optional
             float rounding = 0.0,
-            cimgui.ImGuiWindowFlags rounding_corners_flags = DRAW_CORNER_ALL,
+            cimgui.ImDrawFlags flags = 0,
         ):
         """Add a filled rectangle to the draw list.
 
@@ -835,7 +852,7 @@ cdef class _DrawList(object):
             lower_right_y (float): Y coordinate of lower-right corner
             col (ImU32): RGBA color specification
             rounding (float): Degree of rounding, defaults to 0.0
-            rounding_corners_flags (ImDrawCornerFlags): Draw flags, defaults to ImDrawCornerFlags_ALL
+            flags (ImDrawFlags): Draw flags, defaults to 0
 
         .. wraps::
             void ImDrawList::AddRectFilled(
@@ -843,7 +860,7 @@ cdef class _DrawList(object):
                 const ImVec2& b,
                 ImU32 col,
                 float rounding = 0.0f,
-                int rounding_corners_flags = ImDrawCornerFlags_All
+                ImDrawFlags flags = 0
             )
         """
         self._ptr.AddRectFilled(
@@ -851,7 +868,7 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(lower_right_x, lower_right_y),
             col,
             rounding,
-            rounding_corners_flags,
+            flags,
         )
 
     def add_circle(
@@ -1114,7 +1131,7 @@ cdef class _DrawList(object):
             self,
             list points,
             cimgui.ImU32 col,
-            bool closed=False,
+            cimgui.ImDrawFlags flags = 0,
             float thickness=1.0
         ):
         """Add a optionally closed polyline to the draw list.
@@ -1126,14 +1143,14 @@ cdef class _DrawList(object):
 
             imgui.begin("Polyline example")
             draw_list = imgui.get_window_draw_list()
-            draw_list.add_polyline([(20, 35), (90, 35), (55, 80)], imgui.get_color_u32_rgba(1,1,0,1), closed=False, thickness=3)
-            draw_list.add_polyline([(110, 35), (180, 35), (145, 80)], imgui.get_color_u32_rgba(1,0,0,1), closed=True, thickness=3)
+            draw_list.add_polyline([(20, 35), (90, 35), (55, 80)], imgui.get_color_u32_rgba(1,1,0,1), flags=imgui.DRAW_NONE, thickness=3)
+            draw_list.add_polyline([(110, 35), (180, 35), (145, 80)], imgui.get_color_u32_rgba(1,0,0,1), flags=imgui.DRAW_CLOSED, thickness=3)
             imgui.end()
 
         Args:
             points (list): list of points
             col (float): RGBA color specification
-            closed (bool): close the polyline to form a polygon
+            flags (ImDrawFlags): Drawing flags
             thickness (float): line thickness
 
         .. wraps::
@@ -1141,7 +1158,7 @@ cdef class _DrawList(object):
                 const ImVec2* points,
                 int num_points,
                 ImU32 col,
-                bool closed,
+                flags flags,
                 float thickness
             )
         """
@@ -1154,7 +1171,7 @@ cdef class _DrawList(object):
             pts,
             num_points,
             col,
-            closed,
+            flags,
             thickness
         )
         free(pts)
@@ -1823,16 +1840,28 @@ cdef class GuiStyle(object):
     def curve_tessellation_tolerance(self, float value):
         self._check_ptr()
         self._ptr.CurveTessellationTol = value
-        
+    
+    # OBSOLETED in 1.82 (from Mars 2021)
     @property
     def circle_segment_max_error(self):
         self._check_ptr()
-        return self._ptr.CircleSegmentMaxError
-
+        return self._ptr.CircleTessellationMaxError
+    
+    # OBSOLETED in 1.82 (from Mars 2021)
     @circle_segment_max_error.setter
     def circle_segment_max_error(self, float value):
         self._check_ptr()
-        self._ptr.CircleSegmentMaxError = value
+        self._ptr.CircleTessellationMaxError = value
+    
+    @property
+    def circle_tessellation_max_error(self):
+        self._check_ptr()
+        return self._ptr.CircleTessellationMaxError
+    
+    @circle_tessellation_max_error.setter
+    def circle_tessellation_max_error(self, float value):
+        self._check_ptr()
+        self._ptr.CircleTessellationMaxError = value
 
     def color(self, cimgui.ImGuiCol variable):
         if not (0 <= variable < enums.ImGuiCol_COUNT):
@@ -2053,7 +2082,7 @@ cdef class _ImGuiViewport(object):
     
     @property
     def pos(self):
-        """Main Area: Position of the viewport (Dear Imgui coordinates are the same as OS desktop/native coordinates)"""
+        """Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)"""
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.Pos)
     
@@ -8617,8 +8646,8 @@ def is_item_active():
 
 
 def is_item_clicked(cimgui.ImGuiMouseButton mouse_button = 0):
-    """Was the last item clicked? For ex. button or node that was
-    just being clicked on.
+    """ Was the last item hovered and mouse clicked on? 
+    Button or node that was just being clicked on.
     
     Args:
         mouse_button: ImGuiMouseButton
@@ -9150,19 +9179,20 @@ def set_clipboard_text(str text):
     """
     cimgui.SetClipboardText(_bytes(text))
 
+# REMOVED in 1.82 (from Mars 2021) use 'set_scroll_here_y()'
 # OBSOLETED in 1.66 (from Sep 2018)
-def set_scroll_here(float center_y_ratio = 0.5):
-    """Set scroll here.
-
-    adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
-
-    Args:
-        float center_y_ratio = 0.5f
-
-    .. wraps::
-        void SetScrollHere(float center_y_ratio = 0.5f)
-    """
-    return cimgui.SetScrollHere(center_y_ratio)
+#def set_scroll_here(float center_y_ratio = 0.5):
+#    """Set scroll here.
+#
+#    adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
+#
+#    Args:
+#        float center_y_ratio = 0.5f
+#
+#    .. wraps::
+#        void SetScrollHere(float center_y_ratio = 0.5f)
+#    """
+#    return cimgui.SetScrollHere(center_y_ratio)
     
 def set_scroll_here_x(float center_x_ratio = 0.5):
     """Set scroll here X.

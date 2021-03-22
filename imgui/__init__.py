@@ -764,7 +764,9 @@ INPUT_TEXT_ALLOW_TAB_INPUT = core.INPUT_TEXT_ALLOW_TAB_INPUT
 INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE = core.INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE
 #: Disable following the cursor horizontally
 INPUT_TEXT_NO_HORIZONTAL_SCROLL = core.INPUT_TEXT_NO_HORIZONTAL_SCROLL
-#: Insert mode
+#: Overwrite mode
+INPUT_TEXT_ALWAYS_OVERWRITE = core.INPUT_TEXT_ALWAYS_OVERWRITE
+#: OBSOLETED in 1.82 (from Mars 2021)
 INPUT_TEXT_ALWAYS_INSERT_MODE = core.INPUT_TEXT_ALWAYS_INSERT_MODE
 #: Read-only mode
 INPUT_TEXT_READ_ONLY = core.INPUT_TEXT_READ_ONLY
@@ -789,6 +791,32 @@ DRAW_CORNER_BOTTOM = core.DRAW_CORNER_BOTTOM
 DRAW_CORNER_LEFT = core.DRAW_CORNER_LEFT
 DRAW_CORNER_RIGHT = core.DRAW_CORNER_RIGHT
 DRAW_CORNER_ALL = core.DRAW_CORNER_ALL
+
+# === Draw Flags (redifines for autodoc)
+#: None
+DRAW_NONE                        = core.DRAW_NONE
+#: path_stroke(), add_polyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)
+DRAW_CLOSED                      = core.DRAW_CLOSED                     
+#: add_rect(), add_rect_filled(), path_rect(): enable rounding top-left corner only (when rounding > 0.0f, we default to all corners). Was 0x01.
+DRAW_ROUND_CORNERS_TOP_LEFT      = core.DRAW_ROUND_CORNERS_TOP_LEFT     
+#: add_rect(), add_rect_filled(), path_rect(): enable rounding top-right corner only (when rounding > 0.0f, we default to all corners). Was 0x02.
+DRAW_ROUND_CORNERS_TOP_RIGHT     = core.DRAW_ROUND_CORNERS_TOP_RIGHT    
+#: add_rect(), add_rect_filled(), path_rect(): enable rounding bottom-left corner only (when rounding > 0.0f, we default to all corners). Was 0x04.
+DRAW_ROUND_CORNERS_BOTTOM_LEFT   = core.DRAW_ROUND_CORNERS_BOTTOM_LEFT  
+#: add_rect(), add_rect_filled(), path_rect(): enable rounding bottom-right corner only (when rounding > 0.0f, we default to all corners). Wax 0x08.
+DRAW_ROUND_CORNERS_BOTTOM_RIGHT  = core.DRAW_ROUND_CORNERS_BOTTOM_RIGHT 
+#: add_rect(), add_rect_filled(), path_rect(): disable rounding on all corners (when rounding > 0.0f). This is NOT zero, NOT an implicit flag!
+DRAW_ROUND_CORNERS_NONE          = core.DRAW_ROUND_CORNERS_NONE         
+#: DRAW_ROUND_CORNERS_TOP_LEFT | DRAW_ROUND_CORNERS_TOP_RIGHT
+DRAW_ROUND_CORNERS_TOP           = core.DRAW_ROUND_CORNERS_TOP          
+#: DRAW_ROUND_CORNERS_BOTTOM_LEFT | DRAW_ROUND_CORNERS_BOTTOM_RIGHT
+DRAW_ROUND_CORNERS_BOTTOM        = core.DRAW_ROUND_CORNERS_BOTTOM       
+#: DRAW_ROUND_CORNERS_BOTTOM_LEFT | DRAW_ROUND_CORNERS_TOP_LEFT
+DRAW_ROUND_CORNERS_LEFT          = core.DRAW_ROUND_CORNERS_LEFT         
+#: DRAW_ROUND_CORNERS_BOTTOM_RIGHT | DRAW_ROUND_CORNERS_TOP_RIGHT
+DRAW_ROUND_CORNERS_RIGHT         = core.DRAW_ROUND_CORNERS_RIGHT        
+#: DRAW_ROUND_CORNERS_TOP_LEFT | DRAW_ROUND_CORNERS_TOP_RIGHT | DRAW_ROUND_CORNERS_BOTTOM_LEFT | DRAW_ROUND_CORNERS_BOTTOM_RIGHT
+DRAW_ROUND_CORNERS_ALL           = core.DRAW_ROUND_CORNERS_ALL          
 
 # === Draw List Flags (redefines for autodoc)
 DRAW_LIST_NONE = core.DRAW_LIST_NONE
