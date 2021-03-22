@@ -101,6 +101,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         pass
 
     def scroll_callback(self, window, x_offset, y_offset):
+        self.io.mouse_wheel_horizontal = x_offset
         self.io.mouse_wheel = y_offset
 
     def process_inputs(self):
