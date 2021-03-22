@@ -486,7 +486,6 @@ cdef extern from "imgui.h":
         ImGuiMouseCursor_NotAllowed,        # When hovering something with disallowed interaction. Usually a crossed circle.
         ImGuiMouseCursor_COUNT
 
-
     ctypedef enum ImGuiInputTextFlags_:
         ImGuiInputTextFlags_None                #
         ImGuiInputTextFlags_CharsDecimal        # Allow 0123456789.+-*/

@@ -5,6 +5,7 @@ import OpenGL.GL as gl
 
 import imgui
 from imgui.integrations.sdl2 import SDL2Renderer
+from testwindow import show_test_window
 
 
 def main():
@@ -37,7 +38,8 @@ def main():
                 imgui.end_menu()
             imgui.end_main_menu_bar()
 
-        imgui.show_test_window()
+        show_test_window()
+        #imgui.show_test_window()
 
         imgui.begin("Custom window", True)
         imgui.text("Bar")
