@@ -103,11 +103,9 @@ cdef extern from "imgui.h":
         float         FontGlobalScale  # ✓
         bool          FontAllowUserScaling  # ✓
         ImVec2        DisplayFramebufferScale  # ✓
-        ImVec2        DisplayVisibleMin  # ✓
-        ImVec2        DisplayVisibleMax  # ✓
         bool          ConfigMacOSXBehaviors  # ✓
         bool          ConfigInputTextCursorBlink  # ✓
-        bool          ConfigResizeWindowsFromEdges  # ✓
+        bool          ConfigWindowsResizeFromEdges  # ✓
 
         # ====
         # source-note: User Functions
@@ -530,7 +528,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     float GetScrollMaxY() except +  # ✓
     void SetScrollX(float scroll_x) except +  # ✓
     void SetScrollY(float scroll_y) except +  # ✓
-    void SetScrollHere(  # ✓
+    void SetScrollHereY(  # ✓
             # note: optional
             float center_y_ratio
     ) except +

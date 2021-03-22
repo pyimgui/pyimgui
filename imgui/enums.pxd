@@ -122,11 +122,11 @@ cdef extern from "imgui.h":
         ImGuiStyleVar_Alpha                  # float
         ImGuiStyleVar_WindowPadding          # ImVec2
         ImGuiStyleVar_WindowRounding         # float
-        ImGuiStyleVar_WindowBorderSize       # float 
+        ImGuiStyleVar_WindowBorderSize       # float
         ImGuiStyleVar_WindowMinSize          # ImVec2
         ImGuiStyleVar_WindowTitleAlign       # ImVec2
-        ImGuiStyleVar_ChildRounding          # float 
-        ImGuiStyleVar_ChildBorderSize        # float 
+        ImGuiStyleVar_ChildRounding          # float
+        ImGuiStyleVar_ChildBorderSize        # float
         ImGuiStyleVar_PopupRounding          # float
         ImGuiStyleVar_PopupBorderSize        # float
         ImGuiStyleVar_FramePadding           # ImVec2
@@ -140,7 +140,7 @@ cdef extern from "imgui.h":
         ImGuiStyleVar_GrabMinSize            # float
         ImGuiStyleVar_GrabRounding           # float
         ImGuiStyleVar_ButtonTextAlign        # flags ImGuiAlign_*
-        ImGuiStyleVar_Count_
+        ImGuiStyleVar_COUNT
 
     ctypedef enum ImGuiAlign_:
         ImGuiAlign_Left
@@ -175,7 +175,7 @@ cdef extern from "imgui.h":
         ImGuiWindowFlags_AlwaysUseWindowPadding     # Ensure child windows without border uses style.WindowPadding (ignored by default for non-bordered child windows, because more convenient)
         ImGuiWindowFlags_NoNavInputs                # No gamepad/keyboard navigation within the window
         ImGuiWindowFlags_NoNavFocus                 # No focusing toward this window with gamepad/keyboard navigation (e.g. skipped by CTRL+TAB)
-        ImGuiWindowFlags_NoNav = ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoNavFocus 
+        ImGuiWindowFlags_NoNav = ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoNavFocus
 
     ctypedef enum ImGuiColorEditFlags_:
         ImGuiColorEditFlags_NoAlpha

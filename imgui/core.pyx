@@ -1,5 +1,5 @@
 # distutils: language = c++
-# distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp imgui-cpp/imgui_widgets.cpp config-cpp/py_imconfig.cpp
+# distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp imgui-cpp/imgui_widgets.cpp imgui-cpp/imgui_tables.cpp config-cpp/py_imconfig.cpp
 # distutils: include_dirs = imgui-cpp ansifeed-cpp
 # cython: embedsignature=True
 """
@@ -1593,22 +1593,6 @@ cdef class _IO(object):
         self._ptr.DisplayFramebufferScale = _cast_tuple_ImVec2(value)
 
     @property
-    def display_visible_min(self):
-        return _cast_ImVec2_tuple(self._ptr.DisplayVisibleMin)
-
-    @display_visible_min.setter
-    def display_visible_min(self,  value):
-        self._ptr.DisplayVisibleMin = _cast_tuple_ImVec2(value)
-
-    @property
-    def display_visible_max(self):
-        return _cast_ImVec2_tuple(self._ptr.DisplayVisibleMax)
-
-    @display_visible_max.setter
-    def display_visible_max(self,  value):
-        self._ptr.DisplayVisibleMax = _cast_tuple_ImVec2(value)
-
-    @property
     def config_mac_osx_behaviors(self):
         return self._ptr.ConfigMacOSXBehaviors
 
@@ -1625,12 +1609,12 @@ cdef class _IO(object):
         self._ptr.ConfigInputTextCursorBlink = value
 
     @property
-    def config_resize_windows_from_edges(self):
-        return self._ptr.ConfigResizeWindowsFromEdges
+    def config_windows_resize_from_edges(self):
+        return self._ptr.ConfigWindowsResizeFromEdges
 
-    @config_resize_windows_from_edges.setter
-    def config_resize_windows_from_edges(self, cimgui.bool value):
-        self._ptr.ConfigResizeWindowsFromEdges = value
+    @config_windows_resize_from_edges.setter
+    def config_windows_resize_from_edges(self, cimgui.bool value):
+        self._ptr.ConfigWindowsResizeFromEdges = value
 
     @staticmethod
     cdef const char* _get_clipboard_text(void* user_data):
@@ -6629,7 +6613,7 @@ def set_mouse_cursor(cimgui.ImGuiMouseCursor mouse_cursor_type):
     return cimgui.SetMouseCursor(mouse_cursor_type)
 
 
-def set_scroll_here(float center_y_ratio = 0.5):
+def set_scroll_here_y(float center_y_ratio = 0.5):
     """Set scroll here.
 
     adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
@@ -6638,9 +6622,9 @@ def set_scroll_here(float center_y_ratio = 0.5):
         float center_y_ratio = 0.5f
 
     .. wraps::
-        void SetScrollHere(float center_y_ratio = 0.5f)
+        void SetScrollHereY(float center_y_ratio = 0.5f)
     """
-    return cimgui.SetScrollHere(center_y_ratio)
+    return cimgui.SetScrollHereY(center_y_ratio)
 
 
 def set_scroll_from_pos_y(float pos_y, float center_y_ratio = 0.5):
@@ -6780,7 +6764,7 @@ cpdef push_style_var(cimgui.ImGuiStyleVar variable, value):
     .. wraps::
         PushStyleVar(ImGuiStyleVar idx, float val)
     """
-    if not (0 <= variable < enums.ImGuiStyleVar_Count_):
+    if not (0 <= variable < enums.ImGuiStyleVar_COUNT):
         warnings.warn("Unknown style variable: {}".format(variable))
         return False
 
