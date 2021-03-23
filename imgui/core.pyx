@@ -3245,11 +3245,11 @@ def show_metrics_window(closable=False):
 
 
 def show_style_selector(str label):
-    return cimgui.ShowStyleSelector(label)
+    return cimgui.ShowStyleSelector(_bytes(label))
 
 
 def show_font_selector(str label):
-    cimgui.ShowStyleSelector(label)
+    cimgui.ShowFontSelector(_bytes(label))
 
 
 def begin(str label, closable=False, cimgui.ImGuiWindowFlags flags=0):
