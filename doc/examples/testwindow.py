@@ -5,7 +5,7 @@ import math
 import os
 import itertools
 from array import array
-
+import colorsys
 
 # Examples Apps (accessible from the "Examples" menu)
 show_app_main_menu_bar = False
@@ -222,6 +222,13 @@ columns_selected = -1
 mixed_items_foo = 1.0
 mixed_items_bar = 1.0
 
+
+borders_h_borders = True
+borders_v_borders = True
+
+collapsing_headers_closable_group = True
+
+filtering_filter = None # Todo - bind this in cimgui.pxd
 
 def show_help_marker(desc):
 
@@ -458,6 +465,11 @@ def show_test_window():
 
     global mixed_items_foo
     global mixed_items_bar
+
+    global borders_h_borders
+    global borders_v_borders
+
+    global collapsing_headers_closable_group
 
     if show_app_main_menu_bar:
         # TODO -- implement this
@@ -828,15 +840,12 @@ def show_test_window():
                     imgui.same_line()
                 imgui.push_id(str(i))
 
-                ## TODO - make these three colors HSV, (ImVec4)ImColor::HSV, and the fourth
-                # number is not needed
-                imgui.push_style_color(imgui.COLOR_BUTTON, i / 7.0, 0.6, 0.6, 1.0)
-                imgui.push_style_color(
-                    imgui.COLOR_BUTTON_HOVERED, i / 7.0, 0.7, 0.7, 1.0
-                )
-                imgui.push_style_color(
-                    imgui.COLOR_BUTTON_ACTIVE, i / 7.0, 0.8, 0.8, 1.0
-                )
+                r, g, b = colorsys.hsv_to_rgb(i / 7.0, 0.6, 0.6)
+                imgui.push_style_color(imgui.COLOR_BUTTON, r, g, b)
+                r, g, b = colorsys.hsv_to_rgb(i / 7.0, 0.7, 0.7)
+                imgui.push_style_color(imgui.COLOR_BUTTON_HOVERED, r, g, b)
+                r, g, b = colorsys.hsv_to_rgb(i / 7.0, 0.8, 0.8)
+                imgui.push_style_color(imgui.COLOR_BUTTON_ACTIVE, r, g, b)
                 imgui.button(label="Click")
                 imgui.pop_style_color(3)
                 imgui.pop_id()
@@ -1005,7 +1014,7 @@ def show_test_window():
 
             if imgui.tree_node("Basic trees"):
                 for i in range(5):
-                    if imgui.tree_node(text="Child " + str(i), flags=i):
+                    if imgui.tree_node(text="Child " + str(i)):
                         imgui.text("blah blah")
                         imgui.same_line()
                         if imgui.small_button("button"):
@@ -1064,20 +1073,22 @@ def show_test_window():
             imgui.tree_pop()
 
         if imgui.tree_node("Collapsing Headers"):
-            # static bool closable_group = True;
-            # imgui.checkbox(label="Enable extra group", state=&closable_group);
-            # if imgui.collapsing_header("Header"):
-            # {
-            #     imgui.text("IsItemHovered: %d", IsItemHovered());
-            #     for (int i = 0; i < 5; i++)
-            #         imgui.text("Some content %d", i);
-            # }
-            # if imgui.collapsing_header("Header with a close button", &closable_group):
-            # {
-            #     imgui.text("IsItemHovered: %d", IsItemHovered());
-            #     for (int i = 0; i < 5; i++)
-            #         imgui.text("More content %d", i);
-            # }
+            clicked, collapsing_headers_closable_group = imgui.checkbox(
+                label="Enable extra group", state=collapsing_headers_closable_group
+            )
+
+            show, _ = imgui.collapsing_header("Header")
+            if show:
+                imgui.text("IsItemHovered: " + str(imgui.is_item_hovered()))
+                for i in range(5):
+                    imgui.text("Some content " + str(i))
+            show, collapsing_headers_closable_group = imgui.collapsing_header(
+                "Header with a close button", collapsing_headers_closable_group
+            )
+            if show:
+                imgui.text("IsItemHovered: " + str(imgui.is_item_hovered()))
+                for i in range(5):
+                    imgui.text("More content " + str(i))
             imgui.tree_pop()
 
         if imgui.tree_node("Bullets"):
@@ -1124,20 +1135,50 @@ def show_test_window():
                     imgui.get_color_u32_rgba(255, 0, 255, 255),
                 )
 
-                # TODO - core.pyx does not allow text to take a second parameter -- figure this out and uncomment the lines
-                # imgui.push_text_wrap_pos(imgui.get_cursor_pos().x + widgets_basic_wrap_width)
-                # imgui.text("The lazy dog is a good dog. This paragraph is made to fit within %.0f pixels. Testing a 1 character word. The quick brown fox jumps over the lazy dog.", widgets_basic_wrap_width)
-                # imgui.get_window_draw_list().add_rect(imgui.get_item_rect_min(), imgui.get_item_rect_max(), [255,255,0,255])
-                # imgui.pop_text_wrap_pos()
-                # END TODO
+                imgui.push_text_wrap_pos(
+                    imgui.get_cursor_pos().x + widgets_basic_wrap_width
+                )
+                imgui.text(
+                    "The lazy dog is a good dog. This paragraph is made to fit within "
+                    + str(widgets_basic_wrap_width)
+                    + " pixels. Testing a 1 character word. The quick brown fox jumps over the lazy dog."
+                )
+                min_x, min_y = imgui.get_item_rect_min()
+                max_x, max_y = imgui.get_item_rect_max()
+                imgui.get_window_draw_list().add_rect(
+                    upper_left_x=min_x,
+                    upper_left_y=min_y,
+                    lower_right_x=max_x,
+                    lower_right_y=max_y,
+                    col=imgui.get_color_u32_rgba(1, 1, 0, 1),
+                )
+                imgui.pop_text_wrap_pos()
 
-                # imgui.text("Test paragraph 2:")
-                # pos = imgui.get_cursor_screen_pos()
-                # imgui.get_window_draw_list()->AddRectFilled(ImVec2(pos.x + widgets_basic_wrap_width, pos.y), ImVec2(pos.x + widgets_basic_wrap_width + 10, pos.y + imgui.get_text_line_height()), IM_COL32(255,0,255,255));
-                # imgui.push_text_wrap_pos(imgui.get_cursor_pos().x + widgets_basic_wrap_width);
-                # imgui.text("aaaaaaaa bbbbbbbb, c cccccccc,dddddddd. d eeeeeeee   ffffffff. gggggggg!hhhhhhhh");
-                # imgui.get_window_draw_list()->AddRect(imgui.get_item_rect_min(), imgui.get_item_rect_max(), IM_COL32(255,255,0,255));
-                # imgui.pop_text_wrap_pos();
+                imgui.text("Test paragraph 2:")
+                pos = imgui.get_cursor_screen_pos()
+                imgui.get_window_draw_list().add_rect_filled(
+                    upper_left_x=pos.x + widgets_basic_wrap_width,
+                    upper_left_y=pos.y,
+                    lower_right_x=pos.x + widgets_basic_wrap_width + 10,
+                    lower_right_y=pos.y + imgui.get_text_line_height(),
+                    col=imgui.get_color_u32_rgba(1, 0, 1, 1),
+                )
+                imgui.push_text_wrap_pos(
+                    imgui.get_cursor_pos().x + widgets_basic_wrap_width
+                )
+                imgui.text(
+                    "aaaaaaaa bbbbbbbb, c cccccccc,dddddddd. d eeeeeeee   ffffffff. gggggggg!hhhhhhhh"
+                )
+                min_x, min_y = imgui.get_item_rect_min()
+                max_x, max_y = imgui.get_item_rect_max()
+                imgui.get_window_draw_list().add_rect(
+                    upper_left_x=min_x,
+                    upper_left_y=min_y,
+                    lower_right_x=max_x,
+                    lower_right_y=max_y,
+                    col=imgui.get_color_u32_rgba(1, 1, 0, 1),
+                )
+                imgui.pop_text_wrap_pos()
 
                 imgui.tree_pop()
 
@@ -1655,20 +1696,40 @@ def show_test_window():
                 "Currently all this does is to lift the 0..1 limits on dragging widgets."
             )
 
-            # TODO -- figure out what core.pyx's ColorEdit3 and 4 do not require flags, then add them, and put in the demos below
+            misc_flags = (
+                (imgui.COLOR_EDIT_HDR
+                if color_picker_hdr
+                else 0)
+                | (0 if color_picker_drag_and_drop else imgui.COLOR_EDIT_NO_DRAG_DROP)
+                | (
+                    imgui.COLOR_EDIT_ALPHA_PREVIEW_HALF
+                    if color_picker_alpha_half_preview
+                    else (
+                        imgui.COLOR_EDIT_ALPHA_PREVIEW
+                        if color_picker_alpha_preview
+                        else 0
+                    )
+                )
+                | (0 if color_picker_options_menu else imgui.COLOR_EDIT_NO_OPTIONS)
+            )
 
-            # int misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+            imgui.text("Color widget:")
+            imgui.same_line()
+            show_help_marker(
+                "Click on the colored square to open a color picker."
+                + os.linesep
+                + "CTRL+click on individual component to input value."
+                + os.linesep
+            )
+            changed, color_picker_color = imgui.color_edit3(
+                "MyColor##1", *color_picker_color[:3], misc_flags
+            )
 
-            # imgui.text("Color widget:");
-            # imgui.same_line();
-            # show_help_marker("Click on the colored square to open a color picker.\nCTRL+click on individual component to input value.\n");
-            # imgui.color_edit3("MyColor##1", (float*)&color, misc_flags);
+            imgui.text("Color widget HSV with Alpha:")
+            changed, color_picker_color = imgui.color_edit4("MyColor##2", *color_picker_color, imgui.COLOR_EDIT_HSV  | misc_flags)
 
-            # imgui.text("Color widget HSV with Alpha:");
-            # imgui.color_edit4("MyColor##2", (float*)&color, ImGuiColorEditFlags_HSV | misc_flags);
-
-            # imgui.text("Color widget with Float Display:");
-            # imgui.color_edit4("MyColor##2f", (float*)&color, ImGuiColorEditFlags_Float | misc_flags);
+            imgui.text("Color widget with Float Display:");
+            changed, color_picker_color = imgui.color_edit4("MyColor##2f", *color_picker_color, imgui.COLOR_EDIT_FLOAT | misc_flags)
 
             # imgui.text("Color button with Picker:");
             # imgui.same_line();
@@ -3106,49 +3167,60 @@ def show_test_window():
 
         #     // Word wrapping
         if imgui.tree_node("Word-wrapping"):
-            #     {
-            # imgui.columns(2, "word-wrapping");
-            # imgui.separator();
-            # imgui.text_wrapped("The quick brown fox jumps over the lazy dog.");
-            # imgui.text_wrapped("Hello Left");
-            # imgui.next_column();
-            # imgui.text_wrapped("The quick brown fox jumps over the lazy dog.");
-            # imgui.text_wrapped("Hello Right");
-            # imgui.columns(1);
-            # imgui.separator();
+            imgui.columns(2, "word-wrapping")
+            imgui.separator()
+            imgui.text_wrapped("The quick brown fox jumps over the lazy dog.")
+            imgui.text_wrapped("Hello Left")
+            imgui.next_column()
+            imgui.text_wrapped("The quick brown fox jumps over the lazy dog.")
+            imgui.text_wrapped("Hello Right")
+            imgui.columns(1)
+            imgui.separator()
             imgui.tree_pop()
 
         if imgui.tree_node("Borders"):
-            #     {
-            # // NB: Future columns API should allow automatic horizontal borders.
-            # static bool h_borders = True;
-            # static bool v_borders = True;
-            # imgui.checkbox(label="horizontal", state=&h_borders);
-            # imgui.same_line();
-            # imgui.checkbox(label="vertical", state=&v_borders);
-            # imgui.columns(4, NULL, v_borders);
-            # for (int i = 0; i < 4*3; i++)
-            # {
-            #     if h_borders && imgui.get_column_index() == 0:
-            #         imgui.separator();
-            #     imgui.text("%c%c%c", 'a'+i, 'a'+i, 'a'+i);
-            #     imgui.text("Width %.2f\nOffset %.2f", imgui.get_column_width(), imgui.get_column_offset());
-            #     imgui.next_column();
-            # }
-            # imgui.columns(1);
-            # if h_borders:
-            #     imgui.separator();
+
+            def char_add_to_a(amount):
+                # add "amount" to the character 'a'
+                return chr(ord("a") + amount)
+
+            changed, borders_h_borders = imgui.checkbox(
+                label="horizontal", state=borders_h_borders
+            )
+            imgui.same_line()
+            changed, borders_v_borders = imgui.checkbox(
+                label="vertical", state=borders_v_borders
+            )
+            imgui.columns(count=4, identifier=None, border=borders_v_borders)
+            for i in range(4 * 3):
+                if borders_h_borders and imgui.get_column_index() == 0:
+                    imgui.separator()
+                imgui.text(
+                    char_add_to_a(i) + " " + char_add_to_a(i) + " " + char_add_to_a(i)
+                )
+                imgui.text(
+                    "Width "
+                    + str(imgui.get_column_width())
+                    + os.linesep
+                    + "Offset "
+                    + str(imgui.get_column_offset())
+                )
+                imgui.next_column()
+            imgui.columns(1)
+            if borders_h_borders:
+                imgui.separator()
             imgui.tree_pop()
-        #     }
 
         if imgui.tree_node("Horizontal Scrolling"):
-            #     {
-            # imgui.set_next_window_content_size(ImVec2(1500.0f, 0.0f));
-            # imgui.begin_child("##ScrollingRegion", ImVec2(0, imgui.get_font_size() * 20), False, ImGuiWindowFlags_HorizontalScrollbar);
-            # imgui.columns(10);
-            # int ITEMS_COUNT = 2000;
+            pass
+            # TODO -- implement ListClipper and uncomment the section below
+
+            # imgui.set_next_window_content_size(1500.0, 0.0)
+            # imgui.begin_child(label="##ScrollingRegion", width=0, height=imgui.get_font_size() * 20), border=False, flags=ImGuiWindowFlags_HorizontalScrollbar)
+            # imgui.columns(10)
+            # ITEMS_COUNT = 2000
             # ImGuiListClipper clipper(ITEMS_COUNT);  // Also demonstrate using the clipper for large list
-            # while (clipper.Step())
+            # while (clipper.Step()):
             # {
             #     for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
             #         for (int j = 0; j < 10; j++)
@@ -3161,34 +3233,30 @@ def show_test_window():
             # imgui.end_child();
             imgui.tree_pop()
 
-        #     bool node_open = imgui.tree_node("Tree within single cell");
-        #     imgui.same_line();
-        # ShowHelpMarker("NB: Tree node must be poped before ending the cell. There's no storage of state per-cell.");
-        #     if node_open:
-        #     {
-        # imgui.columns(2, "tree items");
-        # imgui.separator();
-        # if imgui.tree_node("Hello"):
-        #   { imgui.bullet_text("Sailor");
-        #   imgui.tree_pop();
-        # }
-        # imgui.next_column();
-        # if imgui.tree_node("Bonjour"):
-        #   { imgui.bullet_text("Marin");
-        #   imgui.tree_pop();
-        # }
-        # imgui.next_column();
-        # imgui.columns(1);
-        # imgui.separator();
-        # imgui.tree_pop();
-        #     }
+        node_open = imgui.tree_node("Tree within single cell")
+        imgui.same_line()
+        show_help_marker(
+            "NB: Tree node must be poped before ending the cell. There's no storage of state per-cell."
+        )
+        if node_open:
+            imgui.columns(2, "tree items")
+            imgui.separator()
+            if imgui.tree_node("Hello"):
+                imgui.bullet_text("Sailor")
+                imgui.tree_pop()
+            imgui.next_column()
+            if imgui.tree_node("Bonjour"):
+                imgui.bullet_text("Marin")
+                imgui.tree_pop()
+            imgui.next_column()
+            imgui.columns(1)
+            imgui.separator()
+            imgui.tree_pop()
         imgui.pop_id()
-        # }
 
     show, _ = imgui.collapsing_header("Filtering")
     if show:
-        # TODO -- remove pass
-        pass
+        # TODO - implement
         #     static ImGuiTextFilter filter;
         #     imgui.text("Filter usage:\n"
         #         "  \"\"         display all lines\n"
@@ -3201,16 +3269,17 @@ def show_test_window():
         # if filter.PassFilter(lines[i]):
         #     imgui.bullet_text("%s", lines[i]);
         # }
+        pass
 
-        # if imgui.collapsing_header("Inputs, Navigation & Focus"):
-        # {
-        #     ImGuiIO& io = imgui.get_i_o();
+    show, _ = imgui.collapsing_header("Inputs, Navigation & Focus")
+    if show:
+        io = imgui.get_io()
 
-        #     imgui.text("WantCaptureMouse: %d", io.WantCaptureMouse);
-        #     imgui.text("WantCaptureKeyboard: %d", io.WantCaptureKeyboard);
-        #     imgui.text("WantTextInput: %d", io.WantTextInput);
-        #     imgui.text("WantSetMousePos: %d", io.WantSetMousePos);
-        #     imgui.text("NavActive: %d, NavVisible: %d", io.NavActive, io.NavVisible);
+        imgui.text("WantCaptureMouse: " + str(io.want_capture_mouse))
+        imgui.text("WantCaptureKeyboard: " + str(io.want_capture_keyboard))
+        imgui.text("WantTextInput: " + str(io.want_text_input))
+        imgui.text("WantSetMousePos: " + str(io.want_set_mouse_pos))
+        imgui.text("NavActive: " + str(io.nav_active) +  "NavVisible: " + str(io.nav_visible))
 
         #     if imgui.tree_node("Keyboard, Mouse & Navigation State"):
         #     {

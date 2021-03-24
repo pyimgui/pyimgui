@@ -236,6 +236,34 @@ COLOR_NAV_WINDOWING_DIM_BACKGROUND = enums.ImGuiCol_NavWindowingDimBg
 COLOR_MODAL_WINDOW_DIM_BACKGROUND = enums.ImGuiCol_ModalWindowDimBg
 COLOR_COUNT = enums.ImGuiCol_COUNT
 
+# ==== Color Edit ====
+COLOR_EDIT_NONE = enums.ImGuiColorEditFlags_None
+COLOR_EDIT_NO_ALPHA = enums.ImGuiColorEditFlags_NoAlpha
+COLOR_EDIT_NO_PICKER = enums.ImGuiColorEditFlags_NoPicker
+COLOR_EDIT_NO_OPTIONS = enums.ImGuiColorEditFlags_NoOptions
+COLOR_EDIT_NO_SMALL_PREVIEW = enums.ImGuiColorEditFlags_NoSmallPreview
+COLOR_EDIT_NO_INPUTS = enums.ImGuiColorEditFlags_NoInputs
+COLOR_EDIT_NO_TOOLTIP = enums.ImGuiColorEditFlags_NoTooltip
+COLOR_EDIT_NO_LABEL = enums.ImGuiColorEditFlags_NoLabel
+COLOR_EDIT_NO_SIDE_PREVIEW = enums.ImGuiColorEditFlags_NoSidePreview
+COLOR_EDIT_NO_DRAG_DROP = enums.ImGuiColorEditFlags_NoDragDrop
+COLOR_EDIT_ALPHA_BAR = enums.ImGuiColorEditFlags_AlphaBar
+COLOR_EDIT_ALPHA_PREVIEW = enums.ImGuiColorEditFlags_AlphaPreview
+COLOR_EDIT_ALPHA_PREVIEW_HALF = enums.ImGuiColorEditFlags_AlphaPreviewHalf
+COLOR_EDIT_HDR = enums.ImGuiColorEditFlags_HDR
+COLOR_EDIT_RGB = enums.ImGuiColorEditFlags_RGB
+COLOR_EDIT_HSV = enums.ImGuiColorEditFlags_HSV
+COLOR_EDIT_HEX = enums.ImGuiColorEditFlags_HEX
+COLOR_EDIT_UINT8 = enums.ImGuiColorEditFlags_Uint8
+COLOR_EDIT_FLOAT = enums.ImGuiColorEditFlags_Float
+COLOR_EDIT_PICKER_HUE_BAR = enums.ImGuiColorEditFlags_PickerHueBar
+COLOR_EDIT_PICKER_HUE_WHEEL = enums.ImGuiColorEditFlags_PickerHueWheel
+COLOR_EDIT_INPUTS_MASK = enums.ImGuiColorEditFlags__InputsMask
+COLOR_EDIT_DATA_TYPE_MASK = enums.ImGuiColorEditFlags__DataTypeMask
+COLOR_EDIT_PICKER_MASK = enums.ImGuiColorEditFlags__PickerMask
+COLOR_EDIT_OPTIONS_DEFAULT = enums.ImGuiColorEditFlags__OptionsDefault
+
+
 # ==== Text input flags ====
 INPUT_TEXT_CHARS_DECIMAL = enums.ImGuiInputTextFlags_CharsDecimal
 INPUT_TEXT_CHARS_HEXADECIMAL = enums.ImGuiInputTextFlags_CharsHexadecimal
@@ -4284,7 +4312,7 @@ def combo(str label, int current, list items, int height_in_items=-1):
     ), inout_current
 
 
-def color_edit3(str label, float r, float g, float b):
+def color_edit3(str label, float r, float g, float b, flags=0):
     """Display color edit widget for color without alpha value.
 
     .. visual-example::
@@ -4311,24 +4339,25 @@ def color_edit3(str label, float r, float g, float b):
         r (float): red color intensity.
         g (float): green color intensity.
         b (float): blue color instensity.
+        #ImGuiColorEditFlags: Color edit flags.  Zero for none.
 
     Returns:
         tuple: a ``(bool changed, float color[3])`` tuple that contains indicator of color
         change and current value of color
 
     .. wraps::
-        bool ColorEdit3(const char* label, float col[3])
+        bool ColorEdit3(const char* label, float col[3], ImGuiColorEditFlags flags)
     """
 
     cdef float[3] inout_color = [r, g, b]
 
     return cimgui.ColorEdit3(
-        _bytes(label), <float *>(&inout_color)
+        _bytes(label), <float *>(&inout_color), flags
     ), (inout_color[0], inout_color[1], inout_color[2])
 
 
 def color_edit4(
-    str label, float r, float g, float b, float a, cimgui.bool show_alpha=True
+        str label, float r, float g, float b, float a, cimgui.bool show_alpha=True, flags=0
 ):
     """Display color edit widget for color with alpha value.
 
@@ -4357,6 +4386,7 @@ def color_edit4(
         b (float): blue color instensity.
         a (float): alpha intensity.
         show_alpha (bool): if set to True wiget allows to modify alpha
+        #ImGuiColorEditFlags: Color edit flags.  Zero for none.
 
     Returns:
         tuple: a ``(bool changed, float color[4])`` tuple that contains indicator of color
@@ -4364,13 +4394,13 @@ def color_edit4(
 
     .. wraps::
         ColorEdit4(
-            const char* label, float col[4], bool show_alpha = true
+            const char* label, float col[4], ImGuiColorEditFlags flags
         )
     """
     cdef float[4] inout_color = [r, g, b, a]
 
     return cimgui.ColorEdit4(
-        _bytes(label), <float *>(&inout_color), show_alpha
+        _bytes(label), <float *>(&inout_color), flags & show_alpha
     ), (inout_color[0], inout_color[1], inout_color[2], inout_color[3])
 
 
