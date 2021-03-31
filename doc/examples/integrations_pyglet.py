@@ -11,6 +11,8 @@ import imgui
 # version checking for us.
 from imgui.integrations.pyglet import create_renderer
 
+show_custom_window = True
+
 def main():
 
     window = pyglet.window.Window(width=1280, height=720, resizable=True)
@@ -19,6 +21,7 @@ def main():
     impl = create_renderer(window)
 
     def update(dt):
+
         imgui.new_frame()
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
@@ -36,14 +39,16 @@ def main():
         show_test_window()
         #imgui.show_test_window()
 
-        imgui.begin("Custom window", True)
-        imgui.text("Bar")
-        imgui.text_colored("Eggs", 0.2, 1., 0.)
+        global show_custom_window
+        if show_custom_window:
+            is_expand, show_custom_window = imgui.begin("Custom window", True)
+            if is_expand:
+                imgui.text("Bar")
+                imgui.text_colored("Eggs", 0.2, 1., 0.)
 
-        imgui.text_ansi("B\033[31marA\033[mnsi ")
-        imgui.text_ansi_colored("Eg\033[31mgAn\033[msi ", 0.2, 1., 0.)
-
-        imgui.end()
+                imgui.text_ansi("B\033[31marA\033[mnsi ")
+                imgui.text_ansi_colored("Eg\033[31mgAn\033[msi ", 0.2, 1., 0.)
+            imgui.end()
 
     def draw(dt):
         update(dt)

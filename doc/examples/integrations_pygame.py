@@ -16,10 +16,17 @@ def main():
     pygame.display.set_mode(size, pygame.DOUBLEBUF | pygame.OPENGL | pygame.RESIZABLE)
 
     imgui.create_context()
-    impl = PygameRenderer()
 
     io = imgui.get_io()
+
+    impl = PygameRenderer()
+
+
     io.display_size = size
+
+
+
+    show_custom_window = True
 
     while 1:
         for event in pygame.event.get():
@@ -45,10 +52,12 @@ def main():
 
         imgui.show_test_window()
 
-        imgui.begin("Custom window", True)
-        imgui.text("Bar")
-        imgui.text_colored("Eggs", 0.2, 1., 0.)
-        imgui.end()
+        if show_custom_window:
+            is_expand, show_custom_window = imgui.begin("Custom window", True)
+            if is_expand:
+                imgui.text("Bar")
+                imgui.text_colored("Eggs", 0.2, 1., 0.)
+            imgui.end()
 
         # note: cannot use screen.fill((1, 1, 1)) because pygame's screen
         #       does not support fill() on OpenGL sufraces

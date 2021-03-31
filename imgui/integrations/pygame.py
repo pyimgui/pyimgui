@@ -16,26 +16,26 @@ class PygameRenderer(FixedPipelineRenderer):
 
     def _map_keys(self):
         key_map = self.io.key_map
-
-        key_map[imgui.KEY_TAB] = pygame.K_TAB
-        key_map[imgui.KEY_LEFT_ARROW] = pygame.K_LEFT
-        key_map[imgui.KEY_RIGHT_ARROW] = pygame.K_RIGHT
-        key_map[imgui.KEY_UP_ARROW] = pygame.K_UP
-        key_map[imgui.KEY_DOWN_ARROW] = pygame.K_DOWN
-        key_map[imgui.KEY_PAGE_UP] = pygame.K_PAGEUP
-        key_map[imgui.KEY_PAGE_DOWN] = pygame.K_PAGEDOWN
-        key_map[imgui.KEY_HOME] = pygame.K_HOME
-        key_map[imgui.KEY_END] = pygame.K_END
-        key_map[imgui.KEY_DELETE] = pygame.K_DELETE
-        key_map[imgui.KEY_BACKSPACE] = pygame.K_BACKSPACE
-        key_map[imgui.KEY_ENTER] = pygame.K_RETURN
-        key_map[imgui.KEY_ESCAPE] = pygame.K_ESCAPE
-        key_map[imgui.KEY_A] = pygame.K_a
-        key_map[imgui.KEY_C] = pygame.K_c
-        key_map[imgui.KEY_V] = pygame.K_v
-        key_map[imgui.KEY_X] = pygame.K_x
-        key_map[imgui.KEY_Y] = pygame.K_y
-        key_map[imgui.KEY_Z] = pygame.K_z
+        # imgui key map value cannot over 512
+        key_map[imgui.KEY_TAB] = (pygame.K_TAB & 0xFF)
+        key_map[imgui.KEY_LEFT_ARROW] = (pygame.K_LEFT & 0xFF)
+        key_map[imgui.KEY_RIGHT_ARROW] = (pygame.K_RIGHT & 0xFF)
+        key_map[imgui.KEY_UP_ARROW] = (pygame.K_UP & 0xFF)
+        key_map[imgui.KEY_DOWN_ARROW] = (pygame.K_DOWN & 0xFF)
+        key_map[imgui.KEY_PAGE_UP] = (pygame.K_PAGEUP & 0xFF)
+        key_map[imgui.KEY_PAGE_DOWN] = (pygame.K_PAGEDOWN & 0xFF)
+        key_map[imgui.KEY_HOME] = (pygame.K_HOME & 0xFF)
+        key_map[imgui.KEY_END] = (pygame.K_END & 0xFF)
+        key_map[imgui.KEY_DELETE] = (pygame.K_DELETE & 0xFF)
+        key_map[imgui.KEY_BACKSPACE] = (pygame.K_BACKSPACE & 0xFF)
+        key_map[imgui.KEY_ENTER] = (pygame.K_RETURN & 0xFF)
+        key_map[imgui.KEY_ESCAPE] = (pygame.K_ESCAPE & 0xFF)
+        key_map[imgui.KEY_A] = (pygame.K_a & 0xFF)
+        key_map[imgui.KEY_C] = (pygame.K_c & 0xFF)
+        key_map[imgui.KEY_V] = (pygame.K_v & 0xFF)
+        key_map[imgui.KEY_X] = (pygame.K_x & 0xFF)
+        key_map[imgui.KEY_Y] = (pygame.K_y & 0xFF)
+        key_map[imgui.KEY_Z] = (pygame.K_z & 0xFF)
 
     def process_event(self, event):
         # perf: local for faster access

@@ -116,8 +116,9 @@ namespace ImGui
                                                          // so this is merely to handle direct calls.
 
         // Align to be pixel perfect
-        pos.x = (float)(int)pos.x + font->DisplayOffset.x;
-        pos.y = (float)(int)pos.y + font->DisplayOffset.y;
+        // no need add offset @see https://github.com/ocornut/imgui/issues/1619
+        // pos.x = (float)(int)pos.x + font->DisplayOffset.x;
+        // pos.y = (float)(int)pos.y + font->DisplayOffset.y;
         float x = pos.x;
         float y = pos.y;
         if (y > clip_rect.w)
@@ -447,7 +448,7 @@ namespace ImGui
         if (text_end == NULL)
             text_end = text + strlen(text);  // FIXME-OPT
 
-        const ImVec2 text_pos(window->DC.CursorPos.x, window->DC.CursorPos.y + window->DC.CurrentLineTextBaseOffset);
+        const ImVec2 text_pos(window->DC.CursorPos.x, window->DC.CursorPos.y + window->DC.CurrLineTextBaseOffset);
         const float wrap_pos_x = window->DC.TextWrapPos;
         const bool wrap_enabled = wrap_pos_x >= 0.0f;
         if (text_end - text > 2000 && !wrap_enabled) {

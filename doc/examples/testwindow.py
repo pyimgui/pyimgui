@@ -516,23 +516,25 @@ def show_test_window():
     if show_app_metrics:
         show_app_metrics = imgui.show_metrics_window(closable=show_app_metrics)
     if show_app_style_editor:
-        show_app_style_editor = imgui.begin(
+        is_expand, show_app_style_editor = imgui.begin(
             label="Style Editor", closable=show_app_style_editor
         )
-        imgui.show_style_editor()
+        if is_expand:
+            imgui.show_style_editor()
         imgui.end()
     if show_app_about:
-        show_app_about = imgui.begin(
+        is_expand, show_app_about = imgui.begin(
             label="About Dear ImGui",
             closable=show_app_about,
             flags=imgui.WINDOW_ALWAYS_AUTO_RESIZE,
         )
-        imgui.text("Dear ImGui, " + imgui.get_version())
-        imgui.separator()
-        imgui.text("By Omar Cornut and all dear imgui contributors.")
-        imgui.text(
-            "Dear ImGui is licensed under the MIT License, see LICENSE for more information."
-        )
+        if is_expand:
+            imgui.text("Dear ImGui, " + imgui.get_version())
+            imgui.separator()
+            imgui.text("By Omar Cornut and all dear imgui contributors.")
+            imgui.text(
+                "Dear ImGui is licensed under the MIT License, see LICENSE for more information."
+            )
         imgui.end()
 
     window_flags = 0
