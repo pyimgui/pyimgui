@@ -8,7 +8,7 @@ from . import compute_fb_scale
 from .opengl import ProgrammablePipelineRenderer
 
 class GlfwRenderer(ProgrammablePipelineRenderer):
-    def __init__(self, window, attach_callbacks=True: "False to use your own callbacks"):
+    def __init__(self, window, attach_callbacks:"False to use your own callbacks"=True):
         super(GlfwRenderer, self).__init__()
         self.window = window
 
