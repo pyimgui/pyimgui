@@ -17,6 +17,9 @@ else:
 
 
 _CYTHONIZE_WITH_COVERAGE = os.environ.get("_CYTHONIZE_WITH_COVERAGE", False)
+
+# Define that environment variable to allow linking to an externally built version of imgui.
+# You should also provide the argument -libraries "path/to/your/local/imgui/lib" to build_ext.
 _IMGUI_EXTERNAL_LIB = os.environ.get("_IMGUI_EXTERNAL_LIB", False)
 
 if _CYTHONIZE_WITH_COVERAGE and not USE_CYTHON:
