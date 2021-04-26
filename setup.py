@@ -74,7 +74,8 @@ else:
     cythonize_opts = {}
     general_macros = []
 
-if _IMGUI_EXTERNAL_LIB:
+# No need for import defines on Unix systems
+if _IMGUI_EXTERNAL_LIB and sys.platform in ('cygwin', 'win32'):
     general_macros += [('IMGUI_API', '__declspec(dllimport)')]
 
 def extension_sources(path):
