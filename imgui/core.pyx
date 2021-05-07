@@ -1455,6 +1455,8 @@ cdef class _IO(object):
         self._fonts = _FontAtlas.from_ptr(self._ptr.Fonts)
         self._get_clipboard_text_fn = None
         self._set_clipboard_text_fn = None
+        self._keep_ini_alive = None
+        self._keep_logfile_alive = None
 
     # ... maping of input properties ...
     @property
@@ -1503,6 +1505,7 @@ cdef class _IO(object):
 
     @log_file_name.setter
     def log_file_name(self, char* value):
+        self._keep_logfile_alive = value
         self._ptr.LogFilename = value
 
     @property
@@ -1511,6 +1514,7 @@ cdef class _IO(object):
 
     @ini_file_name.setter
     def ini_file_name(self, char* value):
+        self._keep_ini_alive = value
         self._ptr.IniFilename = value
 
     @property
