@@ -45,10 +45,13 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         key_map[imgui.KEY_PAGE_DOWN] = glfw.KEY_PAGE_DOWN
         key_map[imgui.KEY_HOME] = glfw.KEY_HOME
         key_map[imgui.KEY_END] = glfw.KEY_END
+        key_map[imgui.KEY_INSERT] = glfw.KEY_INSERT
         key_map[imgui.KEY_DELETE] = glfw.KEY_DELETE
         key_map[imgui.KEY_BACKSPACE] = glfw.KEY_BACKSPACE
+        key_map[imgui.KEY_SPACE] = glfw.KEY_SPACE
         key_map[imgui.KEY_ENTER] = glfw.KEY_ENTER
         key_map[imgui.KEY_ESCAPE] = glfw.KEY_ESCAPE
+        key_map[imgui.KEY_PAD_ENTER] = glfw.KEY_KP_ENTER
         key_map[imgui.KEY_A] = glfw.KEY_A
         key_map[imgui.KEY_C] = glfw.KEY_C
         key_map[imgui.KEY_V] = glfw.KEY_V
@@ -126,5 +129,6 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             self.io.delta_time = current_time - self._gui_time
         else:
             self.io.delta_time = 1. / 60.
+        if(io.delta_time <= 0.0): io.delta_time = 1./ 1000.
 
         self._gui_time = current_time

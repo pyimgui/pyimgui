@@ -87,6 +87,8 @@ def extension_sources(path):
             'imgui-cpp/imgui_draw.cpp',
             'imgui-cpp/imgui_demo.cpp',
             'imgui-cpp/imgui_widgets.cpp',
+            'imgui-cpp/imgui_tables.cpp',
+            'config-cpp/py_imconfig.cpp'
         ]
 
     sources += [
@@ -102,7 +104,6 @@ def backend_extras(*requirements):
     All built-in backends depend on PyOpenGL so add it as default requirement.
     """
     return ["PyOpenGL"] + list(requirements)
-
 
 EXTRAS_REQUIRE = {
     'Cython':  ['Cython>=0.24,<0.30'],
@@ -127,6 +128,15 @@ EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
 EXTENSIONS = [
     Extension(
         "imgui.core", extension_sources("imgui/core"),
+        extra_compile_args=os_specific_flags,
+        define_macros=[
+            # note: for raising custom exceptions directly in ImGui code
+            ('PYIMGUI_CUSTOM_EXCEPTION', None)
+        ] + os_specific_macros + general_macros,
+        include_dirs=['imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp'],
+    ),
+    Extension(
+        "imgui.internal", extension_sources("imgui/internal"),
         extra_compile_args=os_specific_flags,
         define_macros=[
             # note: for raising custom exceptions directly in ImGui code

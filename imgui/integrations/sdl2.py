@@ -40,7 +40,7 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
     def _map_keys(self):
         key_map = self.io.key_map
 
-        key_map[imgui.KEY_TAB] = SDLK_TAB
+        key_map[imgui.KEY_TAB] = SDL_SCANCODE_TAB
         key_map[imgui.KEY_LEFT_ARROW] = SDL_SCANCODE_LEFT
         key_map[imgui.KEY_RIGHT_ARROW] = SDL_SCANCODE_RIGHT
         key_map[imgui.KEY_UP_ARROW] = SDL_SCANCODE_UP
@@ -49,16 +49,19 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         key_map[imgui.KEY_PAGE_DOWN] = SDL_SCANCODE_PAGEDOWN
         key_map[imgui.KEY_HOME] = SDL_SCANCODE_HOME
         key_map[imgui.KEY_END] = SDL_SCANCODE_END
-        key_map[imgui.KEY_DELETE] = SDLK_DELETE
-        key_map[imgui.KEY_BACKSPACE] = SDLK_BACKSPACE
-        key_map[imgui.KEY_ENTER] = SDLK_RETURN
-        key_map[imgui.KEY_ESCAPE] = SDLK_ESCAPE
-        key_map[imgui.KEY_A] = SDLK_a
-        key_map[imgui.KEY_C] = SDLK_c
-        key_map[imgui.KEY_V] = SDLK_v
-        key_map[imgui.KEY_X] = SDLK_x
-        key_map[imgui.KEY_Y] = SDLK_y
-        key_map[imgui.KEY_Z] = SDLK_z
+        key_map[imgui.KEY_INSERT] = SDL_SCANCODE_INSERT
+        key_map[imgui.KEY_DELETE] = SDL_SCANCODE_DELETE
+        key_map[imgui.KEY_BACKSPACE] = SDL_SCANCODE_BACKSPACE
+        key_map[imgui.KEY_SPACE] = SDL_SCANCODE_SPACE
+        key_map[imgui.KEY_ENTER] = SDL_SCANCODE_RETURN
+        key_map[imgui.KEY_ESCAPE] = SDL_SCANCODE_ESCAPE
+        key_map[imgui.KEY_PAD_ENTER] = SDL_SCANCODE_KP_ENTER
+        key_map[imgui.KEY_A] = SDL_SCANCODE_A
+        key_map[imgui.KEY_C] = SDL_SCANCODE_C
+        key_map[imgui.KEY_V] = SDL_SCANCODE_V
+        key_map[imgui.KEY_X] = SDL_SCANCODE_X
+        key_map[imgui.KEY_Y] = SDL_SCANCODE_Y
+        key_map[imgui.KEY_Z] = SDL_SCANCODE_Z
 
     def process_event(self, event):
         io = self.io
@@ -77,7 +80,7 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
             return True
 
         if event.type == SDL_KEYUP or event.type == SDL_KEYDOWN:
-            key = event.key.keysym.sym & ~SDLK_SCANCODE_MASK
+            key = event.key.keysym.scancode
 
             if key < SDL_NUM_SCANCODES:
                 io.keys_down[key] = event.type == SDL_KEYDOWN
@@ -109,9 +112,10 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         current_time = SDL_GetTicks() / 1000.0
 
         if self._gui_time:
-            self.io.delta_time = current_time - self._gui_time
+            io.delta_time = current_time - self._gui_time
         else:
-            self.io.delta_time = 1. / 60.
+            io.delta_time = 1. / 60.
+        if(io.delta_time <= 0.0): io.delta_time = 1./ 1000.
         self._gui_time = current_time
 
         mx = ctypes.pointer(ctypes.c_int(0))
