@@ -40,7 +40,7 @@ def get_version(version_tuple):
     return '.'.join(map(str, version_tuple))
 
 
-init = os.path.join(os.path.dirname(__file__), 'imgui', '__init__.py')
+init = os.path.join(os.path.dirname(__file__), 'gaiaengine', 'imgui', '__init__.py')
 version_line = list(filter(lambda l: l.startswith('VERSION'), open(init)))[0]
 
 VERSION = get_version(eval(version_line.split('=')[-1]))
@@ -126,22 +126,22 @@ EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
 
 EXTENSIONS = [
     Extension(
-        "imgui.core", extension_sources("imgui/core"),
+        "gaiaengine.imgui.core", extension_sources("gaiaengine/imgui/core"),
         extra_compile_args=os_specific_flags,
         define_macros=[
             # note: for raising custom exceptions directly in ImGui code
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
         ] + os_specific_macros + general_macros,
-        include_dirs=['imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp'],
+        include_dirs=['gaiaengine/imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp'],
     ),
     Extension(
-        "imgui.internal", extension_sources("imgui/internal"),
+        "gaiaengine.imgui.internal", extension_sources("gaiaengine/imgui/internal"),
         extra_compile_args=os_specific_flags,
         define_macros=[
             # note: for raising custom exceptions directly in ImGui code
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
         ] + os_specific_macros + general_macros,
-        include_dirs=['imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp'],
+        include_dirs=['gaiaengine/imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp'],
     ),
 ]
 
