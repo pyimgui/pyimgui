@@ -1481,7 +1481,10 @@ cdef class _IO(object):
     def __init__(self):
         self._ptr = &cimgui.GetIO()
         self._fonts = _FontAtlas.from_ptr(self._ptr.Fonts)
-        
+
+        self._keep_ini_alive = None
+        self._keep_logfile_alive = None
+
         if <uintptr_t>cimgui.GetCurrentContext() not in _io_clipboard:
             _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()] = {'_get_clipboard_text_fn': None,
                                                                     '_set_clipboard_text_fn': None}
@@ -1533,6 +1536,7 @@ cdef class _IO(object):
 
     @log_file_name.setter
     def log_file_name(self, char* value):
+        self._keep_logfile_alive = value
         self._ptr.LogFilename = value
 
     @property
@@ -1541,6 +1545,7 @@ cdef class _IO(object):
 
     @ini_file_name.setter
     def ini_file_name(self, char* value):
+        self._keep_ini_alive = value
         self._ptr.IniFilename = value
 
     @property
