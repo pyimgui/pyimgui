@@ -705,7 +705,7 @@ def show_test_window():
                 # TODO - figure is what the deal is with is_key_pressed, I can't find it anywhere
                 # if imgui.is_key_pressed(imgui.get_key_index(imgui.KEY_SPACE)):
                 #     io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
-                #     clicked, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", io.config_flags, imgui.CONFIG_NO_MOUSE_CURSOR_CHARGE)
+                #     clicked, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", io.config_flags, imgui.CONFIG_NO_MOUSE_CURSOR_CHANGE)
             imgui.same_line()
             show_help_marker(
                 "Instruct back-end to not alter mouse cursor shape and visibility."
