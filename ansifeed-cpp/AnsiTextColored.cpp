@@ -26,7 +26,7 @@ namespace jet
 namespace ImGui
 {
     static const int kMaxChar = 10000;
-    static char char_buf[kMaxChar];
+    // static char char_buf[kMaxChar];
     static ImU32 col_buf[kMaxChar];
     static bool char_skip[kMaxChar];
 
@@ -64,7 +64,9 @@ namespace ImGui
         }
 
         std::string seq( &s[2], seqEnd );
-        std::string colorStr;
+        char colorNum = -1;
+        bool bold = false;
+        int exit_condition = 0;
 #ifdef _MSC_VER
     #if _MSC_VER < 1700
         //https://en.wikipedia.org/wiki/Microsoft_Visual_C
@@ -77,23 +79,49 @@ namespace ImGui
         for (const std::string& el : jet::split(seq, ";")) {
 #endif
             if (el[0] == '3' && el.size() == 2) {
-                colorStr = el;
-                break;
+                colorNum = el[1];
+            }
+            else if (el[0] == '1' && el.size() == 1) {
+                bold = true;
+            }
+            //Not expecting 50 commands in a row or more; most likely 1-8 or so
+            if(++exit_condition > 50)
+            {
+                return false;
             }
         }
 
-        if (!colorStr.empty()) {
-            switch (colorStr[1]) {
-            case '0': *col = 0xffcccccc; break;
-            case '1': *col = 0xff7a77f2; break;
-            case '2': *col = 0xff99cc99; break;
-            case '3': *col = 0xff66ccff; break;
-            case '4': *col = 0xffcc9966; break;
-            case '5': *col = 0xffcc99cc; break;
-            case '6': *col = 0xffcccc66; break;
-            case '7': *col = 0xff2d2d2d; break;
-            default: return false;
+        if (colorNum != -1) {
+            if(bold)
+            {
+                //Colors based on the WT Campbell theme: https://docs.microsoft.com/en-us/windows/terminal/customize-settings/color-schemes
+                switch (colorNum) {
+                case '0': *col = 0xff767676; break;//BOLD_BLACK	
+                case '1': *col = 0xff5648e7; break;//BOLD_RED	
+                case '2': *col = 0xff0cc616; break;//BOLD_GREEN	
+                case '3': *col = 0xffa5f1f9; break;//BOLD_YELLOW	
+                case '4': *col = 0xffff783b; break;//BOLD_BLUE	
+                case '5': *col = 0xff9e00b4; break;//BOLD_MAGENTA
+                case '6': *col = 0xffd6d661; break;//BOLD_CYAN	
+                case '7': *col = 0xfff2f2f2; break;//BOLD_WHITE	
+                default: return false;
+                }
             }
+            else //not bold
+            {
+                switch (colorNum) {
+                case '0': *col = 0xff0c0c0c; break;//BLACK	
+                case '1': *col = 0xff1f0fc5; break;//RED	
+                case '2': *col = 0xff0ea113; break;//GREEN	
+                case '3': *col = 0xff009cc1; break;//YELLOW	
+                case '4': *col = 0xffda3700; break;//BLUE	
+                case '5': *col = 0xff981788; break;//MAGENTA
+                case '6': *col = 0xffdd963a; break;//CYAN	
+                case '7': *col = 0xffcccccc; break;//WHITE	
+                default: return false;
+                }
+            }
+            
         }
 
         *skipChars = static_cast<int>(seqEnd - s + 1);
@@ -180,7 +208,7 @@ namespace ImGui
                     index += skipChars;
                 }
                 else {
-                    char_buf[index] = *sLocal;
+                    // char_buf[index] = *sLocal;
                     col_buf[index] = temp_col;
                     char_skip[index] = false;
                     ++index;

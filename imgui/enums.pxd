@@ -122,11 +122,11 @@ cdef extern from "imgui.h":
         ImGuiStyleVar_Alpha                  # float
         ImGuiStyleVar_WindowPadding          # ImVec2
         ImGuiStyleVar_WindowRounding         # float
-        ImGuiStyleVar_WindowBorderSize       # float 
+        ImGuiStyleVar_WindowBorderSize       # float
         ImGuiStyleVar_WindowMinSize          # ImVec2
         ImGuiStyleVar_WindowTitleAlign       # ImVec2
-        ImGuiStyleVar_ChildRounding          # float 
-        ImGuiStyleVar_ChildBorderSize        # float 
+        ImGuiStyleVar_ChildRounding          # float
+        ImGuiStyleVar_ChildBorderSize        # float
         ImGuiStyleVar_PopupRounding          # float
         ImGuiStyleVar_PopupBorderSize        # float
         ImGuiStyleVar_FramePadding           # ImVec2
@@ -175,9 +175,10 @@ cdef extern from "imgui.h":
         ImGuiWindowFlags_AlwaysUseWindowPadding     # Ensure child windows without border uses style.WindowPadding (ignored by default for non-bordered child windows, because more convenient)
         ImGuiWindowFlags_NoNavInputs                # No gamepad/keyboard navigation within the window
         ImGuiWindowFlags_NoNavFocus                 # No focusing toward this window with gamepad/keyboard navigation (e.g. skipped by CTRL+TAB)
-        ImGuiWindowFlags_NoNav = ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoNavFocus 
+        ImGuiWindowFlags_NoNav = ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoNavFocus
 
     ctypedef enum ImGuiColorEditFlags_:
+        ImGuiColorEditFlags_None
         ImGuiColorEditFlags_NoAlpha
         ImGuiColorEditFlags_NoPicker               # ColorEdit: disable picker when clicking on colored square.
         ImGuiColorEditFlags_NoOptions              # ColorEdit: disable toggling options menu when right-clicking on inputs/small preview.
@@ -186,6 +187,7 @@ cdef extern from "imgui.h":
         ImGuiColorEditFlags_NoTooltip              # ColorEdit, ColorPicker, ColorButton: disable tooltip when hovering the preview.
         ImGuiColorEditFlags_NoLabel                # ColorEdit, ColorPicker: disable display of inline text label (the label is still forwarded to the tooltip and picker).
         ImGuiColorEditFlags_NoSidePreview          # ColorPicker: disable bigger color preview on right side of the picker, use small colored square preview instead.
+        ImGuiColorEditFlags_NoDragDrop
         # User Options (right-click on widget to change some of them). You can set application defaults using SetColorEditOptions(). The idea is that you probably don't want to override them in most of your calls, let the user choose and/or call SetColorEditOptions() during startup.
         ImGuiColorEditFlags_AlphaBar               # ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.
         ImGuiColorEditFlags_AlphaPreview           # ColorEdit, ColorPicker, ColorButton: display preview as a transparent color over a checkerboard, instead of opaque.
