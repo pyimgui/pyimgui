@@ -1475,10 +1475,11 @@ cdef class _IO(object):
 
     cdef cimgui.ImGuiIO* _ptr
     cdef object _fonts
-    cdef object _get_clipboard_text_fn
-    cdef object _set_clipboard_text_fn
+    cdef object _keep_ini_alive
+    cdef object _keep_logfile_alive
 
     def __init__(self):
+        
         self._ptr = &cimgui.GetIO()
         self._fonts = _FontAtlas.from_ptr(self._ptr.Fonts)
 
