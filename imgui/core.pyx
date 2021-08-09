@@ -6453,6 +6453,46 @@ def get_time():
     return cimgui.GetTime()
 
 
+def get_key_index(int key):
+    """Map ImGuiKey_* values into user's key index. == io.KeyMap[key]
+
+    Returns:
+       int: io.KeyMap[key]
+
+    .. wraps::
+        int GetKeyIndex(ImGuiKey imgui_key)
+    """
+    return cimgui.GetKeyIndex(key)
+
+
+def is_key_pressed(int key_index, bool repeat = False):
+    """Was key pressed (went from !Down to Down).
+       If repeat=true, uses io.KeyRepeatDelay / KeyRepeatRate
+
+    Returns:
+        bool: True if specified key was pressed this frame
+
+    .. wraps::
+        bool IsKeyPressed(int user_key_index)
+    """
+    return cimgui.IsKeyPressed(key_index, repeat)
+
+
+def is_key_down(int key_index):
+    """Returns if key is being held -- io.KeysDown[user_key_index].
+       Note that imgui doesn't know the semantic of each entry of
+       io.KeysDown[]. Use your own indices/enums according to how
+       your backend/engine stored them into io.KeysDown[]!
+
+    Returns:
+        bool: True if specified key is being held.
+
+    .. wraps::
+        bool IsKeyDown(int user_key_index)
+    """
+    return cimgui.IsKeyDown(key_index)
+
+
 def is_mouse_hovering_rect(
     float r_min_x, float r_min_y,
     float r_max_x, float r_max_y,
