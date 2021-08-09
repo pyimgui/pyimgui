@@ -9,6 +9,7 @@ help:
 	@echo "  completion  to get detailed overview on completion progress"
 	@echo "  coverage    to run tests with coverage"
 
+PYTHON=python
 
 # note: empty recipe as alias for .bootstrapped target
 bootstrap: .bootstrapped ;
@@ -27,8 +28,8 @@ clean:
 
 .PHONY: build
 build: bootstrap
-	_CYTHONIZE_WITH_COVERAGE=1 python -m pip install -e . -v
-	python ci/completion.py -o README.md with-pxd imgui/cimgui.pxd
+	_CYTHONIZE_WITH_COVERAGE=1 ${PYTHON} -m pip install -e . -v
+	${PYTHON} ci/completion.py -o README.md with-pxd imgui/cimgui.pxd
 
 
 .PHONY: rebuild
@@ -50,12 +51,12 @@ coverage: build
 
 .PHONY: completion
 completion:
-	_CYTHONIZE_WITH_COVERAGE=1 python -m pip install -e . -v
-	@python ci/completion.py missing `find build/ -name imgui.o -print -quit` `find build/ -name core.o -print -quit`
-	@python ci/completion.py with-nm `find build/ -name imgui.o -print -quit` `find build/ -name core.o -print -quit`
+	_CYTHONIZE_WITH_COVERAGE=1 ${PYTHON} -m pip install -e . -v
+	@${PYTHON} ci/completion.py missing `find build/ -name imgui.o -print -quit` `find build/ -name core.o -print -quit`
+	@${PYTHON} ci/completion.py with-nm `find build/ -name imgui.o -print -quit` `find build/ -name core.o -print -quit`
 
 .PHONY: ditribute
 distribute: clean
-	pip install -U Cython setuptools twine
-	python setup.py build
-	python setup.py sdist
+	${PYTHON} -m pip install -U Cython setuptools twine
+	${PYTHON} setup.py build
+	${PYTHON} setup.py sdist

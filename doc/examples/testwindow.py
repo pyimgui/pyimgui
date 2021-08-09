@@ -701,10 +701,10 @@ def show_test_window():
                 if math.fmod(imgui.get_time(), 0.40) < 0.20:
                     imgui.same_line()
                     imgui.text("<<PRESS SPACE TO DISABLE>>")
-
                 if imgui.is_key_pressed(imgui.get_key_index(imgui.KEY_SPACE)):
                     io.config_flags &= ~ imgui.CONFIG_NO_MOUSE
                 #     clicked, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", io.config_flags, imgui.CONFIG_NO_MOUSE_CURSOR_CHARGE)
+
             imgui.same_line()
             show_help_marker(
                 "Instruct back-end to not alter mouse cursor shape and visibility."
