@@ -684,11 +684,11 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             int popup_max_height_in_items
     ) except +  # Widgets: color-edits
-    bool ColorEdit3(const char* label, float col[3]) except +  # ✓
+    bool ColorEdit3(const char* label, float col[3], ImGuiColorEditFlags) except +  # ✓
     bool ColorEdit4(  # ✓
             const char* label, float col[4],
             # note: optional
-            bool show_alpha
+            ImGuiColorEditFlags
     ) except +  #void ColorEditMode(ImGuiColorEditMode mode) except +  # note: obsoleted
 
     # Widgets: plots
