@@ -1,7 +1,8 @@
+version: 1.4.{build}
 environment:
   global:
     DROPBOX_TOKEN:
-      secure: UO64ZwJpnDQe5c7xArS14TLnqUi7TR76tJLpZVxo5lV8GJXEkDBEOjFsmaEVFQ/rvqCmMkECYE3RNWhFO/DE0o3Vh/6FCOiO2ZAQsKkOIGk=
+      secure: a+7HvvAItUFtApW6GmY1HW4n3KPqR5/2KMt54YOap4ShTzbOPCkF05vOox8aiuQO2bnkvtax9PCOaEzVR15tYxeFH8qBaxHMCp7nU9AyUpk=
 
   matrix:
     # win builds
