@@ -542,7 +542,7 @@ CONFIG_NAV_ENABLE_GAMEPAD = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavEnableGa
 CONFIG_NAV_ENABLE_SET_MOUSE_POS = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavEnableSetMousePos
 CONFIG_NAV_NO_CAPTURE_KEYBOARD = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavNoCaptureKeyboard
 CONFIG_NO_MOUSE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouse
-CONFIG_NO_MOUSE_CURSOR_CHARGE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouseCursorChange
+CONFIG_NO_MOUSE_CURSOR_CHANGE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouseCursorChange
 CONFIG_IS_RGB = enums.ImGuiConfigFlags_.ImGuiConfigFlags_IsSRGB
 CONFIG_IS_TOUCH_SCREEN = enums.ImGuiConfigFlags_.ImGuiConfigFlags_IsTouchScreen
 
@@ -2367,14 +2367,20 @@ cdef class _IO(object):
 
     cdef cimgui.ImGuiIO* _ptr
     cdef object _fonts
-    cdef object _get_clipboard_text_fn
-    cdef object _set_clipboard_text_fn
+    cdef object _keep_ini_alive
+    cdef object _keep_logfile_alive
 
     def __init__(self):
+        
         self._ptr = &cimgui.GetIO()
         self._fonts = _FontAtlas.from_ptr(self._ptr.Fonts)
-        self._get_clipboard_text_fn = None
-        self._set_clipboard_text_fn = None
+
+        self._keep_ini_alive = None
+        self._keep_logfile_alive = None
+
+        if <uintptr_t>cimgui.GetCurrentContext() not in _io_clipboard:
+            _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()] = {'_get_clipboard_text_fn': None,
+                                                                    '_set_clipboard_text_fn': None}
 
     # ... maping of input properties ...
     @property
@@ -2423,6 +2429,7 @@ cdef class _IO(object):
 
     @log_file_name.setter
     def log_file_name(self, char* value):
+        self._keep_logfile_alive = value
         self._ptr.LogFilename = value
 
     @property
@@ -2431,6 +2438,7 @@ cdef class _IO(object):
 
     @ini_file_name.setter
     def ini_file_name(self, char* value):
+        self._keep_ini_alive = value
         self._ptr.IniFilename = value
 
     @property
@@ -2584,8 +2592,7 @@ cdef class _IO(object):
 
     @staticmethod
     cdef const char* _get_clipboard_text(void* user_data):
-        
-        text = _io.get_clipboard_text_fn()
+        text = _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_get_clipboard_text_fn']()
         
         # get_clipboard_text_fn() may return None
         # (e.g. if the user copied non text data)
@@ -2598,28 +2605,28 @@ cdef class _IO(object):
 
     @property
     def get_clipboard_text_fn(self):
-        return self._get_clipboard_text_fn
+        return _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_get_clipboard_text_fn']
 
     @get_clipboard_text_fn.setter
     def get_clipboard_text_fn(self, func):
         if callable(func):
-            self._get_clipboard_text_fn = func
+            _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_get_clipboard_text_fn'] = func
             self._ptr.GetClipboardTextFn = self._get_clipboard_text
         else:
             raise ValueError("func is not a callable: %s" % str(func))
 
     @staticmethod
     cdef void _set_clipboard_text(void* user_data, const char* text):
-        _io.set_clipboard_text_fn(_from_bytes(text))
+        _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_set_clipboard_text_fn'](_from_bytes(text))
 
     @property
     def set_clipboard_text_fn(self):
-        return self._set_clipboard_text_fn
+        return _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_set_clipboard_text_fn']
 
     @set_clipboard_text_fn.setter
     def set_clipboard_text_fn(self, func):
         if callable(func):
-            self._set_clipboard_text_fn = func
+            _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_set_clipboard_text_fn'] = func
             self._ptr.SetClipboardTextFn = self._set_clipboard_text
         else:
             raise ValueError("func is not a callable: %s" % str(func))
@@ -3001,14 +3008,9 @@ cdef class _ImGuiSizeCallbackData(object):
         self._require_pointer()
         self._ptr.DesiredSize = _cast_args_ImVec2(size[0], size[1])
        
-_io = None
+_io_clipboard = {}
 def get_io():
-    global _io
-
-    if not _io:
-        _io = _IO()
-
-    return _io
+    return _IO()
 
 def get_style():
     return GuiStyle.from_ref(cimgui.GetStyle())
@@ -5881,6 +5883,7 @@ def color_edit3(str label, float r, float g, float b, cimgui.ImGuiColorEditFlags
         r (float): red color intensity.
         g (float): green color intensity.
         b (float): blue color instensity.
+        #ImGuiColorEditFlags: Color edit flags.  Zero for none.
 
     Returns:
         tuple: a ``(bool changed, float color[3])`` tuple that contains indicator of color
@@ -5898,7 +5901,7 @@ def color_edit3(str label, float r, float g, float b, cimgui.ImGuiColorEditFlags
 
 
 def color_edit4(
-    str label, float r, float g, float b, float a, cimgui.bool show_alpha=True
+        str label, float r, float g, float b, float a, cimgui.bool show_alpha=True, flags=0
 ):
     """Display color edit widget for color with alpha value.
 
@@ -5927,6 +5930,7 @@ def color_edit4(
         b (float): blue color instensity.
         a (float): alpha intensity.
         show_alpha (bool): if set to True wiget allows to modify alpha
+        #ImGuiColorEditFlags: Color edit flags.  Zero for none.
 
     Returns:
         tuple: a ``(bool changed, float color[4])`` tuple that contains indicator of color
@@ -5934,13 +5938,13 @@ def color_edit4(
 
     .. wraps::
         ColorEdit4(
-            const char* label, float col[4], bool show_alpha = true
+            const char* label, float col[4], ImGuiColorEditFlags flags
         )
     """
     cdef float[4] inout_color = [r, g, b, a]
 
     return cimgui.ColorEdit4(
-        _bytes(label), <float *>(&inout_color), show_alpha
+        _bytes(label), <float *>(&inout_color), flags & show_alpha
     ), (inout_color[0], inout_color[1], inout_color[2], inout_color[3])
 
 
@@ -8918,6 +8922,46 @@ def get_foreground_draw_list():
         ImDrawList* GetForegroundDrawList()
     """
     return _DrawList.from_ptr(cimgui.GetForegroundDrawList())
+
+
+def get_key_index(int key):
+    """Map ImGuiKey_* values into user's key index. == io.KeyMap[key]
+
+    Returns:
+       int: io.KeyMap[key]
+
+    .. wraps::
+        int GetKeyIndex(ImGuiKey imgui_key)
+    """
+    return cimgui.GetKeyIndex(key)
+
+
+def is_key_pressed(int key_index, bool repeat = False):
+    """Was key pressed (went from !Down to Down).
+       If repeat=true, uses io.KeyRepeatDelay / KeyRepeatRate
+
+    Returns:
+        bool: True if specified key was pressed this frame
+
+    .. wraps::
+        bool IsKeyPressed(int user_key_index)
+    """
+    return cimgui.IsKeyPressed(key_index, repeat)
+
+
+def is_key_down(int key_index):
+    """Returns if key is being held -- io.KeysDown[user_key_index].
+       Note that imgui doesn't know the semantic of each entry of
+       io.KeysDown[]. Use your own indices/enums according to how
+       your backend/engine stored them into io.KeysDown[]!
+
+    Returns:
+        bool: True if specified key is being held.
+
+    .. wraps::
+        bool IsKeyDown(int user_key_index)
+    """
+    return cimgui.IsKeyDown(key_index)
 
 
 def is_mouse_hovering_rect(

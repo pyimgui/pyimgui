@@ -1,23 +1,26 @@
 environment:
   global:
     DROPBOX_TOKEN:
-      secure: UO64ZwJpnDQe5c7xArS14TLnqUi7TR76tJLpZVxo5lV8GJXEkDBEOjFsmaEVFQ/rvqCmMkECYE3RNWhFO/DE0o3Vh/6FCOiO2ZAQsKkOIGk=
+      secure: a+7HvvAItUFtApW6GmY1HW4n3KPqR5/2KMt54YOap4ShTzbOPCkF05vOox8aiuQO2bnkvtax9PCOaEzVR15tYxeFH8qBaxHMCp7nU9AyUpk=
 
   matrix:
     # win builds
     - PYTHON: "C:\\Python27"
       PYTHON_ARCH: 32
       MSVC_VERSION: "Visual Studio 10"
+      appveyor_build_worker_image: Visual Studio 2015
       job_group: "windows"
 
     - PYTHON: "C:\\Python33"
       PYTHON_ARCH: 32
       MSVC_VERSION: "Visual Studio 10"
+      appveyor_build_worker_image: Visual Studio 2015
       job_group: "windows"
 
     - PYTHON: "C:\\Python34"
       PYTHON_ARCH: 32
       MSVC_VERSION: "Visual Studio 10"
+      appveyor_build_worker_image: Visual Studio 2015
       job_group: "windows"
 
     - PYTHON: "C:\\Python35"
@@ -51,17 +54,20 @@ environment:
     - PYTHON: "C:\\Python27-x64"
       PYTHON_ARCH: 64
       MSVC_VERSION: "Visual Studio 10 Win64"
+      appveyor_build_worker_image: Visual Studio 2015
       job_group: "windows"
 
     - PYTHON: "C:\\Python33-x64"
       PYTHON_ARCH: 64
       MSVC_VERSION: "Visual Studio 10 Win64"
+      appveyor_build_worker_image: Visual Studio 2015
       DISTUTILS_USE_SDK: "1"
       job_group: "windows"
 
     - PYTHON: "C:\\Python34-x64"
       PYTHON_ARCH: 64
       MSVC_VERSION: "Visual Studio 10 Win64"
+      appveyor_build_worker_image: Visual Studio 2015
       DISTUTILS_USE_SDK: "1"
       job_group: "windows"
 
@@ -119,6 +125,35 @@ environment:
     - PY_VERSION: 3.9
       job_group: "macos"
       appveyor_build_worker_image: macos
+
+    # linux builds
+    - PY_VERSION: 2.7
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.4
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.5
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.6
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.7
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.8
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.9
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
 
 
 for:
