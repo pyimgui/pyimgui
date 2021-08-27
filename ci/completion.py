@@ -42,11 +42,13 @@ def with_nm(ctx, srclib, dstlib):
 
 
 @cli.command(name='with-pxd')
-@click.argument('pxd_file', type=click.File('r'))
+@click.argument('pxd_files', type=click.File('r', encoding='utf-8'), nargs=-1)
 @click.pass_context
-def with_pxd(ctx, pxd_file):
-    lines = pxd_file.readlines()
-
+def with_pxd(ctx, pxd_files):
+    lines = []
+    for pxd_file in pxd_files:
+        lines += pxd_file.readlines()
+    
     all_count = len(list(filter(ALL_RE.match, lines)))
     done_count = len(list(filter(DONE_RE.match, lines)))
 

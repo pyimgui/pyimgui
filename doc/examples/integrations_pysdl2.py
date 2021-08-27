@@ -13,6 +13,8 @@ def main():
     imgui.create_context()
     impl = SDL2Renderer(window)
 
+    show_custom_window = True
+
     running = True
     event = SDL_Event()
     while running:
@@ -41,10 +43,12 @@ def main():
         show_test_window()
         #imgui.show_test_window()
 
-        imgui.begin("Custom window", True)
-        imgui.text("Bar")
-        imgui.text_colored("Eggs", 0.2, 1., 0.)
-        imgui.end()
+        if show_custom_window:
+            is_expand, show_custom_window = imgui.begin("Custom window", True)
+            if is_expand:
+                imgui.text("Bars")
+                imgui.text_colored("Eggs", 0.2, 1., 0.)
+            imgui.end()
 
         gl.glClearColor(1., 1., 1., 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)

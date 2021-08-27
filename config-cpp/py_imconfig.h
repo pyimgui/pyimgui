@@ -24,6 +24,8 @@ extern "C" {
 // lousy workaround for missing stdint.h in Visual C++ for Python
 typedef unsigned __int64     uint64_t;
 typedef signed __int64       int64_t;
+typedef unsigned __int32     uint32_t;
+typedef signed __int32       int32_t;
 #endif
 
 // Redefine IM_ASSERT to raise Python specific exceptions

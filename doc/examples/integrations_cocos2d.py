@@ -15,8 +15,10 @@ class HelloWorld(ImguiLayer):
     def __init__(self):
         super(HelloWorld, self).__init__()
         self._text = "Input text here"
+        self.show_custom_window = True
 
     def draw(self, *args, **kwargs):
+        self.process_inputs()
         imgui.new_frame()
 
         if imgui.begin_main_menu_bar():
@@ -34,10 +36,12 @@ class HelloWorld(ImguiLayer):
 
         imgui.show_test_window()
 
-        imgui.begin("Custom window", True)
-        imgui.text("Bar")
-        imgui.text_colored("Eggs", 0.2, 1., 0.)
-        imgui.end()
+        if self.show_custom_window:
+            is_expand, self.show_custom_window = imgui.begin("Custom window", True)
+            if is_expand:
+                imgui.text("Bar")
+                imgui.text_colored("Eggs", 0.2, 1., 0.)
+            imgui.end()
 
         gl.glClearColor(1., 1., 1., 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
