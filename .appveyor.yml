@@ -7,12 +7,14 @@ environment:
 
     # linux builds
     #- DOCKER_IMAGE: "quay.io/pypa/manylinux1_x86_64"
+    #  GCC_VERSION: 9
     #  services: docker
     #  job_group: "linux"
     #  appveyor_build_worker_image: ubuntu
       
     - DOCKER_IMAGE: "quay.io/pypa/manylinux1_i686"
       PRE_CMD: "linux32"
+      GCC_VERSION: 9
       services: docker
       job_group: "linux"
       appveyor_build_worker_image: ubuntu
