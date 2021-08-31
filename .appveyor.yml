@@ -249,7 +249,7 @@ for:
     build_script:
       # todo: install from wheel to avoid double compilation
       - sh: |
-        ./ci/travis_build.sh
+          ./ci/travis_build.sh
 
 on_success:
   - ps: |
