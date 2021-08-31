@@ -4,6 +4,50 @@ environment:
       secure: a+7HvvAItUFtApW6GmY1HW4n3KPqR5/2KMt54YOap4ShTzbOPCkF05vOox8aiuQO2bnkvtax9PCOaEzVR15tYxeFH8qBaxHMCp7nU9AyUpk=
 
   matrix:
+
+    # linux builds
+    - PY_VERSION: 2.7
+      DOCKER_IMAGE: "quay.io/pypa/manylinux1_x86_64"
+      services: docker
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.4
+      DOCKER_IMAGE: "quay.io/pypa/manylinux1_x86_64"
+      services: docker
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.5
+      DOCKER_IMAGE: "quay.io/pypa/manylinux1_x86_64"
+      services: docker
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.6
+      DOCKER_IMAGE: "quay.io/pypa/manylinux1_x86_64"
+      services: docker
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.7
+      DOCKER_IMAGE: "quay.io/pypa/manylinux1_x86_64"
+      services: docker
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.8
+      DOCKER_IMAGE: "quay.io/pypa/manylinux1_x86_64"
+      services: docker
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+
+    - PY_VERSION: 3.9
+      DOCKER_IMAGE: "quay.io/pypa/manylinux1_x86_64"
+      services: docker
+      job_group: "linux"
+      appveyor_build_worker_image: ubuntu
+    
     # win builds
     - PYTHON: "C:\\Python27"
       PYTHON_ARCH: 32
@@ -126,35 +170,6 @@ environment:
       job_group: "macos"
       appveyor_build_worker_image: macos
 
-    # linux builds
-    - PY_VERSION: 2.7
-      job_group: "linux"
-      appveyor_build_worker_image: ubuntu
-
-    - PY_VERSION: 3.4
-      job_group: "linux"
-      appveyor_build_worker_image: ubuntu
-
-    - PY_VERSION: 3.5
-      job_group: "linux"
-      appveyor_build_worker_image: ubuntu
-
-    - PY_VERSION: 3.6
-      job_group: "linux"
-      appveyor_build_worker_image: ubuntu
-
-    - PY_VERSION: 3.7
-      job_group: "linux"
-      appveyor_build_worker_image: ubuntu
-
-    - PY_VERSION: 3.8
-      job_group: "linux"
-      appveyor_build_worker_image: ubuntu
-
-    - PY_VERSION: 3.9
-      job_group: "linux"
-      appveyor_build_worker_image: ubuntu
-
 
 for:
   - matrix:
@@ -216,6 +231,25 @@ for:
           ls dist
           python -m pip install -e .
           PYTHONDEVMODE=1 python -m pytest -v --color=yes
+
+  - matrix:
+      only:
+        - job_group: linux
+
+    init:
+      - sh: |
+          ./ci/travis_before.sh
+
+    install:
+      # python requirements needed to create distribution
+      - sh: |
+          python --version
+          git submodule update --init --recursive
+
+    build_script:
+      # todo: install from wheel to avoid double compilation
+      - sh: |
+        ./ci/travis_build.sh
 
 on_success:
   - ps: |

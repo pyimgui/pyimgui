@@ -2,11 +2,11 @@
 # stop on failures immediately
 set -e
 
-travis_fold() {
-  local action=$1
-  local name=$2
-  echo -en "travis_fold:${action}:${name}\r"
-}
+#travis_fold() {
+#  local action=$1
+#  local name=$2
+#  echo -en "travis_fold:${action}:${name}\r"
+#}
 
 if [[ $DOCKER_IMAGE ]]; then
     # if docker image is set then run actual Linux build inside of docker
