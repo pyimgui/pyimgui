@@ -75,7 +75,6 @@ cdef extern from "imgui_internal.h":
     ctypedef int ImGuiPlotType
     ctypedef int ImGuiInputSource
     ctypedef int ImGuiInputReadMode
-    ctypedef int ImGuiNavForward
     ctypedef int ImGuiNavLayer
     ctypedef int ImGuiPopupPositionPolicy
     ctypedef void (*ImGuiErrorLogCallback)(void* user_data, const char* fmt, ...)
@@ -280,7 +279,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
         const ImRect* nav_bb            # = NULL
     ) except +
     bool ItemHoverable(const ImRect& bb, ImGuiID id) except + # ?
-    bool IsClippedEx(const ImRect& bb, ImGuiID id, bool clip_even_when_logged) except + # ?
+    bool IsClippedEx(const ImRect& bb, ImGuiID id) except + # ?
     void SetLastItemData(ImGuiWindow* window, ImGuiID item_id, ImGuiItemStatusFlags status_flags, const ImRect& item_rect) except + # ?
     bool FocusableItemRegister(ImGuiWindow* window, ImGuiID id) except + # ?
     void FocusableItemUnregister(ImGuiWindow* window) except + # ?

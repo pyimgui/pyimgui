@@ -186,7 +186,7 @@ COLOR_EDIT_PICKER_HUE_WHEEL = enums.ImGuiColorEditFlags_PickerHueWheel
 COLOR_EDIT_INPUT_RGB = enums.ImGuiColorEditFlags_InputRGB        
 COLOR_EDIT_INPUT_HSV = enums.ImGuiColorEditFlags_InputHSV        
 
-COLOR_EDIT_DEFAULT_OPTIONS = enums.ImGuiColorEditFlags__OptionsDefault
+COLOR_EDIT_DEFAULT_OPTIONS = enums.ImGuiColorEditFlags_DefaultOptions_
 
 # ==== TreeNode flags enum redefines ====
 TREE_NODE_NONE = enums.ImGuiTreeNodeFlags_None
@@ -3780,7 +3780,7 @@ def get_overlay_draw_list():
     .. wraps::
         ImDrawList* GetWindowDrawList()
     """
-    return _DrawList.from_ptr(cimgui.GetOverlayDrawList())
+    return _DrawList.from_ptr(cimgui.GetForegroundDrawList())
 
 
 def get_window_position():
