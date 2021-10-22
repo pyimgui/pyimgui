@@ -42,7 +42,7 @@ from cpython.version cimport PY_MAJOR_VERSION
 # todo: find a way to cimport this directly from imgui.h
 DEF TARGET_IMGUI_VERSION = (1, 79)
 
-cdef unsigned short* _LATIN_ALL = [0x0020, 0x024F , 0]
+cdef unsigned int* _LATIN_ALL = [0x0020, 0x024F , 0]
 
 # ==== Condition enum redefines ====
 NONE = enums.ImGuiCond_None
@@ -2198,6 +2198,80 @@ cdef class _StaticGlyphRanges(object):
         return instance
 
 
+cdef class GlyphRanges(object):
+    cdef const cimgui.ImWchar* ranges_ptr
+
+    def __init__(self, glyph_ranges):
+        self.ranges_ptr = NULL
+        range_list = list(glyph_ranges)
+        if len(range_list) % 2 != 1 or range_list[-1] != 0:
+            raise RuntimeError('glyph_ranges must be pairs of integers (inclusive range) followed by a zero')
+        arr = <cimgui.ImWchar*>malloc(sizeof(cimgui.ImWchar) * len(range_list))
+        self.ranges_ptr = arr
+        for i, value in enumerate(range_list):
+            i_value = int(value)
+            if i_value < 0:
+                raise RuntimeError('glyph_ranges cannot contain negative values')
+            arr[i] = i_value
+
+    def __del__(self):
+        free(<void*>self.ranges_ptr)
+        self.ranges_ptr = NULL
+
+
+cdef class FontConfig(object):
+    cdef cimgui.ImFontConfig config
+
+    def __init__(
+        self,
+        font_no=None,
+        size_pixels=None,
+        oversample_h=None,
+        oversample_v=None,
+        pixel_snap_h=None,
+        glyph_extra_spacing_x=None,
+        glyph_extra_spacing_y=None,
+        glyph_offset_x=None,
+        glyph_offset_y=None,
+        glyph_min_advance_x=None,
+        glyph_max_advance_x=None,
+        merge_mode=None,
+        font_builder_flags=None,
+        rasterizer_multiply=None,
+        ellipsis_char=None
+        ):
+        if font_no is not None:
+            self.config.FontNo = font_no
+        if size_pixels is not None:
+            self.config.SizePixels = size_pixels
+        if oversample_h is not None:
+            self.config.OversampleH = oversample_h
+        if oversample_v is not None:
+            self.config.OversampleV = oversample_v
+        if pixel_snap_h is not None:
+            self.config.PixelSnapH = pixel_snap_h
+        if glyph_extra_spacing_x is not None:
+            self.config.GlyphExtraSpacing.x = glyph_extra_spacing_x
+        if glyph_extra_spacing_y is not None:
+            self.config.GlyphExtraSpacing.y = glyph_extra_spacing_y
+        if glyph_offset_x is not None:
+            self.config.GlyphOffset.x = glyph_offset_x
+        if glyph_offset_y is not None:
+            self.config.GlyphOffset.y = glyph_offset_y
+        if glyph_min_advance_x is not None:
+            self.config.GlyphMinAdvanceX = glyph_min_advance_x
+        if glyph_max_advance_x is not None:
+            self.config.GlyphMaxAdvanceX = glyph_max_advance_x
+        if merge_mode is not None:
+            self.config.MergeMode = merge_mode
+        #if font_builder_flags is not None:
+        #    self.config.FontBuilderFlags = font_builder_flags
+        if rasterizer_multiply is not None:
+            self.config.RasterizerMultiply = rasterizer_multiply
+        if ellipsis_char is not None:
+            self.config.EllipsisChar = ellipsis_char
+
+
 cdef class _Font(object):
     @staticmethod
     cdef from_ptr(cimgui.ImFont* ptr):
@@ -2253,16 +2327,29 @@ cdef class _FontAtlas(object):
 
     def add_font_from_file_ttf(
         self, str filename, float size_pixels,
-        _StaticGlyphRanges glyph_ranges=None,
+        font_config=None,
+        glyph_ranges=None
     ):
         self._require_pointer()
-        # note: cannot use cimgui.ImWchar here due to Cython bug
-        # note: whole unicode
-        cdef char* in_glyph_ranges
+
+        cdef const cimgui.ImWchar* p_glyph_ranges;
+
+        if glyph_ranges is None:
+            p_glyph_ranges = NULL
+        elif isinstance(glyph_ranges, _StaticGlyphRanges):
+            p_glyph_ranges = (<_StaticGlyphRanges>glyph_ranges).ranges_ptr
+        elif isinstance(glyph_ranges, GlyphRanges):
+            p_glyph_ranges = (<GlyphRanges>glyph_ranges).ranges_ptr
+        else:
+            raise RuntimeError('glyph_ranges: invalid type')
+
+        cdef cimgui.ImFontConfig config
+        if font_config is not None:
+            config = (<FontConfig>font_config).config
 
         return _Font.from_ptr(self._ptr.AddFontFromFileTTF(
-            _bytes(filename), size_pixels,  NULL,
-            glyph_ranges.ranges_ptr if glyph_ranges is not None else NULL
+            _bytes(filename), size_pixels,  &config,
+            p_glyph_ranges
         ))
 
     def clear_tex_data(self):

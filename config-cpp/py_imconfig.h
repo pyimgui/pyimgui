@@ -40,3 +40,6 @@ void __py_assert(const char* msg);
 
 // tune vertex index size to enable longer draw lists (see #138 issue)
 #define ImDrawIdx unsigned int
+
+//---- Use 32-bit for ImWchar (default is 16-bit) to support unicode planes 1-16. (e.g. point beyond 0xFFFF like emoticons, dingbats, symbols, shapes, ancient languages, etc...)
+#define IMGUI_USE_WCHAR32
