@@ -22,6 +22,7 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       APPVEYOR_JOB_NAME: "python37-x64-ubuntu"
       job_group: "linux"
+      PY_VERSION: 3.7
     
     # win builds
     - PYTHON: "C:\\Python27"
@@ -260,7 +261,7 @@ for:
       - sh: |
           python --version
           git submodule update --init --recursive
-          python -m pip install cibuildwheel==1.0.0
+          python -m pip install cibuildwheel==2.2.0
 
     # TODO: We will remove the --platform parameter when going full cibuildwheel
     build_script: python -m cibuildwheel --output-dir dist --platform linux
