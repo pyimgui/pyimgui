@@ -305,7 +305,7 @@ install:  |
   git submodule update --init --recursive
   python -m pip install cibuildwheel==2.2.0b1
 
-build_script: python -m cibuildwheel --output-dir dist
+build_script: python -m cibuildwheel --output-dir dist --config-file pyproject.toml
 
 artifacts:
   - path: "dist\\*.whl"

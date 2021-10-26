@@ -12,4 +12,4 @@ requires = [
     "click",
     "setuptools",
 ]
-
+build-backend = "setuptools.build_meta"
