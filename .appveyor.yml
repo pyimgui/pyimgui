@@ -250,12 +250,17 @@ for:
     #         coveralls
     #      fi
 
-    stack: python 3.9
+    stack: python 3.7
 
     init:
-    - cmd: set PATH=C:\Python39;C:\Python39\Scripts;%PATH%
+    - cmd: set PATH=C:\Python37;C:\Python37\Scripts;%PATH%
 
-    install: python -m pip install cibuildwheel==2.2.0
+    install:
+      # python requirements needed to create distribution
+      - sh: |
+          python --version
+          git submodule update --init --recursive
+          python -m pip install cibuildwheel==1.0.0
 
     # TODO: We will remove the --platform parameter when going full cibuildwheel
     build_script: python -m cibuildwheel --output-dir dist --platform linux
