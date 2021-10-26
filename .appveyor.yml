@@ -1,286 +1,309 @@
+#environment:
+#  global:
+#    DROPBOX_TOKEN:
+#      secure: a+7HvvAItUFtApW6GmY1HW4n3KPqR5/2KMt54YOap4ShTzbOPCkF05vOox8aiuQO2bnkvtax9PCOaEzVR15tYxeFH8qBaxHMCp7nU9AyUpk=
+#
+#  matrix:
+#
+#    # linux builds
+#    #- DOCKER_IMAGE: "quay.io/pypa/manylinux1_x86_64"
+#    #  GCC_VERSION: 9
+#    #  services: docker
+#    #  job_group: "linux"
+#    #  appveyor_build_worker_image: ubuntu
+#      
+#    #- DOCKER_IMAGE: "quay.io/pypa/manylinux1_i686"
+#    #  PRE_CMD: "linux32"
+#    #  GCC_VERSION: 9
+#    #  services: docker
+#    #  job_group: "linux"
+#    #  appveyor_build_worker_image: ubuntu
+#    
+#    - image: "Ubuntu"
+#      appveyor_build_worker_image: Ubuntu
+#      APPVEYOR_JOB_NAME: "python37-x64-ubuntu"
+#      job_group: "linux"
+#    
+#    # win builds
+#    - PYTHON: "C:\\Python27"
+#      PYTHON_ARCH: 32
+#      MSVC_VERSION: "Visual Studio 10"
+#      appveyor_build_worker_image: Visual Studio 2015
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python33"
+#      PYTHON_ARCH: 32
+#      MSVC_VERSION: "Visual Studio 10"
+#      appveyor_build_worker_image: Visual Studio 2015
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python34"
+#      PYTHON_ARCH: 32
+#      MSVC_VERSION: "Visual Studio 10"
+#      appveyor_build_worker_image: Visual Studio 2015
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python35"
+#      PYTHON_ARCH: 32
+#      MSVC_VERSION: "Visual Studio 14"
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python36"
+#      PYTHON_ARCH: 32
+#      MSVC_VERSION: "Visual Studio 14"
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python37"
+#      PYTHON_ARCH: 32
+#      MSVC_VERSION: "Visual Studio 14"
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python38"
+#      PYTHON_ARCH: 32
+#      MSVC_VERSION: "Visual Studio 14"
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python39"
+#      PYTHON_ARCH: 32
+#      MSVC_VERSION: "Visual Studio 18"
+#      appveyor_build_worker_image: Visual Studio 2019
+#      job_group: "windows"
+#
+#
+#    # x64 builds
+#    - PYTHON: "C:\\Python27-x64"
+#      PYTHON_ARCH: 64
+#      MSVC_VERSION: "Visual Studio 10 Win64"
+#      appveyor_build_worker_image: Visual Studio 2015
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python33-x64"
+#      PYTHON_ARCH: 64
+#      MSVC_VERSION: "Visual Studio 10 Win64"
+#      appveyor_build_worker_image: Visual Studio 2015
+#      DISTUTILS_USE_SDK: "1"
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python34-x64"
+#      PYTHON_ARCH: 64
+#      MSVC_VERSION: "Visual Studio 10 Win64"
+#      appveyor_build_worker_image: Visual Studio 2015
+#      DISTUTILS_USE_SDK: "1"
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python35-x64"
+#      PYTHON_ARCH: 64
+#      MSVC_VERSION: "Visual Studio 14 Win64"
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python36-x64"
+#      PYTHON_ARCH: 64
+#      MSVC_VERSION: "Visual Studio 14 Win64"
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python37-x64"
+#      PYTHON_ARCH: 64
+#      MSVC_VERSION: "Visual Studio 14 Win64"
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python38-x64"
+#      PYTHON_ARCH: 64
+#      MSVC_VERSION: "Visual Studio 14 Win64"
+#      job_group: "windows"
+#
+#    - PYTHON: "C:\\Python39-x64"
+#      PYTHON_ARCH: 64
+#      MSVC_VERSION: "Visual Studio 18 Win64"
+#      appveyor_build_worker_image: Visual Studio 2019
+#      job_group: "windows"
+#
+#    # osx builds
+#    - PY_VERSION: 2.7
+#      job_group: "macos"
+#      appveyor_build_worker_image: macos
+#
+#    - PY_VERSION: 3.4
+#      job_group: "macos"
+#      appveyor_build_worker_image: macos
+#
+#    - PY_VERSION: 3.5
+#      job_group: "macos"
+#      appveyor_build_worker_image: macos
+#
+#    - PY_VERSION: 3.6
+#      job_group: "macos"
+#      appveyor_build_worker_image: macos
+#
+#    - PY_VERSION: 3.7
+#      job_group: "macos"
+#      appveyor_build_worker_image: macos
+#
+#    - PY_VERSION: 3.8
+#      job_group: "macos"
+#      appveyor_build_worker_image: macos
+#
+#    - PY_VERSION: 3.9
+#      job_group: "macos"
+#      appveyor_build_worker_image: macos
+#
+#
+#for:
+#  - matrix:
+#      only:
+#        - job_group: windows
+#
+#    init:
+#      - "ECHO %PYTHON% %PYTHON_ARCH% %MSVC_VERSION%"
+#      - "%PYTHON%\\python.exe --version"
+#
+#    install:
+#      # python requirements needed to create distribution
+#      - "%PYTHON%\\python.exe -m pip install -U wheel pip"
+#      # get latest version of all submodules
+#      - "git submodule update --init --recursive"
+#      - "%PYTHON%\\python.exe -m pip install -U setuptools"
+#      - "%PYTHON%\\python.exe -m pip install -r doc/requirements-test.txt"
+#
+#    build: off
+#
+#    build_script:
+#      - "ci\\appveyor_build.cmd %PYTHON%/python.exe -m pip wheel . -w dist"
+#      - "%PYTHON%/python.exe -m pip install -e ."
+#      - "%PYTHON%/python.exe -m pytest -v --color=yes"
+#
+#  - matrix:
+#      only:
+#        - job_group: macos
+#
+#    init:
+#      - sh: |
+#          set -x
+#          if [[ "${PY_VERSION}" == "3.4" ]]; then
+#              export HOMEBREW_NO_AUTO_UPDATE=1
+#              brew update
+#              brew install pyenv
+#
+#              pyenv install --skip-existing $PY_VERSION
+#              pyenv local $PY_VERSION
+#              eval "$(pyenv init -)"
+#          else
+#              source ~/venv${PY_VERSION}/bin/activate
+#          fi
+#           python --version
+#
+#    install:
+#      # python requirements needed to create distribution
+#      - sh: |
+#          python --version
+#          python -m pip install -U wheel pip
+#          git submodule update --init --recursive
+#          python -m pip install -U setuptools
+#          python -m pip install -r doc/requirements-test.txt
+#
+#    build_script:
+#      # todo: install from wheel to avoid double compilation
+#      - sh: |
+#          python -m pip wheel . -w dist
+#          ls dist
+#          python -m pip install -e .
+#          PYTHONDEVMODE=1 python -m pytest -v --color=yes
+#
+#  - matrix:
+#      only:
+#        - job_group: linux
+#
+#    #init:
+#    #  - sh: |
+#    #      set -e
+#    #      
+#    #      if [[ $DOCKER_IMAGE ]]; then
+#    #          docker pull $DOCKER_IMAGE
+#    #      fi
+#
+#    #install:
+#    #  # python requirements needed to create distribution
+#    #  - sh: |
+#    #      python --version
+#    #      git submodule update --init --recursive
+#
+#    #build_script:
+#    #  # todo: install from wheel to avoid double compilation
+#    #  - sh: |
+#    #      set -e
+#    #      
+#    #      if [[ $DOCKER_IMAGE ]]; then
+#    #          # if docker image is set then run actual Linux build inside of docker
+#    #          docker run --rm -v `pwd`:/io $DOCKER_IMAGE $PRE_CMD /io/ci/docker_build_wheels.sh
+#    #      
+#    #      else
+#    #         # note: if it is not a docker-based build then just run coverage on python3
+#    #         #       and do not create wheels (they will not be uploaded).
+#    #         python3 --version
+#    #         python3 -m pip freeze
+#    #      
+#    #         python3 -m pip install -r doc/requirements-test.txt
+#    #         python3 -m pip install coverage
+#    #         python3 -m pip install coveralls
+#    #      
+#    #         _CYTHONIZE_WITH_COVERAGE=1 pip install -e .
+#    #         PYTHONDEVMODE=1 python3 -m coverage run --source imgui -m pytest -v --color=yes
+#    #         python3 -m coverage report
+#    #         coveralls
+#    #      fi
+#
+#    stack: python 3.7
+#
+#    init:
+#    - cmd: set PATH=C:\Python37;C:\Python37\Scripts;%PATH%
+#
+#    install:
+#      # python requirements needed to create distribution
+#      - sh: |
+#          python --version
+#          git submodule update --init --recursive
+#          python -m pip install cibuildwheel==2.2.0
+#
+#    # TODO: We will remove the --platform parameter when going full cibuildwheel
+#    build_script: python -m cibuildwheel --output-dir dist --platform linux
+#
+#    artifacts:
+#      - path: "dist\\*.whl"
+#        name: Wheels
+#
+#on_success:
+#  - ps: |
+#      if ($env:APPVEYOR_REPO_BRANCH -eq "master")
+#      {
+#         python -m pip install dropbox
+#         python ci/dropbox_upload.py $(python setup.py --version)
+#      }
+#      else
+#      {
+#         Write-Host "Not a master branch. Upload skipped."
+#      }
+#
+#artifacts:
+#  - path: dist\*
+#
+
 environment:
-  global:
-    DROPBOX_TOKEN:
-      secure: a+7HvvAItUFtApW6GmY1HW4n3KPqR5/2KMt54YOap4ShTzbOPCkF05vOox8aiuQO2bnkvtax9PCOaEzVR15tYxeFH8qBaxHMCp7nU9AyUpk=
-
   matrix:
-
-    # linux builds
-    #- DOCKER_IMAGE: "quay.io/pypa/manylinux1_x86_64"
-    #  GCC_VERSION: 9
-    #  services: docker
-    #  job_group: "linux"
-    #  appveyor_build_worker_image: ubuntu
-      
-    #- DOCKER_IMAGE: "quay.io/pypa/manylinux1_i686"
-    #  PRE_CMD: "linux32"
-    #  GCC_VERSION: 9
-    #  services: docker
-    #  job_group: "linux"
-    #  appveyor_build_worker_image: ubuntu
-    
-    - image: "Ubuntu"
-      appveyor_build_worker_image: Ubuntu
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       APPVEYOR_JOB_NAME: "python37-x64-ubuntu"
-      job_group: "linux"
-    
-    # win builds
-    - PYTHON: "C:\\Python27"
-      PYTHON_ARCH: 32
-      MSVC_VERSION: "Visual Studio 10"
-      appveyor_build_worker_image: Visual Studio 2015
-      job_group: "windows"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      APPVEYOR_JOB_NAME: "python37-x64-vs2015"
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+      APPVEYOR_JOB_NAME: "python37-x64-macos-mojave"
 
-    - PYTHON: "C:\\Python33"
-      PYTHON_ARCH: 32
-      MSVC_VERSION: "Visual Studio 10"
-      appveyor_build_worker_image: Visual Studio 2015
-      job_group: "windows"
+stack: python 3.7
 
-    - PYTHON: "C:\\Python34"
-      PYTHON_ARCH: 32
-      MSVC_VERSION: "Visual Studio 10"
-      appveyor_build_worker_image: Visual Studio 2015
-      job_group: "windows"
+init:
+- cmd: set PATH=C:\Python37;C:\Python37\Scripts;%PATH%
 
-    - PYTHON: "C:\\Python35"
-      PYTHON_ARCH: 32
-      MSVC_VERSION: "Visual Studio 14"
-      job_group: "windows"
+install: python -m pip install cibuildwheel==2.2.0
 
-    - PYTHON: "C:\\Python36"
-      PYTHON_ARCH: 32
-      MSVC_VERSION: "Visual Studio 14"
-      job_group: "windows"
-
-    - PYTHON: "C:\\Python37"
-      PYTHON_ARCH: 32
-      MSVC_VERSION: "Visual Studio 14"
-      job_group: "windows"
-
-    - PYTHON: "C:\\Python38"
-      PYTHON_ARCH: 32
-      MSVC_VERSION: "Visual Studio 14"
-      job_group: "windows"
-
-    - PYTHON: "C:\\Python39"
-      PYTHON_ARCH: 32
-      MSVC_VERSION: "Visual Studio 18"
-      appveyor_build_worker_image: Visual Studio 2019
-      job_group: "windows"
-
-
-    # x64 builds
-    - PYTHON: "C:\\Python27-x64"
-      PYTHON_ARCH: 64
-      MSVC_VERSION: "Visual Studio 10 Win64"
-      appveyor_build_worker_image: Visual Studio 2015
-      job_group: "windows"
-
-    - PYTHON: "C:\\Python33-x64"
-      PYTHON_ARCH: 64
-      MSVC_VERSION: "Visual Studio 10 Win64"
-      appveyor_build_worker_image: Visual Studio 2015
-      DISTUTILS_USE_SDK: "1"
-      job_group: "windows"
-
-    - PYTHON: "C:\\Python34-x64"
-      PYTHON_ARCH: 64
-      MSVC_VERSION: "Visual Studio 10 Win64"
-      appveyor_build_worker_image: Visual Studio 2015
-      DISTUTILS_USE_SDK: "1"
-      job_group: "windows"
-
-    - PYTHON: "C:\\Python35-x64"
-      PYTHON_ARCH: 64
-      MSVC_VERSION: "Visual Studio 14 Win64"
-      job_group: "windows"
-
-    - PYTHON: "C:\\Python36-x64"
-      PYTHON_ARCH: 64
-      MSVC_VERSION: "Visual Studio 14 Win64"
-      job_group: "windows"
-
-    - PYTHON: "C:\\Python37-x64"
-      PYTHON_ARCH: 64
-      MSVC_VERSION: "Visual Studio 14 Win64"
-      job_group: "windows"
-
-    - PYTHON: "C:\\Python38-x64"
-      PYTHON_ARCH: 64
-      MSVC_VERSION: "Visual Studio 14 Win64"
-      job_group: "windows"
-
-    - PYTHON: "C:\\Python39-x64"
-      PYTHON_ARCH: 64
-      MSVC_VERSION: "Visual Studio 18 Win64"
-      appveyor_build_worker_image: Visual Studio 2019
-      job_group: "windows"
-
-    # osx builds
-    - PY_VERSION: 2.7
-      job_group: "macos"
-      appveyor_build_worker_image: macos
-
-    - PY_VERSION: 3.4
-      job_group: "macos"
-      appveyor_build_worker_image: macos
-
-    - PY_VERSION: 3.5
-      job_group: "macos"
-      appveyor_build_worker_image: macos
-
-    - PY_VERSION: 3.6
-      job_group: "macos"
-      appveyor_build_worker_image: macos
-
-    - PY_VERSION: 3.7
-      job_group: "macos"
-      appveyor_build_worker_image: macos
-
-    - PY_VERSION: 3.8
-      job_group: "macos"
-      appveyor_build_worker_image: macos
-
-    - PY_VERSION: 3.9
-      job_group: "macos"
-      appveyor_build_worker_image: macos
-
-
-for:
-  - matrix:
-      only:
-        - job_group: windows
-
-    init:
-      - "ECHO %PYTHON% %PYTHON_ARCH% %MSVC_VERSION%"
-      - "%PYTHON%\\python.exe --version"
-
-    install:
-      # python requirements needed to create distribution
-      - "%PYTHON%\\python.exe -m pip install -U wheel pip"
-      # get latest version of all submodules
-      - "git submodule update --init --recursive"
-      - "%PYTHON%\\python.exe -m pip install -U setuptools"
-      - "%PYTHON%\\python.exe -m pip install -r doc/requirements-test.txt"
-
-    build: off
-
-    build_script:
-      - "ci\\appveyor_build.cmd %PYTHON%/python.exe -m pip wheel . -w dist"
-      - "%PYTHON%/python.exe -m pip install -e ."
-      - "%PYTHON%/python.exe -m pytest -v --color=yes"
-
-  - matrix:
-      only:
-        - job_group: macos
-
-    init:
-      - sh: |
-          set -x
-          if [[ "${PY_VERSION}" == "3.4" ]]; then
-              export HOMEBREW_NO_AUTO_UPDATE=1
-              brew update
-              brew install pyenv
-
-              pyenv install --skip-existing $PY_VERSION
-              pyenv local $PY_VERSION
-              eval "$(pyenv init -)"
-          else
-              source ~/venv${PY_VERSION}/bin/activate
-          fi
-           python --version
-
-    install:
-      # python requirements needed to create distribution
-      - sh: |
-          python --version
-          python -m pip install -U wheel pip
-          git submodule update --init --recursive
-          python -m pip install -U setuptools
-          python -m pip install -r doc/requirements-test.txt
-
-    build_script:
-      # todo: install from wheel to avoid double compilation
-      - sh: |
-          python -m pip wheel . -w dist
-          ls dist
-          python -m pip install -e .
-          PYTHONDEVMODE=1 python -m pytest -v --color=yes
-
-  - matrix:
-      only:
-        - job_group: linux
-
-    #init:
-    #  - sh: |
-    #      set -e
-    #      
-    #      if [[ $DOCKER_IMAGE ]]; then
-    #          docker pull $DOCKER_IMAGE
-    #      fi
-
-    #install:
-    #  # python requirements needed to create distribution
-    #  - sh: |
-    #      python --version
-    #      git submodule update --init --recursive
-
-    #build_script:
-    #  # todo: install from wheel to avoid double compilation
-    #  - sh: |
-    #      set -e
-    #      
-    #      if [[ $DOCKER_IMAGE ]]; then
-    #          # if docker image is set then run actual Linux build inside of docker
-    #          docker run --rm -v `pwd`:/io $DOCKER_IMAGE $PRE_CMD /io/ci/docker_build_wheels.sh
-    #      
-    #      else
-    #         # note: if it is not a docker-based build then just run coverage on python3
-    #         #       and do not create wheels (they will not be uploaded).
-    #         python3 --version
-    #         python3 -m pip freeze
-    #      
-    #         python3 -m pip install -r doc/requirements-test.txt
-    #         python3 -m pip install coverage
-    #         python3 -m pip install coveralls
-    #      
-    #         _CYTHONIZE_WITH_COVERAGE=1 pip install -e .
-    #         PYTHONDEVMODE=1 python3 -m coverage run --source imgui -m pytest -v --color=yes
-    #         python3 -m coverage report
-    #         coveralls
-    #      fi
-
-    stack: python 3.7
-
-    init:
-    - cmd: set PATH=C:\Python37;C:\Python37\Scripts;%PATH%
-
-    install:
-      # python requirements needed to create distribution
-      - sh: |
-          $HOME/venv3.7/python --version
-          git submodule update --init --recursive
-          $HOME/venv3.7/python -m pip install cibuildwheel==2.2.0
-
-    # TODO: We will remove the --platform parameter when going full cibuildwheel
-    build_script: $HOME/venv3.7/python -m cibuildwheel --output-dir dist --platform linux
-
-    artifacts:
-      - path: "dist\\*.whl"
-        name: Wheels
-
-on_success:
-  - ps: |
-      if ($env:APPVEYOR_REPO_BRANCH -eq "master")
-      {
-         python -m pip install dropbox
-         python ci/dropbox_upload.py $(python setup.py --version)
-      }
-      else
-      {
-         Write-Host "Not a master branch. Upload skipped."
-      }
+build_script: python -m cibuildwheel --output-dir dist
 
 artifacts:
-  - path: dist\*
+  - path: "dist\\*.whl"
+    name: Wheels
