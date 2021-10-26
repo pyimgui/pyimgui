@@ -307,6 +307,18 @@ install:  |
 
 build_script: python -m cibuildwheel --output-dir dist
 
+on_success:
+  - ps: |
+      if ($env:APPVEYOR_REPO_BRANCH -eq "master")
+      {
+         python -m pip install dropbox
+         python ci/dropbox_upload.py $(python setup.py --version)
+      }
+      else
+      {
+         Write-Host "Not a master branch. Upload skipped."
+      }
+
 artifacts:
   - path: "dist\\*.whl"
     name: Wheels
