@@ -1,0 +1,15 @@
+[tool.cibuildwheel]
+#build = "cp39-manylinux_x86_64"
+
+build-verbosity = 1
+
+[build-system]
+requires = [
+    "Cython>=0.24,<0.30",
+    "PyOpenGL",
+    "glfw",
+    "wheel",
+    "click",
+    "setuptools",
+]
+
