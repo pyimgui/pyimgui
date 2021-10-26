@@ -259,12 +259,12 @@ for:
     install:
       # python requirements needed to create distribution
       - sh: |
-          python --version
+          $HOME/venv3.7/python --version
           git submodule update --init --recursive
-          python -m pip install cibuildwheel==2.2.0
+          $HOME/venv3.7/python -m pip install cibuildwheel==2.2.0
 
     # TODO: We will remove the --platform parameter when going full cibuildwheel
-    build_script: python -m cibuildwheel --output-dir dist --platform linux
+    build_script: $HOME/venv3.7/python -m cibuildwheel --output-dir dist --platform linux
 
     artifacts:
       - path: "dist\\*.whl"
