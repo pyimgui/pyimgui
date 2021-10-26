@@ -303,7 +303,7 @@ init:
 install:  |
   python --version
   git submodule update --init --recursive
-  python -m pip install cibuildwheel==2.2
+  python -m pip install cibuildwheel==2.2.0b1
 
 build_script: python -m cibuildwheel --output-dir dist
 
