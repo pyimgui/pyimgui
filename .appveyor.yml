@@ -300,7 +300,10 @@ stack: python 3.7
 init:
 - cmd: set PATH=C:\Python37;C:\Python37\Scripts;%PATH%
 
-install: python -m pip install cibuildwheel==2.2.0
+install:  |
+  python --version
+  git submodule update --init --recursive
+  python -m pip install cibuildwheel==2.2
 
 build_script: python -m cibuildwheel --output-dir dist
 
