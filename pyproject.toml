@@ -2,16 +2,8 @@
 
 build-verbosity = 1
 
-test-command = "py.test {package}"
-test-requires = [
-    "Cython>=0.24,<0.30",
-    "click",
-    "wheel",
-    "Sphinx==1.8.1",
-    "docutils<0.13.1",
-    "mock",
-    "pytest<6.0.0",
-]
+test-command = ["cd {package}", "py.test -v --color=yes"]
+before-test = "python -m pip install -r doc/requirements-test.txt"
 
 [build-system]
 requires = [
