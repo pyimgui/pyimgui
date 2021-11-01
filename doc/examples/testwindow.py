@@ -716,7 +716,7 @@ def show_test_window():
                     imgui.text("<<PRESS SPACE TO DISABLE>>")
                 if imgui.is_key_pressed(imgui.get_key_index(imgui.KEY_SPACE)):
                     io.config_flags &= ~ imgui.CONFIG_NO_MOUSE
-                #     clicked, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", io.config_flags, imgui.CONFIG_NO_MOUSE_CURSOR_CHARGE)
+                #     clicked, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", io.config_flags, imgui.CONFIG_NO_MOUSE_CURSOR_CHANGE)
 
             imgui.same_line()
             show_help_marker(

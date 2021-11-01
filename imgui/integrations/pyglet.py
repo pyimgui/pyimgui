@@ -109,7 +109,7 @@ class PygletMixin(object):
                             key_pressed in (key.LSHIFT, key.RSHIFT)
 
     def _handle_mouse_cursor(self):
-        if self.io.config_flags & imgui.CONFIG_NO_MOUSE_CURSOR_CHARGE:
+        if self.io.config_flags & imgui.CONFIG_NO_MOUSE_CURSOR_CHANGE:
             return
 
         mouse_cursor = imgui.get_mouse_cursor()

@@ -9,10 +9,17 @@ from inspect import currentframe, getframeinfo
 from _pytest.outcomes import Skipped
 from sphinx.application import Sphinx
 
-import imgui
-
 PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 sphinx = None
+
+# We need to trick the import mechanism in order to load the
+# builded wheel instead of the local src directory
+init_file_path = os.path.join(PROJECT_ROOT_DIR, 'imgui','__init__.py')
+init_file_path_tmp = os.path.join(PROJECT_ROOT_DIR, 'imgui','__init__TMP.py')
+os.rename(init_file_path, init_file_path_tmp)
+import imgui
+os.rename(init_file_path_tmp, init_file_path)
+
 
 
 def project_path(*paths):
@@ -24,7 +31,6 @@ def _ns(locals_, globals_):
     ns.update(locals_)
     ns.update(globals_)
     return ns
-
 
 class SphinxDoc(pytest.File):
     def __init__(self, path, parent):

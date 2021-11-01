@@ -1,12 +1,7 @@
-[![completion](https://img.shields.io/badge/completion-70%25%20%28518%20of%20735%29-blue.svg)](https://github.com/swistakm/pyimgui)
+[![completion](https://img.shields.io/badge/completion-70%25%20%28518%20of%20735%29-blue.svg)](https://github.com/pyimgui/pyimgui)
 [![Coverage Status](https://coveralls.io/repos/github/swistakm/pyimgui/badge.svg?branch=master)](https://coveralls.io/github/swistakm/pyimgui?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=latest)](https://pyimgui.readthedocs.io/en/latest/?badge=latest)
-
-Builds:
-
-* [![Build status](https://ci.appveyor.com/api/projects/status/s7pud6on7dww89iv?svg=true)](https://ci.appveyor.com/project/swistakm/pyimgui) (Windows)
-* [![Build Status](https://travis-ci.com/swistakm/pyimgui.svg?branch=master)](https://travis-ci.com/github/swistakm/pyimgui/branches) (OS X & Linux)
-
+[![Build status](https://ci.appveyor.com/api/projects/status/mr97t941p6k4c261/branch/master?svg=true)](https://ci.appveyor.com/project/KinoxKlark/pyimgui/branch/master)
 
 # pyimgui
 
@@ -46,7 +41,6 @@ functionalities. Some low-level API elements and complex widgets (like plots)
 may be missing. We are working hard to provide 100% feature mapping of the core
 ImGui library. The *completion badge* shows up-to-date status of that goal.
 
-
 # Project distribution
 
 This project has a working build pipeline on Appveyor and Travis. It builds
@@ -68,7 +62,6 @@ Python versions:
 * py37
 * py38
 * py39
-
 
 **pyimgui** provides documentation with multiple visual examples.
 Thanks to custom Sphinx extensions we are able to render GUI examples off
