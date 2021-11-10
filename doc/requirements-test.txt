@@ -24,3 +24,5 @@ mock
 #       rather then add some more compat shims
 # future: remove once we obsolete Python3.7
 pytest<6.0.0
+
+coveralls

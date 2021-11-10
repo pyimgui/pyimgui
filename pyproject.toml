@@ -12,7 +12,7 @@ test-command = [
 ]
 before-test = "python -m pip install -r doc/requirements-test.txt"
 
-environment = {FROM_APPVEYOR="true"}
+environment = {FROM_APPVEYOR="true", COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN}
 
 [tool.cibuildwheel.macos]
 environment = { LC_ALL="en_US.UTF-8", LANG="en_US.UTF-8" }
