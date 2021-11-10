@@ -4,7 +4,12 @@ skip = "cp310-*"
 
 build-verbosity = 1
 
-test-command = ["cd {package}", "py.test -v --color=yes"]
+test-command = [
+    "cd {package}", 
+    "py.test -v --color=yes",
+    "coverage run --source imgui -m pytest",
+    "coveralls"
+]
 before-test = "python -m pip install -r doc/requirements-test.txt"
 
 [tool.cibuildwheel.macos]
