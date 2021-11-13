@@ -288,9 +288,6 @@
 
 environment:
   matrix:
-    - PYTHON: "C:\\Python39"
-      PYTHON_ARCH: 32
-      MSVC_VERSION: "Visual Studio 18"
       appveyor_build_worker_image: Visual Studio 2019
       job_group: "coverall"
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
@@ -330,25 +327,3 @@ artifacts:
 
 matrix:
   fast_finish: true
-
-for:
-  - matrix:
-      only:
-        - job_group: coverall
-
-    init:
-      - "ECHO %PYTHON% %PYTHON_ARCH% %MSVC_VERSION%"
-      - "%PYTHON%\\python.exe --version"
-
-    install:
-      - "git submodule update --init --recursive"
-      - "%PYTHON%\\python.exe -m pip install -U setuptools"
-      - "%PYTHON%\\python.exe -m pip install -r doc/requirements-test.txt"
-      - "%PYTHON%\\python.exe -m pip install coveralls"
-
-    build: off
-
-    build_script:
-      - "%PYTHON%/python.exe -m pip install -e . -v"
-      - "%PYTHON%/python.exe -m coverage run --source imgui -m pytest -v"
-      - "%PYTHON%/python.exe -m coveralls"
