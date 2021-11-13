@@ -351,8 +351,6 @@ for:
     build: off
 
     build_script:
-      #- "ci\\appveyor_build.cmd %PYTHON%/python.exe -m pip wheel . -w dist"
       - "%PYTHON%/python.exe -m pip install -e ."
-      #- "%PYTHON%/python.exe -m pytest -v --color=yes"
-      - "coverage run --source imgui -m pytest",
+      - "coverage run --source imgui -m pytest"
       - "coveralls"
