@@ -288,6 +288,11 @@
 
 environment:
   matrix:
+    - PYTHON: "C:\\Python39"
+      PYTHON_ARCH: 32
+      MSVC_VERSION: "Visual Studio 18"
+      appveyor_build_worker_image: Visual Studio 2019
+      job_group: "coverall"
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       APPVEYOR_JOB_NAME: "python37-x64-ubuntu"
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
@@ -322,3 +327,32 @@ on_success:
 artifacts:
   - path: "dist\\*.whl"
     name: Wheels
+
+matrix:
+  fast_finish: true
+
+for:
+  - matrix:
+      only:
+        - job_group: coverall
+
+    init:
+      - "ECHO %PYTHON% %PYTHON_ARCH% %MSVC_VERSION%"
+      - "%PYTHON%\\python.exe --version"
+
+    install:
+      # python requirements needed to create distribution
+      - "%PYTHON%\\python.exe -m pip install -U wheel pip"
+      # get latest version of all submodules
+      - "git submodule update --init --recursive"
+      - "%PYTHON%\\python.exe -m pip install -U setuptools"
+      - "%PYTHON%\\python.exe -m pip install -r doc/requirements-test.txt"
+
+    build: off
+
+    build_script:
+      #- "ci\\appveyor_build.cmd %PYTHON%/python.exe -m pip wheel . -w dist"
+      - "%PYTHON%/python.exe -m pip install -e ."
+      #- "%PYTHON%/python.exe -m pytest -v --color=yes"
+      - "coverage run --source imgui -m pytest",
+      - "coveralls"

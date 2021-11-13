@@ -6,9 +6,7 @@ build-verbosity = 1
 
 test-command = [
     "cd {package}", 
-    "py.test -v --color=yes",
-    "coverage run --source imgui -m pytest",
-    "coveralls"
+    "py.test -v --color=yes"
 ]
 before-test = "python -m pip install -r doc/requirements-test.txt"
 
