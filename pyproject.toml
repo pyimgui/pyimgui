@@ -4,8 +4,15 @@ skip = "cp310-*"
 
 build-verbosity = 1
 
-test-command = ["cd {package}", "py.test -v --color=yes"]
+test-command = [
+    "cd {package}", 
+    "py.test -v --color=yes",
+    "coverage run --source imgui -m pytest",
+    "coveralls"
+]
 before-test = "python -m pip install -r doc/requirements-test.txt"
+
+environment = {FROM_APPVEYOR="true", COVERALLS_REPO_TOKEN="$COVERALLS_REPO_TOKEN"}
 
 [tool.cibuildwheel.macos]
 environment = { LC_ALL="en_US.UTF-8", LANG="en_US.UTF-8" }
