@@ -1,7 +1,7 @@
 [![completion](https://img.shields.io/badge/completion-70%25%20%28518%20of%20735%29-blue.svg)](https://github.com/pyimgui/pyimgui)
-[![Coverage Status](https://coveralls.io/repos/github/swistakm/pyimgui/badge.svg?branch=master)](https://coveralls.io/github/swistakm/pyimgui?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/pyimgui/pyimgui/badge.svg?branch=master)](https://coveralls.io/github/swistakm/pyimgui?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=latest)](https://pyimgui.readthedocs.io/en/latest/?badge=latest)
-[![Build status](https://ci.appveyor.com/api/projects/status/mr97t941p6k4c261/branch/master?svg=true)](https://ci.appveyor.com/project/KinoxKlark/pyimgui/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/mr97t941p6k4c261/branch/dev/version-2.0?svg=true)](https://ci.appveyor.com/project/KinoxKlark/pyimgui/branch/dev/version-2.0)
 
 # pyimgui
 
