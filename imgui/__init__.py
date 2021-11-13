@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-VERSION = (1, 4, 0)  # PEP 386
+VERSION = (2, 0, 0)  # PEP 386
 __version__ = ".".join([str(x) for x in VERSION])
 
 from imgui.core import *  # noqa
