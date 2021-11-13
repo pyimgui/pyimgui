@@ -341,12 +341,10 @@ for:
       - "%PYTHON%\\python.exe --version"
 
     install:
-      # python requirements needed to create distribution
-      - "%PYTHON%\\python.exe -m pip install -U wheel pip"
-      # get latest version of all submodules
       - "git submodule update --init --recursive"
       - "%PYTHON%\\python.exe -m pip install -U setuptools"
       - "%PYTHON%\\python.exe -m pip install -r doc/requirements-test.txt"
+      - "%PYTHON%\\python.exe -m pip install coveralls"
 
     build: off
 
