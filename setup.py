@@ -18,6 +18,10 @@ else:
 
 _CYTHONIZE_WITH_COVERAGE = os.environ.get("_CYTHONIZE_WITH_COVERAGE", False)
 
+# Define that environment variable to allow linking to an externally built version of imgui.
+# You should also provide the argument -libraries "path/to/your/local/imgui/lib" to build_ext.
+_IMGUI_EXTERNAL_LIB = os.environ.get("_IMGUI_EXTERNAL_LIB", False)
+
 if _CYTHONIZE_WITH_COVERAGE and not USE_CYTHON:
     raise RuntimeError(
         "Configured to build using Cython "
@@ -70,22 +74,25 @@ else:
     cythonize_opts = {}
     general_macros = []
 
+# No need for import defines on Unix systems
+if _IMGUI_EXTERNAL_LIB and sys.platform in ('cygwin', 'win32'):
+    general_macros += [('IMGUI_API', '__declspec(dllimport)')]
 
 def extension_sources(path):
     sources = ["{0}{1}".format(path, '.pyx' if USE_CYTHON else '.cpp')]
-    
-    if not USE_CYTHON:
-        # note: Cython will pick these files automatically but when building
-        #       a plain C++ sdist without Cython we need to explicitly mark
-        #       these files for compilation and linking.
+
+    if not _IMGUI_EXTERNAL_LIB:
         sources += [
             'imgui-cpp/imgui.cpp',
             'imgui-cpp/imgui_draw.cpp',
             'imgui-cpp/imgui_demo.cpp',
             'imgui-cpp/imgui_widgets.cpp',
-            'imgui-cpp/imgui_tables.cpp',
-            'config-cpp/py_imconfig.cpp'
+            'imgui-cpp/imgui_tables.cpp'
         ]
+
+    sources += [
+        'config-cpp/py_imconfig.cpp'
+    ]
 
     return sources
 

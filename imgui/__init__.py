@@ -2,12 +2,12 @@
 VERSION = (2, 0, 0)  # PEP 386
 __version__ = ".".join([str(x) for x in VERSION])
 
-from imgui.core import *  # noqa
-from imgui import core
-from imgui.extra import *  # noqa
-from imgui import extra
-from imgui import _compat
-from imgui import internal
+from .core import *  # noqa
+from . import core
+from .extra import *  # noqa
+from . import extra
+from . import _compat
+from . import internal
 
 # TODO: Complete and correcte doc text for ImGui v1.79
 
