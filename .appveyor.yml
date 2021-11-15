@@ -322,3 +322,6 @@ on_success:
 artifacts:
   - path: "dist\\*.whl"
     name: Wheels
+
+matrix:
+  fast_finish: true
