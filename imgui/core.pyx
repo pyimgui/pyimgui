@@ -605,7 +605,7 @@ cdef class _DrawCmd(object):
 
     @property
     def texture_id(self):
-        return <object>self._ptr.TextureId
+        return <uintptr_t>self._ptr.TextureId
 
     @property
     def clip_rect(self):
@@ -698,7 +698,7 @@ cdef class _DrawList(object):
         """
         self._ptr.PopClipRect()
     
-    def push_texture_id(self, texture_id):
+    def push_texture_id(self, uintptr_t texture_id):
         """
         .. wraps::
             void PushTextureID(ImTextureID texture_id)
@@ -1081,7 +1081,7 @@ cdef class _DrawList(object):
         )
 
     def add_image(self,
-        texture_id,
+        uintptr_t texture_id,
         tuple a,
         tuple b,
         tuple uv_a=(0,0),
@@ -1101,7 +1101,7 @@ cdef class _DrawList(object):
             imgui.end()
 
         Args:
-            texture_id (object): ID of the texture to draw
+            texture_id (int): ID of the texture to draw
             a (tuple): top-left image corner coordinates,
             b (tuple): bottom-right image corner coordinates,
             uv_a (tuple): UV coordinates of the top-left corner, defaults to (0, 0)
@@ -2335,7 +2335,7 @@ cdef class _FontAtlas(object):
         integer (at least for OpenGL).
 
         """
-        return <object>self._ptr.TexID
+        return <uintptr_t>self._ptr.TexID
 
 
     @property
@@ -2348,7 +2348,7 @@ cdef class _FontAtlas(object):
 
 
     @texture_id.setter
-    def texture_id(self, value):
+    def texture_id(self, uintptr_t value):
         self._ptr.TexID = <void *> value
 
 cdef class _IO(object):
@@ -5573,7 +5573,7 @@ def color_button(
 
 
 def image_button(
-    texture_id,
+    uintptr_t texture_id,
     float width,
     float height,
     tuple uv0=(0, 0),
@@ -5587,7 +5587,7 @@ def image_button(
     .. todo:: add example with some preconfigured image
 
     Args:
-        texture_id (object): user data defining texture id. Argument type
+        texture_id (int): user data defining texture id. Argument type
             is implementation dependent. For OpenGL it is usually an integer.
         size (Vec2): image display size two-tuple.
         uv0 (Vec2): UV coordinates for 1st corner (lower-left for OpenGL).
@@ -5626,7 +5626,7 @@ def image_button(
 
 
 def image(
-    texture_id,
+    uintptr_t texture_id,
     float width,
     float height,
     tuple uv0=(0, 0),
@@ -5648,7 +5648,7 @@ def image(
         imgui.end()
 
     Args:
-        texture_id (object): user data defining texture id. Argument type
+        texture_id (int): user data defining texture id. Argument type
             is implementation dependent. For OpenGL it is usually an integer.
         size (Vec2): image display size two-tuple.
         uv0 (Vec2): UV coordinates for 1st corner (lower-left for OpenGL).
