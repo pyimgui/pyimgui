@@ -573,6 +573,10 @@ VIEWPORT_FLAGS_OWNED_BY_APP = enums.ImGuiViewportFlags_OwnedByApp               
 
 include "imgui/common.pyx"
 
+# For objects that cimgui stores as void* (such as texture_id) but need to be kept alive for rendering.
+# The cache is cleared on new_frame().
+_keepalive_cache = []
+
 cdef class _ImGuiContext(object):
     cdef cimgui.ImGuiContext* _ptr
 
@@ -703,6 +707,7 @@ cdef class _DrawList(object):
         .. wraps::
             void PushTextureID(ImTextureID texture_id)
         """
+        _keepalive_cache.append(texture_id)
         self._ptr.PushTextureID(<void*>texture_id)
     
     
@@ -1118,6 +1123,7 @@ cdef class _DrawList(object):
                 ImU32 col = 0xFFFFFFFF
             )
         """
+        _keepalive_cache.append(texture_id)
         self._ptr.AddImage(
             <void*>texture_id,
             _cast_tuple_ImVec2(a),
@@ -2349,6 +2355,7 @@ cdef class _FontAtlas(object):
 
     @texture_id.setter
     def texture_id(self, value):
+        _keepalive_cache.append(value)
         self._ptr.TexID = <void *> value
 
 cdef class _IO(object):
@@ -3025,6 +3032,7 @@ def new_frame():
     .. wraps::
         void NewFrame()
     """
+    _keepalive_cache.clear()
     cimgui.NewFrame()
 
 
@@ -5613,6 +5621,7 @@ def image_button(
             const ImVec4& tint_col = ImVec4(1,1,1,1)
         )
     """
+    _keepalive_cache.append(texture_id)
     return cimgui.ImageButton(
         <void*>texture_id,
         _cast_args_ImVec2(width, height),  # todo: consider inlining
@@ -5668,6 +5677,7 @@ def image(
             const ImVec4& border_col = ImVec4(0,0,0,0)
         )
     """
+    _keepalive_cache.append(texture_id)
     cimgui.Image(
         <void*>texture_id,
         _cast_args_ImVec2(width, height),  # todo: consider inlining
