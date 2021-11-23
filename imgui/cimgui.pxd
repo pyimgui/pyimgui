@@ -1017,7 +1017,6 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiFocusedFlags flags     # = 0
     ) except +
     ImDrawList* GetWindowDrawList() except +  # ✓
-    ImDrawList* GetOverlayDrawList() except + # ✓ # OBSOLETED in 1.69 (from Mar 2019)
     ImVec2 GetWindowPos() except +  # ✓
     ImVec2 GetWindowSize() except +  # ✓
     float GetWindowWidth() except +  # ✓
@@ -2111,7 +2110,6 @@ cdef extern from "imgui.h" namespace "ImGui":
     int GetFrameCount() except +  # ✗
     ImDrawList* GetBackgroundDrawList() except +  # ✓
     ImDrawList* GetForegroundDrawList() except +  # ✓
-    ImDrawList* GetOverlayDrawList() except +  # ✗ # OBSOLETED in 1.69 (from Mar 2019)
     ImDrawListSharedData* GetDrawListSharedData() except +  # ✗
     const char* GetStyleColorName(ImGuiCol idx) except +  # ✓
     void SetStateStorage(ImGuiStorage* storage) except +  # ✗

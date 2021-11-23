@@ -28,7 +28,6 @@ ITEM_NO_NAV_DEFAULT_FOCUS = enums_internal.ImGuiItemFlags_NoNavDefaultFocus
 ITEM_SELECTABLE_DONT_CLOSE_POPUP = enums_internal.ImGuiItemFlags_SelectableDontClosePopup 
 ITEM_MIXED_VALUE = enums_internal.ImGuiItemFlags_MixedValue               
 ITEM_READ_ONLY = enums_internal.ImGuiItemFlags_ReadOnly                 
-ITEM_DEFAULT = enums_internal.ImGuiItemFlags_Default_                 
 
 # Item Status Flags
 ITEM_STATUS_NONE = enums_internal.ImGuiItemStatusFlags_None
@@ -51,7 +50,7 @@ BUTTON_REPEAT = enums_internal.ImGuiButtonFlags_Repeat
 BUTTON_FLATTEN_CHILDREN = enums_internal.ImGuiButtonFlags_FlattenChildren
 BUTTON_ALLOW_ITEM_OVERLAP = enums_internal.ImGuiButtonFlags_AllowItemOverlap
 BUTTON_DONT_CLOSE_POPUPS = enums_internal.ImGuiButtonFlags_DontClosePopups
-BUTTON_DISABLED = enums_internal.ImGuiButtonFlags_Disabled
+#BUTTON_DISABLED = enums_internal.ImGuiButtonFlags_Disabled
 BUTTON_ALIGN_TEXT_BASE_LINE = enums_internal.ImGuiButtonFlags_AlignTextBaseLine
 BUTTON_NO_KEY_MODIFIERS = enums_internal.ImGuiButtonFlags_NoKeyModifiers
 BUTTON_NO_HOLDING_ACTIVE_ID = enums_internal.ImGuiButtonFlags_NoHoldingActiveId
@@ -147,12 +146,7 @@ NAV_MOVE_WRAP_X = enums_internal.ImGuiNavMoveFlags_WrapX
 NAV_MOVE_WRAP_Y = enums_internal.ImGuiNavMoveFlags_WrapY
 NAV_MOVE_ALLOW_CURRENT_NAV_ID = enums_internal.ImGuiNavMoveFlags_AllowCurrentNavId
 NAV_MOVE_ALSO_SCORE_VISIBLE_SET = enums_internal.ImGuiNavMoveFlags_AlsoScoreVisibleSet
-NAV_MOVE_SCROLL_TO_EDGE = enums_internal.ImGuiNavMoveFlags_ScrollToEdge
-
-# Nav Forward
-NAV_FORWARD_NONE = enums_internal.ImGuiNavForward_None
-NAV_FORWARD_FORWARD_QUEUED = enums_internal.ImGuiNavForward_ForwardQueued
-NAV_FORWARD_FORWARD_ACTIVE = enums_internal.ImGuiNavForward_ForwardActive
+NAV_MOVE_SCROLL_TO_EDGE = enums_internal.ImGuiNavMoveFlags_ScrollToEdgeY
 
 # Nav Layer
 NAV_LAYER_MAIN = enums_internal.ImGuiNavLayer_Main

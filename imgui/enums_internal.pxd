@@ -10,7 +10,6 @@ cdef extern from "imgui_internal.h":
         ImGuiItemFlags_SelectableDontClosePopup # false    # MenuItem/Selectable() automatically closes current Popup window
         ImGuiItemFlags_MixedValue               # false    # [BETA] Represent a mixed/indeterminate value, generally multi-selection where values differ. Currently only supported by Checkbox() (later should support all sorts of widgets)
         ImGuiItemFlags_ReadOnly                 # false    # [ALPHA] Allow hovering interactions but underlying value is not changed.
-        ImGuiItemFlags_Default_                 #
         
         
     ctypedef enum ImGuiItemStatusFlags_:
@@ -34,7 +33,7 @@ cdef extern from "imgui_internal.h":
         ImGuiButtonFlags_FlattenChildren        # allow interactions even if a child window is overlapping
         ImGuiButtonFlags_AllowItemOverlap       # require previous frame HoveredId to either match id or be null before being usable, use along with SetItemAllowOverlap()
         ImGuiButtonFlags_DontClosePopups        # disable automatically closing parent popup on press // [UNUSED]
-        ImGuiButtonFlags_Disabled               # disable interactions
+        #ImGuiButtonFlags_Disabled               # disable interactions -> use BeginDisabled() or ImGuiItemFlags_Disabled
         ImGuiButtonFlags_AlignTextBaseLine      # vertically align button to match text baseline - ButtonEx() only // FIXME: Should be removed and handled by SmallButton(), not possible currently because of DC.CursorPosPrevLine
         ImGuiButtonFlags_NoKeyModifiers         # disable mouse interaction if a key modifier is held
         ImGuiButtonFlags_NoHoldingActiveId      # don't set ActiveId while holding the mouse (ImGuiButtonFlags_PressedOnClick only)
@@ -135,12 +134,7 @@ cdef extern from "imgui_internal.h":
         ImGuiNavMoveFlags_WrapY                 # This is not super useful for provided for completeness
         ImGuiNavMoveFlags_AllowCurrentNavId     # Allow scoring and considering the current NavId as a move target candidate. This is used when the move source is offset (e.g. pressing PageDown actually needs to send a Up move request, if we are pressing PageDown from the bottom-most item we need to stay in place)
         ImGuiNavMoveFlags_AlsoScoreVisibleSet   # Store alternate result in NavMoveResultLocalVisibleSet that only comprise elements that are already fully visible.
-        ImGuiNavMoveFlags_ScrollToEdge          #
-    
-    ctypedef enum ImGuiNavForward:
-        ImGuiNavForward_None
-        ImGuiNavForward_ForwardQueued
-        ImGuiNavForward_ForwardActive
+        ImGuiNavMoveFlags_ScrollToEdgeY         # Force scrolling to min/max (used by Home/End) // FIXME-NAV: Aim to remove or reword, probably
     
     ctypedef enum ImGuiNavLayer:
         ImGuiNavLayer_Main  # Main scrolling layer
