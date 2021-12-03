@@ -60,6 +60,7 @@ cdef extern from "imgui.h":
         ImGuiConfigFlags_NavNoCaptureKeyboard   # Instruct navigation to not set the io.WantCaptureKeyboard flag when io.NavActive is set.
         ImGuiConfigFlags_NoMouse                # Instruct imgui to clear mouse position/buttons in NewFrame(). This allows ignoring the mouse information set by the backend.
         ImGuiConfigFlags_NoMouseCursorChange    # Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use SetMouseCursor() to change mouse cursor. You may want to honor requests from imgui by reading GetMouseCursor() yourself instead.
+        ImGuiConfigFlags_DockingEnable
 
         # User storage (to allow your backend/engine to communicate to code that may be shared between multiple projects. Those flags are not used by core Dear ImGui)
         ImGuiConfigFlags_IsSRGB                 # Application is SRGB-aware.
@@ -207,6 +208,7 @@ cdef extern from "imgui.h":
         ImGuiWindowFlags_NoNavInputs             # No gamepad/keyboard navigation within the window
         ImGuiWindowFlags_NoNavFocus              # No focusing toward this window with gamepad/keyboard navigation (e.g. skipped by CTRL+TAB)
         ImGuiWindowFlags_UnsavedDocument         # Append '*' to title without affecting the ID, as a convenience to avoid using the ### operator. When used in a tab/docking context, tab is selected on closure and closure is deferred by one frame to allow code to cancel the closure (with a confirmation popup, etc.) without flicker.
+        ImGuiWindowFlags_NoDocking               # Disable docking of this window
         ImGuiWindowFlags_NoNav                  = ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoNavFocus,
         ImGuiWindowFlags_NoDecoration           = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse,
         ImGuiWindowFlags_NoInputs               = ImGuiWindowFlags_NoMouseInputs | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoNavFocus,
@@ -443,6 +445,17 @@ cdef extern from "imgui.h":
         ImGuiHoveredFlags_AllowWhenDisabled             # Return true even if the item is disabled
         ImGuiHoveredFlags_RectOnly                      = ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_AllowWhenOverlapped,
         ImGuiHoveredFlags_RootAndChildWindows           = ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_ChildWindows
+
+
+    ctypedef enum ImGuiDockNodeFlags_:
+        ImGuiDockNodeFlags_None                         
+        ImGuiDockNodeFlags_KeepAliveOnly                # Shared       // Don't display the dockspace node but keep it alive. Windows docked into this dockspace node won't be undocked.
+        #ImGuiDockNodeFlags_NoCentralNode               # Shared       // Disable Central Node (the node which can stay empty)
+        ImGuiDockNodeFlags_NoDockingInCentralNode       # Shared       // Disable docking inside the Central Node, which will be always kept empty.
+        ImGuiDockNodeFlags_PassthruCentralNode          # Shared       // Enable passthru dockspace: 1) DockSpace() will render a ImGuiCol_WindowBg background covering everything excepted the Central Node when empty. Meaning the host window should probably use SetNextWindowBgAlpha(0.0f) prior to Begin() when using this. 2) When Central Node is empty: let inputs pass-through + won't display a DockingEmptyBg background. See demo for details.
+        ImGuiDockNodeFlags_NoSplit                      # Shared/Local // Disable splitting the node into smaller nodes. Useful e.g. when embedding dockspaces into a main root one (the root one may have splitting disabled to reduce confusion). Note: when turned off, existing splits will be preserved.
+        ImGuiDockNodeFlags_NoResize                     # Shared/Local // Disable resizing node using the splitter/separators. Useful with programmatically setup dockspaces.
+        ImGuiDockNodeFlags_AutoHideTabBar               # Shared/Local // Tab bar will automatically hide when there is a single window in the dock node.
 
 
     ctypedef enum ImGuiDragDropFlags_:

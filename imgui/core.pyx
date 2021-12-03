@@ -155,6 +155,7 @@ WINDOW_ALWAYS_USE_WINDOW_PADDING = enums.ImGuiWindowFlags_AlwaysUseWindowPadding
 WINDOW_NO_NAV_INPUTS = enums.ImGuiWindowFlags_NoNavInputs
 WINDOW_NO_NAV_FOCUS = enums.ImGuiWindowFlags_NoNavFocus
 WINDOW_UNSAVED_DOCUMENT = enums.ImGuiWindowFlags_UnsavedDocument
+WINDOW_NO_DOCKING = enums.ImGuiWindowFlags_NoDocking
 WINDOW_NO_NAV = enums.ImGuiWindowFlags_NoNav
 WINDOW_NO_DECORATION = enums.ImGuiWindowFlags_NoDecoration
 WINDOW_NO_INPUTS = enums.ImGuiWindowFlags_NoInputs
@@ -363,6 +364,16 @@ HOVERED_ALLOW_WHEN_DISABLED = enums.ImGuiHoveredFlags_AllowWhenDisabled
 HOVERED_RECT_ONLY = enums.ImGuiHoveredFlags_RectOnly
 HOVERED_ROOT_AND_CHILD_WINDOWS = enums.ImGuiHoveredFlags_RootAndChildWindows
 
+# === Flags for ImGui::DockSpace(), shared/inherited by child nodes.===
+DOCKNODE_NONE = enums.ImGuiDockNodeFlags_None
+DOCKNODE_KEEPALIVE_ONLY = enums.ImGuiDockNodeFlags_KeepAliveOnly
+#ImGuiDockNodeFlags_NoCentralNode
+DOCKNODE_NO_DOCKING_IN_CENTRAL_NODE = enums.ImGuiDockNodeFlags_NoDockingInCentralNode
+DOCKNODE_PASSTHRU_CENTRAL_NODE = enums.ImGuiDockNodeFlags_PassthruCentralNode
+DOCKNODE_NO_SPLIT = enums.ImGuiDockNodeFlags_NoSplit
+DOCKNODE_NO_RESIZE = enums.ImGuiDockNodeFlags_NoResize
+DOCKNODE_AUTO_HIDE_TABBAR = enums.ImGuiDockNodeFlags_AutoHideTabBar
+
 # === Drag Drop flag enum redefines ====
 DRAG_DROP_NONE = enums.ImGuiDragDropFlags_None
 DRAG_DROP_SOURCE_NO_PREVIEW_TOOLTIP = enums.ImGuiDragDropFlags_SourceNoPreviewTooltip
@@ -543,6 +554,7 @@ CONFIG_NAV_ENABLE_SET_MOUSE_POS = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavEn
 CONFIG_NAV_NO_CAPTURE_KEYBOARD = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavNoCaptureKeyboard
 CONFIG_NO_MOUSE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouse
 CONFIG_NO_MOUSE_CURSOR_CHANGE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouseCursorChange
+CONFIG_DOCKING_ENABLE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_DockingEnable
 CONFIG_IS_RGB = enums.ImGuiConfigFlags_.ImGuiConfigFlags_IsSRGB
 CONFIG_IS_TOUCH_SCREEN = enums.ImGuiConfigFlags_.ImGuiConfigFlags_IsTouchScreen
 
@@ -10300,6 +10312,12 @@ def set_tab_item_closed(str tab_or_docked_window_label):
     """
     cimgui.SetTabItemClosed(_bytes(tab_or_docked_window_label))
 
+def dockspace(cimgui.ImGuiID id, tuple size=(0, 0), cimgui.ImGuiDockNodeFlags flags=0):
+    """
+    create an explicit dock node _within_ an existing window. See Docking demo for details.    
+    """
+    return cimgui.DockSpace(id, _cast_tuple_ImVec2(size), flags, NULL)
+
 def begin_drag_drop_source(cimgui.ImGuiDragDropFlags flags=0):
     """Set the current item as a drag and drop source. If this return True, you
     can call :func:`set_drag_drop_payload` and :func:`end_drag_drop_source`.
@@ -10749,6 +10767,9 @@ def pop_id():
         PopID()
     """
     cimgui.PopID()
+
+def get_id(str begin):
+    return cimgui.GetID(_bytes(begin))
 
 def _ansifeed_text_ansi(str text):
     """Add ANSI-escape-formatted text to current widget stack.

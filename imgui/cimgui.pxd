@@ -79,6 +79,7 @@ cdef extern from "imgui.h":
     ctypedef int ImGuiTableRowFlags
     ctypedef int ImGuiTreeNodeFlags
     ctypedef int ImGuiWindowFlags
+    ctypedef int ImGuiDockNodeFlags
     # ctypedef int ImGuiColumnsFlags # DEPRECIATED
 
     # ====
@@ -2013,6 +2014,10 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void SetTabItemClosed(const char* tab_or_docked_window_label) except + # ✓
     
+    # ====
+    # create an explicit dock node _within_ an existing window. See Docking demo for details.
+    ImGuiID DockSpace(ImGuiID id, const ImVec2& size, ImGuiDockNodeFlags flags, const void* window_class)
+
     # ====
     # Logging/Capture
     # Logging: all text output from interface is redirected to
