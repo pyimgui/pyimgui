@@ -10768,8 +10768,17 @@ def pop_id():
     """
     cimgui.PopID()
 
-def get_id(str begin):
-    return cimgui.GetID(_bytes(begin))
+def get_id(str str_id):
+    """Calculate unique ID (hash of whole ID stack + given parameter). 
+    e.g. if you want to query into ImGuiStorage yourself
+
+    Args:
+        str_id (str): String Id
+    
+    wraps::
+        GetID(const char* str_id)
+    """
+    return cimgui.GetID(_bytes(str_id))
 
 def _ansifeed_text_ansi(str text):
     """Add ANSI-escape-formatted text to current widget stack.
