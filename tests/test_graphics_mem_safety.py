@@ -25,7 +25,7 @@ def test_texture_id_int_reference(context, io):
     # See issue #248 (https://github.com/pyimgui/pyimgui/issues/248)
 
     texture_id = 0
-    for i in range(0,10000):
+    for i in range(0, 1000, 50):
         imgui.new_frame()
 
         imgui.begin("tests")
@@ -43,8 +43,6 @@ def test_texture_id_int_reference(context, io):
         draw_data = imgui.get_draw_data()
         for commands in draw_data.commands_lists:
             for command in commands.commands:
-                if type(command.texture_id) is imgui.core._DrawList:
-                    continue
                 assert type(command.texture_id) is int
 
 def test_texture_id_keep_type(context, io):
