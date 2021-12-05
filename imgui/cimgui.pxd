@@ -2016,7 +2016,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     
     # ====
     # create an explicit dock node _within_ an existing window. See Docking demo for details.
-    ImGuiID DockSpace(ImGuiID id, const ImVec2& size, ImGuiDockNodeFlags flags, const void* window_class)
+    ImGuiID DockSpace(ImGuiID id, const ImVec2& size, ImGuiDockNodeFlags flags, const void* window_class) except + # ✓
 
     # ====
     # Logging/Capture
