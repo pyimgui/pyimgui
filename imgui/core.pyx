@@ -10313,8 +10313,20 @@ def set_tab_item_closed(str tab_or_docked_window_label):
     cimgui.SetTabItemClosed(_bytes(tab_or_docked_window_label))
 
 def dockspace(cimgui.ImGuiID id, tuple size=(0, 0), cimgui.ImGuiDockNodeFlags flags=0):
-    """
-    create an explicit dock node _within_ an existing window. See Docking demo for details.    
+    """Create an explicit dockspace node within an existing window. Also expose dock node flags and creates a CentralNode by default.
+    The Central Node is always displayed even when empty and shrink/extend according to the requested size of its neighbors.
+    dockspace() needs to be submitted _before_ any window they can host. If you use a dockspace, submit it early in your app.
+
+    Args:
+        id (ImGuiID): Identifier
+        size (tuple): Size
+        flags (ImGuiDockNodeFlags): DockNode flags.
+        
+    Returns:
+        ImGuiID: Identifier
+
+    .. wraps::
+        ImGuiID DockSpace(ImGuiID id, const ImVec2& size, ImGuiDockNodeFlags flags, const void* window_class)
     """
     return cimgui.DockSpace(id, _cast_tuple_ImVec2(size), flags, NULL)
 
