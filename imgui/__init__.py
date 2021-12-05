@@ -220,6 +220,8 @@ WINDOW_NO_NAV_INPUTS = core.WINDOW_NO_NAV_INPUTS
 WINDOW_NO_NAV_FOCUS = core.WINDOW_NO_NAV_FOCUS
 #: Append '*' to title without affecting the ID, as a convenience to avoid using the ### operator. When used in a tab/docking context, tab is selected on closure and closure is deferred by one frame to allow code to cancel the closure (with a confirmation popup, etc.) without flicker.
 WINDOW_UNSAVED_DOCUMENT = core.WINDOW_UNSAVED_DOCUMENT
+#: Disable docking of this window
+WINDOW_NO_DOCKING = core.WINDOW_NO_DOCKING
 #: Shortcut: ``imgui.WINDOW_NO_NAV_INPUTS | imgui.WINDOW_NO_NAV_FOCUS``.
 WINDOW_NO_NAV = core.WINDOW_NO_NAV
 #: Shortcut: ``imgui.WINDOW_NO_TITLE_BAR | imgui.WINDOW_NO_RESIZE | imgui.WINDOW_NO_SCROLLBAR | imgui.WINDOW_NO_COLLAPSE``.
@@ -656,6 +658,22 @@ HOVERED_RECT_ONLY = core.HOVERED_ALLOW_WHEN_BLOCKED_BY_POPUP | core.HOVERED_ALLO
 #: Shortcut: ``imgui.HOVERED_ROOT_WINDOW | imgui.HOVERED_CHILD_WINDOWS``.
 HOVERED_ROOT_AND_CHILD_WINDOWS = core.HOVERED_ROOT_WINDOW | core.HOVERED_CHILD_WINDOWS
 
+# === Flags for imgui.dockspace(), shared/inherited by child nodes. (redefines for autodoc)
+#: (Some flags can be applied to individual nodes directly)
+DOCKNODE_NONE = core.DOCKNODE_NONE
+#: Shared       # Don't display the dockspace node but keep it alive. Windows docked into this dockspace node won't be undocked.
+DOCKNODE_KEEPALIVE_ONLY = core.DOCKNODE_KEEPALIVE_ONLY
+#: Shared       # Disable docking inside the Central Node, which will be always kept empty.
+DOCKNODE_NO_DOCKING_IN_CENTRAL_NODE = core.DOCKNODE_NO_DOCKING_IN_CENTRAL_NODE
+#: Shared       # Enable passthru dockspace: 1) dockspace() will render a COLOR_WINDOW_BACKGROUND background covering everything excepted the Central Node when empty. Meaning the host window should probably use set_next_window_bg_alpha(0.0f) prior to begin() when using this. 2) When Central Node is empty: let inputs pass-through + won't display a DockingEmptyBg background. See demo for details.
+DOCKNODE_PASSTHRU_CENTRAL_NODE = core.DOCKNODE_PASSTHRU_CENTRAL_NODE
+#: Shared/Local # Disable splitting the node into smaller nodes. Useful e.g. when embedding dockspaces into a main root one (the root one may have splitting disabled to reduce confusion). Note: when turned off, existing splits will be preserved.
+DOCKNODE_NO_SPLIT = core.DOCKNODE_NO_SPLIT
+#: Shared/Local # Disable resizing node using the splitter/separators. Useful with programmatically setup dockspaces.
+DOCKNODE_NO_RESIZE = core.DOCKNODE_NO_RESIZE
+#: Shared/Local # Tab bar will automatically hide when there is a single window in the dock node.
+DOCKNODE_AUTO_HIDE_TABBAR = core.DOCKNODE_AUTO_HIDE_TABBAR
+
 # === Drag Drop flag constants (redefines for autodoc)
 DRAG_DROP_NONE = core.DRAG_DROP_NONE
 #: By default, a successful call to BeginDragDropSource opens a tooltip
@@ -839,6 +857,8 @@ CONFIG_NAV_ENABLE_SET_MOUSE_POS = core.CONFIG_NAV_ENABLE_SET_MOUSE_POS
 CONFIG_NAV_NO_CAPTURE_KEYBOARD = core.CONFIG_NAV_NO_CAPTURE_KEYBOARD
 CONFIG_NO_MOUSE = core.CONFIG_NO_MOUSE
 CONFIG_NO_MOUSE_CURSOR_CHANGE = core.CONFIG_NO_MOUSE_CURSOR_CHANGE
+#: Docking enable flags.
+CONFIG_DOCKING_ENABLE = core.CONFIG_DOCKING_ENABLE
 CONFIG_IS_RGB = core.CONFIG_IS_RGB
 CONFIG_IS_TOUCH_SCREEN = core.CONFIG_IS_TOUCH_SCREEN
 

@@ -105,8 +105,8 @@ class DocItem(pytest.Item):
         io.display_size = 300, 300
 
         # setup default font
-        io.fonts.get_tex_data_as_rgba32()
         io.fonts.add_font_default()
+        io.fonts.get_tex_data_as_rgba32()
         io.fonts.texture_id = 0  # set any texture ID to avoid segfaults
 
         imgui.new_frame()
