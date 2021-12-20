@@ -6702,6 +6702,20 @@ def set_mouse_cursor(cimgui.ImGuiMouseCursor mouse_cursor_type):
     return cimgui.SetMouseCursor(mouse_cursor_type)
 
 
+def capture_mouse_from_app(bool capture = True):
+    """Set whether imgui should claim the mouse input.
+
+    The result is that the io.want_capture_mouse flag is set to whatever the capture argument is.
+
+    Args:
+        bool capture = True
+
+    .. wraps::
+        void CaptureMouseFromApp(bool capture)
+    """
+    cimgui.CaptureMouseFromApp(capture)
+
+
 def set_scroll_here(float center_y_ratio = 0.5):
     """Set scroll here.
 
