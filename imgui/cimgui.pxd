@@ -1250,7 +1250,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             # note: optional
             bool capture
     ) except +
-    void CaptureMouseFromApp(  # ✗
+    void CaptureMouseFromApp(  # ✓
             # note: optional
             bool capture
     ) except +  # ====
