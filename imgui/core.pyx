@@ -5984,7 +5984,7 @@ def color_edit3(str label, float r, float g, float b, cimgui.ImGuiColorEditFlags
         r (float): red color intensity.
         g (float): green color intensity.
         b (float): blue color instensity.
-        #ImGuiColorEditFlags: Color edit flags.  Zero for none.
+        flags (ImGuiColorEditFlags): Color edit flags.  Zero for none.
 
     Returns:
         tuple: a ``(bool changed, float color[3])`` tuple that contains indicator of color
@@ -6001,9 +6001,7 @@ def color_edit3(str label, float r, float g, float b, cimgui.ImGuiColorEditFlags
     ), (inout_color[0], inout_color[1], inout_color[2])
 
 
-def color_edit4(
-        str label, float r, float g, float b, float a, cimgui.bool show_alpha=True, flags=0
-):
+def color_edit4(str label, float r, float g, float b, float a, cimgui.ImGuiColorEditFlags flags = 0):
     """Display color edit widget for color with alpha value.
 
     .. visual-example::
@@ -6019,8 +6017,8 @@ def color_edit4(
         # note: first element of return two-tuple notifies if the color was changed
         #       in currently processed frame and second element is current value
         #       of color and alpha
-        _, color = imgui.color_edit4("Alpha", *color, show_alpha=True)
-        _, color = imgui.color_edit4("No alpha", *color, show_alpha=False)
+        _, color = imgui.color_edit4("Alpha", *color)
+        _, color = imgui.color_edit4("No alpha", *color, imgui.COLOR_EDIT_NO_ALPHA)
 
         imgui.end()
 
@@ -6030,8 +6028,7 @@ def color_edit4(
         g (float): green color intensity.
         b (float): blue color instensity.
         a (float): alpha intensity.
-        show_alpha (bool): if set to True wiget allows to modify alpha
-        #ImGuiColorEditFlags: Color edit flags.  Zero for none.
+        flags (ImGuiColorEditFlags): Color edit flags.  Zero for none.
 
     Returns:
         tuple: a ``(bool changed, float color[4])`` tuple that contains indicator of color
@@ -6045,7 +6042,7 @@ def color_edit4(
     cdef float[4] inout_color = [r, g, b, a]
 
     return cimgui.ColorEdit4(
-        _bytes(label), <float *>(&inout_color), flags & show_alpha
+        _bytes(label), <float *>(&inout_color), flags
     ), (inout_color[0], inout_color[1], inout_color[2], inout_color[3])
 
 
