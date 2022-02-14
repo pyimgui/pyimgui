@@ -33,6 +33,7 @@ cdef extern from "imgui.h":
     ctypedef struct ImGuiOnceUponAFrame
     ctypedef struct ImGuiPayload
     ctypedef struct ImGuiSizeCallbackData
+    ctypedef struct ImGuiWindowClass
     ctypedef struct ImGuiStorage
     # ctypedef struct ImGuiStyle  # declared later
     ctypedef struct ImGuiTableSortSpecs
@@ -2016,7 +2017,13 @@ cdef extern from "imgui.h" namespace "ImGui":
     
     # ====
     # create an explicit dock node _within_ an existing window. See Docking demo for details.
-    ImGuiID DockSpace(ImGuiID id, const ImVec2& size, ImGuiDockNodeFlags flags, const void* window_class) except + # ✓
+    void DockSpace(
+            ImGuiID id, 
+            # note: optional
+            const ImVec2& size,                  # = ImVec2(0, 0)
+            ImGuiDockNodeFlags flags,            # = 0
+            const ImGuiWindowClass* window_class # = NULL
+        ) except + # ✓
 
     # ====
     # Logging/Capture

@@ -187,7 +187,7 @@ COLOR_EDIT_PICKER_HUE_WHEEL = enums.ImGuiColorEditFlags_PickerHueWheel
 COLOR_EDIT_INPUT_RGB = enums.ImGuiColorEditFlags_InputRGB        
 COLOR_EDIT_INPUT_HSV = enums.ImGuiColorEditFlags_InputHSV        
 
-COLOR_EDIT_DEFAULT_OPTIONS = enums.ImGuiColorEditFlags_DefaultOptions_
+COLOR_EDIT_DEFAULT_OPTIONS = enums.ImGuiColorEditFlags__OptionsDefault
 
 # ==== TreeNode flags enum redefines ====
 TREE_NODE_NONE = enums.ImGuiTreeNodeFlags_None
