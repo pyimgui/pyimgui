@@ -32,6 +32,8 @@ cdef extern from "imgui.h":
     ctypedef struct ImGuiListClipper
     ctypedef struct ImGuiOnceUponAFrame
     ctypedef struct ImGuiPayload
+    ctypedef struct ImGuiPlatformIO
+    ctypedef struct ImGuiPlatformMonitor
     ctypedef struct ImGuiSizeCallbackData
     ctypedef struct ImGuiWindowClass
     ctypedef struct ImGuiStorage
@@ -41,7 +43,8 @@ cdef extern from "imgui.h":
     ctypedef struct ImGuiTextBuffer
     ctypedef struct ImGuiTextFilter
     # ctypedef struct ImGuiViewport # declared later
-    
+    ctypedef struct ImGuiWindowClass
+
     # ====
     # Enums/Flags
     ctypedef int ImGuiCol
@@ -65,6 +68,7 @@ cdef extern from "imgui.h":
     ctypedef int ImGuiColorEditFlags
     ctypedef int ImGuiConfigFlags
     ctypedef int ImGuiComboFlags
+    ctypedef int ImGuiDockNodeFlags
     ctypedef int ImGuiDragDropFlags
     ctypedef int ImGuiFocusedFlags
     ctypedef int ImGuiHoveredFlags
@@ -80,7 +84,6 @@ cdef extern from "imgui.h":
     ctypedef int ImGuiTableRowFlags
     ctypedef int ImGuiTreeNodeFlags
     ctypedef int ImGuiWindowFlags
-    ctypedef int ImGuiDockNodeFlags
     # ctypedef int ImGuiColumnsFlags # DEPRECIATED
 
     # ====
@@ -159,6 +162,19 @@ cdef extern from "imgui.h":
         ImVec2        DisplayFramebufferScale  # ✓
         #ImVec2        DisplayVisibleMin  # ✓ # DEPRECIATED
         #ImVec2        DisplayVisibleMax  # ✓ # DEPRECIATED
+
+        # Docking options (when ImGuiConfigFlags_DockingEnable is set)
+        bool        ConfigDockingNoSplit              # ✗      # = false          # Simplified docking mode: disable window splitting, so docking is limited to merging multiple windows together into tab-bars.
+        bool        ConfigDockingWithShift            # ✗      # = false          # Enable docking with holding Shift key (reduce visual noise, allows dropping in wider space)
+        bool        ConfigDockingAlwaysTabBar         # ✗      # = false          # [BETA] [FIXME: This currently creates regression with auto-sizing and general overhead] Make every single floating window display within a docking node.
+        bool        ConfigDockingTransparentPayload   # ✗      # = false          # [BETA] Make window or viewport transparent when docking and only display docking boxes on the target viewport. Useful if rendering of multiple viewport cannot be synced. Best used with ConfigViewportsNoAutoMerge.
+
+        # Viewport options (when ImGuiConfigFlags_ViewportsEnable is set)
+        bool        ConfigViewportsNoAutoMerge       # ✗       # = false;         # Set to make all floating imgui windows always create their own viewport. Otherwise, they are merged into the main host viewports when overlapping it. May also set ImGuiViewportFlags_NoAutoMerge on individual viewport.
+        bool        ConfigViewportsNoTaskBarIcon     # ✗       # = false          # Disable default OS task bar icon flag for secondary viewports. When a viewport doesn't want a task bar icon, ImGuiViewportFlags_NoTaskBarIcon will be set on it.
+        bool        ConfigViewportsNoDecoration      # ✗       # = true           # Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).
+        bool        ConfigViewportsNoDefaultParent   # ✗       # = false          # Disable default OS parenting to main viewport for secondary viewports. By default, viewports are marked with ParentViewportId = <main_viewport>, expecting the platform backend to setup a parent/child relationship between the OS windows (some backend may ignore this). Set to true if you want the default to be 0, then all viewports will be top-level OS windows.
+
         
         # Miscellaneous options
         bool          MouseDrawCursor  # ✓
@@ -186,9 +202,10 @@ cdef extern from "imgui.h":
         void        (*SetClipboardTextFn)(void* user_data, const char* text) except +  # ✓
         void*       ClipboardUserData  # ✗
         
+        # NOTE: This is not in 'docking' branch...
         # Optional: Notify OS Input Method Editor of the screen position of your cursor for text input position
-        void        (*ImeSetInputScreenPosFn)(int x, int y) except +  # ✗  # TODO: Callback
-        void*       ImeWindowHandle  # ✗
+        # void        (*ImeSetInputScreenPosFn)(int x, int y) except +  # ✗  # TODO: Callback
+        # void*       ImeWindowHandle  # ✗
 
         # ====
         # Input - Fill before calling NewFrame()
@@ -196,6 +213,7 @@ cdef extern from "imgui.h":
         bool        MouseDown[5]  # ✓
         float       MouseWheel  # ✓
         float       MouseWheelH  # ✓
+        ImGuiID     MouseHoveredViewport # ✗
         bool        KeyCtrl  # ✓
         bool        KeyShift  # ✓
         bool        KeyAlt  # ✓
@@ -622,6 +640,7 @@ cdef extern from "imgui.h":
         ImVec2          DisplayPos # ✓
         ImVec2          DisplaySize # ✓
         ImVec2          FramebufferScale # ✓
+        ImGuiViewport*  OwnerViewport # ✗
         
         void            DeIndexAllBuffers() except +  # ✓
         void            ScaleClipRects(const ImVec2&) except +  # ✓
@@ -885,6 +904,19 @@ cdef extern from "imgui.h":
         
         void ScaleAllSizes(float scale_factor) except + # ✗
 
+    ctypedef struct ImGuiWindowClass: # ✗
+        ImGuiID             ClassId # ✗
+        ImGuiID             ParentViewportId # ✗
+        ImGuiViewportFlags  ViewportFlagsOverrideSet # ✗
+        ImGuiViewportFlags  ViewportFlagsOverrideClear # ✗
+        ImGuiTabItemFlags   TabItemFlagsOverrideSet # ✗
+        ImGuiDockNodeFlags  DockNodeFlagsOverrideSet # ✗
+        ImGuiDockNodeFlags  DockNodeFlagsOverrideClear # ✗
+        bool                DockingAlwaysTabBar # ✗
+        bool                DockingAllowUnclassed # ✗
+        ImGuiWindowClass() except + # ✗
+
+
     ctypedef struct ImGuiPayload: # ✗
         void* Data  # ✓
         int   DataSize  # ✓
@@ -912,14 +944,31 @@ cdef extern from "imgui.h":
         pass
         
     ctypedef struct ImGuiViewport:  # ✓
+        ImGuiID             ID # ✗
         ImGuiViewportFlags  Flags  # ✓
         ImVec2              Pos  # ✓
         ImVec2              Size  # ✓
         ImVec2              WorkPos # ✓
         ImVec2              WorkSize # ✓
+        float               DpiScale # ✗
+        ImGuiID             ParentViewportId # ✗
+        ImDrawData*         DrawData # ✗
+        
+        void*               RendererUserData # ✗
+        void*               PlatformUserData # ✗
+        void*               PlatformHandle # ✗
+        void*               PlatformHandleRaw # ✗
+        bool                PlatformRequestMove # ✗
+        bool                PlatformRequestResize # ✗
+        bool                PlatformRequestClose # ✗
         
         ImVec2 GetCenter() except + # ✓
         ImVec2 GetWorkCenter() except + # ✓
+
+    ctypedef struct ImGuiPlatformIO: # ✗
+        pass
+    ctypedef struct ImGuiPlatformMonitor: # ✗
+        pass
 
 cdef extern from "imgui.h" namespace "ImGui":
 
@@ -1019,10 +1068,12 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiFocusedFlags flags     # = 0
     ) except +
     ImDrawList* GetWindowDrawList() except +  # ✓
+    float GetWindowDpiScale() except + # ✗
     ImVec2 GetWindowPos() except +  # ✓
     ImVec2 GetWindowSize() except +  # ✓
     float GetWindowWidth() except +  # ✓
     float GetWindowHeight() except +  # ✓
+    ImGuiViewport* GetWindowViewport() except + # ✗
     
     void SetNextWindowPos(  # ✓ note: overrides ommited
             const ImVec2& pos,
@@ -1050,6 +1101,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void SetNextWindowFocus() except +  # ✓
     void SetNextWindowBgAlpha(float alpha) except +  # ✓
+    void SetNextWindowViewport(ImGuiID viewport_id) except + # ✗
     void SetWindowPos(  # ✓
             const ImVec2& pos,
             # note: optional
@@ -1995,6 +2047,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     
     # ====
     # Tab Bars, Tabs
+    # Note: Tabs are automatically created by the docking system. Use this to create tab bars/tabs yourself without docking being involved.
     bool BeginTabBar( # ✓
             const char* str_id, 
             # note: optional
@@ -2015,15 +2068,39 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void SetTabItemClosed(const char* tab_or_docked_window_label) except + # ✓
     
+
     # ====
-    # create an explicit dock node _within_ an existing window. See Docking demo for details.
+    # Docking
+    # [BETA API] Enable with io.ConfigFlags |= ImGuiConfigFlags_DockingEnable.
+    # Note: You can use most Docking facilities without calling any API. You DO NOT need to call DockSpace() to use Docking!
+    # - To dock windows: if io.ConfigDockingWithShift == false (default) drag window from their title bar.
+    # - To dock windows: if io.ConfigDockingWithShift == true: hold SHIFT anywhere while moving windows.
+    # About DockSpace:
+    # - Use DockSpace() to create an explicit dock node _within_ an existing window. See Docking demo for details.
+    # - DockSpace() needs to be submitted _before_ any window they can host. If you use a dockspace, submit it early in your app.
     void DockSpace(
             ImGuiID id, 
             # note: optional
             const ImVec2& size,                  # = ImVec2(0, 0)
             ImGuiDockNodeFlags flags,            # = 0
             const ImGuiWindowClass* window_class # = NULL
-        ) except + # ✓
+    ) except + # ✓
+    ImGuiID DockSpaceOverViewport(
+            # note: optional
+            const ImGuiViewport* viewport,        # = NULL
+            ImGuiDockNodeFlags flags,             # = 0
+            const ImGuiWindowClass* window_class  # = NULL
+    ) except + # ✗
+    # set next window dock id (FIXME-DOCK)
+    void SetNextWindowDockID(
+            ImGuiID dock_id, 
+            # note: optional
+            ImGuiCond cond      #= 0
+    ) except + # ✗
+    # set next window class (rare/advanced uses: provide hints to the platform backend via altered viewport flags and parent/child info)
+    void SetNextWindowClass(const ImGuiWindowClass* window_class) except + # ✗
+    ImGuiID GetWindowDockID() except + # ✗
+    bool IsWindowDocked() except + # ✗
 
     # ====
     # Logging/Capture
@@ -2122,6 +2199,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     int GetFrameCount() except +  # ✗
     ImDrawList* GetBackgroundDrawList() except +  # ✓
     ImDrawList* GetForegroundDrawList() except +  # ✓
+    ImDrawList* GetBackgroundDrawList(ImGuiViewport* viewport) except +  # ✗
+    ImDrawList* GetForegroundDrawList(ImGuiViewport* viewport) except +  # ✗
     ImDrawListSharedData* GetDrawListSharedData() except +  # ✗
     const char* GetStyleColorName(ImGuiCol idx) except +  # ✓
     void SetStateStorage(ImGuiStorage* storage) except +  # ✗
@@ -2249,4 +2328,20 @@ cdef extern from "imgui.h" namespace "ImGui":
     void* MemAlloc(size_t size) except + # ✗
     void MemFree(void* ptr) except + # ✗
 
+
+    # ====
+    # (Optional) Platform/OS interface for multi-viewport support
+    # Read comments around the ImGuiPlatformIO structure for more details.
+    # Note: You may use GetWindowViewport() to get the current viewport of the current window.
+    ImGuiPlatformIO& GetPlatformIO() except + # ✗
+    void UpdatePlatformWindows() except + # ✗
+    void RenderPlatformWindowsDefault(
+        # note: optional
+        void* platform_render_arg,       # = NULL
+        void* renderer_render_arg        # = NULL
+    ) except + # ✗
+    void DestroyPlatformWindows() except + # ✗
+    ImGuiViewport* FindViewportByID(ImGuiID id) except + # ✗
+    ImGuiViewport* FindViewportByPlatformHandle(void* platform_handle) except + # ✗
+    
     

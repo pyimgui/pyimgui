@@ -452,6 +452,8 @@ COLOR_TAB_HOVERED = enums.ImGuiCol_TabHovered
 COLOR_TAB_ACTIVE = enums.ImGuiCol_TabActive
 COLOR_TAB_UNFOCUSED = enums.ImGuiCol_TabUnfocused
 COLOR_TAB_UNFOCUSED_ACTIVE = enums.ImGuiCol_TabUnfocusedActive
+COLOR_DOCKING_PREVIEW = enums.ImGuiCol_DockingPreview
+COLOR_DOCKING_EMPTY_BACKGROUND = enums.ImGuiCol_DockingEmptyBg
 COLOR_PLOT_LINES = enums.ImGuiCol_PlotLines
 COLOR_PLOT_LINES_HOVERED = enums.ImGuiCol_PlotLinesHovered
 COLOR_PLOT_HISTOGRAM = enums.ImGuiCol_PlotHistogram
@@ -555,6 +557,9 @@ CONFIG_NAV_NO_CAPTURE_KEYBOARD = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NavNoC
 CONFIG_NO_MOUSE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouse
 CONFIG_NO_MOUSE_CURSOR_CHANGE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_NoMouseCursorChange
 CONFIG_DOCKING_ENABLE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_DockingEnable
+CONFIG_VIEWEPORTS_ENABLE = enums.ImGuiConfigFlags_.ImGuiConfigFlags_ViewportsEnable
+CONFIG_DPI_ENABLE_SCALE_VIEWPORTS = enums.ImGuiConfigFlags_.ImGuiConfigFlags_DpiEnableScaleViewports
+CONFIG_DPI_ENABLE_SCALE_FONTS = enums.ImGuiConfigFlags_.ImGuiConfigFlags_DpiEnableScaleFonts
 CONFIG_IS_RGB = enums.ImGuiConfigFlags_.ImGuiConfigFlags_IsSRGB
 CONFIG_IS_TOUCH_SCREEN = enums.ImGuiConfigFlags_.ImGuiConfigFlags_IsTouchScreen
 
@@ -564,6 +569,9 @@ BACKEND_HAS_GAMEPAD = enums.ImGuiBackendFlags_.ImGuiBackendFlags_HasGamepad
 BACKEND_HAS_MOUSE_CURSORS = enums.ImGuiBackendFlags_.ImGuiBackendFlags_HasMouseCursors
 BACKEND_HAS_SET_MOUSE_POS = enums.ImGuiBackendFlags_.ImGuiBackendFlags_HasSetMousePos
 BACKEND_RENDERER_HAS_VTX_OFFSET = enums.ImGuiBackendFlags_RendererHasVtxOffset
+BACKEND_PLATFORM_HAS_VIEWPORTS = enums.ImGuiBackendFlags_PlatformHasViewports
+BACKEND_HAS_MOUSE_HOVERED_VIEWPORT = enums.ImGuiBackendFlags_HasMouseHoveredViewport
+BACKEND_RENDERER_HAS_VIEWPORTS = enums.ImGuiBackendFlags_RendererHasViewports
 
 # ==== Slider Flags ====
 SLIDER_FLAGS_NONE = enums.ImGuiSliderFlags_None
@@ -582,6 +590,16 @@ VIEWPORT_FLAGS_NONE = enums.ImGuiViewportFlags_None                     #
 VIEWPORT_FLAGS_IS_PLATFORM_WINDOW = enums.ImGuiViewportFlags_IsPlatformWindow         # Represent a Platform Window
 VIEWPORT_FLAGS_IS_PLATFORM_MONITOR = enums.ImGuiViewportFlags_IsPlatformMonitor        # Represent a Platform Monitor (unused yet)
 VIEWPORT_FLAGS_OWNED_BY_APP = enums.ImGuiViewportFlags_OwnedByApp               # Platform Window: is created/managed by the application (rather than a dear imgui backend)
+VIEWPORT_FLAGS_NO_DECORATION = enums.ImGuiViewportFlags_NoDecoration       
+VIEWPORT_FLAGS_NO_TASK_BAR_ICON = enums.ImGuiViewportFlags_NoTaskBarIcon      
+VIEWPORT_FLAGS_NO_FOCUS_ON_APPEARING = enums.ImGuiViewportFlags_NoFocusOnAppearing 
+VIEWPORT_FLAGS_NO_FOCUS_ON_CLICK = enums.ImGuiViewportFlags_NoFocusOnClick     
+VIEWPORT_FLAGS_NO_INPUTS = enums.ImGuiViewportFlags_NoInputs           
+VIEWPORT_FLAGS_NO_RENDERER_CLEAR = enums.ImGuiViewportFlags_NoRendererClear    
+VIEWPORT_FLAGS_TOP_MOST = enums.ImGuiViewportFlags_TopMost            
+VIEWPORT_FLAGS_MINIMIZED = enums.ImGuiViewportFlags_Minimized          
+VIEWPORT_FLAGS_NO_AUTO_MERGE = enums.ImGuiViewportFlags_NoAutoMerge        
+VIEWPORT_FLAGS_CAN_HOST_OTHER_WINDOWS = enums.ImGuiViewportFlags_CanHostOtherWindows
 
 include "imgui/common.pyx"
 

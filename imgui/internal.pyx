@@ -167,7 +167,10 @@ NEXT_WINDOW_DATA_HAS_COLLAPSED = enums_internal.ImGuiNextWindowDataFlags_HasColl
 NEXT_WINDOW_DATA_HAS_SIZE_CONSTRAINT = enums_internal.ImGuiNextWindowDataFlags_HasSizeConstraint  
 NEXT_WINDOW_DATA_HAS_FOCUS = enums_internal.ImGuiNextWindowDataFlags_HasFocus           
 NEXT_WINDOW_DATA_HAS_BACKGROUND_ALPHA = enums_internal.ImGuiNextWindowDataFlags_HasBgAlpha         
-NEXT_WINDOW_DATA_HAS_SCROLL = enums_internal.ImGuiNextWindowDataFlags_HasScroll          
+NEXT_WINDOW_DATA_HAS_SCROLL = enums_internal.ImGuiNextWindowDataFlags_HasScroll
+NEXT_WINDOW_DATA_HAS_VIEWPORT = enums_internal.ImGuiNextWindowDataFlags_HasViewport
+NEXT_WINDOW_DATA_HAS_DOCK = enums_internal.ImGuiNextWindowDataFlags_HasDock
+NEXT_WINDOW_DATA_HAS_WINDOW_CLASS = enums_internal.ImGuiNextWindowDataFlags_HasWindowClass
 
 # Next Item Data Flags
 NEXT_ITEM_DATA_NONE = enums_internal.ImGuiNextItemDataFlags_None     

@@ -155,7 +155,10 @@ cdef extern from "imgui_internal.h":
         ImGuiNextWindowDataFlags_HasSizeConstraint  
         ImGuiNextWindowDataFlags_HasFocus           
         ImGuiNextWindowDataFlags_HasBgAlpha         
-        ImGuiNextWindowDataFlags_HasScroll          
+        ImGuiNextWindowDataFlags_HasScroll
+        ImGuiNextWindowDataFlags_HasViewport
+        ImGuiNextWindowDataFlags_HasDock
+        ImGuiNextWindowDataFlags_HasWindowClass
     
     ctypedef enum ImGuiNextItemDataFlags_:
         ImGuiNextItemDataFlags_None     

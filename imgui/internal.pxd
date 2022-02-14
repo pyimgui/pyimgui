@@ -28,6 +28,10 @@ cdef extern from "imgui_internal.h":
     ctypedef struct ImGuiContext
     ctypedef struct ImGuiContextHook
     ctypedef struct ImGuiDataTypeInfo
+    ctypedef struct ImGuiDockContext
+    ctypedef struct ImGuiDockRequest
+    ctypedef struct ImGuiDockNode
+    ctypedef struct ImGuiDockNodeSettings
     ctypedef struct ImGuiGroupData
     ctypedef struct ImGuiInputTextState
     ctypedef struct ImGuiLastItemDataBackup
@@ -55,6 +59,7 @@ cdef extern from "imgui_internal.h":
     
     # ====
     # Enums/Flags
+    ctypedef int ImGuiDataAuthority
     ctypedef int ImGuiLayoutType
     # ctypedef int ImGuiButtonFlags # REMOVED
     # ctypedef int ImGuiColumnsFlags # REMOVED
@@ -210,6 +215,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # ====
     void UpdateHoveredWindowAndCaptureFlags() except + # ?
     void StartMouseMovingWindow(ImGuiWindow* window) except + # ?
+    void StartMouseMovingWindowOrNode(ImGuiWindow* window, ImGuiDockNode* node, bool undock_floating_node) except + # ?
     void UpdateMouseMovingWindowNewFrame() except + # ?
     void UpdateMouseMovingWindowEndFrame() except + # ?
     
@@ -218,6 +224,14 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # ====
     void AddContextHook(ImGuiContext* context, const ImGuiContextHook* hook) except + # ?
     void CallContextHooks(ImGuiContext* context, ImGuiContextHookType type) except + # ?
+
+    # ====
+    # Viewports
+    # ====
+    #void TranslateWindowsInViewport(ImGuiViewportP* viewport, const ImVec2& old_pos, const ImVec2& new_pos) except + # ?
+    #void ScaleWindowsInViewport(ImGuiViewportP* viewport, float scale) except + # ?
+    #void DestroyPlatformWindow(ImGuiViewportP* viewport) except + # ?
+    #const ImGuiPlatformMonitor* GetViewportPlatformMonitor(ImGuiViewport* viewport) except + # ?
 
     
     # ====
@@ -369,6 +383,46 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     ImGuiKeyModFlags GetMergedKeyModFlags() except + # ?
 
     # ====
+    # Docking
+    # ====
+    void          DockContextInitialize(ImGuiContext* ctx) except + # ?
+    void          DockContextShutdown(ImGuiContext* ctx) except + # ?
+    void          DockContextClearNodes(ImGuiContext* ctx, ImGuiID root_id, bool clear_settings_refs) except + # ?
+    void          DockContextRebuildNodes(ImGuiContext* ctx) except + # ?
+    void          DockContextNewFrameUpdateUndocking(ImGuiContext* ctx) except + # ?
+    void          DockContextNewFrameUpdateDocking(ImGuiContext* ctx) except + # ?
+    ImGuiID       DockContextGenNodeID(ImGuiContext* ctx) except + # ?
+    void          DockContextQueueDock(ImGuiContext* ctx, ImGuiWindow* target, ImGuiDockNode* target_node, ImGuiWindow* payload, ImGuiDir split_dir, float split_ratio, bool split_outer) except + # ?
+    void          DockContextQueueUndockWindow(ImGuiContext* ctx, ImGuiWindow* window) except + # ?
+    void          DockContextQueueUndockNode(ImGuiContext* ctx, ImGuiDockNode* node) except + # ?
+    bool          DockContextCalcDropPosForDocking(ImGuiWindow* target, ImGuiDockNode* target_node, ImGuiWindow* payload, ImGuiDir split_dir, bool split_outer, ImVec2* out_pos) except + # ?
+    bool          DockNodeBeginAmendTabBar(ImGuiDockNode* node) except + # ?
+    void          DockNodeEndAmendTabBar() except + # ?
+    ImGuiDockNode*   DockNodeGetRootNode(ImGuiDockNode* node) except + # ?
+    int              DockNodeGetDepth(const ImGuiDockNode* node) except + # ?
+    ImGuiDockNode*   GetWindowDockNode() except + # ?
+    bool          GetWindowAlwaysWantOwnTabBar(ImGuiWindow* window) except + # ?
+    void          BeginDocked(ImGuiWindow* window, bool* p_open) except + # ?
+    void          BeginDockableDragDropSource(ImGuiWindow* window) except + # ?
+    void          BeginDockableDragDropTarget(ImGuiWindow* window) except + # ?
+    void          SetWindowDock(ImGuiWindow* window, ImGuiID dock_id, ImGuiCond cond) except + # ?
+
+    void          DockBuilderDockWindow(const char* window_name, ImGuiID node_id) except + # ?
+    ImGuiDockNode*DockBuilderGetNode(ImGuiID node_id) except + # ?
+    ImGuiDockNode*   DockBuilderGetCentralNode(ImGuiID node_id) except + # ?
+    #ImGuiID       DockBuilderAddNode(ImGuiID node_id, ImGuiDockNodeFlags flags) except + # ?
+    void          DockBuilderRemoveNode(ImGuiID node_id) except + # ?
+    void          DockBuilderRemoveNodeDockedWindows(ImGuiID node_id, bool clear_settings_refs) except + # ?
+    void          DockBuilderRemoveNodeChildNodes(ImGuiID node_id) except + # ?
+    void          DockBuilderSetNodePos(ImGuiID node_id, ImVec2 pos) except + # ?
+    void          DockBuilderSetNodeSize(ImGuiID node_id, ImVec2 size) except + # ?
+    ImGuiID       DockBuilderSplitNode(ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir, ImGuiID* out_id_at_dir, ImGuiID* out_id_at_opposite_dir) except + # ?
+    #void          DockBuilderCopyDockSpace(ImGuiID src_dockspace_id, ImGuiID dst_dockspace_id, ImVector<const char*>* in_window_remap_pairs) except + # ?
+    #void          DockBuilderCopyNode(ImGuiID src_node_id, ImGuiID dst_node_id, ImVector<ImGuiID>* out_node_remap_pairs) except + # ?
+    void          DockBuilderCopyWindowSettings(const char* src_name, const char* dst_name) except + # ?
+    void          DockBuilderFinish(ImGuiID node_id) except + # ?
+
+    # ====
     # Drag and Drop
     # ====
     bool BeginDragDropTargetCustom(const ImRect& bb, ImGuiID id) except + # ?
@@ -463,13 +517,15 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # ==== 
     # Tab Bars
     # ====
-    bool BeginTabBarEx(ImGuiTabBar* tab_bar, const ImRect& bb, ImGuiTabBarFlags flags) except + # ?
+    bool BeginTabBarEx(ImGuiTabBar* tab_bar, const ImRect& bb, ImGuiTabBarFlags flags, ImGuiDockNode* dock_node) except + # ?
     ImGuiTabItem* TabBarFindTabByID(ImGuiTabBar* tab_bar, ImGuiID tab_id) except + # ?
+    ImGuiTabItem* TabBarFindMostRecentlySelectedTabForActiveWindow(ImGuiTabBar* tab_bar) except + # ?
+    void TabBarAddTab(ImGuiTabBar* tab_bar, ImGuiTabItemFlags tab_flags, ImGuiWindow* window) except + # ?
     void TabBarRemoveTab(ImGuiTabBar* tab_bar, ImGuiID tab_id) except + # ?
     void TabBarCloseTab(ImGuiTabBar* tab_bar, ImGuiTabItem* tab) except + # ?
     void TabBarQueueReorder(ImGuiTabBar* tab_bar, const ImGuiTabItem* tab, int dir) except + # ?
     bool TabBarProcessReorder(ImGuiTabBar* tab_bar) except + # ?
-    bool TabItemEx(ImGuiTabBar* tab_bar, const char* label, bool* p_open, ImGuiTabItemFlags flags) except + # ?
+    bool TabItemEx(ImGuiTabBar* tab_bar, const char* label, bool* p_open, ImGuiTabItemFlags flags, ImGuiWindow* docked_window) except + # ?
     ImVec2 TabItemCalcSize(const char* label, bool has_close_button) except + # ?
     void TabItemBackground(ImDrawList* draw_list, const ImRect& bb, ImGuiTabItemFlags flags, ImU32 col) except + # ?
     bool TabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect& bb, ImGuiTabItemFlags flags, ImVec2 frame_padding, const char* label, ImGuiID tab_id, ImGuiID close_button_id, bool is_contents_visible) except + # ?
@@ -504,6 +560,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     void RenderCheckMark(ImDrawList* draw_list, ImVec2 pos, ImU32 col, float sz) except + # ?
     void RenderMouseCursor(ImDrawList* draw_list, ImVec2 pos, float scale, ImGuiMouseCursor mouse_cursor, ImU32 col_fill, ImU32 col_border, ImU32 col_shadow) except + # ?
     void RenderArrowPointingAt(ImDrawList* draw_list, ImVec2 pos, ImVec2 half_sz, ImGuiDir direction, ImU32 col) except + # ?
+    void RenderArrowDockMenu(ImDrawList* draw_list, ImVec2 p_min, float sz, ImU32 col) except + # ?
     void RenderRectFilledRangeH(ImDrawList* draw_list, const ImRect& rect, ImU32 col, float x_start_norm, float x_end_norm, float rounding) except + # ?
     void RenderRectFilledWithHole(ImDrawList* draw_list, ImRect outer, ImRect inner, ImU32 col, float rounding) except + # ?
 
@@ -523,7 +580,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
         ImGuiButtonFlags flags          # = 0
     ) except +
     bool CloseButton(ImGuiID id, const ImVec2& pos) except + # ?
-    bool CollapseButton(ImGuiID id, const ImVec2& pos) except + # ?
+    bool CollapseButton(ImGuiID id, const ImVec2& pos, ImGuiDockNode* dock_node) except + # ?
     bool ArrowButtonEx( # ?
         const char* str_id, 
         ImGuiDir dir, 

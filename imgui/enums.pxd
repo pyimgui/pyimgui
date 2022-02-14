@@ -60,7 +60,16 @@ cdef extern from "imgui.h":
         ImGuiConfigFlags_NavNoCaptureKeyboard   # Instruct navigation to not set the io.WantCaptureKeyboard flag when io.NavActive is set.
         ImGuiConfigFlags_NoMouse                # Instruct imgui to clear mouse position/buttons in NewFrame(). This allows ignoring the mouse information set by the backend.
         ImGuiConfigFlags_NoMouseCursorChange    # Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use SetMouseCursor() to change mouse cursor. You may want to honor requests from imgui by reading GetMouseCursor() yourself instead.
-        ImGuiConfigFlags_DockingEnable
+        
+        # [BETA] Docking
+        ImGuiConfigFlags_DockingEnable          # Docking enable flags.
+
+        # [BETA] Viewports
+        # When using viewports it is recommended that your default value for ImGuiCol_WindowBg is opaque (Alpha=1.0) so transition to a viewport won't be noticeable.
+        ImGuiConfigFlags_ViewportsEnable         # Viewport enable flags (require both ImGuiBackendFlags_PlatformHasViewports + ImGuiBackendFlags_RendererHasViewports set by the respective backends)
+        ImGuiConfigFlags_DpiEnableScaleViewports # [BETA: Don't use] FIXME-DPI: Reposition and resize imgui windows when the DpiScale of a viewport changed (mostly useful for the main viewport hosting other window). Note that resizing the main window itself is up to your application.
+        ImGuiConfigFlags_DpiEnableScaleFonts     # [BETA: Don't use] FIXME-DPI: Request bitmap-scaled fonts to match DpiScale. This is a very low-quality workaround. The correct way to handle DPI is _currently_ to replace the atlas and/or fonts in the Platform_OnChangedViewport callback, but this is all early work in progress.
+
 
         # User storage (to allow your backend/engine to communicate to code that may be shared between multiple projects. Those flags are not used by core Dear ImGui)
         ImGuiConfigFlags_IsSRGB                 # Application is SRGB-aware.
@@ -73,6 +82,10 @@ cdef extern from "imgui.h":
         ImGuiBackendFlags_HasMouseCursors       # Backend Platform supports honoring GetMouseCursor() value to change the OS cursor shape.
         ImGuiBackendFlags_HasSetMousePos        # Backend Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if ImGuiConfigFlags_NavEnableSetMousePos is set).
         ImGuiBackendFlags_RendererHasVtxOffset  # Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.
+        # [BETA] Viewports
+        ImGuiBackendFlags_PlatformHasViewports    # Backend Platform supports multiple viewports.
+        ImGuiBackendFlags_HasMouseHoveredViewport # Backend Platform supports setting io.MouseHoveredViewport to the viewport directly under the mouse _IGNORING_ viewports with the ImGuiViewportFlags_NoInputs flag and _REGARDLESS_ of whether another viewport is focused and may be capturing the mouse. This information is _NOT EASY_ to provide correctly with most high-level engines! Don't set this without studying _carefully_ how the backends handle ImGuiViewportFlags_NoInputs!
+        ImGuiBackendFlags_RendererHasViewports    # Backend Renderer supports multiple viewports.
 
 
     ctypedef enum ImGuiCol_:
@@ -114,6 +127,8 @@ cdef extern from "imgui.h":
         ImGuiCol_TabActive,
         ImGuiCol_TabUnfocused,
         ImGuiCol_TabUnfocusedActive,
+        ImGuiCol_DockingPreview,        # Preview overlay color when about to docking something
+        ImGuiCol_DockingEmptyBg,        # Background color for empty node (e.g. CentralNode with no window docked into it)
         ImGuiCol_PlotLines,
         ImGuiCol_PlotLinesHovered,
         ImGuiCol_PlotHistogram,
@@ -193,7 +208,7 @@ cdef extern from "imgui.h":
         ImGuiWindowFlags_NoMove                  # Disable user moving the window
         ImGuiWindowFlags_NoScrollbar             # Disable scrollbars (window can still scroll with mouse or programmatically)
         ImGuiWindowFlags_NoScrollWithMouse       # Disable user vertically scrolling with mouse wheel. On child window, mouse wheel will be forwarded to the parent unless NoScrollbar is also set.
-        ImGuiWindowFlags_NoCollapse              # Disable user collapsing window by double-clicking on it
+        ImGuiWindowFlags_NoCollapse              # Disable user collapsing window by double-clicking on it. Also referred to as "window menu button" within a docking node.
         ImGuiWindowFlags_AlwaysAutoResize        # Resize every window to its content every frame
         ImGuiWindowFlags_NoBackground            # Disable drawing background color (WindowBg, etc.) and outside border. Similar as using SetNextWindowBgAlpha(0.0f).
         ImGuiWindowFlags_NoSavedSettings         # Never load/save settings in .ini file
@@ -571,4 +586,14 @@ cdef extern from "imgui.h":
         ImGuiViewportFlags_IsPlatformWindow         # Represent a Platform Window
         ImGuiViewportFlags_IsPlatformMonitor        # Represent a Platform Monitor (unused yet)
         ImGuiViewportFlags_OwnedByApp               # Platform Window: is created/managed by the application (rather than a dear imgui backend)
-        
+        ImGuiViewportFlags_NoDecoration             # Platform Window: Disable platform decorations: title bar, borders, etc. (generally set all windows, but if ImGuiConfigFlags_ViewportsDecoration is set we only set this on popups/tooltips)
+        ImGuiViewportFlags_NoTaskBarIcon            # Platform Window: Disable platform task bar icon (generally set on popups/tooltips, or all windows if ImGuiConfigFlags_ViewportsNoTaskBarIcon is set)
+        ImGuiViewportFlags_NoFocusOnAppearing       # Platform Window: Don't take focus when created.
+        ImGuiViewportFlags_NoFocusOnClick           # Platform Window: Don't take focus when clicked on.
+        ImGuiViewportFlags_NoInputs                 # Platform Window: Make mouse pass through so we can drag this window while peaking behind it.
+        ImGuiViewportFlags_NoRendererClear          # Platform Window: Renderer doesn't need to clear the framebuffer ahead (because we will fill it entirely).
+        ImGuiViewportFlags_TopMost                  # Platform Window: Display on top (for tooltips only).
+        ImGuiViewportFlags_Minimized                # Platform Window: Window is minimized, can skip render. When minimized we tend to avoid using the viewport pos/size for clipping window or testing if they are contained in the viewport.
+        ImGuiViewportFlags_NoAutoMerge              # Platform Window: Avoid merging this window into another host window. This can only be set via ImGuiWindowClass viewport flags override (because we need to now ahead if we are going to create a viewport in the first place!).
+        ImGuiViewportFlags_CanHostOtherWindows      # Main viewport: can host multiple imgui windows (secondary viewports are associated to a single window).
+

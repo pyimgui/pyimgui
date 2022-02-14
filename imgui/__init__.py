@@ -371,11 +371,15 @@ COLOR_SEPARATOR_ACTIVE = core.COLOR_SEPARATOR_ACTIVE
 COLOR_RESIZE_GRIP = core.COLOR_RESIZE_GRIP
 COLOR_RESIZE_GRIP_HOVERED = core.COLOR_RESIZE_GRIP_HOVERED
 COLOR_RESIZE_GRIP_ACTIVE = core.COLOR_RESIZE_GRIP_ACTIVE
-COLOR_TAB = COLOR_TAB
-COLOR_TAB_HOVERED = COLOR_TAB_HOVERED                           
-COLOR_TAB_ACTIVE = COLOR_TAB_ACTIVE                            
-COLOR_TAB_UNFOCUSED = COLOR_TAB_UNFOCUSED                         
-COLOR_TAB_UNFOCUSED_ACTIVE = COLOR_TAB_UNFOCUSED_ACTIVE                  
+COLOR_TAB = core.COLOR_TAB
+COLOR_TAB_HOVERED = core.COLOR_TAB_HOVERED                           
+COLOR_TAB_ACTIVE = core.COLOR_TAB_ACTIVE                            
+COLOR_TAB_UNFOCUSED = core.COLOR_TAB_UNFOCUSED                         
+COLOR_TAB_UNFOCUSED_ACTIVE = core.COLOR_TAB_UNFOCUSED_ACTIVE
+#: Preview overlay color when about to docking something
+COLOR_DOCKING_PREVIEW = core.COLOR_DOCKING_PREVIEW
+#: Background color for empty node (e.g. CentralNode with no window docked into it)
+COLOR_DOCKING_EMPTY_BACKGROUND = core.COLOR_DOCKING_EMPTY_BACKGROUND
 COLOR_PLOT_LINES = core.COLOR_PLOT_LINES
 COLOR_PLOT_LINES_HOVERED = core.COLOR_PLOT_LINES_HOVERED
 COLOR_PLOT_HISTOGRAM = core.COLOR_PLOT_HISTOGRAM
@@ -859,6 +863,12 @@ CONFIG_NO_MOUSE = core.CONFIG_NO_MOUSE
 CONFIG_NO_MOUSE_CURSOR_CHANGE = core.CONFIG_NO_MOUSE_CURSOR_CHANGE
 #: Docking enable flags.
 CONFIG_DOCKING_ENABLE = core.CONFIG_DOCKING_ENABLE
+#: Viewport enable flags (require both ImGuiBackendFlags_PlatformHasViewports + ImGuiBackendFlags_RendererHasViewports set by the respective backends)
+CONFIG_VIEWEPORTS_ENABLE = core.CONFIG_VIEWEPORTS_ENABLE
+#: [BETA: Don't use] FIXME-DPI: Reposition and resize imgui windows when the DpiScale of a viewport changed (mostly useful for the main viewport hosting other window). Note that resizing the main window itself is up to your application.
+CONFIG_DPI_ENABLE_SCALE_VIEWPORTS = core.CONFIG_DPI_ENABLE_SCALE_VIEWPORTS
+#: [BETA: Don't use] FIXME-DPI: Request bitmap-scaled fonts to match DpiScale. This is a very low-quality workaround. The correct way to handle DPI is _currently_ to replace the atlas and/or fonts in the Platform_OnChangedViewport callback, but this is all early work in progress.
+CONFIG_DPI_ENABLE_SCALE_FONTS = core.CONFIG_DPI_ENABLE_SCALE_FONTS
 CONFIG_IS_RGB = core.CONFIG_IS_RGB
 CONFIG_IS_TOUCH_SCREEN = core.CONFIG_IS_TOUCH_SCREEN
 
@@ -868,6 +878,12 @@ BACKEND_HAS_GAMEPAD = core.BACKEND_HAS_GAMEPAD
 BACKEND_HAS_MOUSE_CURSORS = core.BACKEND_HAS_MOUSE_CURSORS
 BACKEND_HAS_SET_MOUSE_POS = core.BACKEND_HAS_SET_MOUSE_POS
 BACKEND_RENDERER_HAS_VTX_OFFSET = core.BACKEND_RENDERER_HAS_VTX_OFFSET
+#: Backend Platform supports multiple viewports.
+BACKEND_PLATFORM_HAS_VIEWPORTS = core.BACKEND_PLATFORM_HAS_VIEWPORTS
+#: Backend Platform supports setting io.MouseHoveredViewport to the viewport directly under the mouse _IGNORING_ viewports with the ImGuiViewportFlags_NoInputs flag and _REGARDLESS_ of whether another viewport is focused and may be capturing the mouse. This information is _NOT EASY_ to provide correctly with most high-level engines! Don't set this without studying _carefully_ how the backends handle ImGuiViewportFlags_NoInputs!
+BACKEND_HAS_MOUSE_HOVERED_VIEWPORT = core.BACKEND_HAS_MOUSE_HOVERED_VIEWPORT
+#: Backend Renderer supports multiple viewports.
+BACKEND_RENDERER_HAS_VIEWPORTS = core.BACKEND_RENDERER_HAS_VIEWPORTS
 
 # === Slider flag (redefines for autodoc)
 SLIDER_FLAGS_NONE
@@ -893,5 +909,25 @@ VIEWPORT_FLAGS_IS_PLATFORM_WINDOW  = core.VIEWPORT_FLAGS_IS_PLATFORM_WINDOW
 #: Represent a Platform Monitor (unused yet)
 VIEWPORT_FLAGS_IS_PLATFORM_MONITOR = core.VIEWPORT_FLAGS_IS_PLATFORM_MONITOR
 #: Platform Window: is created/managed by the application (rather than a dear imgui backend)
-VIEWPORT_FLAGS_OWNED_BY_APP        = core.VIEWPORT_FLAGS_OWNED_BY_APP         
+VIEWPORT_FLAGS_OWNED_BY_APP        = core.VIEWPORT_FLAGS_OWNED_BY_APP
+#: Platform Window: Disable platform decorations: title bar, borders, etc. (generally set all windows, but if ImGuiConfigFlags_ViewportsDecoration is set we only set this on popups/tooltips)
+VIEWPORT_FLAGS_NO_DECORATION = core.VIEWPORT_FLAGS_NO_DECORATION
+#: Platform Window: Disable platform task bar icon (generally set on popups/tooltips, or all windows if ImGuiConfigFlags_ViewportsNoTaskBarIcon is set)
+VIEWPORT_FLAGS_NO_TASK_BAR_ICON = core.VIEWPORT_FLAGS_NO_TASK_BAR_ICON
+#: Platform Window: Don't take focus when created.
+VIEWPORT_FLAGS_NO_FOCUS_ON_APPEARING  = core.VIEWPORT_FLAGS_NO_FOCUS_ON_APPEARING 
+#: Platform Window: Don't take focus when clicked on.
+VIEWPORT_FLAGS_NO_FOCUS_ON_CLICK = core.VIEWPORT_FLAGS_NO_FOCUS_ON_CLICK
+#: Platform Window: Make mouse pass through so we can drag this window while peaking behind it.
+VIEWPORT_FLAGS_NO_INPUTS = core.VIEWPORT_FLAGS_NO_INPUTS
+#: Platform Window: Renderer doesn't need to clear the framebuffer ahead (because we will fill it entirely).
+VIEWPORT_FLAGS_NO_RENDERER_CLEAR = core.VIEWPORT_FLAGS_NO_RENDERER_CLEAR
+#: Platform Window: Display on top (for tooltips only).
+VIEWPORT_FLAGS_TOP_MOST = core.VIEWPORT_FLAGS_TOP_MOST
+#: Platform Window: Window is minimized, can skip render. When minimized we tend to avoid using the viewport pos/size for clipping window or testing if they are contained in the viewport.
+VIEWPORT_FLAGS_MINIMIZED = core.VIEWPORT_FLAGS_MINIMIZED
+#: Platform Window: Avoid merging this window into another host window. This can only be set via ImGuiWindowClass viewport flags override (because we need to now ahead if we are going to create a viewport in the first place!).
+VIEWPORT_FLAGS_NO_AUTO_MERGE = core.VIEWPORT_FLAGS_NO_AUTO_MERGE
+#: Main viewport: can host multiple imgui windows (secondary viewports are associated to a single window).
+VIEWPORT_FLAGS_CAN_HOST_OTHER_WINDOWS = core.VIEWPORT_FLAGS_CAN_HOST_OTHER_WINDOWS
 
