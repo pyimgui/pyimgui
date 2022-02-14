@@ -101,9 +101,9 @@ cdef extern from "imgui.h":
     #       if IMGUI_USE_WCHAR32 is set in imconfig.h 
     #           - ImWchar should be a ImWchar32
     #           - IM_UNICODE_CODEPOINT_MAX should be 0x10FFFF    
-    ctypedef ImWchar16 ImWchar 
+    ctypedef ImWchar32 ImWchar 
     cdef enum: # No const in cython
-        IM_UNICODE_CODEPOINT_MAX = 0xFFFF
+        IM_UNICODE_CODEPOINT_MAX = 0x10FFFF
     
     # ====
     # Basic scalar data types
