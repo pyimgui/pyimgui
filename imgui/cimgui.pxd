@@ -904,16 +904,16 @@ cdef extern from "imgui.h":
         
         void ScaleAllSizes(float scale_factor) except + # ✓
 
-    ctypedef struct ImGuiWindowClass: # ✗
-        ImGuiID             ClassId # ✗
-        ImGuiID             ParentViewportId # ✗
-        ImGuiViewportFlags  ViewportFlagsOverrideSet # ✗
-        ImGuiViewportFlags  ViewportFlagsOverrideClear # ✗
-        ImGuiTabItemFlags   TabItemFlagsOverrideSet # ✗
-        ImGuiDockNodeFlags  DockNodeFlagsOverrideSet # ✗
-        ImGuiDockNodeFlags  DockNodeFlagsOverrideClear # ✗
-        bool                DockingAlwaysTabBar # ✗
-        bool                DockingAllowUnclassed # ✗
+    ctypedef struct ImGuiWindowClass: # ✓
+        ImGuiID             ClassId # ✓
+        ImGuiID             ParentViewportId # ✓
+        ImGuiViewportFlags  ViewportFlagsOverrideSet # ✓
+        ImGuiViewportFlags  ViewportFlagsOverrideClear # ✓
+        ImGuiTabItemFlags   TabItemFlagsOverrideSet # ✓
+        ImGuiDockNodeFlags  DockNodeFlagsOverrideSet # ✓
+        ImGuiDockNodeFlags  DockNodeFlagsOverrideClear # ✓
+        bool                DockingAlwaysTabBar # ✓
+        bool                DockingAllowUnclassed # ✓
         ImGuiWindowClass() except + # ✗
 
 

@@ -2205,6 +2205,86 @@ cdef class _ImGuiViewport(object):
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.GetWorkCenter())
 
+
+cdef class ImGuiWindowClass(object):
+    """
+    // [ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.
+    // Important: the content of this class is still highly WIP and likely to change and be refactored
+    // before we stabilize Docking features. Please be mindful if using this.
+    // Provide hints:
+    // - To the platform backend via altered viewport flags (enable/disable OS decoration, OS task bar icons, etc.)
+    // - To the platform backend for OS level parent/child relationships of viewport.
+    // - To the docking system for various options and filtering.
+    """
+    
+    cdef cimgui.ImGuiWindowClass* _ptr
+
+    def __init__(self):
+        pass
+
+    def _require_pointer(self):
+        if self._ptr == NULL:
+            raise RuntimeError(
+                "%s improperly initialized" % self.__class__.__name__
+            )
+
+    @staticmethod
+    cdef from_ptr(cimgui.ImGuiWindowClass* ptr):
+        if ptr == NULL:
+            return None
+
+        instance = ImGuiWindowClass()
+        instance._ptr = ptr
+        return instance
+    
+    @property
+    def class_id(self):
+        self._require_pointer()
+        return self._ptr.ClassId
+
+    @property
+    def parent_viewport_id(self):
+        self._require_pointer()
+        return self._ptr.ParentViewportId
+    
+    @property
+    def viewport_flags_override_set(self):
+        self._require_pointer()
+        return self._ptr.ViewportFlagsOverrideSet
+
+    @property
+    def viewport_flags_override_clear(self):
+        self._require_pointer()
+        return self._ptr.ViewportFlagsOverrideClear
+
+    @property
+    def tab_item_flags_override_set(self):
+        self._require_pointer()
+        return self._ptr.TabItemFlagsOverrideSet
+    
+    @property
+    def docknode_flags_override_set(self):
+        self._require_pointer()
+        return self._ptr.DockNodeFlagsOverrideSet
+    
+    @property
+    def docking_always_tab_bar(self):
+        self._require_pointer()
+        return self._ptr.DockingAlwaysTabBar
+    
+    @property
+    def docking_allow_unclassed(self):
+        self._require_pointer()
+        return self._ptr.DockingAllowUnclassed
+    
+    """
+    error C7624 on MSVC 14.27.29110
+    def imgui_window_class(self):
+        self._require_pointer()
+        self._ptr.ImGuiWindowClass()
+    """
+
+
 cdef class _DrawData(object):
     cdef cimgui.ImDrawData* _ptr
 
