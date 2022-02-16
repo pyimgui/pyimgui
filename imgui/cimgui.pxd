@@ -2339,9 +2339,8 @@ cdef extern from "imgui.h" namespace "ImGui":
         # note: optional
         void* platform_render_arg,       # = NULL
         void* renderer_render_arg        # = NULL
-    ) except + # ✗
+    ) except + # ✓
     void DestroyPlatformWindows() except + # ✓
-    ImGuiViewport* FindViewportByID(ImGuiID id) except + # ✗
-    ImGuiViewport* FindViewportByPlatformHandle(void* platform_handle) except + # ✗
-    
+    ImGuiViewport* FindViewportByID(ImGuiID id) except + # ✓
+    ImGuiViewport* FindViewportByPlatformHandle(void* platform_handle) except + # ✓
     

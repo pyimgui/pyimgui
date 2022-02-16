@@ -11226,3 +11226,12 @@ def update_platform_windows():
 
 def destroy_platform_windows():
     return cimgui.DestroyPlatformWindows()
+
+cdef void render_platform_windows_default(void* platform_render_arg = NULL, void* renderer_render_arg = NULL):
+    cimgui.RenderPlatformWindowsDefault(platform_render_arg, renderer_render_arg)
+
+cdef find_viewport_by_platform_handle(void* platform_handle):
+    return _ImGuiViewport.from_ptr(cimgui.FindViewportByPlatformHandle(platform_handle))
+
+def find_viewport_by_id(cimgui.ImGuiID id):
+    return _ImGuiViewport.from_ptr(cimgui.FindViewportByID(id))
