@@ -1932,6 +1932,10 @@ cdef class GuiStyle(object):
         """
         self._check_ptr()
         return self._colors
+    
+    def scale_all_sizes(self, float scale_factor):
+        self._require_pointer()
+        self._ptr.ScaleAllSizes(scale_factor)
 
 cdef class _ImGuiTableColumnSortSpecs(object):
     cdef cimgui.ImGuiTableColumnSortSpecs* _ptr

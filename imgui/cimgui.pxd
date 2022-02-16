@@ -902,7 +902,7 @@ cdef extern from "imgui.h":
         # todo: find a way to access enum var here
         ImVec4*     Colors
         
-        void ScaleAllSizes(float scale_factor) except + # ✗
+        void ScaleAllSizes(float scale_factor) except + # ✓
 
     ctypedef struct ImGuiWindowClass: # ✗
         ImGuiID             ClassId # ✗
