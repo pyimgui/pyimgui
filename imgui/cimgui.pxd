@@ -917,13 +917,13 @@ cdef extern from "imgui.h":
         ImGuiWindowClass() except + # ✗
 
 
-    ctypedef struct ImGuiPayload: # ✗
+    ctypedef struct ImGuiPayload: # ✓
         void* Data  # ✓
         int   DataSize  # ✓
         
-        bool IsDataType(const char* type) except + # ✗
-        bool IsPreview() except + # ✗
-        bool IsDelivery() except + # ✗
+        bool IsDataType(const char* type) except + # ✓
+        bool IsPreview() except + # ✓
+        bool IsDelivery() except + # ✓
     
     ctypedef struct ImGuiTableColumnSortSpecs: # ✓
         ImGuiID ColumnUserID # ✓
@@ -2099,8 +2099,8 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except + # ✗
     # set next window class (rare/advanced uses: provide hints to the platform backend via altered viewport flags and parent/child info)
     void SetNextWindowClass(const ImGuiWindowClass* window_class) except + # ✗
-    ImGuiID GetWindowDockID() except + # ✗
-    bool IsWindowDocked() except + # ✗
+    ImGuiID GetWindowDockID() except + # ✓
+    bool IsWindowDocked() except + # ✓
 
     # ====
     # Logging/Capture

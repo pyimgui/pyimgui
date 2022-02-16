@@ -10504,6 +10504,13 @@ def dockspace(cimgui.ImGuiID id, tuple size=(0, 0), cimgui.ImGuiDockNodeFlags fl
     """
     return cimgui.DockSpace(id, _cast_tuple_ImVec2(size), flags, NULL)
 
+
+def get_window_dock_id():
+    return cimgui.GetWindowDockID()
+
+def is_window_docked():
+    return cimgui.IsWindowDocked()
+
 def begin_drag_drop_source(cimgui.ImGuiDragDropFlags flags=0):
     """Set the current item as a drag and drop source. If this return True, you
     can call :func:`set_drag_drop_payload` and :func:`end_drag_drop_source`.
@@ -10594,6 +10601,55 @@ def begin_drag_drop_target():
     return cimgui.BeginDragDropTarget()
 
 
+cdef class _ImGuiPayload(object):
+    """
+    Data payload for Drag and Drop operations: AcceptDragDropPayload(), GetDragDropPayload()
+    """
+    
+    cdef const cimgui.ImGuiPayload* _ptr
+
+    def __init__(self):
+        pass
+
+    def _require_pointer(self):
+        if self._ptr == NULL:
+            raise RuntimeError(
+                "%s improperly initialized" % self.__class__.__name__
+            )
+
+    @staticmethod
+    cdef from_ptr(const cimgui.ImGuiPayload* ptr):
+        if ptr == NULL:
+            return None
+
+        instance = _ImGuiPayload()
+        instance._ptr = ptr
+        return instance
+    
+    @property
+    def data(self):
+        """ Data (copied and owned by dear imgui)"""
+        self._require_pointer()
+        return <bytes>(self._ptr.Data)
+    
+    @property
+    def data_size(self):
+        """Data size"""
+        self._require_pointer()
+        return self._ptr.DataSize
+    
+    def is_preview(self):
+        self._require_pointer()
+        return self.ptr_.IsPreview()
+    
+    def is_delivery(self):
+        self._require_pointer()
+        return self.ptr_.IsDelivery()
+    
+    def is_data_type(self, str type):
+        self._require_pointer()
+        return self.ptr_.IsDataType(type)
+
 def accept_drag_drop_payload(str type, cimgui.ImGuiDragDropFlags flags=0):
     """Get the drag and drop payload. Only call after :func:`begin_drag_drop_target`
     returns True.
@@ -10612,11 +10668,12 @@ def accept_drag_drop_payload(str type, cimgui.ImGuiDragDropFlags flags=0):
     .. wraps::
         const ImGuiPayload* AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags = 0)
     """
-    cdef const cimgui.ImGuiPayload* payload = cimgui.AcceptDragDropPayload(_bytes(type), flags)
-    if payload == NULL:
+    cdef payload = _ImGuiPayload.from_ptr(cimgui.AcceptDragDropPayload(_bytes(type), flags))
+    if payload is None:
         return None
-    cdef const char* data = <const char *>payload.Data
-    return <bytes>data[:payload.DataSize]
+
+    cdef const char* data = <const char *>payload.data
+    return <bytes>data[:payload.data_size]
 
 
 def end_drag_drop_target():
@@ -10642,9 +10699,10 @@ def get_drag_drop_payload():
     .. wraps::
         const ImGuiPayload* GetDragDropPayload()
     """
-    cdef const cimgui.ImGuiPayload* payload = cimgui.GetDragDropPayload()
-    if payload == NULL:
+    cdef payload = _ImGuiPayload.from_ptr(cimgui.GetDragDropPayload())
+    if payload is None:
         return None
+    
     cdef const char* data = <const char *>payload.Data
     return <bytes>data[:payload.DataSize]
 
