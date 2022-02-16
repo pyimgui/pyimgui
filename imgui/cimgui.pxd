@@ -944,15 +944,15 @@ cdef extern from "imgui.h":
         pass
         
     ctypedef struct ImGuiViewport:  # ✓
-        ImGuiID             ID # ✗
+        ImGuiID             ID # ✓
         ImGuiViewportFlags  Flags  # ✓
         ImVec2              Pos  # ✓
         ImVec2              Size  # ✓
         ImVec2              WorkPos # ✓
         ImVec2              WorkSize # ✓
-        float               DpiScale # ✗
-        ImGuiID             ParentViewportId # ✗
-        ImDrawData*         DrawData # ✗
+        float               DpiScale # ✓
+        ImGuiID             ParentViewportId # ✓
+        ImDrawData*         DrawData # ✓
         
         void*               RendererUserData # ✗
         void*               PlatformUserData # ✗
@@ -1101,7 +1101,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ) except +
     void SetNextWindowFocus() except +  # ✓
     void SetNextWindowBgAlpha(float alpha) except +  # ✓
-    void SetNextWindowViewport(ImGuiID viewport_id) except + # ✗
+    void SetNextWindowViewport(ImGuiID viewport_id) except + # ✓
     void SetWindowPos(  # ✓
             const ImVec2& pos,
             # note: optional

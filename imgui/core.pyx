@@ -2116,7 +2116,26 @@ cdef class _ImGuiViewport(object):
         return instance
     
     @property
+    def id(self):
+        """Unique identifier for the viewport"""
+        self._require_pointer()
+        return self._ptr.ID
+
+    @property
+    def parent_viewport_id(self):
+        """(Advanced) 0: no parent. Instruct the platform backend to setup a parent/child relationship between platform windows."""
+        self._require_pointer()
+        return self._ptr.ParentViewportId
+    
+    @property
+    def dpi_scale(self):
+        """1.0f = 96 DPI = No extra scale."""
+        self._require_pointer()
+        return self._ptr.DpiScale
+
+    @property
     def flags(self):
+        """See ImGuiViewportFlags_"""
         self._require_pointer()
         return self._ptr.Flags
     
@@ -2139,11 +2158,16 @@ cdef class _ImGuiViewport(object):
         return _cast_ImVec2_tuple(self._ptr.WorkPos)
     
     @property
-    def work_size(self):
-        """Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)"""
+    def draw_data(self):
+        """The ImDrawData corresponding to this viewport. Valid after Render() and until the next call to NewFrame()."""
         self._require_pointer()
-        return _cast_ImVec2_tuple(self._ptr.WorkSize)
-        
+        return _DrawData.from_ptr(self._ptr.DrawData)
+    
+    def pos(self):
+        """Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)"""
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.Pos)
+
     def get_center(self):
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.GetCenter())
@@ -4108,6 +4132,10 @@ def set_next_window_content_size(float width, float height):
         )
     """
     cimgui.SetNextWindowContentSize(_cast_args_ImVec2(width, height))
+
+def set_next_window_viewport(cimgui.ImGuiID viewport_id):
+    
+    cimgui.SetNextWindowViewport(viewport_id)
 
 def set_window_position(float x, float y, cimgui.ImGuiCond condition = ALWAYS):
     """Set the size of the current window
