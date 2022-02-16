@@ -2163,10 +2163,29 @@ cdef class _ImGuiViewport(object):
         self._require_pointer()
         return _DrawData.from_ptr(self._ptr.DrawData)
     
+    @property
     def pos(self):
         """Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)"""
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.Pos)
+
+    @property
+    def platform_request_resize(self):
+        """Platform window requested resize (e.g. window was resized by the OS / host window manager, authoritative size will be OS window size)"""
+        self._require_pointer()
+        return self._ptr.PlatformRequestResize
+
+    @property
+    def platform_request_move(self):
+        """Platform window requested move (e.g. window was moved by the OS / host window manager, authoritative position will be OS window position) """
+        self._require_pointer()
+        return self._ptr.PlatformRequestMove
+
+    @property
+    def platform_request_close(self):
+        """Platform window requested closure (e.g. window was moved by the OS / host window manager, e.g. pressing ALT-F4) """
+        self._require_pointer()
+        return self._ptr.PlatformRequestClose
 
     def get_center(self):
         self._require_pointer()

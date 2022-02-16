@@ -958,9 +958,9 @@ cdef extern from "imgui.h":
         void*               PlatformUserData # ✗
         void*               PlatformHandle # ✗
         void*               PlatformHandleRaw # ✗
-        bool                PlatformRequestMove # ✗
-        bool                PlatformRequestResize # ✗
-        bool                PlatformRequestClose # ✗
+        bool                PlatformRequestMove # ✓
+        bool                PlatformRequestResize # ✓
+        bool                PlatformRequestClose # ✓
         
         ImVec2 GetCenter() except + # ✓
         ImVec2 GetWorkCenter() except + # ✓
