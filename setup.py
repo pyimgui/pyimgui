@@ -5,6 +5,8 @@ from itertools import chain
 
 from setuptools import setup, Extension, find_packages
 
+from distutils import ccompiler
+
 try:
     from Cython.Build import cythonize
 except ImportError:
@@ -21,6 +23,9 @@ _CYTHONIZE_WITH_COVERAGE = os.environ.get("_CYTHONIZE_WITH_COVERAGE", False)
 # Define that environment variable to allow linking to an externally built version of imgui.
 # You should also provide the argument -libraries "path/to/your/local/imgui/lib" to build_ext.
 _IMGUI_EXTERNAL_LIB = os.environ.get("_IMGUI_EXTERNAL_LIB", False)
+
+# TODO: Debug, remove this and remove the env variable since it will not be useful anymore
+_IMGUI_EXTERNAL_LIB = True
 
 if _CYTHONIZE_WITH_COVERAGE and not USE_CYTHON:
     raise RuntimeError(
@@ -78,11 +83,8 @@ else:
 if _IMGUI_EXTERNAL_LIB and sys.platform in ('cygwin', 'win32'):
     general_macros += [('IMGUI_API', '__declspec(dllimport)')]
 
-def extension_sources(path):
-    sources = ["{0}{1}".format(path, '.pyx' if USE_CYTHON else '.cpp')]
-
-    if not _IMGUI_EXTERNAL_LIB:
-        sources += [
+def imgui_sources():
+    return [
             'imgui-cpp/imgui.cpp',
             'imgui-cpp/imgui_draw.cpp',
             'imgui-cpp/imgui_demo.cpp',
@@ -90,12 +92,17 @@ def extension_sources(path):
             'imgui-cpp/imgui_tables.cpp'
         ]
 
+def extension_sources(path):
+    sources = ["{0}{1}".format(path, '.pyx' if USE_CYTHON else '.cpp')]
+
+    if not _IMGUI_EXTERNAL_LIB:
+        sources += imgui_sources()
+
     sources += [
         'config-cpp/py_imconfig.cpp'
     ]
 
     return sources
-
 
 def backend_extras(*requirements):
     """Construct list of requirements for backend integration.
@@ -133,6 +140,8 @@ EXTENSIONS = [
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
         ] + os_specific_macros + general_macros,
         include_dirs=['imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp'],
+        library_dirs=['build/test_dll'],
+        libraries=['imgui']
     ),
     Extension(
         "imgui.internal", extension_sources("imgui/internal"),
@@ -142,9 +151,24 @@ EXTENSIONS = [
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
         ] + os_specific_macros + general_macros,
         include_dirs=['imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp'],
+        library_dirs=['build/test_dll'],
+        libraries=['imgui']
     ),
 ]
 
+# TODO: Put this in the correct place (now it is called multiple times)
+dll_pkg_dir = 'imgui'
+dll_dir = 'dll'
+dll_build_dir = os.path.join(dll_pkg_dir, dll_dir)
+dll_name = 'imgui'
+cc = ccompiler.new_compiler()
+cc.add_library_dir(os.path.join(sys.exec_prefix, 'libs'))
+objs = cc.compile(imgui_sources()+['config-cpp/py_imconfig.cpp'], output_dir=dll_build_dir, 
+                    include_dirs=['imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp']+[os.path.join(sys.exec_prefix, 'include')], 
+                    extra_preargs=['-O2']+os_specific_flags, macros=[('PYIMGUI_CUSTOM_EXCEPTION', None), ('IMGUI_API', '__declspec(dllexport)')])
+cc.link_shared_lib(objs, dll_name, output_dir=dll_build_dir, extra_preargs=['/DLL'])
+dll_filename = cc.library_filename(dll_name, lib_type='shared')
+dll_path = os.path.join(dll_dir, dll_filename)
 
 setup(
     name='imgui',
@@ -165,6 +189,7 @@ setup(
         compiler_directives=compiler_directives, **cythonize_opts
     ),
     extras_require=EXTRAS_REQUIRE,
+    package_data={'imgui':[dll_path]},
     include_package_data=True,
 
     license='BSD',

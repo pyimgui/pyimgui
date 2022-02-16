@@ -62,11 +62,12 @@ cdef _cast_ImVec4_tuple(cimgui.ImVec4 vec):  # noqa
 
 
 
+# TODO: Can we remove this ?
 # === Python/C++ cross API for error handling ===
-from cpython.exc cimport PyErr_NewException
-
-cdef public _ImGuiError "ImGuiError" = PyErr_NewException(
-    "imgui.core.ImGuiError", Exception, {}
-)
-
-ImGuiError = _ImGuiError # make visible to Python
+#from cpython.exc cimport PyErr_NewException
+#
+#cdef public _ImGuiError "ImGuiError" = PyErr_NewException(
+#    "imgui.core.ImGuiError", Exception, {}
+#)
+#
+#ImGuiError = _ImGuiError # make visible to Python
