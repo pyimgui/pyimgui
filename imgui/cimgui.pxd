@@ -1068,7 +1068,7 @@ cdef extern from "imgui.h" namespace "ImGui":
             ImGuiFocusedFlags flags     # = 0
     ) except +
     ImDrawList* GetWindowDrawList() except +  # ✓
-    float GetWindowDpiScale() except + # ✗
+    float GetWindowDpiScale() except + # ✓
     ImVec2 GetWindowPos() except +  # ✓
     ImVec2 GetWindowSize() except +  # ✓
     float GetWindowWidth() except +  # ✓

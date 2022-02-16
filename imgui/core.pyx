@@ -3975,6 +3975,13 @@ def get_window_position():
     """
     return _cast_ImVec2_tuple(cimgui.GetWindowPos())
 
+def get_window_dpi_scale():
+    """Get current window dpi scale.
+
+    .. wraps::
+        float GetWindowDpiScale()
+    """
+    return cimgui.GetWindowDpiScale()
 
 def get_window_size():
     """Get current window size.
