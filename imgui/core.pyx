@@ -11223,3 +11223,6 @@ def _py_index_buffer_index_size():
 
 def update_platform_windows():
     return cimgui.UpdatePlatformWindows()
+
+def destroy_platform_windows():
+    return cimgui.DestroyPlatformWindows()

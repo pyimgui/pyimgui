@@ -2334,13 +2334,13 @@ cdef extern from "imgui.h" namespace "ImGui":
     # Read comments around the ImGuiPlatformIO structure for more details.
     # Note: You may use GetWindowViewport() to get the current viewport of the current window.
     ImGuiPlatformIO& GetPlatformIO() except + # ✗
-    void UpdatePlatformWindows() except + # ✗
+    void UpdatePlatformWindows() except + # ✓
     void RenderPlatformWindowsDefault(
         # note: optional
         void* platform_render_arg,       # = NULL
         void* renderer_render_arg        # = NULL
     ) except + # ✗
-    void DestroyPlatformWindows() except + # ✗
+    void DestroyPlatformWindows() except + # ✓
     ImGuiViewport* FindViewportByID(ImGuiID id) except + # ✗
     ImGuiViewport* FindViewportByPlatformHandle(void* platform_handle) except + # ✗
     
