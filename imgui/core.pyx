@@ -2158,6 +2158,12 @@ cdef class _ImGuiViewport(object):
         return _cast_ImVec2_tuple(self._ptr.WorkPos)
     
     @property
+    def work_size(self):
+        """Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)"""
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.WorkSize)
+            
+    @property
     def draw_data(self):
         """The ImDrawData corresponding to this viewport. Valid after Render() and until the next call to NewFrame()."""
         self._require_pointer()
