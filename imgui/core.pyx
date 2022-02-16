@@ -11220,3 +11220,6 @@ def _py_vertex_buffer_vertex_size():
 
 def _py_index_buffer_index_size():
     return sizeof(cimgui.ImDrawIdx)
+
+def update_platform_windows():
+    return cimgui.UpdatePlatformWindows()
