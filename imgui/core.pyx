@@ -8958,6 +8958,17 @@ def get_main_viewport():
     """
     return _ImGuiViewport.from_ptr(cimgui.GetMainViewport())
 
+
+def get_window_viewport():
+    """ Get viewport currently associated to the current window.
+    Returns:
+        _ImGuiViewport: Viewport
+    
+    .. wraps::
+        ImGuiViewport* GetWindowViewport()
+    """
+    return _ImGuiViewport.from_ptr(cimgui.GetMainViewport())
+
 def is_window_hovered(
         cimgui.ImGuiHoveredFlags flags=0
     ):

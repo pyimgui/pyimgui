@@ -1073,7 +1073,7 @@ cdef extern from "imgui.h" namespace "ImGui":
     ImVec2 GetWindowSize() except +  # ✓
     float GetWindowWidth() except +  # ✓
     float GetWindowHeight() except +  # ✓
-    ImGuiViewport* GetWindowViewport() except + # ✗
+    ImGuiViewport* GetWindowViewport() except + # ✓
     
     void SetNextWindowPos(  # ✓ note: overrides ommited
             const ImVec2& pos,
