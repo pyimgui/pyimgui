@@ -160,20 +160,20 @@ cdef extern from "imgui.h":
         bool          FontAllowUserScaling  # ✓
         ImFont*       FontDefault # ✗
         ImVec2        DisplayFramebufferScale  # ✓
-        #ImVec2        DisplayVisibleMin  # ✓ # DEPRECIATED
-        #ImVec2        DisplayVisibleMax  # ✓ # DEPRECIATED
+        #ImVec2        DisplayVisibleMin  # ✓ # DEPRECATED
+        #ImVec2        DisplayVisibleMax  # ✓ # DEPRECATED
 
         # Docking options (when ImGuiConfigFlags_DockingEnable is set)
-        bool        ConfigDockingNoSplit              # ✗      # = false          # Simplified docking mode: disable window splitting, so docking is limited to merging multiple windows together into tab-bars.
-        bool        ConfigDockingWithShift            # ✗      # = false          # Enable docking with holding Shift key (reduce visual noise, allows dropping in wider space)
-        bool        ConfigDockingAlwaysTabBar         # ✗      # = false          # [BETA] [FIXME: This currently creates regression with auto-sizing and general overhead] Make every single floating window display within a docking node.
-        bool        ConfigDockingTransparentPayload   # ✗      # = false          # [BETA] Make window or viewport transparent when docking and only display docking boxes on the target viewport. Useful if rendering of multiple viewport cannot be synced. Best used with ConfigViewportsNoAutoMerge.
+        bool        ConfigDockingNoSplit              # ✓      # = false          # Simplified docking mode: disable window splitting, so docking is limited to merging multiple windows together into tab-bars.
+        bool        ConfigDockingWithShift            # ✓      # = false          # Enable docking with holding Shift key (reduce visual noise, allows dropping in wider space)
+        bool        ConfigDockingAlwaysTabBar         # ✓      # = false          # [BETA] [FIXME: This currently creates regression with auto-sizing and general overhead] Make every single floating window display within a docking node.
+        bool        ConfigDockingTransparentPayload   # ✓      # = false          # [BETA] Make window or viewport transparent when docking and only display docking boxes on the target viewport. Useful if rendering of multiple viewport cannot be synced. Best used with ConfigViewportsNoAutoMerge.
 
         # Viewport options (when ImGuiConfigFlags_ViewportsEnable is set)
-        bool        ConfigViewportsNoAutoMerge       # ✗       # = false;         # Set to make all floating imgui windows always create their own viewport. Otherwise, they are merged into the main host viewports when overlapping it. May also set ImGuiViewportFlags_NoAutoMerge on individual viewport.
-        bool        ConfigViewportsNoTaskBarIcon     # ✗       # = false          # Disable default OS task bar icon flag for secondary viewports. When a viewport doesn't want a task bar icon, ImGuiViewportFlags_NoTaskBarIcon will be set on it.
-        bool        ConfigViewportsNoDecoration      # ✗       # = true           # Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).
-        bool        ConfigViewportsNoDefaultParent   # ✗       # = false          # Disable default OS parenting to main viewport for secondary viewports. By default, viewports are marked with ParentViewportId = <main_viewport>, expecting the platform backend to setup a parent/child relationship between the OS windows (some backend may ignore this). Set to true if you want the default to be 0, then all viewports will be top-level OS windows.
+        bool        ConfigViewportsNoAutoMerge       # ✓       # = false;         # Set to make all floating imgui windows always create their own viewport. Otherwise, they are merged into the main host viewports when overlapping it. May also set ImGuiViewportFlags_NoAutoMerge on individual viewport.
+        bool        ConfigViewportsNoTaskBarIcon     # ✓       # = false          # Disable default OS task bar icon flag for secondary viewports. When a viewport doesn't want a task bar icon, ImGuiViewportFlags_NoTaskBarIcon will be set on it.
+        bool        ConfigViewportsNoDecoration      # ✓       # = true           # Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).
+        bool        ConfigViewportsNoDefaultParent   # ✓       # = false          # Disable default OS parenting to main viewport for secondary viewports. By default, viewports are marked with ParentViewportId = <main_viewport>, expecting the platform backend to setup a parent/child relationship between the OS windows (some backend may ignore this). Set to true if you want the default to be 0, then all viewports will be top-level OS windows.
 
         
         # Miscellaneous options
@@ -213,7 +213,7 @@ cdef extern from "imgui.h":
         bool        MouseDown[5]  # ✓
         float       MouseWheel  # ✓
         float       MouseWheelH  # ✓
-        ImGuiID     MouseHoveredViewport # ✗
+        ImGuiID     MouseHoveredViewport # ✓
         bool        KeyCtrl  # ✓
         bool        KeyShift  # ✓
         bool        KeyAlt  # ✓

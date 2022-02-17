@@ -2648,7 +2648,7 @@ cdef class _IO(object):
             _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()] = {'_get_clipboard_text_fn': None,
                                                                     '_set_clipboard_text_fn': None}
 
-    # ... maping of input properties ...
+    # ... mapping of input properties ...
     @property
     def config_flags(self):
         return self._ptr.ConfigFlags
@@ -3066,7 +3066,44 @@ cdef class _IO(object):
     @property
     def mouse_delta(self):
         return _cast_ImVec2_tuple(self._ptr.MouseDelta)
-        
+    
+    @property
+    def config_docking_no_split(self):
+        return self._ptr.ConfigDockingNoSplit
+    
+    @property
+    def config_docking_with_shift(self):
+        return self._ptr.ConfigDockingWithShift
+    
+    @property
+    def config_docking_always_tab_bar(self):
+        return self._ptr.ConfigDockingAlwaysTabBar
+    
+    @property
+    def config_docking_transparent_payload(self):
+        return self._ptr.ConfigDockingTransparentPayload
+    
+    @property
+    def config_viewports_no_auto_merge(self):
+        return self._ptr.ConfigViewportsNoAutoMerge
+    
+    @property
+    def config_viewports_no_task_bar_icon(self):
+        return self._ptr.ConfigViewportsNoTaskBarIcon
+    
+    @property
+    def config_viewports_no_decoration(self):
+        return self._ptr.ConfigViewportsNoDecoration
+    
+    @property
+    def config_viewports_no_default_parent(self):
+        return self._ptr.ConfigViewportsNoDefaultParent
+    
+    @property
+    def mouse_hovered_viewport(self):
+        return self._ptr.MouseHoveredViewport
+
+    
 cdef class _callback_user_info(object):
     
     cdef object callback_fn
