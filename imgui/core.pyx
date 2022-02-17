@@ -2356,6 +2356,11 @@ cdef class _DrawData(object):
             # perf: short-wiring instead of using property
             for idx in xrange(self._ptr.CmdListsCount)
         ]
+    
+    @property
+    def owner_viewport(self):
+        self._require_pointer()
+        return _ImGuiViewport.from_ptr(self._ptr.OwnerViewport)
 
 
 cdef class _StaticGlyphRanges(object):

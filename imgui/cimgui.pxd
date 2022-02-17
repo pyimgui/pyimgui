@@ -640,7 +640,7 @@ cdef extern from "imgui.h":
         ImVec2          DisplayPos # ✓
         ImVec2          DisplaySize # ✓
         ImVec2          FramebufferScale # ✓
-        ImGuiViewport*  OwnerViewport # ✗
+        ImGuiViewport*  OwnerViewport # ✓
         
         void            DeIndexAllBuffers() except +  # ✓
         void            ScaleClipRects(const ImVec2&) except +  # ✓
