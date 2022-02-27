@@ -3353,6 +3353,32 @@ def show_font_selector(str label):
     cimgui.ShowFontSelector(_bytes(label))
 
 
+cdef class _BeginEnd(object):
+    cdef readonly bool expanded
+    cdef readonly bool opened
+
+    def __cinit__(self, bool expanded, bool opened):
+        self.expanded = expanded
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        cimgui.End()
+
+    def __getitem__(self, item):
+        return (self.expanded, self.opened)[item]
+
+    def __iter__(self):
+        return iter((self.expanded, self.opened))
+
+    def __repr__(self):
+        return "{}(expanded={}, opened={})".format(
+            self.__class__.__name__, self.expanded, self.opened
+        )
+
+
 def begin(str label, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """Begin a window.
 
@@ -3383,7 +3409,11 @@ def begin(str label, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """
     cdef cimgui.bool opened = True
 
-    return cimgui.Begin(_bytes(label), &opened if closable else NULL, flags), opened
+    return _BeginEnd.__new__(
+        _BeginEnd,
+        cimgui.Begin(_bytes(label), &opened if closable else NULL, flags),
+        opened
+    )
 
 
 def get_draw_data():
@@ -3411,6 +3441,27 @@ def end():
         void End()
     """
     cimgui.End()
+
+
+cdef class _BeginEndChild(object):
+    cdef readonly bool visible
+
+    def __cinit__(self, bool visible):
+        self.visible = visible
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        cimgui.EndChild()
+
+    def __bool__(self):
+        return self.visible
+
+    def __repr__(self):
+        return "{}(visible={})".format(
+            self.__class__.__name__, self.visible
+        )
 
 
 ctypedef fused child_id:
@@ -3470,11 +3521,13 @@ def begin_child(
         )
     """
     # note: we do not take advantage of C++ function overloading
-    #       in order to take adventage of Python keyword arguments
-    return cimgui.BeginChild(
-        _bytes(label), _cast_args_ImVec2(width, height), border, flags
+    #       in order to take advantage of Python keyword arguments
+    return _BeginEndChild.__new__(
+        _BeginEndChild,
+        cimgui.BeginChild(
+            _bytes(label), _cast_args_ImVec2(width, height), border, flags
+        )
     )
-
 def end_child():
     """End scrolling region.
 
@@ -4483,6 +4536,29 @@ def listbox(
 
     return opened, inout_current
 
+
+cdef class _BeginEndListBox(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndListBox()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
+
 def begin_list_box(
     str label,
     width = 0,
@@ -4501,12 +4577,12 @@ def begin_list_box(
 
         imgui.begin("Example: custom listbox")
 
-        imgui.begin_list_box("List", 200, 100)
+        if imgui.begin_list_box("List", 200, 100):
 
-        imgui.selectable("Selected", True)
-        imgui.selectable("Not Selected", False)
+            imgui.selectable("Selected", True)
+            imgui.selectable("Not Selected", False)
 
-        imgui.end_list_box()
+            imgui.end_list_box()
 
         imgui.end()
 
@@ -4525,9 +4601,12 @@ def begin_list_box(
         )
     
     """
-    return cimgui.BeginListBox(
-        _bytes(label),
-        _cast_args_ImVec2(width, height)
+    return _BeginEndListBox.__new__(
+        _BeginEndListBox,
+        cimgui.BeginListBox(
+            _bytes(label),
+            _cast_args_ImVec2(width, height)
+        )
     )
     
 def listbox_header( # OBSOLETED in 1.81 (from February 2021)
@@ -4567,6 +4646,7 @@ def end_list_box():
         void EndListBox()
     """
     cimgui.EndListBox()
+
 def listbox_footer(): # OBSOLETED in 1.81 (from February 2021)
     """*Obsoleted in imgui v1.81 from February 2021, refer to :func:`end_list_box()`*
     
@@ -4605,6 +4685,17 @@ def set_tooltip(str text):
     cimgui.SetTooltip("%s", _bytes(text))
 
 
+cdef class _BeginEndTooltip(object):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        cimgui.EndTooltip()
+
+    def __repr__(self):
+        return "{}()".format(self.__class__.__name__)
+
+
 def begin_tooltip():
     """Use to create full-featured tooltip windows that aren't just text.
 
@@ -4629,6 +4720,7 @@ def begin_tooltip():
         void BeginTooltip()
     """
     cimgui.BeginTooltip()
+    return _BeginEndTooltip.__new__(_BeginEndTooltip)
 
 
 def end_tooltip():
@@ -4640,6 +4732,28 @@ def end_tooltip():
         void EndTooltip()
     """
     cimgui.EndTooltip()
+
+
+cdef class _BeginEndMainMenuBar(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndMainMenuBar()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
 
 
 def begin_main_menu_bar():
@@ -4674,7 +4788,10 @@ def begin_main_menu_bar():
     .. wraps::
         bool BeginMainMenuBar()
     """
-    return cimgui.BeginMainMenuBar()
+    return _BeginEndMainMenuBar.__new__(
+        _BeginEndMainMenuBar,
+        cimgui.BeginMainMenuBar()
+    )
 
 
 def end_main_menu_bar():
@@ -4689,6 +4806,28 @@ def end_main_menu_bar():
         bool EndMainMenuBar()
     """
     cimgui.EndMainMenuBar()
+
+
+cdef class _BeginEndMenuBar(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndMenuBar()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
 
 
 def begin_menu_bar():
@@ -4725,7 +4864,10 @@ def begin_menu_bar():
     .. wraps::
         bool BeginMenuBar()
     """
-    return cimgui.BeginMenuBar()
+    return _BeginEndMenuBar.__new__(
+        _BeginEndMenuBar,
+        cimgui.BeginMenuBar()
+    )
 
 
 def end_menu_bar():
@@ -4740,6 +4882,28 @@ def end_menu_bar():
         void EndMenuBar()
     """
     cimgui.EndMenuBar()
+
+
+cdef class _BeginEndMenu(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndMenu()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
 
 
 def begin_menu(str label, enabled=True):
@@ -4763,7 +4927,10 @@ def begin_menu(str label, enabled=True):
             bool enabled
         )
     """
-    return cimgui.BeginMenu(_bytes(label), enabled)
+    return _BeginEndMenu.__new__(
+        _BeginEndMenu,
+        cimgui.BeginMenu(_bytes(label), enabled)
+    )
 
 
 def end_menu():
@@ -4885,7 +5052,29 @@ def open_popup_on_item_click(str label = None, cimgui.ImGuiPopupFlags popup_flag
         cimgui.OpenPopupOnItemClick(NULL, popup_flags)
     else:
         cimgui.OpenPopupOnItemClick(_bytes(label), popup_flags)
-    
+
+
+cdef class _BeginEndPopup(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndPopup()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
 
 def begin_popup(str label, cimgui.ImGuiWindowFlags flags=0):
     """Open a popup window.
@@ -4929,7 +5118,37 @@ def begin_popup(str label, cimgui.ImGuiWindowFlags flags=0):
             ImGuiWindowFlags flags = 0
         )
     """
-    return cimgui.BeginPopup(_bytes(label), flags)
+    return _BeginEndPopup.__new__(
+        _BeginEndPopup,
+        cimgui.BeginPopup(_bytes(label), flags)
+    )
+
+
+cdef class _BeginEndPopupModal(object):
+    cdef readonly bool opened
+    cdef readonly bool visible
+
+    def __cinit__(self, bool opened, bool visible):
+        self.opened = opened
+        self.visible = visible
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndPopup()
+
+    def __getitem__(self, item):
+        return (self.opened, self.visible)[item]
+
+    def __iter__(self):
+        return iter((self.opened, self.visible))
+
+    def __repr__(self):
+        return "{}(opened={}, visible={})".format(
+            self.__class__.__name__, self.opened, self.visible
+        )
 
 
 def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
@@ -4981,11 +5200,15 @@ def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
     """
     cdef cimgui.bool inout_visible = visible
 
-    return cimgui.BeginPopupModal(
-        _bytes(title),
-        &inout_visible if visible is not None else NULL,
-        flags
-    ), inout_visible
+    return _BeginEndPopupModal.__new__(
+        _BeginEndPopupModal,
+        cimgui.BeginPopupModal(
+            _bytes(title),
+            &inout_visible if visible is not None else NULL,
+            flags
+        ),
+        inout_visible
+    )
 
 
 def begin_popup_context_item(str label = None, cimgui.ImGuiPopupFlags mouse_button = 1):
@@ -5021,9 +5244,9 @@ def begin_popup_context_item(str label = None, cimgui.ImGuiPopupFlags mouse_butt
         )
     """
     if label is None:
-        return cimgui.BeginPopupContextItem(NULL, mouse_button)
+        return _BeginEndPopup.__new__(_BeginEndPopup, cimgui.BeginPopupContextItem(NULL, mouse_button))
     else:
-        return cimgui.BeginPopupContextItem(_bytes(label), mouse_button)
+        return _BeginEndPopup.__new__(_BeginEndPopup, cimgui.BeginPopupContextItem(_bytes(label), mouse_button))
 
 
 def begin_popup_context_window(
@@ -5062,16 +5285,22 @@ def begin_popup_context_window(
             ImGuiPopupFlags popup_flags = 1
         )
     """
-    
+
     if label is None:
-        return cimgui.BeginPopupContextWindow(
-            NULL,
-            popup_flags | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS )
+        return _BeginEndPopup.__new__(
+            _BeginEndPopup,
+            cimgui.BeginPopupContextWindow(
+                NULL,
+                popup_flags | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS)
+            )
         )
     else:
-        return cimgui.BeginPopupContextWindow(
-            _bytes(label),
-            popup_flags | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS )
+        return _BeginEndPopup.__new__(
+            _BeginEndPopup,
+            cimgui.BeginPopupContextWindow(
+                _bytes(label),
+                popup_flags | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS)
+            )
         )
 
 def begin_popup_context_void(str label = None, cimgui.ImGuiPopupFlags popup_flags = 1):
@@ -5087,11 +5316,17 @@ def begin_popup_context_void(str label = None, cimgui.ImGuiPopupFlags popup_flag
     .. wraps::
         bool BeginPopupContextVoid(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1)
     """
-    
+
     if label is None:
-        return cimgui.BeginPopupContextVoid( NULL, popup_flags )
+        return _BeginEndPopup.__new__(
+            _BeginEndPopup,
+            cimgui.BeginPopupContextVoid(NULL, popup_flags)
+        )
     else:
-        return cimgui.BeginPopupContextVoid( _bytes(label), popup_flags )
+        return _BeginEndPopup.__new__(
+            _BeginEndPopup,
+            cimgui.BeginPopupContextVoid(_bytes(label), popup_flags)
+        )
 
 def is_popup_open( str label,  cimgui.ImGuiPopupFlags flags = 0):
     """Popups: test function
@@ -5134,6 +5369,28 @@ def close_current_popup():
     """
     cimgui.CloseCurrentPopup()
 
+
+cdef class _BeginEndTable(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndTable()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
 def begin_table(
     str label,
     int column,
@@ -5153,12 +5410,15 @@ def begin_table(
             float inner_width = 0.0f
         )
     """
-    return cimgui.BeginTable(
-        _bytes(label),
-        column,
-        flags,
-        _cast_args_ImVec2(outer_size_width, outer_size_height),
-        inner_width
+    return _BeginEndTable.__new__(
+        _BeginEndTable,
+        cimgui.BeginTable(
+            _bytes(label),
+            column,
+            flags,
+            _cast_args_ImVec2(outer_size_width, outer_size_height),
+            inner_width
+        )
     )
 
 def end_table():
@@ -10246,6 +10506,28 @@ def get_columns_count():
     """
     return cimgui.GetColumnsCount()
 
+cdef class _BeginEndTabBar(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndTabBar()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
+
 def begin_tab_bar(str identifier, cimgui.ImGuiTabBarFlags flags = 0):
     """Create and append into a TabBar
     
@@ -10261,7 +10543,10 @@ def begin_tab_bar(str identifier, cimgui.ImGuiTabBarFlags flags = 0):
         bool BeginTabBar(const char* str_id, ImGuiTabBarFlags flags = 0)
     
     """
-    return cimgui.BeginTabBar(_bytes(identifier), flags)
+    return _BeginEndTabBar.__new__(
+        _BeginEndTabBar,
+        cimgui.BeginTabBar(_bytes(identifier), flags)
+    )
     
 def end_tab_bar():
     """Only call end_tab_bar() if begin_tab_bar() returns true!
@@ -10270,7 +10555,33 @@ def end_tab_bar():
         void EndTabBar()
     """
     cimgui.EndTabBar()
-    
+
+cdef class _BeginEndTabItem(object):
+    cdef readonly bool selected
+    cdef readonly bool opened
+
+    def __cinit__(self, bool selected, bool opened):
+        self.selected = selected
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.selected:
+            cimgui.EndTabItem()
+
+    def __getitem__(self, item):
+        return (self.selected, self.opened)[item]
+
+    def __iter__(self):
+        return iter((self.selected, self.opened))
+
+    def __repr__(self):
+        return "{}(selected={}, opened={})".format(
+            self.__class__.__name__, self.selected, self.opened
+        )
+
 def begin_tab_item(str label, opened = None, cimgui.ImGuiTabItemFlags flags = 0):
     """Create a Tab. 
     
@@ -10293,23 +10604,23 @@ def begin_tab_item(str label, opened = None, cimgui.ImGuiTabItemFlags flags = 0)
         opened_state = True
         
         #...
-        
+
         imgui.begin("Example Tab Bar")
         if imgui.begin_tab_bar("MyTabBar"):
-            
+
             if imgui.begin_tab_item("Item 1")[0]:
                 imgui.text("Here is the tab content!")
                 imgui.end_tab_item()
-                
+
             if imgui.begin_tab_item("Item 2")[0]:
                 imgui.text("Another content...")
                 imgui.end_tab_item()
-                
+
             selected, opened_state = imgui.begin_tab_item("Item 3", opened=opened_state)
             if selected:
                 imgui.text("Hello Saylor!")
                 imgui.end_tab_item()
-                
+
             imgui.end_tab_bar()
         imgui.end()
     
@@ -10321,7 +10632,14 @@ def begin_tab_item(str label, opened = None, cimgui.ImGuiTabItemFlags flags = 0)
         )
     """
     cdef cimgui.bool inout_opened = opened
-    return cimgui.BeginTabItem(_bytes(label), &inout_opened if opened is not None else NULL, flags), inout_opened
+    return _BeginEndTabItem.__new__(
+        _BeginEndTabItem,
+        cimgui.BeginTabItem(
+            _bytes(label),
+            &inout_opened if opened is not None else NULL, flags
+        ),
+        inout_opened
+    )
 
 def end_tab_item():
     """Only call end_tab_item() if begin_tab_item() returns true!
@@ -10398,6 +10716,29 @@ def set_tab_item_closed(str tab_or_docked_window_label):
     """
     cimgui.SetTabItemClosed(_bytes(tab_or_docked_window_label))
 
+
+cdef class _BeginEndDragDropSource(object):
+    cdef readonly bool dragging
+
+    def __cinit__(self, bool dragging):
+        self.dragging = dragging
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.dragging:
+            cimgui.EndDragDropSource()
+
+    def __bool__(self):
+        return self.dragging
+
+    def __repr__(self):
+        return "{}(dragging={})".format(
+            self.__class__.__name__, self.dragging
+        )
+
+
 def begin_drag_drop_source(cimgui.ImGuiDragDropFlags flags=0):
     """Set the current item as a drag and drop source. If this return True, you
     can call :func:`set_drag_drop_payload` and :func:`end_drag_drop_source`.
@@ -10434,7 +10775,10 @@ def begin_drag_drop_source(cimgui.ImGuiDragDropFlags flags=0):
     .. wraps::
         bool BeginDragDropSource(ImGuiDragDropFlags flags = 0)
     """
-    return cimgui.BeginDragDropSource(flags)
+    return _BeginEndDragDropSource.__new__(
+        _BeginEndDragDropSource,
+        cimgui.BeginDragDropSource(flags)
+    )
 
 
 def set_drag_drop_payload(str type, bytes data, cimgui.ImGuiCond condition=0):
@@ -10471,6 +10815,28 @@ def end_drag_drop_source():
     cimgui.EndDragDropSource()
 
 
+cdef class _BeginEndDragDropTarget(object):
+    cdef readonly bool hovered
+
+    def __cinit__(self, bool hovered):
+        self.hovered = hovered
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.hovered:
+            cimgui.EndDragDropTarget()
+
+    def __bool__(self):
+        return self.hovered
+
+    def __repr__(self):
+        return "{}(hovered={})".format(
+            self.__class__.__name__, self.hovered
+        )
+
+
 def begin_drag_drop_target():
     """Set the current item as a drag and drop target. If this return True, you
     can call :func:`accept_drag_drop_payload` and :func:`end_drag_drop_target`.
@@ -10485,7 +10851,10 @@ def begin_drag_drop_target():
     .. wraps::
         bool BeginDragDropTarget()
     """
-    return cimgui.BeginDragDropTarget()
+    return _BeginEndDragDropTarget.__new__(
+        _BeginEndDragDropTarget,
+        cimgui.BeginDragDropTarget()
+    )
 
 
 def accept_drag_drop_payload(str type, cimgui.ImGuiDragDropFlags flags=0):
@@ -10601,6 +10970,20 @@ def pop_clip_rect():
     """
     cimgui.PopClipRect()
 
+
+cdef class _BeginEndGroup(object):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        cimgui.EndGroup()
+
+    def __repr__(self):
+        return "{}()".format(
+            self.__class__.__name__
+        )
+
+
 def begin_group():
     """Start item group and lock its horizontal starting position.
 
@@ -10634,6 +11017,7 @@ def begin_group():
         void BeginGroup()
     """
     cimgui.BeginGroup()
+    return _BeginEndGroup.__new__(_BeginEndGroup)
 
 
 def end_group():
