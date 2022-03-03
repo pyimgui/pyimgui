@@ -66,6 +66,12 @@ def test_begin_unpacking(frame):
     imgui.end()
 
 
+def test_begin_equality(frame):
+    window = imgui.begin("Example: empty window")
+    assert window == window
+    assert window == tuple(window)
+    imgui.end()
+
 # ------- BEGIN_CHILD/END_CHILD ----------
 def test_child_okay(frame):
     imgui.begin("Example: child region")
@@ -98,6 +104,8 @@ def test_child_as_bool(frame):
     imgui.begin("Example: child region")
     child = imgui.begin_child("region", 150, -50, border=True)
     assert bool(child) is child.visible
+    assert child == child
+    assert child == bool(child)
     imgui.end_child()
     imgui.end()
 
@@ -154,6 +162,8 @@ def test_main_menu_bar_as_bool(frame):
     menu = imgui.begin_main_menu_bar()
     assert isinstance(menu.opened, bool)
     assert bool(menu) is menu.opened is True
+    assert menu == menu
+    assert menu == bool(menu)
     imgui.end_main_menu_bar()
 
 
@@ -191,6 +201,8 @@ def test_menu_bar_as_bool(frame):
     menu = imgui.begin_menu_bar()
     assert isinstance(menu.opened, bool)
     assert bool(menu) is menu.opened is True
+    assert menu == menu
+    assert menu == bool(menu)
     imgui.end_menu_bar()
     imgui.end()
 
@@ -221,6 +233,8 @@ def test_tab_bar_as_bool(frame):
     imgui.begin("Example Tab Bar")
     tab_bar = imgui.begin_tab_bar("MyTabBar")
     assert bool(tab_bar) is tab_bar.opened is True
+    assert tab_bar == tab_bar
+    assert tab_bar == bool(tab_bar)
     imgui.end_tab_bar()
     imgui.end()
 
@@ -262,6 +276,8 @@ def test_tab_item_as_bool(frame):
     item = imgui.begin_tab_item("Item 1")
     assert bool(item) is item.selected is True
     assert item.opened is False
+    assert item == item
+    assert item == tuple(item)
     imgui.end_tab_item()
     imgui.end_tab_bar()
     imgui.end()
@@ -308,6 +324,8 @@ def test_menu_as_bool(frame):
     menu = imgui.begin_menu('File')
     assert isinstance(menu.opened, bool)
     assert bool(menu) is menu.opened is False
+    assert menu == menu
+    assert menu == bool(menu)
     imgui.end_menu_bar()
     imgui.end()
 
@@ -343,6 +361,8 @@ def test_popup_as_bool(frame):
     popup = imgui.begin_popup("select-popup")
     assert isinstance(popup.opened, bool)
     assert bool(popup) is popup.opened is True
+    assert popup == popup
+    assert popup == bool(popup)
     imgui.end_popup()
     imgui.end()
 
@@ -353,6 +373,8 @@ def test_popup_context_item_isinstance(frame):
     item = imgui.begin_popup_context_item("Item Context Menu")
     assert isinstance(item, imgui.core._BeginEndPopup)
     assert item.opened is False
+    assert item == item
+    assert item == bool(item)
     imgui.end()
 
 
@@ -361,6 +383,8 @@ def test_popup_context_window_isinstance(frame):
     window = imgui.begin_popup_context_window()
     assert isinstance(window, imgui.core._BeginEndPopup)
     assert window.opened is False
+    assert window == window
+    assert window == bool(window)
     imgui.end()
 
 
@@ -368,6 +392,8 @@ def test_popup_context_void_isinstance(frame):
     window = imgui.begin_popup_context_void()
     assert isinstance(window, imgui.core._BeginEndPopup)
     assert window.opened is False
+    assert window == window
+    assert window == bool(window)
 
 
 # ------- BEGIN_POPUP_MODAL/END_POPUP_MODAL ----------
@@ -404,6 +430,8 @@ def test_popup_modal_as_bool(frame):
     opened, visible = popup
     assert opened is popup.opened is popup[0]
     assert visible is popup.visible is popup[1]
+    assert popup == popup
+    assert popup == tuple(popup)
     imgui.end_popup()
     imgui.end()
 
@@ -439,6 +467,8 @@ def test_drag_drop_source_as_bool(frame):
     imgui.button('source')
     src = imgui.begin_drag_drop_source()
     assert bool(src) is src.dragging is False
+    assert src == src
+    assert src == bool(src)
     imgui.end()
 
 
@@ -473,6 +503,8 @@ def test_drag_drop_target_as_bool(frame):
     imgui.button('dest')
     target = imgui.begin_drag_drop_target()
     assert bool(target) is target.hovered is False
+    assert target == target
+    assert target == bool(target)
     imgui.end()
 
 
@@ -527,6 +559,8 @@ def test_list_box_as_bool(frame):
     imgui.begin("Example: custom listbox")
     list_box = imgui.begin_list_box("List", 200, 100)
     assert bool(list_box) is list_box.opened is True
+    assert list_box == list_box
+    assert list_box == bool(list_box)
     imgui.end_list_box()
     imgui.end()
 
@@ -557,5 +591,7 @@ def test_table_as_bool(frame):
     imgui.begin("Example: table")
     table = imgui.begin_table("data", 2)
     assert bool(table) is table.opened is True
+    assert table == table
+    assert table == bool(table)
     imgui.end_table()
     imgui.end()
