@@ -131,6 +131,12 @@ EXTRAS_REQUIRE = {
 # backend integrations and additional extra features.
 EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
 
+# TODO: Put this in the correct place (now it is called multiple times)
+dll_pkg_dir = 'imgui'
+dll_dir = 'dll'
+dll_build_dir = os.path.join(dll_pkg_dir, dll_dir)
+dll_name = 'imgui'
+
 EXTENSIONS = [
     Extension(
         "imgui.core", extension_sources("imgui/core"),
@@ -140,7 +146,7 @@ EXTENSIONS = [
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
         ] + os_specific_macros + general_macros,
         include_dirs=['imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp'],
-        library_dirs=['build/test_dll'],
+        library_dirs=[dll_build_dir],
         libraries=['imgui']
     ),
     Extension(
@@ -151,16 +157,12 @@ EXTENSIONS = [
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
         ] + os_specific_macros + general_macros,
         include_dirs=['imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp'],
-        library_dirs=['build/test_dll'],
+        library_dirs=[dll_build_dir],
         libraries=['imgui']
     ),
 ]
 
 # TODO: Put this in the correct place (now it is called multiple times)
-dll_pkg_dir = 'imgui'
-dll_dir = 'dll'
-dll_build_dir = os.path.join(dll_pkg_dir, dll_dir)
-dll_name = 'imgui'
 cc = ccompiler.new_compiler()
 cc.add_library_dir(os.path.join(sys.exec_prefix, 'libs'))
 objs = cc.compile(imgui_sources()+['config-cpp/py_imconfig.cpp'], output_dir=dll_build_dir, 

@@ -2,15 +2,15 @@
 VERSION = (2, 0, 0)  # PEP 386
 __version__ = ".".join([str(x) for x in VERSION])
 
-# TODO: Gives the control to the user to specify another path for DLL
-import os, sys, ctypes
-dir = os.path.dirname(sys.modules["imgui"].__file__)
-path = os.path.join(dir, "dll/imgui")
-#if sys.platform in ('cygwin', 'win32'):
-#    __lib = ctypes.WinDLL(path)
-#else:
-#    __lib = ctypes.cdll.LoadLibrary(path)
-__lib = ctypes.cdll.LoadLibrary(path)
+# # TODO: Gives the control to the user to specify another path for DLL
+# import os, sys, ctypes
+# dir = os.path.dirname(sys.modules["imgui"].__file__)
+# path = os.path.join(dir, "dll/imgui")
+# #if sys.platform in ('cygwin', 'win32'):
+# #    __lib = ctypes.WinDLL(path)
+# #else:
+# #    __lib = ctypes.cdll.LoadLibrary(path)
+# __lib = ctypes.cdll.LoadLibrary(path)
 
 from .core import *  # noqa
 from . import core
