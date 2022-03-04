@@ -3353,6 +3353,37 @@ def show_font_selector(str label):
     cimgui.ShowFontSelector(_bytes(label))
 
 
+cdef class _BeginEnd(object):
+    cdef readonly bool expanded
+    cdef readonly bool opened
+
+    def __cinit__(self, bool expanded, bool opened):
+        self.expanded = expanded
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        cimgui.End()
+
+    def __getitem__(self, item):
+        return (self.expanded, self.opened)[item]
+
+    def __iter__(self):
+        return iter((self.expanded, self.opened))
+
+    def __repr__(self):
+        return "{}(expanded={}, opened={})".format(
+            self.__class__.__name__, self.expanded, self.opened
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return (self.expanded, self.opened) == (other.expanded, other.opened)
+        return (self.expanded, self.opened) == other
+
+
 def begin(str label, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """Begin a window.
 
@@ -3383,7 +3414,11 @@ def begin(str label, closable=False, cimgui.ImGuiWindowFlags flags=0):
     """
     cdef cimgui.bool opened = True
 
-    return cimgui.Begin(_bytes(label), &opened if closable else NULL, flags), opened
+    return _BeginEnd.__new__(
+        _BeginEnd,
+        cimgui.Begin(_bytes(label), &opened if closable else NULL, flags),
+        opened
+    )
 
 
 def get_draw_data():
@@ -3411,6 +3446,32 @@ def end():
         void End()
     """
     cimgui.End()
+
+
+cdef class _BeginEndChild(object):
+    cdef readonly bool visible
+
+    def __cinit__(self, bool visible):
+        self.visible = visible
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        cimgui.EndChild()
+
+    def __bool__(self):
+        return self.visible
+
+    def __repr__(self):
+        return "{}(visible={})".format(
+            self.__class__.__name__, self.visible
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.visible is other.visible
+        return self.visible is other
 
 
 ctypedef fused child_id:
@@ -3470,11 +3531,13 @@ def begin_child(
         )
     """
     # note: we do not take advantage of C++ function overloading
-    #       in order to take adventage of Python keyword arguments
-    return cimgui.BeginChild(
-        _bytes(label), _cast_args_ImVec2(width, height), border, flags
+    #       in order to take advantage of Python keyword arguments
+    return _BeginEndChild.__new__(
+        _BeginEndChild,
+        cimgui.BeginChild(
+            _bytes(label), _cast_args_ImVec2(width, height), border, flags
+        )
     )
-
 def end_child():
     """End scrolling region.
 
@@ -4004,37 +4067,37 @@ def set_next_window_size(
 # Useful for non trivial constraints
 cdef _callback_user_info _global_next_window_size_constraints_callback_user_info = _callback_user_info()
 def set_next_window_size_constraints(
-    tuple size_min, 
+    tuple size_min,
     tuple size_max,
     object callback = None,
     user_data = None):
-    """Set next window size limits. use -1,-1 on either X/Y axis to preserve the current size. 
+    """Set next window size limits. use -1,-1 on either X/Y axis to preserve the current size.
     Sizes will be rounded down.
 
     Call before :func:`begin()`.
-    
+
     Args:
         size_min (tuple): Minimum window size, use -1 to conserve current size
         size_max (tuple): Maximum window size, use -1 to conserve current size
-        callback (callable): a callable. 
+        callback (callable): a callable.
             Callable takes an imgui._ImGuiSizeCallbackData object as argument
             Callable should return None
         user_data: Any data that the user want to use in the callback.
-    
+
     .. visual-example::
         :title: Window size constraints
         :height: 200
-        
+
         imgui.set_next_window_size_constraints((175,50), (200, 100))
         imgui.begin("Constrained Window")
         imgui.text("...")
         imgui.end()
-    
+
     .. wraps::
         void SetNextWindowSizeConstraints(
-            const ImVec2& size_min, 
-            const ImVec2& size_max, 
-            ImGuiSizeCallback custom_callback = NULL, 
+            const ImVec2& size_min,
+            const ImVec2& size_max,
+            ImGuiSizeCallback custom_callback = NULL,
             void* custom_callback_user_data = NULL
         )
 
@@ -4045,10 +4108,10 @@ def set_next_window_size_constraints(
         _callback = _ImGuiSizeCallback
         _global_next_window_size_constraints_callback_user_info.populate(callback, user_data)
         _user_data = <void*>_global_next_window_size_constraints_callback_user_info
-        
+
     cimgui.SetNextWindowSizeConstraints(
-        _cast_tuple_ImVec2(size_min), 
-        _cast_tuple_ImVec2(size_max), 
+        _cast_tuple_ImVec2(size_min),
+        _cast_tuple_ImVec2(size_max),
         _callback, _user_data)
 
 def set_next_window_content_size(float width, float height):
@@ -4262,25 +4325,25 @@ def tree_pop():
     cimgui.TreePop()
 
 def get_tree_node_to_label_spacing():
-    """Horizontal distance preceding label when using ``tree_node*()`` 
-    or ``bullet() == (g.FontSize + style.FramePadding.x*2)`` for a 
+    """Horizontal distance preceding label when using ``tree_node*()``
+    or ``bullet() == (g.FontSize + style.FramePadding.x*2)`` for a
     regular unframed TreeNode
-    
+
     Returns:
         float: spacing
-        
+
     .. visual-example::
         :auto_layout:
         :height: 100
         :width: 200
-        
+
         imgui.begin("TreeNode")
         imgui.text("<- 0px offset here")
         if imgui.tree_node("Expand me!", imgui.TREE_NODE_DEFAULT_OPEN):
             imgui.text("<- %.2fpx offset here" % imgui.get_tree_node_to_label_spacing())
             imgui.tree_pop()
         imgui.end()
-    
+
     .. wraps::
         float GetTreeNodeToLabelSpacing()
     """
@@ -4343,12 +4406,12 @@ def collapsing_header(
 
 def set_next_item_open(bool is_open, cimgui.ImGuiCond condition = 0):
     """Set next TreeNode/CollapsingHeader open state.
-    
+
     Args:
         is_open (bool):
         condition (:ref:`condition flag <condition-options>`): defines on which
             condition value should be set. Defaults to :any:`imgui.NONE`.
-    
+
     .. wraps::
         void SetNextItemOpen(bool is_open, ImGuiCond cond = 0)
     """
@@ -4483,13 +4546,41 @@ def listbox(
 
     return opened, inout_current
 
+
+cdef class _BeginEndListBox(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndListBox()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.opened is other.opened
+        return self.opened is other
+
+
 def begin_list_box(
     str label,
     width = 0,
     height = 0
 ):
     """Open a framed scrolling region.
-    
+
     For use if you want to reimplement :func:`listbox()` with custom data
     or interactions. You need to call :func:`end_list_box()` at the end.
 
@@ -4501,12 +4592,12 @@ def begin_list_box(
 
         imgui.begin("Example: custom listbox")
 
-        imgui.begin_list_box("List", 200, 100)
+        if imgui.begin_list_box("List", 200, 100):
 
-        imgui.selectable("Selected", True)
-        imgui.selectable("Not Selected", False)
+            imgui.selectable("Selected", True)
+            imgui.selectable("Not Selected", False)
 
-        imgui.end_list_box()
+            imgui.end_list_box()
 
         imgui.end()
 
@@ -4523,20 +4614,23 @@ def begin_list_box(
             const char* label,
             const ImVec2& size = ImVec2(0,0)
         )
-    
+
     """
-    return cimgui.BeginListBox(
-        _bytes(label),
-        _cast_args_ImVec2(width, height)
+    return _BeginEndListBox.__new__(
+        _BeginEndListBox,
+        cimgui.BeginListBox(
+            _bytes(label),
+            _cast_args_ImVec2(width, height)
+        )
     )
-    
+
 def listbox_header( # OBSOLETED in 1.81 (from February 2021)
     str label,
     width=0,
     height=0
 ):
     """*Obsoleted in imgui v1.81 from February 2021, refer to :func:`begin_list_box()`*
-    
+
     For use if you want to reimplement :func:`listbox()` with custom data
     or interactions. You need to call :func:`listbox_footer()` at the end.
 
@@ -4558,7 +4652,7 @@ def listbox_header( # OBSOLETED in 1.81 (from February 2021)
 
 def end_list_box():
     """
-    
+
     Closing the listbox, previously opened by :func:`begin_list_box()`.
 
     See :func:`begin_list_box()` for usage example.
@@ -4567,9 +4661,10 @@ def end_list_box():
         void EndListBox()
     """
     cimgui.EndListBox()
+
 def listbox_footer(): # OBSOLETED in 1.81 (from February 2021)
     """*Obsoleted in imgui v1.81 from February 2021, refer to :func:`end_list_box()`*
-    
+
     Closing the listbox, previously opened by :func:`listbox_header()`.
 
     See :func:`listbox_header()` for usage example.
@@ -4605,6 +4700,17 @@ def set_tooltip(str text):
     cimgui.SetTooltip("%s", _bytes(text))
 
 
+cdef class _BeginEndTooltip(object):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        cimgui.EndTooltip()
+
+    def __repr__(self):
+        return "{}()".format(self.__class__.__name__)
+
+
 def begin_tooltip():
     """Use to create full-featured tooltip windows that aren't just text.
 
@@ -4629,6 +4735,7 @@ def begin_tooltip():
         void BeginTooltip()
     """
     cimgui.BeginTooltip()
+    return _BeginEndTooltip.__new__(_BeginEndTooltip)
 
 
 def end_tooltip():
@@ -4640,6 +4747,33 @@ def end_tooltip():
         void EndTooltip()
     """
     cimgui.EndTooltip()
+
+
+cdef class _BeginEndMainMenuBar(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndMainMenuBar()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.opened is other.opened
+        return self.opened is other
 
 
 def begin_main_menu_bar():
@@ -4674,7 +4808,10 @@ def begin_main_menu_bar():
     .. wraps::
         bool BeginMainMenuBar()
     """
-    return cimgui.BeginMainMenuBar()
+    return _BeginEndMainMenuBar.__new__(
+        _BeginEndMainMenuBar,
+        cimgui.BeginMainMenuBar()
+    )
 
 
 def end_main_menu_bar():
@@ -4689,6 +4826,33 @@ def end_main_menu_bar():
         bool EndMainMenuBar()
     """
     cimgui.EndMainMenuBar()
+
+
+cdef class _BeginEndMenuBar(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndMenuBar()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.opened is other.opened
+        return self.opened is other
 
 
 def begin_menu_bar():
@@ -4725,7 +4889,10 @@ def begin_menu_bar():
     .. wraps::
         bool BeginMenuBar()
     """
-    return cimgui.BeginMenuBar()
+    return _BeginEndMenuBar.__new__(
+        _BeginEndMenuBar,
+        cimgui.BeginMenuBar()
+    )
 
 
 def end_menu_bar():
@@ -4740,6 +4907,33 @@ def end_menu_bar():
         void EndMenuBar()
     """
     cimgui.EndMenuBar()
+
+
+cdef class _BeginEndMenu(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndMenu()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.opened is other.opened
+        return self.opened is other
 
 
 def begin_menu(str label, enabled=True):
@@ -4763,7 +4957,10 @@ def begin_menu(str label, enabled=True):
             bool enabled
         )
     """
-    return cimgui.BeginMenu(_bytes(label), enabled)
+    return _BeginEndMenu.__new__(
+        _BeginEndMenu,
+        cimgui.BeginMenu(_bytes(label), enabled)
+    )
 
 
 def end_menu():
@@ -4871,13 +5068,13 @@ def open_popup(str label, cimgui.ImGuiPopupFlags flags=0):
     cimgui.OpenPopup(_bytes(label), flags)
 
 def open_popup_on_item_click(str label = None, cimgui.ImGuiPopupFlags popup_flags = 1):
-    """Helper to open popup when clicked on last item. 
+    """Helper to open popup when clicked on last item.
     (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)
-    
+
     Args:
         label (str): label of the modal window
         flags: ImGuiWindowFlags
-    
+
     .. wraps::
         void OpenPopupOnItemClick(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1)
     """
@@ -4885,7 +5082,34 @@ def open_popup_on_item_click(str label = None, cimgui.ImGuiPopupFlags popup_flag
         cimgui.OpenPopupOnItemClick(NULL, popup_flags)
     else:
         cimgui.OpenPopupOnItemClick(_bytes(label), popup_flags)
-    
+
+
+cdef class _BeginEndPopup(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndPopup()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.opened is other.opened
+        return self.opened is other
+
 
 def begin_popup(str label, cimgui.ImGuiWindowFlags flags=0):
     """Open a popup window.
@@ -4929,7 +5153,42 @@ def begin_popup(str label, cimgui.ImGuiWindowFlags flags=0):
             ImGuiWindowFlags flags = 0
         )
     """
-    return cimgui.BeginPopup(_bytes(label), flags)
+    return _BeginEndPopup.__new__(
+        _BeginEndPopup,
+        cimgui.BeginPopup(_bytes(label), flags)
+    )
+
+
+cdef class _BeginEndPopupModal(object):
+    cdef readonly bool opened
+    cdef readonly bool visible
+
+    def __cinit__(self, bool opened, bool visible):
+        self.opened = opened
+        self.visible = visible
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndPopup()
+
+    def __getitem__(self, item):
+        return (self.opened, self.visible)[item]
+
+    def __iter__(self):
+        return iter((self.opened, self.visible))
+
+    def __repr__(self):
+        return "{}(opened={}, visible={})".format(
+            self.__class__.__name__, self.opened, self.visible
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return (self.opened, self.visible) == (other.opened, other.visible)
+        return (self.opened, self.visible) == other
 
 
 def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
@@ -4981,11 +5240,15 @@ def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
     """
     cdef cimgui.bool inout_visible = visible
 
-    return cimgui.BeginPopupModal(
-        _bytes(title),
-        &inout_visible if visible is not None else NULL,
-        flags
-    ), inout_visible
+    return _BeginEndPopupModal.__new__(
+        _BeginEndPopupModal,
+        cimgui.BeginPopupModal(
+            _bytes(title),
+            &inout_visible if visible is not None else NULL,
+            flags
+        ),
+        inout_visible
+    )
 
 
 def begin_popup_context_item(str label = None, cimgui.ImGuiPopupFlags mouse_button = 1):
@@ -5021,9 +5284,9 @@ def begin_popup_context_item(str label = None, cimgui.ImGuiPopupFlags mouse_butt
         )
     """
     if label is None:
-        return cimgui.BeginPopupContextItem(NULL, mouse_button)
+        return _BeginEndPopup.__new__(_BeginEndPopup, cimgui.BeginPopupContextItem(NULL, mouse_button))
     else:
-        return cimgui.BeginPopupContextItem(_bytes(label), mouse_button)
+        return _BeginEndPopup.__new__(_BeginEndPopup, cimgui.BeginPopupContextItem(_bytes(label), mouse_button))
 
 
 def begin_popup_context_window(
@@ -5062,16 +5325,22 @@ def begin_popup_context_window(
             ImGuiPopupFlags popup_flags = 1
         )
     """
-    
+
     if label is None:
-        return cimgui.BeginPopupContextWindow(
-            NULL,
-            popup_flags | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS )
+        return _BeginEndPopup.__new__(
+            _BeginEndPopup,
+            cimgui.BeginPopupContextWindow(
+                NULL,
+                popup_flags | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS)
+            )
         )
     else:
-        return cimgui.BeginPopupContextWindow(
-            _bytes(label),
-            popup_flags | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS )
+        return _BeginEndPopup.__new__(
+            _BeginEndPopup,
+            cimgui.BeginPopupContextWindow(
+                _bytes(label),
+                popup_flags | (0 if also_over_items else POPUP_NO_OPEN_OVER_ITEMS)
+            )
         )
 
 def begin_popup_context_void(str label = None, cimgui.ImGuiPopupFlags popup_flags = 1):
@@ -5083,25 +5352,31 @@ def begin_popup_context_void(str label = None, cimgui.ImGuiPopupFlags popup_flag
 
     Returns:
         opened (bool): if the context window is opened.
-    
+
     .. wraps::
         bool BeginPopupContextVoid(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1)
     """
-    
+
     if label is None:
-        return cimgui.BeginPopupContextVoid( NULL, popup_flags )
+        return _BeginEndPopup.__new__(
+            _BeginEndPopup,
+            cimgui.BeginPopupContextVoid(NULL, popup_flags)
+        )
     else:
-        return cimgui.BeginPopupContextVoid( _bytes(label), popup_flags )
+        return _BeginEndPopup.__new__(
+            _BeginEndPopup,
+            cimgui.BeginPopupContextVoid(_bytes(label), popup_flags)
+        )
 
 def is_popup_open( str label,  cimgui.ImGuiPopupFlags flags = 0):
     """Popups: test function
-    
+
     * ``is_popup_open()`` with POPUP_ANY_POPUP_ID: return true if any popup is open at the current BeginPopup() level of the popup stack.
     * ``is_popup_open()`` with POPUP_ANY_POPUP_ID + POPUP_ANY_POPUP_LEVEL: return true if any popup is open.
-    
+
     Returns:
         bool: True if the popup is open at the current ``begin_popup()`` level of the popup stack.
-    
+
     .. wraps::
         bool IsPopupOpen(const char* str_id, ImGuiPopupFlags flags = 0)
     """
@@ -5134,6 +5409,34 @@ def close_current_popup():
     """
     cimgui.CloseCurrentPopup()
 
+
+cdef class _BeginEndTable(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndTable()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.opened is other.opened
+        return self.opened is other
+
+
 def begin_table(
     str label,
     int column,
@@ -5143,27 +5446,30 @@ def begin_table(
     float inner_width = 0.0
     ):
     """
-    
+
     .. wraps::
         bool BeginTable(
-            const char* str_id, 
-            int column, 
+            const char* str_id,
+            int column,
             ImGuiTableFlags flags = 0,
             const ImVec2& outer_size = ImVec2(0.0f, 0.0f),
             float inner_width = 0.0f
         )
     """
-    return cimgui.BeginTable(
-        _bytes(label),
-        column,
-        flags,
-        _cast_args_ImVec2(outer_size_width, outer_size_height),
-        inner_width
+    return _BeginEndTable.__new__(
+        _BeginEndTable,
+        cimgui.BeginTable(
+            _bytes(label),
+            column,
+            flags,
+            _cast_args_ImVec2(outer_size_width, outer_size_height),
+            inner_width
+        )
     )
 
 def end_table():
     """
-    
+
     .. wraps::
         void EndTable()
     """
@@ -5174,9 +5480,9 @@ def table_next_row(
         float min_row_height = 0.0
     ):
     """
-    
+
     .. wraps::
-        void TableNextRow( 
+        void TableNextRow(
             ImGuiTableRowFlags row_flags = 0,
             float min_row_height = 0.0f
         )
@@ -5185,7 +5491,7 @@ def table_next_row(
 
 def table_next_column():
     """
-    
+
     .. wraps::
         bool TableNextColumn()
     """
@@ -5193,12 +5499,12 @@ def table_next_column():
 
 def table_set_column_index(int column_n):
     """
-    
+
     .. wraps::
         bool TableSetColumnIndex(int column_n)
     """
     return cimgui.TableSetColumnIndex(column_n)
-    
+
 def table_setup_column(
         str label,
         cimgui.ImGuiTableColumnFlags flags = 0,
@@ -5206,10 +5512,10 @@ def table_setup_column(
         cimgui.ImU32 user_id = 0
     ):
     """
-    
+
     .. wraps::
         void TableSetupColumn(
-            const char* label, 
+            const char* label,
             ImGuiTableColumnFlags flags = 0,
             float init_width_or_weight = 0.0f,
             ImU32 user_id  = 0
@@ -5223,7 +5529,7 @@ def table_setup_column(
 
 def table_setup_scroll_freez(int cols, int rows):
     """
-    
+
     .. wraps::
         void TableSetupScrollFreeze(int cols, int rows)
     """
@@ -5231,7 +5537,7 @@ def table_setup_scroll_freez(int cols, int rows):
 
 def table_headers_row():
     """
-    
+
     .. wraps::
         void TableHeadersRow()
     """
@@ -5239,15 +5545,15 @@ def table_headers_row():
 
 def table_header(str label):
     """
-    
+
     .. wraps::
         void TableHeader(const char* label)
     """
     cimgui.TableHeader(_bytes(label))
-    
+
 def table_get_sort_specs():
     """
-    
+
     .. wraps::
         ImGuiTableSortSpecs* TableGetSortSpecs()
     """
@@ -5259,7 +5565,7 @@ def table_get_sort_specs():
 
 def table_get_column_count():
     """
-    
+
     .. wraps::
         int TableGetColumnCount()
     """
@@ -5267,25 +5573,25 @@ def table_get_column_count():
 
 def table_get_column_index():
     """
-    
+
     .. wraps::
         int TableGetColumnIndex()
     """
     return cimgui.TableGetColumnIndex()
-    
+
 def table_get_row_index():
     """
-    
+
     .. wraps::
         int TableGetRowIndex()
     """
     return cimgui.TableGetRowIndex()
-    
+
 def table_get_column_name(int column_n = -1):
     """
-    
+
     .. wraps::
-        const char* TableGetColumnName( 
+        const char* TableGetColumnName(
             int column_n  = -1
         )
     """
@@ -5293,25 +5599,25 @@ def table_get_column_name(int column_n = -1):
 
 def table_get_column_flags(int column_n = -1):
     """
-    
+
     .. wraps::
         ImGuiTableColumnFlags TableGetColumnFlags(
             int column_n = -1
         )
     """
     return cimgui.TableGetColumnFlags(column_n)
-    
+
 def table_set_background_color(
         cimgui.ImGuiTableBgTarget target,
         cimgui.ImU32 color,
         int column_n = -1
     ):
     """
-    
+
     .. wraps::
         void TableSetBgColor(
-            ImGuiTableBgTarget target, 
-            ImU32 color, 
+            ImGuiTableBgTarget target,
+            ImU32 color,
             int column_n  = -1
         )
     """
@@ -5594,7 +5900,7 @@ def arrow_button(str label, cimgui.ImGuiDir direction = DIRECTION_NONE):
 
 def invisible_button(str identifier, float width, float height, cimgui.ImGuiButtonFlags flags = 0):
     """Create invisible button.
-    
+
     Flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with IsItemActive, IsItemHovered, etc.)
 
     .. visual-example::
@@ -6316,7 +6622,7 @@ def drag_float_range2(
     cimgui.ImGuiSliderFlags flags = 0
     ):
     """Display drag float range widget
-    
+
     Args:
         label (str): widget label
         current_min (float): current value of minimum
@@ -6328,11 +6634,11 @@ def drag_float_range2(
         format_max (str): display format for maximum. If None, ``format`` parameter is used.
         flags: SliderFlags flags. See:
             :ref:`list of available flags <slider-flag-options>`.
-            
+
     Returns:
         tuple: a (changed, current_min, current_max) tuple, where ``changed`` indicate
                that the value has been updated.
-    
+
     .. visual-example::
         :auto_layout:
         :width: 400
@@ -6340,36 +6646,36 @@ def drag_float_range2(
 
         vmin = 0
         vmax = 100
-        
+
         imgui.begin("Example: drag float range")
         changed, vmin, vmax = imgui.drag_float_range2( "Drag Range", vmin, vmax )
         imgui.text("Changed: %s, Range: (%.2f, %.2f)" % (changed, vmin, vmax))
         imgui.end()
-   
-    
+
+
     .. wraps::
         bool DragFloatRange2(
-            const char* label, 
-            float* v_current_min, 
-            float* v_current_max, 
-            float v_speed = 1.0f, 
-            float v_min = 0.0f, 
-            float v_max = 0.0f, 
-            const char* format = "%.3f", 
-            const char* format_max = NULL, 
+            const char* label,
+            float* v_current_min,
+            float* v_current_max,
+            float v_speed = 1.0f,
+            float v_min = 0.0f,
+            float v_max = 0.0f,
+            const char* format = "%.3f",
+            const char* format_max = NULL,
             ImGuiSliderFlags flags = 0
         )
     """
-    
+
     cdef float inout_current_min = current_min
     cdef float inout_current_max = current_max
-    
+
     cdef bytes b_format_max;
     cdef char* p_format_max = NULL
     if format_max is not None:
         b_format_max = _bytes(format_max)
         p_format_max = b_format_max
-    
+
     changed = cimgui.DragFloatRange2(
         _bytes(label),
         &inout_current_min,
@@ -6381,10 +6687,10 @@ def drag_float_range2(
         p_format_max,
         flags
     )
-    
+
     return changed, inout_current_min, inout_current_max
-    
-    
+
+
 
 def drag_int(
     str label, int value,
@@ -6630,7 +6936,7 @@ def drag_int_range2(
     cimgui.ImGuiSliderFlags flags = 0
     ):
     """Display drag int range widget
-    
+
     Args:
         label (str): widget label
         current_min (int): current value of minimum
@@ -6642,11 +6948,11 @@ def drag_int_range2(
         format_max (str): display format for maximum. If None, ``format`` parameter is used.
         flags: SliderFlags flags. See:
             :ref:`list of available flags <slider-flag-options>`.
-            
+
     Returns:
         tuple: a (changed, current_min, current_max) tuple, where ``changed`` indicate
                that the value has been updated.
-    
+
     .. visual-example::
         :auto_layout:
         :width: 400
@@ -6654,36 +6960,36 @@ def drag_int_range2(
 
         vmin = 0
         vmax = 100
-        
+
         imgui.begin("Example: drag float range")
         changed, vmin, vmax = imgui.drag_int_range2( "Drag Range", vmin, vmax )
         imgui.text("Changed: %s, Range: (%d, %d)" % (changed, vmin, vmax))
         imgui.end()
-   
-    
+
+
     .. wraps::
         bool DragIntRange2(
-            const char* label, 
-            int* v_current_min, 
-            int* v_current_max, 
-            float v_speed = 1.0f, 
-            int v_min = 0, 
-            int v_max = 0, 
-            const char* format = "%d", 
-            const char* format_max = NULL, 
+            const char* label,
+            int* v_current_min,
+            int* v_current_max,
+            float v_speed = 1.0f,
+            int v_min = 0,
+            int v_max = 0,
+            const char* format = "%d",
+            const char* format_max = NULL,
             ImGuiSliderFlags flags = 0
         )
     """
-    
+
     cdef int inout_current_min = current_min
     cdef int inout_current_max = current_max
-    
+
     cdef bytes b_format_max;
     cdef char* p_format_max = NULL
     if format_max is not None:
         b_format_max = _bytes(format_max)
         p_format_max = b_format_max
-    
+
     changed = cimgui.DragIntRange2(
         _bytes(label),
         &inout_current_min,
@@ -6695,7 +7001,7 @@ def drag_int_range2(
         p_format_max,
         flags
     )
-    
+
     return changed, inout_current_min, inout_current_max
 
 
@@ -6710,9 +7016,9 @@ def drag_scalar(
     cimgui.ImGuiSliderFlags flags = 0):
     """Display scalar drag widget.
     Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
-    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
-    like when interfacing with Numpy. 
-    
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double)
+    like when interfacing with Numpy.
+
     Args:
         label (str): widget label
         data_type: ImGuiDataType enum, type of the given data
@@ -6724,29 +7030,29 @@ def drag_scalar(
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
         flags: ImGuiSlider flags. See:
             :ref:`list of available flags <slider-flag-options>`.
-    
+
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
         drag state change and the current drag content.
-    
+
     .. wraps::
         bool DragScalar(
-            const char* label, 
-            ImGuiDataType data_type, 
-            void* p_data, 
-            float v_speed, 
+            const char* label,
+            ImGuiDataType data_type,
+            void* p_data,
+            float v_speed,
             const void* p_min = NULL,
             const void* p_max = NULL,
             const char* format = NULL,
             ImGuiSliderFlags flags = 0
         )
     """
-    
+
     cdef char* p_data = data
     cdef char* p_min = NULL
     if min_value is not None:
         p_min = min_value
-    cdef char* p_max = NULL 
+    cdef char* p_max = NULL
     if max_value is not None:
         p_max = max_value
     cdef char* fmt = NULL
@@ -6754,7 +7060,7 @@ def drag_scalar(
     if format is not None:
         fmt_data = _bytes(format)
         fmt = fmt_data
-        
+
     cdef changed = cimgui.DragScalar(
         _bytes(label),
         data_type,
@@ -6765,7 +7071,7 @@ def drag_scalar(
         fmt,
         flags
     )
-    
+
     return changed, data
 
 def drag_scalar_N(
@@ -6780,9 +7086,9 @@ def drag_scalar_N(
     cimgui.ImGuiSliderFlags flags = 0):
     """Display multiple scalar drag widget.
     Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
-    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
-    like when interfacing with Numpy. 
-    
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double)
+    like when interfacing with Numpy.
+
     Args:
         label (str): widget label
         data_type: ImGuiDataType enum, type of the given data
@@ -6795,30 +7101,30 @@ def drag_scalar_N(
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
         flags: ImGuiSlider flags. See:
             :ref:`list of available flags <slider-flag-options>`.
-    
+
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
         drag state change and the current drag content.
-    
+
     .. wraps::
         bool DragScalarN(
-            const char* label, 
-            ImGuiDataType data_type, 
+            const char* label,
+            ImGuiDataType data_type,
             void* p_data,
             int components,
-            float v_speed, 
+            float v_speed,
             const void* p_min = NULL,
             const void* p_max = NULL,
             const char* format = NULL,
             ImGuiSliderFlags flags = 0
         )
     """
-    
+
     cdef char* p_data = data
     cdef char* p_min = NULL
     if min_value is not None:
         p_min = min_value
-    cdef char* p_max = NULL 
+    cdef char* p_max = NULL
     if max_value is not None:
         p_max = max_value
     cdef char* fmt = NULL
@@ -6826,7 +7132,7 @@ def drag_scalar_N(
     if format is not None:
         fmt_data = _bytes(format)
         fmt = fmt_data
-        
+
     cdef changed = cimgui.DragScalarN(
         _bytes(label),
         data_type,
@@ -6838,7 +7144,7 @@ def drag_scalar_N(
         fmt,
         flags
     )
-    
+
     return changed, data
 
 def input_text(
@@ -6876,7 +7182,7 @@ def input_text(
         buffer_length (int): length of the content buffer
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
-        callback (callable): a callable that is called depending on choosen flags. 
+        callback (callable): a callable that is called depending on choosen flags.
             Callable takes an imgui._ImGuiInputTextCallbackData object as argument
             Callable should return None or integer
         user_data: Any data that the user want to use in the callback.
@@ -6895,7 +7201,7 @@ def input_text(
             void* user_data = NULL
         )
     """
-    
+
     cdef _callback_user_info _user_info = _callback_user_info()
     cdef cimgui.ImGuiInputTextCallback _callback = NULL
     cdef void *_user_data = NULL
@@ -6903,7 +7209,7 @@ def input_text(
         _callback = _ImGuiInputTextCallback
         _user_info.populate(callback, user_data)
         _user_data = <void*>_user_info
-    
+
     # todo: pymalloc
     cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
     # todo: take special care of terminating char
@@ -6957,7 +7263,7 @@ def input_text_multiline(
         height (float): height of the textbox
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
-        callback (callable): a callable that is called depending on choosen flags. 
+        callback (callable): a callable that is called depending on choosen flags.
             Callable takes an imgui._ImGuiInputTextCallbackData object as argument
             Callable should return None or integer
         user_data: Any data that the user want to use in the callback.
@@ -6977,7 +7283,7 @@ def input_text_multiline(
             void* user_data = NULL
         )
     """
-    
+
     cdef _callback_user_info _user_info = _callback_user_info()
     cdef cimgui.ImGuiInputTextCallback _callback = NULL
     cdef void *_user_data = NULL
@@ -6985,7 +7291,7 @@ def input_text_multiline(
         _callback = _ImGuiInputTextCallback
         _user_info.populate(callback, user_data)
         _user_data = <void*>_user_info
-        
+
     cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
     # todo: take special care of terminating char
     strncpy(inout_text, _bytes(value), buffer_length)
@@ -6999,10 +7305,10 @@ def input_text_multiline(
 
     free(inout_text)
     return changed, output
-    
+
 def input_text_with_hint(
-    str label, 
-    str hint, 
+    str label,
+    str hint,
     str value,
     int buffer_length,
     cimgui.ImGuiInputTextFlags flags = 0,
@@ -7010,7 +7316,7 @@ def input_text_with_hint(
     user_data = None):
     """Display a text box, if the text is empty a hint on how to fill the box is given.
     ``buffer_length`` is the maximum allowed length of the content.
-    
+
     Args:
         label (str): Widget label
         hing (str): Hint displayed if text value empty
@@ -7018,39 +7324,39 @@ def input_text_with_hint(
         buffer_length (int): Length of the content buffer
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
-        callback (callable): a callable that is called depending on choosen flags. 
+        callback (callable): a callable that is called depending on choosen flags.
             Callable takes an imgui._ImGuiInputTextCallbackData object as argument
             Callable should return None or integer
         user_data: Any data that the user want to use in the callback.
-            
+
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
         textbox state change and the current text contents.
-    
+
     .. visual-example::
         :auto_layout:
         :width: 400
         :height: 200
-        
+
         text_val = ''
         imgui.begin("Example Text With hing")
         changed, text_val = imgui.input_text_with_hint(
-            'Email', 'your@email.com', 
+            'Email', 'your@email.com',
             text_val, 255)
         imgui.end()
-    
+
     .. wraps::
         bool InputTextWithHint(
-            const char* label, 
-            const char* hint, 
-            char* buf, 
-            size_t buf_size, 
-            ImGuiInputTextFlags flags = 0, 
-            ImGuiInputTextCallback callback = NULL, 
+            const char* label,
+            const char* hint,
+            char* buf,
+            size_t buf_size,
+            ImGuiInputTextFlags flags = 0,
+            ImGuiInputTextCallback callback = NULL,
             void* user_data = NULL
         )
     """
-    
+
     cdef _callback_user_info _user_info = _callback_user_info()
     cdef cimgui.ImGuiInputTextCallback _callback = NULL
     cdef void *_user_data = NULL
@@ -7058,17 +7364,17 @@ def input_text_with_hint(
         _callback = _ImGuiInputTextCallback
         _user_info.populate(callback, user_data)
         _user_data = <void*>_user_info
-        
+
     cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
     strncpy(inout_text, _bytes(value), buffer_length)
-    
+
     changed = cimgui.InputTextWithHint(
         _bytes(label), _bytes(hint), inout_text, buffer_length,
         flags, _callback, _user_data
     )
-    
+
     output = _from_bytes(inout_text)
-    
+
     free(inout_text)
     return changed, output
 
@@ -7494,9 +7800,9 @@ def input_scalar(
     cimgui.ImGuiInputTextFlags flags = 0):
     """Display scalar input widget.
     Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
-    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
-    like when interfacing with Numpy. 
-    
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double)
+    like when interfacing with Numpy.
+
     Args:
         label (str): widget label
         data_type: ImGuiDataType enum, type of the given data
@@ -7506,28 +7812,28 @@ def input_scalar(
         format (str): format string
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
-    
+
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
         input state change and the current input content.
-    
+
     .. wraps::
         bool InputScalar(
-            const char* label, 
-            ImGuiDataType data_type, 
-            void* p_data, 
-            const void* p_step = NULL, 
-            const void* p_step_fast = NULL, 
-            const char* format = NULL, 
+            const char* label,
+            ImGuiDataType data_type,
+            void* p_data,
+            const void* p_step = NULL,
+            const void* p_step_fast = NULL,
+            const char* format = NULL,
             ImGuiInputTextFlags flags = 0
         )
     """
-    
+
     cdef char* p_data = data
     cdef char* p_step = NULL
     if step is not None:
         p_step = step
-    cdef char* p_step_fast = NULL 
+    cdef char* p_step_fast = NULL
     if step_fast is not None:
         p_step_fast = step_fast
     cdef char* fmt = NULL
@@ -7535,7 +7841,7 @@ def input_scalar(
     if format is not None:
         fmt_data = _bytes(format)
         fmt = fmt_data
-        
+
     cdef changed = cimgui.InputScalar(
         _bytes(label),
         data_type,
@@ -7545,7 +7851,7 @@ def input_scalar(
         fmt,
         flags
     )
-    
+
     return changed, data
 
 def input_scalar_N(
@@ -7559,9 +7865,9 @@ def input_scalar_N(
     cimgui.ImGuiInputTextFlags flags = 0):
     """Display multiple scalar input widget.
     Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
-    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
-    like when interfacing with Numpy. 
-    
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double)
+    like when interfacing with Numpy.
+
     Args:
         label (str): widget label
         data_type: ImGuiDataType enum, type of the given data
@@ -7572,29 +7878,29 @@ def input_scalar_N(
         format (str): format string
         flags: InputText flags. See:
             :ref:`list of available flags <inputtext-flag-options>`.
-    
+
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
         input state change and the current input content.
-    
+
     .. wraps::
         bool InputScalarN(
-            const char* label, 
-            ImGuiDataType data_type, 
+            const char* label,
+            ImGuiDataType data_type,
             void* p_data,
             int components,
-            const void* p_step = NULL, 
-            const void* p_step_fast = NULL, 
-            const char* format = NULL, 
+            const void* p_step = NULL,
+            const void* p_step_fast = NULL,
+            const char* format = NULL,
             ImGuiInputTextFlags flags = 0
         )
     """
-    
+
     cdef char* p_data = data
     cdef char* p_step = NULL
     if step is not None:
         p_step = step
-    cdef char* p_step_fast = NULL 
+    cdef char* p_step_fast = NULL
     if step_fast is not None:
         p_step_fast = step_fast
     cdef char* fmt = NULL
@@ -7602,7 +7908,7 @@ def input_scalar_N(
     if format is not None:
         fmt_data = _bytes(format)
         fmt = fmt_data
-        
+
     cdef changed = cimgui.InputScalarN(
         _bytes(label),
         data_type,
@@ -7613,15 +7919,15 @@ def input_scalar_N(
         fmt,
         flags
     )
-    
+
     return changed, data
-    
+
 def slider_float(
     str label,
     float value,
     float min_value,
     float max_value,
-    str format = "%.3f", 
+    str format = "%.3f",
     cimgui.ImGuiSliderFlags flags = 0,
     float power=1.0 # OBSOLETED in 1.78 (from June 2020)
 ):
@@ -7863,28 +8169,28 @@ def slider_float4(
     ), (inout_values[0], inout_values[1], inout_values[2], inout_values[3])
 
 def slider_angle(
-    str label, 
+    str label,
     float rad_value,
-    float value_degrees_min = -360.0, 
+    float value_degrees_min = -360.0,
     float value_degrees_max = 360,
-    str format = "%.0f deg", 
+    str format = "%.0f deg",
     cimgui.ImGuiSliderFlags flags = 0):
     """Display angle slider widget.
-    
+
     .. visual-example::
         :auto_layout:
         :width: 400
         :height: 130
-        
+
         radian = 3.1415/4
-        
+
         imgui.begin("Example: slider angle")
         changed, radian = imgui.slider_angle(
             "slider angle", radian,
             value_degrees_min=0.0, value_degrees_max=180.0)
         imgui.text("Changed: %s, Value: %s" % (changed, radian))
         imgui.end()
-    
+
     Args:
         labal (str): widget label
         rad_value (float): slider value in radian
@@ -7894,22 +8200,22 @@ def slider_angle(
             format string. **Warning:** highly unsafe.
         flags: SliderFlags flags. See:
             :ref:`list of available flags <slider-flag-options>`.
-        
+
     Returns:
         tuple: a ``(changed, rad_value)`` tuple that contains indicator of
         widget state change and the current slider value in radian.
-        
-    
+
+
     .. wraps::
         bool SliderAngle(
-            const char* label, 
-            float* v_rad, float 
-            v_degrees_min = -360.0f, 
-            float v_degrees_max = +360.0f, 
-            const char* format = "%.0f deg", 
+            const char* label,
+            float* v_rad, float
+            v_degrees_min = -360.0f,
+            float v_degrees_max = +360.0f,
+            const char* format = "%.0f deg",
             ImGuiSliderFlags flags = 0
         )
-    
+
     """
     cdef float inout_r_value = rad_value
     return cimgui.SliderAngle(
@@ -8158,9 +8464,9 @@ def slider_scalar(
     cimgui.ImGuiSliderFlags flags = 0):
     """Display scalar slider widget.
     Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
-    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
-    like when interfacing with Numpy. 
-    
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double)
+    like when interfacing with Numpy.
+
     Args:
         label (str): widget label
         data_type: ImGuiDataType enum, type of the given data
@@ -8171,15 +8477,15 @@ def slider_scalar(
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
         flags: ImGuiSlider flags. See:
             :ref:`list of available flags <slider-flag-options>`.
-    
+
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
         slider state change and the current slider content.
-    
+
     .. wraps::
         bool SliderScalar(
-            const char* label, 
-            ImGuiDataType data_type, 
+            const char* label,
+            ImGuiDataType data_type,
             void* p_data,
             const void* p_min,
             const void* p_max,
@@ -8187,17 +8493,17 @@ def slider_scalar(
             ImGuiSliderFlags flags = 0
         )
     """
-    
+
     cdef char* p_data = data
     cdef char* p_min = min_value
-    cdef char* p_max = max_value 
-    
+    cdef char* p_max = max_value
+
     cdef char* fmt = NULL
     cdef bytes fmt_data;
     if format is not None:
         fmt_data = _bytes(format)
         fmt = fmt_data
-        
+
     cdef changed = cimgui.SliderScalar(
         _bytes(label),
         data_type,
@@ -8207,9 +8513,9 @@ def slider_scalar(
         fmt,
         flags
     )
-    
+
     return changed, data
-    
+
 def slider_scalar_N(
     str label,
     cimgui.ImGuiDataType data_type,
@@ -8221,9 +8527,9 @@ def slider_scalar_N(
     cimgui.ImGuiSliderFlags flags = 0):
     """Display multiple scalar slider widget.
     Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
-    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
-    like when interfacing with Numpy. 
-    
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double)
+    like when interfacing with Numpy.
+
     Args:
         label (str): widget label
         data_type: ImGuiDataType enum, type of the given data
@@ -8235,16 +8541,16 @@ def slider_scalar_N(
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
         flags: ImGuiSlider flags. See:
             :ref:`list of available flags <slider-flag-options>`.
-    
+
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
         slider state change and the current slider content.
-    
+
     .. wraps::
         bool SliderScalarN(
-            const char* label, 
-            ImGuiDataType data_type, 
-            void* p_data, 
+            const char* label,
+            ImGuiDataType data_type,
+            void* p_data,
             int components,
             const void* p_min,
             const void* p_max,
@@ -8252,17 +8558,17 @@ def slider_scalar_N(
             ImGuiSliderFlags flags = 0
         )
     """
-    
+
     cdef char* p_data = data
     cdef char* p_min = min_value
-    cdef char* p_max = max_value 
-    
+    cdef char* p_max = max_value
+
     cdef char* fmt = NULL
     cdef bytes fmt_data;
     if format is not None:
         fmt_data = _bytes(format)
         fmt = fmt_data
-        
+
     cdef changed = cimgui.SliderScalarN(
         _bytes(label),
         data_type,
@@ -8273,7 +8579,7 @@ def slider_scalar_N(
         fmt,
         flags
     )
-    
+
     return changed, data
 
 def v_slider_float(
@@ -8406,7 +8712,7 @@ def v_slider_int(
         min_value, max_value, _bytes(format), flags
     ), inout_value
 
-    
+
 def v_slider_scalar(
     str label,
     float width,
@@ -8419,9 +8725,9 @@ def v_slider_scalar(
     cimgui.ImGuiSliderFlags flags = 0):
     """Display vertical scalar slider widget.
     Data is passed via ``bytes`` and the type is separatelly given using ``data_type``.
-    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double) 
-    like when interfacing with Numpy. 
-    
+    This is useful to work with specific types (e.g. unsigned 8bit integer, float, double)
+    like when interfacing with Numpy.
+
     Args:
         label (str): widget label
         width (float): width of the slider
@@ -8434,34 +8740,34 @@ def v_slider_scalar(
             format string. **Warning:** highly unsafe. See :any:`drag_int()`.
         flags: ImGuiSlider flags. See:
             :ref:`list of available flags <slider-flag-options>`.
-    
+
     Returns:
         tuple: a ``(changed, value)`` tuple that contains indicator of
         slider state change and the current slider content.
-    
+
     .. wraps::
         bool VSliderScalar(
-            const char* label, 
+            const char* label,
             const ImVec2& size,
-            ImGuiDataType data_type, 
-            void* p_data, 
+            ImGuiDataType data_type,
+            void* p_data,
             const void* p_min,
             const void* p_max,
             const char* format = NULL,
             ImGuiSliderFlags flags = 0
         )
     """
-    
+
     cdef char* p_data = data
     cdef char* p_min = min_value
     cdef char* p_max = max_value
-    
+
     cdef char* fmt = NULL
     cdef bytes fmt_data;
     if format is not None:
         fmt_data = _bytes(format)
         fmt = fmt_data
-        
+
     cdef changed = cimgui.VSliderScalar(
         _bytes(label),
         _cast_args_ImVec2(width, height),
@@ -8472,7 +8778,7 @@ def v_slider_scalar(
         fmt,
         flags
     )
-    
+
     return changed, data
 
 def plot_lines(
@@ -8681,7 +8987,7 @@ def progress_bar(float fraction, size = (-FLOAT_MIN,0), str overlay = ""):
     .. wraps::
         void ProgressBar(
             float fraction,
-            const ImVec2& size_arg = ImVec2(-FLT_MIN, 0), 
+            const ImVec2& size_arg = ImVec2(-FLT_MIN, 0),
             const char* overlay = NULL
         )
 
@@ -8748,9 +9054,9 @@ def is_item_active():
 
 
 def is_item_clicked(cimgui.ImGuiMouseButton mouse_button = 0):
-    """ Was the last item hovered and mouse clicked on? 
+    """ Was the last item hovered and mouse clicked on?
     Button or node that was just being clicked on.
-    
+
     Args:
         mouse_button: ImGuiMouseButton
 
@@ -8776,12 +9082,12 @@ def is_item_visible():
     return cimgui.IsItemVisible()
 
 def is_item_edited():
-    """Did the last item modify its underlying value this frame? or was pressed? 
+    """Did the last item modify its underlying value this frame? or was pressed?
     This is generally the same as the "bool" return value of many widgets.
-    
+
     Returns:
         bool: True if item is edited, otherwise False.
-    
+
     .. wraps::
         bool IsItemEdited()
     """
@@ -8789,35 +9095,35 @@ def is_item_edited():
 
 def is_item_activated():
     """Was the last item just made active (item was previously inactive)?
-    
+
     Returns:
         bool: True if item was just made active
-    
+
     .. wraps::
         bool IsItemActivated()
     """
     return cimgui.IsItemActivated()
 
 def is_item_deactivated():
-    """Was the last item just made inactive (item was previously active)? 
+    """Was the last item just made inactive (item was previously active)?
     Useful for Undo/Redo patterns with widgets that requires continuous editing.
-        
+
     Results:
         bool: True if item just made inactive
-        
+
     .. wraps:
         bool IsItemDeactivated()
     """
     return cimgui.IsItemDeactivated
 
 def is_item_deactivated_after_edit():
-    """Was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved). 
-    Useful for Undo/Redo patterns with widgets that requires continuous editing. 
+    """Was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved).
+    Useful for Undo/Redo patterns with widgets that requires continuous editing.
     Note that you may get false positives (some widgets such as Combo()/ListBox()/Selectable() will return true even when clicking an already selected item).
-    
+
     Results:
         bool: True if item just made inactive after an edition
-    
+
     .. wraps::
         bool IsItemDeactivatedAfterEdit()
     """
@@ -8825,7 +9131,7 @@ def is_item_deactivated_after_edit():
 
 def is_item_toggled_open():
     """Was the last item open state toggled? set by TreeNode().
-    
+
     .. wraps::
         bool IsItemToggledOpen()
     """
@@ -8914,15 +9220,15 @@ def set_item_allow_overlap():
     cimgui.SetItemAllowOverlap()
 
 def get_main_viewport():
-    """Currently represents the Platform Window created by the application which is hosting 
+    """Currently represents the Platform Window created by the application which is hosting
     our Dear ImGui windows.
-    
-    In the future we will extend this concept further to also represent Platform Monitor 
+
+    In the future we will extend this concept further to also represent Platform Monitor
     and support a "no main platform window" operation mode.
-    
+
     Returns:
         _ImGuiViewport: Viewport
-    
+
     .. wraps::
         ImGuiViewport* GetMainViewport()
     """
@@ -8996,26 +9302,26 @@ def get_time():
     """
     return cimgui.GetTime()
 
-    
+
 def get_background_draw_list():
-    """This draw list will be the first rendering one. 
+    """This draw list will be the first rendering one.
     Useful to quickly draw shapes/text behind dear imgui contents.
-    
+
     Returns:
         DrawList*
-        
+
     .. wraps::
         ImDrawList* GetBackgroundDrawList()
     """
     return _DrawList.from_ptr(cimgui.GetBackgroundDrawList())
-    
+
 def get_foreground_draw_list():
-    """This draw list will be the last rendered one. 
+    """This draw list will be the last rendered one.
     Useful to quickly draw shapes/text over dear imgui contents.
-    
+
     Returns:
         DrawList*
-        
+
     .. wraps::
         ImDrawList* GetForegroundDrawList()
     """
@@ -9238,73 +9544,73 @@ def set_mouse_cursor(cimgui.ImGuiMouseCursor mouse_cursor_type):
     return cimgui.SetMouseCursor(mouse_cursor_type)
 
 def capture_mouse_from_app(bool want_capture_mouse_value = True):
-    """Attention: misleading name! 
-    Manually override io.WantCaptureMouse flag next frame 
-    (said flag is entirely left for your application to handle). 
-    
-    This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse_value;" 
+    """Attention: misleading name!
+    Manually override io.WantCaptureMouse flag next frame
+    (said flag is entirely left for your application to handle).
+
+    This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse_value;"
     after the next NewFrame() call.
-    
+
     .. wraps::
         void CaptureMouseFromApp(bool want_capture_mouse_value = true)
     """
     cimgui.CaptureMouseFromApp(want_capture_mouse_value)
-    
+
 def get_clipboard_text():
-    """Also see the ``log_to_clipboard()`` function to capture GUI into clipboard, 
+    """Also see the ``log_to_clipboard()`` function to capture GUI into clipboard,
     or easily output text data to the clipboard.
-    
+
     Returns:
         str: Text content of the clipboard
-    
+
     .. wraps::
         const char* GetClipboardText()
     """
     return _from_bytes(cimgui.GetClipboardText())
-    
+
 def load_ini_settings_from_disk(str ini_file_name):
-    """Call after ``create_context()`` and before the first call to ``new_frame()``. 
+    """Call after ``create_context()`` and before the first call to ``new_frame()``.
     ``new_frame()`` automatically calls ``load_ini_settings_from_disk(io.ini_file_name)``.
-    
+
     Args:
         ini_file_name (str): Filename to load settings from.
-    
+
     .. wraps::
         void LoadIniSettingsFromDisk(const char* ini_filename)
     """
     cimgui.LoadIniSettingsFromDisk(_bytes(ini_file_name))
 
 def load_ini_settings_from_memory(str ini_data):
-    """Call after ``create_context()`` and before the first call to ``new_frame()`` 
+    """Call after ``create_context()`` and before the first call to ``new_frame()``
     to provide .ini data from your own data source.
-    
+
     .. wraps::
         void LoadIniSettingsFromMemory(const char* ini_data, size_t ini_size=0)
     """
     #cdef size_t ini_size = len(ini_data)
     cimgui.LoadIniSettingsFromMemory(_bytes(ini_data), 0)
-    
+
 def save_ini_settings_to_disk(str ini_file_name):
-    """This is automatically called (if ``io.ini_file_name`` is not empty) 
-    a few seconds after any modification that should be reflected in the .ini file 
+    """This is automatically called (if ``io.ini_file_name`` is not empty)
+    a few seconds after any modification that should be reflected in the .ini file
     (and also by ``destroy_context``).
-    
+
     Args:
         ini_file_name (str): Filename to save settings to.
-    
+
     .. wraps::
         void SaveIniSettingsToDisk(const char* ini_filename)
     """
     cimgui.SaveIniSettingsToDisk(_bytes(ini_file_name))
-    
+
 def save_ini_settings_to_memory():
-    """Return a string with the .ini data which you can save by your own mean. 
-    Call when ``io.want_save_ini_settings`` is set, then save data by your own mean 
-    and clear ``io.want_save_ini_settings``. 
-    
+    """Return a string with the .ini data which you can save by your own mean.
+    Call when ``io.want_save_ini_settings`` is set, then save data by your own mean
+    and clear ``io.want_save_ini_settings``.
+
     Returns:
         str: Settings data
-    
+
     .. wraps::
        const char* SaveIniSettingsToMemory(size_t* out_ini_size = NULL)
     """
@@ -9312,10 +9618,10 @@ def save_ini_settings_to_memory():
 
 def set_clipboard_text(str text):
     """Set the clipboard content
-    
+
     Args:
         text (str): Text to copy in clipboard
-    
+
     .. wraps:
         void SetClipboardText(const char* text)
     """
@@ -9335,16 +9641,16 @@ def set_clipboard_text(str text):
 #        void SetScrollHere(float center_y_ratio = 0.5f)
 #    """
 #    return cimgui.SetScrollHere(center_y_ratio)
-    
+
 def set_scroll_here_x(float center_x_ratio = 0.5):
     """Set scroll here X.
 
-    Adjust scrolling amount to make current cursor position visible. 
+    Adjust scrolling amount to make current cursor position visible.
     center_x_ratio =
-        0.0: left, 
-        0.5: center, 
-        1.0: right. 
-        
+        0.0: left,
+        0.5: center,
+        1.0: right.
+
     When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
 
     Args:
@@ -9354,16 +9660,16 @@ def set_scroll_here_x(float center_x_ratio = 0.5):
         void SetScrollHereX(float center_x_ratio = 0.5f)
     """
     return cimgui.SetScrollHereX(center_x_ratio)
-    
+
 def set_scroll_here_y(float center_y_ratio = 0.5):
     """Set scroll here Y.
 
-    Adjust scrolling amount to make current cursor position visible. 
+    Adjust scrolling amount to make current cursor position visible.
     center_y_ratio =
-        0.0: top, 
-        0.5: center, 
-        1.0: bottom. 
-        
+        0.0: top,
+        0.5: center,
+        1.0: bottom.
+
     When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
 
     Args:
@@ -9378,9 +9684,9 @@ def set_scroll_here_y(float center_y_ratio = 0.5):
 def set_scroll_from_pos_x(float local_x, float center_x_ratio = 0.5):
     """Set scroll from position X
 
-    Adjust scrolling amount to make given position visible. 
+    Adjust scrolling amount to make given position visible.
     Generally GetCursorStartPos() + offset to compute a valid position.
-    
+
     Args:
         float local_x
         float center_x_ratio = 0.5f
@@ -9394,9 +9700,9 @@ def set_scroll_from_pos_x(float local_x, float center_x_ratio = 0.5):
 def set_scroll_from_pos_y(float local_y, float center_y_ratio = 0.5):
     """Set scroll from position Y
 
-    Adjust scrolling amount to make given position visible. 
+    Adjust scrolling amount to make given position visible.
     Generally GetCursorStartPos() + offset to compute a valid position.
-    
+
     Args:
         float local_y
         float center_y_ratio = 0.5f
@@ -9495,16 +9801,16 @@ cpdef calc_text_size(str text, bool hide_text_after_double_hash = False, float w
             wrap_width
         )
     )
-    
+
 def color_convert_u32_to_float4(cimgui.ImU32 in_):
     """Convert an unsigned int 32 to 4 component r, g, b, a
-    
+
     Args:
         in_ (ImU32): Color in unsigned int 32 format
-    
+
     Return:
         tuple: r, g, b, a components of the color
-    
+
     .. wraps::
         ImVec4 ColorConvertU32ToFloat4(ImU32 in)
     """
@@ -9512,13 +9818,13 @@ def color_convert_u32_to_float4(cimgui.ImU32 in_):
 
 def color_convert_float4_to_u32(float r, float g, float b, float a):
     """Convert a set of r, g, b, a floats to unsigned int 32 color
-    
+
     Args:
         r, g, b, a (float): Components of the color
-    
+
     Returns:
         ImU32: Unsigned int 32 color format
-    
+
     .. wraps::
         ImU32 ColorConvertFloat4ToU32(const ImVec4& in)
     """
@@ -9527,13 +9833,13 @@ def color_convert_float4_to_u32(float r, float g, float b, float a):
 
 def color_convert_rgb_to_hsv(float r, float g, float b):
     """Convert color from RGB space to HSV space
-    
+
     Args:
         r, g, b (float): RGB color format
-    
+
     Returns:
         tuple: h, s, v HSV color format
-    
+
     .. wraps::
         void ColorConvertRGBtoHSV(float r, float g, float b, float& out_h, float& out_s, float& out_v)
     """
@@ -9541,16 +9847,16 @@ def color_convert_rgb_to_hsv(float r, float g, float b):
     out_h = out_s = out_v = 0
     cimgui.ColorConvertRGBtoHSV(r,g,b,out_h,out_s,out_v)
     return out_h, out_s, out_v
-    
+
 def color_convert_hsv_to_rgb(float h, float s, float v):
     """Convert color from HSV space to RGB space
-    
+
     Args:
         h, s, v (float): HSV color format
-    
+
     Returns:
         tuple: r, g, b RGB color format
-    
+
     .. wraps::
         void ColorConvertHSVtoRGB(float h, float s, float v, float& out_r, float& out_g, float& out_b)
     """
@@ -10069,7 +10375,7 @@ def unindent(float width=0.0):
 def columns(int count=1, str identifier=None, bool border=True):
     """Setup number of columns. Use an identifier to distinguish multiple
     column sets. close with ``columns(1)``.
-    
+
     Legacy Columns API (2020: prefer using Tables!)
 
     .. visual-example::
@@ -10132,7 +10438,7 @@ def next_column():
     """Move to the next column drawing.
 
     For a complete example see :func:`columns()`.
-    
+
     Legacy Columns API (2020: prefer using Tables!)
 
     .. wraps::
@@ -10145,7 +10451,7 @@ def get_column_index():
     """Returns the current column index.
 
     For a complete example see :func:`columns()`.
-    
+
     Legacy Columns API (2020: prefer using Tables!)
 
     Returns:
@@ -10164,7 +10470,7 @@ def get_column_offset(int column_index=-1):
     unless you call this method.
 
     For a complete example see :func:`columns()`.
-    
+
     Legacy Columns API (2020: prefer using Tables!)
 
     Args:
@@ -10184,7 +10490,7 @@ def set_column_offset(int column_index, float offset_x):
     contents region). Pass -1 to use current column.
 
     For a complete example see :func:`columns()`.
-    
+
     Legacy Columns API (2020: prefer using Tables!)
 
     Args:
@@ -10201,7 +10507,7 @@ def get_column_width(int column_index=-1):
     """Return the column width.
 
     For a complete example see :func:`columns()`.
-    
+
     Legacy Columns API (2020: prefer using Tables!)
 
     Args:
@@ -10218,7 +10524,7 @@ def set_column_width(int column_index, float width):
     contents region). Pass -1 to use current column.
 
     For a complete example see :func:`columns()`.
-    
+
     Legacy Columns API (2020: prefer using Tables!)
 
     Args:
@@ -10235,7 +10541,7 @@ def get_columns_count():
     """Get count of the columns in the current table.
 
     For a complete example see :func:`columns()`.
-    
+
     Legacy Columns API (2020: prefer using Tables!)
 
     Returns:
@@ -10246,157 +10552,254 @@ def get_columns_count():
     """
     return cimgui.GetColumnsCount()
 
+cdef class _BeginEndTabBar(object):
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndTabBar()
+
+    def __bool__(self):
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.opened is other.opened
+        return self.opened is other
+
+
 def begin_tab_bar(str identifier, cimgui.ImGuiTabBarFlags flags = 0):
     """Create and append into a TabBar
-    
+
     Args:
         identifier(str): String identifier of the tab window
         flags: ImGuiTabBarFlags flags. See:
             :ref:`list of available flags <tabbar-flag-options>`.
-    
+
     Returns:
         bool: True if the Tab Bar is open
-        
+
     .. wraps::
         bool BeginTabBar(const char* str_id, ImGuiTabBarFlags flags = 0)
-    
+
     """
-    return cimgui.BeginTabBar(_bytes(identifier), flags)
-    
+    return _BeginEndTabBar.__new__(
+        _BeginEndTabBar,
+        cimgui.BeginTabBar(_bytes(identifier), flags)
+    )
+
 def end_tab_bar():
     """Only call end_tab_bar() if begin_tab_bar() returns true!
-    
+
     .. wraps::
         void EndTabBar()
     """
     cimgui.EndTabBar()
-    
+
+cdef class _BeginEndTabItem(object):
+    cdef readonly bool selected
+    cdef readonly bool opened
+
+    def __cinit__(self, bool selected, bool opened):
+        self.selected = selected
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.selected:
+            cimgui.EndTabItem()
+
+    def __getitem__(self, item):
+        return (self.selected, self.opened)[item]
+
+    def __iter__(self):
+        return iter((self.selected, self.opened))
+
+    def __repr__(self):
+        return "{}(selected={}, opened={})".format(
+            self.__class__.__name__, self.selected, self.opened
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return (self.selected, self.opened) == (other.selected, other.opened)
+        return (self.selected, self.opened) == other
+
+
 def begin_tab_item(str label, opened = None, cimgui.ImGuiTabItemFlags flags = 0):
-    """Create a Tab. 
-    
+    """Create a Tab.
+
     Args:
         label (str): Label of the tab item
         removable (bool): If True, the tab item can be removed
         flags: ImGuiTabItemFlags flags. See:
             :ref:`list of available flags <tabitem-flag-options>`.
-        
+
     Returns:
         tuple: ``(slected, opened)`` tuple of bools. If tab item is selected
         ``selected==True``. The value of ``opened`` is always True for
         non-removable and open tab items but changes state to False on close
         button click for removable tab items.
-        
+
     .. visual-example::
         :auto_layout:
         :width: 300
-        
+
         opened_state = True
-        
+
         #...
-        
+
         imgui.begin("Example Tab Bar")
         if imgui.begin_tab_bar("MyTabBar"):
-            
+
             if imgui.begin_tab_item("Item 1")[0]:
                 imgui.text("Here is the tab content!")
                 imgui.end_tab_item()
-                
+
             if imgui.begin_tab_item("Item 2")[0]:
                 imgui.text("Another content...")
                 imgui.end_tab_item()
-                
+
             selected, opened_state = imgui.begin_tab_item("Item 3", opened=opened_state)
             if selected:
                 imgui.text("Hello Saylor!")
                 imgui.end_tab_item()
-                
+
             imgui.end_tab_bar()
         imgui.end()
-    
+
     .. wraps::
         bool BeginTabItem(
-            const char* label, 
-            bool* p_open = NULL, 
+            const char* label,
+            bool* p_open = NULL,
             ImGuiTabItemFlags flags = 0
         )
     """
     cdef cimgui.bool inout_opened = opened
-    return cimgui.BeginTabItem(_bytes(label), &inout_opened if opened is not None else NULL, flags), inout_opened
+    return _BeginEndTabItem.__new__(
+        _BeginEndTabItem,
+        cimgui.BeginTabItem(
+            _bytes(label),
+            &inout_opened if opened is not None else NULL, flags
+        ),
+        inout_opened
+    )
 
 def end_tab_item():
     """Only call end_tab_item() if begin_tab_item() returns true!
-    
+
     .. wraps::
         void EndTabItem()
     """
     cimgui.EndTabItem()
 
 def tab_item_button(str label, cimgui.ImGuiTabItemFlags flags = 0):
-    """Create a Tab behaving like a button. 
+    """Create a Tab behaving like a button.
     Cannot be selected in the tab bar.
-    
+
     Args:
         label (str): Label of the button
         flags: ImGuiTabItemFlags flags. See:
             :ref:`list of available flags <tabitem-flag-options>`.
-    
+
     Returns:
         (bool): Return true when clicked.
-    
+
     .. visual-example:
         :auto_layout:
         :width: 300
-        
+
         imgui.begin("Example Tab Bar")
         if imgui.begin_tab_bar("MyTabBar"):
-            
+
             if imgui.begin_tab_item("Item 1")[0]:
                 imgui.text("Here is the tab content!")
                 imgui.end_tab_item()
-                
+
             if imgui.tab_item_button("Click me!"):
                 print('Clicked!')
-                
+
             imgui.end_tab_bar()
         imgui.end()
-    
+
     .. wraps::
         bool TabItemButton(const char* label, ImGuiTabItemFlags flags = 0)
     """
     return cimgui.TabItemButton(_bytes(label), flags)
-    
+
 def set_tab_item_closed(str tab_or_docked_window_label):
-    """Notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). 
-    For tab-bar: call after BeginTabBar() and before Tab submissions. 
+    """Notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars).
+    For tab-bar: call after BeginTabBar() and before Tab submissions.
     Otherwise call with a window name.
-    
+
     Args:
         tab_or_docked_window_label (str): Label of the targeted tab or docked window
-    
+
     .. visual-example:
         :auto_layout:
         :width: 300
-        
+
         imgui.begin("Example Tab Bar")
         if imgui.begin_tab_bar("MyTabBar"):
-            
+
             if imgui.begin_tab_item("Item 1")[0]:
                 imgui.text("Here is the tab content!")
                 imgui.end_tab_item()
-                
+
             if imgui.begin_tab_item("Item 2")[0]:
                 imgui.text("This item won't whow !")
                 imgui.end_tab_item()
-                
+
             imgui.set_tab_item_closed("Item 2")
-                
+
             imgui.end_tab_bar()
         imgui.end()
-    
+
     .. wraps:
         void SetTabItemClosed(const char* tab_or_docked_window_label)
     """
     cimgui.SetTabItemClosed(_bytes(tab_or_docked_window_label))
+
+
+cdef class _BeginEndDragDropSource(object):
+    cdef readonly bool dragging
+
+    def __cinit__(self, bool dragging):
+        self.dragging = dragging
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.dragging:
+            cimgui.EndDragDropSource()
+
+    def __bool__(self):
+        return self.dragging
+
+    def __repr__(self):
+        return "{}(dragging={})".format(
+            self.__class__.__name__, self.dragging
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.dragging is other.dragging
+        return self.dragging is other
+
 
 def begin_drag_drop_source(cimgui.ImGuiDragDropFlags flags=0):
     """Set the current item as a drag and drop source. If this return True, you
@@ -10434,7 +10837,10 @@ def begin_drag_drop_source(cimgui.ImGuiDragDropFlags flags=0):
     .. wraps::
         bool BeginDragDropSource(ImGuiDragDropFlags flags = 0)
     """
-    return cimgui.BeginDragDropSource(flags)
+    return _BeginEndDragDropSource.__new__(
+        _BeginEndDragDropSource,
+        cimgui.BeginDragDropSource(flags)
+    )
 
 
 def set_drag_drop_payload(str type, bytes data, cimgui.ImGuiCond condition=0):
@@ -10471,6 +10877,33 @@ def end_drag_drop_source():
     cimgui.EndDragDropSource()
 
 
+cdef class _BeginEndDragDropTarget(object):
+    cdef readonly bool hovered
+
+    def __cinit__(self, bool hovered):
+        self.hovered = hovered
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.hovered:
+            cimgui.EndDragDropTarget()
+
+    def __bool__(self):
+        return self.hovered
+
+    def __repr__(self):
+        return "{}(hovered={})".format(
+            self.__class__.__name__, self.hovered
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.hovered is other.hovered
+        return self.hovered is other
+
+
 def begin_drag_drop_target():
     """Set the current item as a drag and drop target. If this return True, you
     can call :func:`accept_drag_drop_payload` and :func:`end_drag_drop_target`.
@@ -10485,7 +10918,10 @@ def begin_drag_drop_target():
     .. wraps::
         bool BeginDragDropTarget()
     """
-    return cimgui.BeginDragDropTarget()
+    return _BeginEndDragDropTarget.__new__(
+        _BeginEndDragDropTarget,
+        cimgui.BeginDragDropTarget()
+    )
 
 
 def accept_drag_drop_payload(str type, cimgui.ImGuiDragDropFlags flags=0):
@@ -10601,6 +11037,20 @@ def pop_clip_rect():
     """
     cimgui.PopClipRect()
 
+
+cdef class _BeginEndGroup(object):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        cimgui.EndGroup()
+
+    def __repr__(self):
+        return "{}()".format(
+            self.__class__.__name__
+        )
+
+
 def begin_group():
     """Start item group and lock its horizontal starting position.
 
@@ -10634,6 +11084,7 @@ def begin_group():
         void BeginGroup()
     """
     cimgui.BeginGroup()
+    return _BeginEndGroup.__new__(_BeginEndGroup)
 
 
 def end_group():
