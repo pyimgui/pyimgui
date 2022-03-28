@@ -12,6 +12,8 @@ import cython
 from cython.view cimport array as cvarray
 from cython.operator cimport dereference as deref
 
+from imgui._skipwith import SkipWith
+
 from collections import namedtuple
 import warnings
 from contextlib import contextmanager
@@ -4680,12 +4682,16 @@ def begin_list_box(
         )
 
     """
-    return _BeginEndListBox.__new__(
-        _BeginEndListBox,
-        cimgui.BeginListBox(
+    opened = cimgui.BeginListBox(
             _bytes(label),
             _cast_args_ImVec2(width, height)
         )
+    return SkipWith(
+        _BeginEndListBox.__new__(
+            _BeginEndListBox,
+            opened
+        ),
+        not opened
     )
 
 def listbox_header( # OBSOLETED in 1.81 (from February 2021)
@@ -4929,9 +4935,13 @@ def begin_main_menu_bar():
     .. wraps::
         bool BeginMainMenuBar()
     """
-    return _BeginEndMainMenuBar.__new__(
-        _BeginEndMainMenuBar,
-        cimgui.BeginMainMenuBar()
+    opened = cimgui.BeginMainMenuBar()
+    return SkipWith(
+        _BeginEndMainMenuBar.__new__(
+            _BeginEndMainMenuBar,
+            opened
+        ),
+        not opened
     )
 
 
@@ -5037,9 +5047,13 @@ def begin_menu_bar():
     .. wraps::
         bool BeginMenuBar()
     """
-    return _BeginEndMenuBar.__new__(
-        _BeginEndMenuBar,
-        cimgui.BeginMenuBar()
+    opened = cimgui.BeginMenuBar()
+    return SkipWith(
+        _BeginEndMenuBar.__new__(
+            _BeginEndMenuBar,
+            opened
+        ),
+        not opened
     )
 
 
@@ -5121,9 +5135,13 @@ def begin_menu(str label, enabled=True):
             bool enabled
         )
     """
-    return _BeginEndMenu.__new__(
-        _BeginEndMenu,
-        cimgui.BeginMenu(_bytes(label), enabled)
+    opened = cimgui.BeginMenu(_bytes(label), enabled)
+    return SkipWith(
+        _BeginEndMenu.__new__(
+            _BeginEndMenu,
+            opened
+        ),
+        not opened
     )
 
 
@@ -5349,9 +5367,13 @@ def begin_popup(str label, cimgui.ImGuiWindowFlags flags=0):
             ImGuiWindowFlags flags = 0
         )
     """
-    return _BeginEndPopup.__new__(
-        _BeginEndPopup,
-        cimgui.BeginPopup(_bytes(label), flags)
+    opened = cimgui.BeginPopup(_bytes(label), flags)
+    return SkipWith(
+        _BeginEndPopup.__new__(
+            _BeginEndPopup,
+            opened
+        ),
+        not opened
     )
 
 
@@ -5475,14 +5497,18 @@ def begin_popup_modal(str title, visible=None, cimgui.ImGuiWindowFlags flags=0):
     """
     cdef cimgui.bool inout_visible = visible
 
-    return _BeginEndPopupModal.__new__(
-        _BeginEndPopupModal,
-        cimgui.BeginPopupModal(
+    opened = cimgui.BeginPopupModal(
             _bytes(title),
             &inout_visible if visible is not None else NULL,
             flags
+    )
+    return SkipWith(
+        _BeginEndPopupModal.__new__(
+            _BeginEndPopupModal,
+            opened,
+            inout_visible
         ),
-        inout_visible
+        not opened
     )
 
 
@@ -5730,15 +5756,19 @@ def begin_table(
             float inner_width = 0.0f
         )
     """
-    return _BeginEndTable.__new__(
-        _BeginEndTable,
-        cimgui.BeginTable(
+    opened = cimgui.BeginTable(
             _bytes(label),
             column,
             flags,
             _cast_args_ImVec2(outer_size_width, outer_size_height),
             inner_width
         )
+    return SkipWith(
+        _BeginEndTable.__new__(
+            _BeginEndTable,
+            opened
+        ),
+        not opened
     )
 
 def end_table():
@@ -10885,9 +10915,13 @@ def begin_tab_bar(str identifier, cimgui.ImGuiTabBarFlags flags = 0):
         bool BeginTabBar(const char* str_id, ImGuiTabBarFlags flags = 0)
 
     """
-    return _BeginEndTabBar.__new__(
-        _BeginEndTabBar,
-        cimgui.BeginTabBar(_bytes(identifier), flags)
+    opened = cimgui.BeginTabBar(_bytes(identifier), flags)
+    return SkipWith(
+        _BeginEndTabBar.__new__(
+            _BeginEndTabBar,
+            opened
+        ),
+        not opened
     )
 
 def end_tab_bar():
@@ -11020,13 +11054,17 @@ def begin_tab_item(str label, opened = None, cimgui.ImGuiTabItemFlags flags = 0)
         )
     """
     cdef cimgui.bool inout_opened = opened
-    return _BeginEndTabItem.__new__(
-        _BeginEndTabItem,
-        cimgui.BeginTabItem(
+    selected = cimgui.BeginTabItem(
             _bytes(label),
             &inout_opened if opened is not None else NULL, flags
+    )
+    return SkipWith(
+        _BeginEndTabItem.__new__(
+            _BeginEndTabItem,
+            selected,
+            inout_opened
         ),
-        inout_opened
+        not selected
     )
 
 def end_tab_item():
@@ -11202,9 +11240,13 @@ def begin_drag_drop_source(cimgui.ImGuiDragDropFlags flags=0):
     .. wraps::
         bool BeginDragDropSource(ImGuiDragDropFlags flags = 0)
     """
-    return _BeginEndDragDropSource.__new__(
-        _BeginEndDragDropSource,
-        cimgui.BeginDragDropSource(flags)
+    dragging = cimgui.BeginDragDropSource(flags)
+    return SkipWith(
+        _BeginEndDragDropSource.__new__(
+            _BeginEndDragDropSource,
+            dragging
+        ),
+        not dragging
     )
 
 
@@ -11299,9 +11341,13 @@ def begin_drag_drop_target():
     .. wraps::
         bool BeginDragDropTarget()
     """
-    return _BeginEndDragDropTarget.__new__(
-        _BeginEndDragDropTarget,
-        cimgui.BeginDragDropTarget()
+    hovered = cimgui.BeginDragDropTarget()
+    return SkipWith(
+        _BeginEndDragDropTarget.__new__(
+            _BeginEndDragDropTarget,
+            hovered
+        ),
+        not hovered
     )
 
 
