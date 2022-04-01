@@ -12,11 +12,7 @@ import cython
 from cython.view cimport array as cvarray
 from cython.operator cimport dereference as deref
 
-from imgui._skipwith import (
-    skip_with_init,
-    skip_with_cleanup,
-    SkipWithStatement
-)
+include "imgui/_skipwith.pyx"
 
 from collections import namedtuple
 import warnings
@@ -4614,15 +4610,15 @@ cdef class _BeginEndListBox(object):
 
     def __enter__(self):
         if not self.opened:
-            skip_with_init()
+            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndListBox()
         else:
-            skip_with_cleanup()
-            return exc_type is SkipWithStatement
+            _skip_with_cleanup()
+            return exc_type is _SkipWithStatement
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -4870,15 +4866,15 @@ cdef class _BeginEndMainMenuBar(object):
 
     def __enter__(self):
         if not self.opened:
-            skip_with_init()
+            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndMainMenuBar()
         else:
-            skip_with_cleanup()
-            return exc_type is SkipWithStatement
+            _skip_with_cleanup()
+            return exc_type is _SkipWithStatement
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -4985,15 +4981,15 @@ cdef class _BeginEndMenuBar(object):
 
     def __enter__(self):
         if not self.opened:
-            skip_with_init()
+            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndMenuBar()
         else:
-            skip_with_cleanup()
-            return exc_type is SkipWithStatement
+            _skip_with_cleanup()
+            return exc_type is _SkipWithStatement
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -5098,15 +5094,15 @@ cdef class _BeginEndMenu(object):
 
     def __enter__(self):
         if not self.opened:
-            skip_with_init()
+            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndMenu()
         else:
-            skip_with_cleanup()
-            return exc_type is SkipWithStatement
+            _skip_with_cleanup()
+            return exc_type is _SkipWithStatement
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -5294,15 +5290,15 @@ cdef class _BeginEndPopup(object):
 
     def __enter__(self):
         if not self.opened:
-            skip_with_init()
+            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndPopup()
         else:
-            skip_with_cleanup()
-            return exc_type is SkipWithStatement
+            _skip_with_cleanup()
+            return exc_type is _SkipWithStatement
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -5410,15 +5406,15 @@ cdef class _BeginEndPopupModal(object):
 
     def __enter__(self):
         if not self.opened:
-            skip_with_init()
+            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndPopup()
         else:
-            skip_with_cleanup()
-            return exc_type is SkipWithStatement
+            _skip_with_cleanup()
+            return exc_type is _SkipWithStatement
 
     def __getitem__(self, item):
         """For legacy support, returns ``(opened, visible)[item]``."""
@@ -5722,15 +5718,15 @@ cdef class _BeginEndTable(object):
 
     def __enter__(self):
         if not self.opened:
-            skip_with_init()
+            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndTable()
         else:
-            skip_with_cleanup()
-            return exc_type is SkipWithStatement
+            _skip_with_cleanup()
+            return exc_type is _SkipWithStatement
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -10889,15 +10885,15 @@ cdef class _BeginEndTabBar(object):
 
     def __enter__(self):
         if not self.opened:
-            skip_with_init()
+            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndTabBar()
         else:
-            skip_with_cleanup()
-            return exc_type is SkipWithStatement
+            _skip_with_cleanup()
+            return exc_type is _SkipWithStatement
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -10968,15 +10964,15 @@ cdef class _BeginEndTabItem(object):
 
     def __enter__(self):
         if not self.selected:
-            skip_with_init()
+            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.selected:
             cimgui.EndTabItem()
         else:
-            skip_with_cleanup()
-            return exc_type is SkipWithStatement
+            _skip_with_cleanup()
+            return exc_type is _SkipWithStatement
 
     def __getitem__(self, item):
         """For legacy support, returns ``(selected, opened)[item]``."""
@@ -11177,15 +11173,15 @@ cdef class _BeginEndDragDropSource(object):
 
     def __enter__(self):
         if not self.dragging:
-            skip_with_init()
+            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.dragging:
             cimgui.EndDragDropSource()
         else:
-            skip_with_cleanup()
-            return exc_type is SkipWithStatement
+            _skip_with_cleanup()
+            return exc_type is _SkipWithStatement
 
     def __bool__(self):
         """For legacy support, returns ``dragging``."""
@@ -11318,15 +11314,15 @@ cdef class _BeginEndDragDropTarget(object):
 
     def __enter__(self):
         if not self.hovered:
-            skip_with_init()
+            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.hovered:
             cimgui.EndDragDropTarget()
         else:
-            skip_with_cleanup()
-            return exc_type is SkipWithStatement
+            _skip_with_cleanup()
+            return exc_type is _SkipWithStatement
 
     def __bool__(self):
         """For legacy support, returns ``hovered``."""
