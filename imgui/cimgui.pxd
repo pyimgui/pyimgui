@@ -1139,7 +1139,6 @@ cdef extern from "imgui.h" namespace "ImGui":
     # Content region
     ImVec2 GetContentRegionAvail() except +  # ✓
     ImVec2 GetContentRegionMax() except +  # ✓
-    float GetContentRegionAvailWidth() except +  # ✓ # OBSOLETED in 1.70 (from May 2019)
     ImVec2 GetWindowContentRegionMin() except +  # ✓
     ImVec2 GetWindowContentRegionMax() except +  # ✓
     float GetWindowContentRegionWidth() except +  # ✓

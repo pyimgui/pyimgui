@@ -187,7 +187,8 @@ COLOR_EDIT_PICKER_HUE_WHEEL = enums.ImGuiColorEditFlags_PickerHueWheel
 COLOR_EDIT_INPUT_RGB = enums.ImGuiColorEditFlags_InputRGB        
 COLOR_EDIT_INPUT_HSV = enums.ImGuiColorEditFlags_InputHSV        
 
-COLOR_EDIT_DEFAULT_OPTIONS = enums.ImGuiColorEditFlags__OptionsDefault
+COLOR_EDIT_DEFAULT_OPTIONS = enums.ImGuiColorEditFlags_DefaultOptions_
+
 
 # ==== TreeNode flags enum redefines ====
 TREE_NODE_NONE = enums.ImGuiTreeNodeFlags_None
@@ -3607,19 +3608,6 @@ def get_content_region_available():
         ImVec2 GetContentRegionMax()
     """
     return _cast_ImVec2_tuple(cimgui.GetContentRegionAvail())
-
-
-# OBSOLETED in 1.70 (from May 2019)
-def get_content_region_available_width():
-    """Get available content region width.
-
-    Returns:
-        float: available content region width.
-
-    .. wraps::
-        float GetContentRegionAvailWidth()
-    """
-    return cimgui.GetContentRegionAvailWidth()
 
 
 def get_window_content_region_min():

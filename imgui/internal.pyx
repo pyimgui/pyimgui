@@ -146,7 +146,7 @@ NAV_MOVE_WRAP_X = enums_internal.ImGuiNavMoveFlags_WrapX
 NAV_MOVE_WRAP_Y = enums_internal.ImGuiNavMoveFlags_WrapY
 NAV_MOVE_ALLOW_CURRENT_NAV_ID = enums_internal.ImGuiNavMoveFlags_AllowCurrentNavId
 NAV_MOVE_ALSO_SCORE_VISIBLE_SET = enums_internal.ImGuiNavMoveFlags_AlsoScoreVisibleSet
-NAV_MOVE_SCROLL_TO_EDGE = enums_internal.ImGuiNavMoveFlags_ScrollToEdge
+NAV_MOVE_SCROLL_TO_EDGE_Y = enums_internal.ImGuiNavMoveFlags_ScrollToEdgeY
 
 # Nav Layer
 NAV_LAYER_MAIN = enums_internal.ImGuiNavLayer_Main

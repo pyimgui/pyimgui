@@ -134,8 +134,8 @@ cdef extern from "imgui_internal.h":
         ImGuiNavMoveFlags_WrapY                 # This is not super useful for provided for completeness
         ImGuiNavMoveFlags_AllowCurrentNavId     # Allow scoring and considering the current NavId as a move target candidate. This is used when the move source is offset (e.g. pressing PageDown actually needs to send a Up move request, if we are pressing PageDown from the bottom-most item we need to stay in place)
         ImGuiNavMoveFlags_AlsoScoreVisibleSet   # Store alternate result in NavMoveResultLocalVisibleSet that only comprise elements that are already fully visible.
-        ImGuiNavMoveFlags_ScrollToEdge
-    
+        ImGuiNavMoveFlags_ScrollToEdgeY
+
     ctypedef enum ImGuiNavLayer:
         ImGuiNavLayer_Main  # Main scrolling layer
         ImGuiNavLayer_Menu  # Menu layer (access with Alt/ImGuiNavInput_Menu)

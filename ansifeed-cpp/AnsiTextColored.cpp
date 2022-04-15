@@ -515,7 +515,7 @@ namespace ImGui
                 if (line < text_end) {
                     ImRect line_rect(pos, pos + ImVec2(FLT_MAX, line_height));
                     while (line < text_end) {
-                        if (IsClippedEx(line_rect, 0, false)) // for future: if (IsClippedEx(line_rect, 0))
+                        if (IsClippedEx(line_rect, 0))
                             break;
 
                         const char* line_end = (const char*)memchr(line, '\n', text_end - line);
