@@ -1,6 +1,7 @@
 """Note: This tests are potential crashers (may result in segfaults)"""
 import pytest
 import imgui
+import dummy_glfw_init
 
 @pytest.fixture
 def context():
@@ -17,6 +18,7 @@ def io():
     io.fonts.get_tex_data_as_rgba32()
     io.fonts.add_font_default()
     io.fonts.texture_id = 42  # set any texture ID to avoid segfaults
+    dummy_glfw_init.create_dummy_glfw_renderer()
 
     return io
 

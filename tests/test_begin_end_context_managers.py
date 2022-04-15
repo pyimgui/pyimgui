@@ -4,6 +4,7 @@ import sys
 import pytest
 import imgui
 from imgui import ImGuiError
+import dummy_glfw_init
 
 
 class _TestException(Exception):
@@ -29,6 +30,7 @@ def context():
 
 @pytest.fixture
 def frame(context):
+    dummy_glfw_init.create_dummy_glfw_renderer()
     imgui.new_frame()
     yield
     try:
