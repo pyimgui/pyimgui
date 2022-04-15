@@ -28,6 +28,7 @@ def fb_to_window_factor(window):
 
 
 def main():
+    imgui.create_context()
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
     font_scaling_factor = fb_to_window_factor(window)
@@ -43,14 +44,17 @@ def main():
     io.font_global_scale = 1. / font_scaling_factor
 
     # dictionary of font objects from our font directory
+    null_font_config = None
     fonts = {
         os.path.split(font_path)[-1]: io.fonts.add_font_from_file_ttf(
             font_path,
             FONT_SIZE_IN_PIXELS * font_scaling_factor,
+            null_font_config,
             io.fonts.get_glyph_ranges_latin()
         )
         for font_path in FONTS_DIR
     }
+
     secondary_window_main_font = random.choice(list(fonts.values()))
 
     impl.refresh_font_texture()
