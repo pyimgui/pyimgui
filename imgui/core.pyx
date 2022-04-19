@@ -5635,7 +5635,7 @@ def is_popup_open( str label,  cimgui.ImGuiPopupFlags flags = 0):
     .. wraps::
         bool IsPopupOpen(const char* str_id, ImGuiPopupFlags flags = 0)
     """
-    return cimgui.IsPopupOpen(_bytes(str), flags)
+    return cimgui.IsPopupOpen(_bytes(label), flags)
 
 def end_popup():
     """End a popup window.
