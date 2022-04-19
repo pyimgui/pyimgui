@@ -5803,7 +5803,7 @@ def table_setup_column(
         init_width_or_weight,
         user_id)
 
-def table_setup_scroll_freez(int cols, int rows):
+def table_setup_scroll_freeze(int cols, int rows):
     """
 
     .. wraps::
