@@ -3,6 +3,7 @@
 [![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=latest)](https://pyimgui.readthedocs.io/en/latest/?badge=latest)
 [![Build status](https://ci.appveyor.com/api/projects/status/mr97t941p6k4c261/branch/master?svg=true)](https://ci.appveyor.com/project/KinoxKlark/pyimgui/branch/master)
 
+> :pushpin: Note: Current release of pyimgui, 1.4.1, is based on this `master` branch and uses an old version of DearImGui which does not have the most recent features and fixes. We are currently working on a major update of the library which aims at matching DearImGui 1.82 and will come as pyimgui 2.0. This `master` branch is thus outdated and if you wish to work with new features, we invite you to consider manually installing from `dev/version-2.0` branch until the official release. Despite the fact that this is a development branch, it is stable enough to be used in most cases. Any feedback is welcome! You will also find a `docking` branch aiming at implementing docking functionalities, this is however a work in progress and most functionalities are still missing.   
 
 # pyimgui
 
