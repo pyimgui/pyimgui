@@ -28,6 +28,7 @@ def fb_to_window_factor(window):
 
 
 def main():
+    imgui.create_context()
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
     font_scaling_factor = fb_to_window_factor(window)
