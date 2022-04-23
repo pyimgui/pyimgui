@@ -1137,6 +1137,62 @@ cdef class _DrawList(object):
             col
         )
 
+    def add_image_rounded(self,
+        texture_id,
+        tuple a,
+        tuple b,
+        tuple uv_a=(0,0),
+        tuple uv_b=(1,1),
+        cimgui.ImU32 col=0xffffffff,
+        float rounding = 0.0,
+        cimgui.ImDrawFlags flags = 0):
+        """Add rounded image to the draw list. Aspect ratio is not preserved.
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Image example")
+            texture_id = imgui.get_io().fonts.texture_id
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_image_rounded(texture_id, (20, 35), (180, 80), col=imgui.get_color_u32_rgba(0.5,0.5,1,1), rounding=10)
+            imgui.end()
+
+        Args:
+            texture_id (object): ID of the texture to draw
+            a (tuple): top-left image corner coordinates,
+            b (tuple): bottom-right image corner coordinates,
+            uv_a (tuple): UV coordinates of the top-left corner, defaults to (0, 0)
+            uv_b (tuple): UV coordinates of the bottom-right corner, defaults to (1, 1)
+            col (ImU32): tint color, defaults to 0xffffffff (no tint)
+            rounding (float): degree of rounding, defaults to 0.0
+            flags (ImDrawFlags): draw flags, defaults to 0
+
+        .. wraps::
+            void ImDrawList::AddImageRounded(
+                ImTextureID user_texture_id,
+                const ImVec2& a,
+                const ImVec2& b,
+                const ImVec2& uv_a = ImVec2(0,0),
+                const ImVec2& uv_b = ImVec2(1,1),
+                ImU32 col = 0xFFFFFFFF,
+                float rounding = 0.0f,
+                ImDrawFlags flags = 0
+            )
+        """
+        get_current_context()._keepalive_cache.append(texture_id)
+        self._ptr.AddImageRounded(
+            <void*>texture_id,
+            _cast_tuple_ImVec2(a),
+            _cast_tuple_ImVec2(b),
+            _cast_tuple_ImVec2(uv_a),
+            _cast_tuple_ImVec2(uv_b),
+            col,
+            rounding,
+            flags
+        )
+
     def add_polyline(
             self,
             list points,
