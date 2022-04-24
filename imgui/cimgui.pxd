@@ -532,7 +532,7 @@ cdef extern from "imgui.h":
             ImU32 col               # = 0xFFFFFFFF
         ) except +
         
-        void AddImageRounded( # ✗
+        void AddImageRounded( # ✓
             ImTextureID user_texture_id, 
             const ImVec2& p_min, 
             const ImVec2& p_max, 
