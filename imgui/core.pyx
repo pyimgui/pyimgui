@@ -2499,6 +2499,14 @@ cdef class _FontAtlas(object):
     def texture_height(self):
         return <int>self._ptr.TexHeight
 
+    @property
+    def texture_desired_width(self):
+        return <int>self._ptr.TexDesiredWidth
+
+    @texture_desired_width.setter
+    def texture_desired_width(self, int value):
+        self._ptr.TexDesiredWidth = value
+
 
     @texture_id.setter
     def texture_id(self, value):

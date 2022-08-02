@@ -755,7 +755,7 @@ cdef extern from "imgui.h":
     ctypedef struct ImFontAtlas:  # ✓ 
         ImFontAtlasFlags    Flags # ✗
         void*               TexID  # ✓
-        int                 TexDesiredWidth # ✗
+        int                 TexDesiredWidth # ✓
         int                 TexGlyphPadding # ✗
         bool                Locked # ✗
         
