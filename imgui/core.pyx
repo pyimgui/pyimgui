@@ -9446,7 +9446,7 @@ def is_item_deactivated():
     .. wraps:
         bool IsItemDeactivated()
     """
-    return cimgui.IsItemDeactivated
+    return cimgui.IsItemDeactivated()
 
 def is_item_deactivated_after_edit():
     """Was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved).
