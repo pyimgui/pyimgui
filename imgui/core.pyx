@@ -2523,21 +2523,33 @@ cdef class _IO(object):
 
     @property
     def log_file_name(self):
-        return self._ptr.LogFilename
+        return _from_bytes(self._ptr.LogFilename)
 
     @log_file_name.setter
-    def log_file_name(self, char* value):
-        self._keep_logfile_alive = value
-        self._ptr.LogFilename = value
+    def log_file_name(self, value):
+        assert (value is None or isinstance(value, str) or isinstance(value, bytes)), "`log_file_name` must be a string or None"
+        value_bytes = None
+        if value is None: value_bytes = b''
+        elif isinstance(value, str): value_bytes = _bytes(value)
+        else: value_bytes = value
+
+        self._keep_logfile_alive = value_bytes
+        self._ptr.LogFilename = value_bytes
 
     @property
     def ini_file_name(self):
-        return self._ptr.IniFilename
+        return _from_bytes(self._ptr.IniFilename)
 
     @ini_file_name.setter
-    def ini_file_name(self, char* value):
-        self._keep_ini_alive = value
-        self._ptr.IniFilename = value
+    def ini_file_name(self, value):
+        assert (value is None or isinstance(value, str) or isinstance(value, bytes)), "`ini_file_name` must be a string or None"
+        value_bytes = None
+        if value is None: value_bytes = b''
+        elif isinstance(value, str): value_bytes = _bytes(value)
+        else: value_bytes = value
+
+        self._keep_ini_alive = value_bytes
+        self._ptr.IniFilename = value_bytes
 
     @property
     def mouse_double_click_time(self):
