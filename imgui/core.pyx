@@ -2903,8 +2903,6 @@ cdef class _callback_user_info(object):
     
     cdef object callback_fn
     cdef user_data
-    cdef char* text_input_buffer
-    cdef int text_input_buffer_size
 
     def __init__(self):
         pass
@@ -3040,7 +3038,20 @@ cdef class _ImGuiInputTextCallbackData(object):
     def buffer(self):
         self._require_pointer()
         return _from_bytes(self._ptr.Buf)
-        
+    
+    @buffer.setter
+    def buffer(self, str buffer):
+        self._require_pointer()
+        _buffer = _bytes(buffer)
+        _buffer_length = len(_buffer)
+        if _buffer_length < self._ptr.BufSize:
+            # Note: When copying several characters at once, there is this
+            #       one frame where _ptr.BufSize is not yet updated (bug?).
+            #       thus we skip it here.
+            strncpy(self._ptr.Buf, _buffer, _buffer_length)
+            self._ptr.BufTextLen = _buffer_length
+            self._ptr.BufDirty = True
+
     @property
     def buffer_text_length(self):
         self._require_pointer()
