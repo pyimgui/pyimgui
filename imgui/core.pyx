@@ -20,7 +20,7 @@ try:
 except ImportError:
     from itertools import zip_longest as izip_longest
 
-from libc.stdlib cimport malloc, free
+from libc.stdlib cimport malloc, realloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
 from libc.string cimport strncpy
@@ -2979,9 +2979,13 @@ cdef class _callback_user_info(object):
     
     cdef object callback_fn
     cdef user_data
-    
+
     def __init__(self):
         pass
+    
+    def __cinit__(self):
+        text_input_buffer = NULL
+        text_input_buffer_size = 0
     
     def populate(self, callback_fn, user_data):
         if callable(callback_fn):
@@ -2990,11 +2994,67 @@ cdef class _callback_user_info(object):
         else:
             raise ValueError("callback_fn is not a callable: %s" % str(callback_fn))
     
+    cdef set_text_input_buffer(self, char* text_input_buffer, int text_input_buffer_size):
+        self.text_input_buffer = text_input_buffer
+        self.text_input_buffer_size = text_input_buffer_size
+
+cdef class _InputTextSharedBuffer(object):
+
+    cdef char* buffer
+    cdef int size
+    cdef int capacity
+
+    def __cinit__(self):
+        self.buffer = NULL
+        self.size = 0
+        self.capacity = 0
+    
+    cdef reserve_memory(self, int buffer_size):
+        if self.buffer is NULL:
+            self.buffer = <char*>malloc(buffer_size*sizeof(char))
+            self.size = buffer_size
+            self.capacity = buffer_size
+        elif buffer_size > self.capacity:
+            while self.capacity < buffer_size:
+                self.capacity = self.capacity * 2
+            self.buffer = <char*>realloc(self.buffer, self.capacity*sizeof(char))
+            self.size = buffer_size
+        else:
+            self.size = buffer_size
+    
+    cdef free_memory(self):
+        if self.buffer != NULL:
+            free(self.buffer)
+            self.buffer = NULL
+            self.size = 0
+            self.capacity = 0
+
+    def __dealloc__(self):
+        self.free_memory()
+
+cdef _InputTextSharedBuffer _input_text_shared_buffer = _InputTextSharedBuffer() 
+    
 cdef int _ImGuiInputTextCallback(cimgui.ImGuiInputTextCallbackData* data):
     cdef _ImGuiInputTextCallbackData callback_data = _ImGuiInputTextCallbackData.from_ptr(data)
     callback_data._require_pointer()
+    
+    if data.EventFlag == enums.ImGuiInputTextFlags_CallbackResize:
+        if data.BufSize != _input_text_shared_buffer.size:
+            _input_text_shared_buffer.reserve_memory(data.BufSize)
+            data.Buf = _input_text_shared_buffer.buffer
+
     cdef ret = (<_callback_user_info>callback_data._ptr.UserData).callback_fn(callback_data)
     return ret if ret is not None else 0
+
+cdef int _ImGuiInputTextOnlyResizeCallback(cimgui.ImGuiInputTextCallbackData* data):
+    # This callback is used internally if user asks for buffer resizing but does not provide any python callback function.
+
+    if data.EventFlag == enums.ImGuiInputTextFlags_CallbackResize:
+        if data.BufSize != _input_text_shared_buffer.size:
+            _input_text_shared_buffer.reserve_memory(data.BufSize)
+            data.Buf = _input_text_shared_buffer.buffer
+
+    return 0
     
 cdef class _ImGuiInputTextCallbackData(object):
     
@@ -3054,7 +3114,20 @@ cdef class _ImGuiInputTextCallbackData(object):
     def buffer(self):
         self._require_pointer()
         return _from_bytes(self._ptr.Buf)
-        
+    
+    @buffer.setter
+    def buffer(self, str buffer):
+        self._require_pointer()
+        _buffer = _bytes(buffer)
+        _buffer_length = len(_buffer)
+        if _buffer_length < self._ptr.BufSize:
+            # Note: When copying several characters at once, there is this
+            #       one frame where _ptr.BufSize is not yet updated (bug?).
+            #       thus we skip it here.
+            strncpy(self._ptr.Buf, _buffer, _buffer_length)
+            self._ptr.BufTextLen = _buffer_length
+            self._ptr.BufDirty = True
+
     @property
     def buffer_text_length(self):
         self._require_pointer()
@@ -7502,14 +7575,16 @@ def drag_scalar_N(
 def input_text(
     str label,
     str value,
-    int buffer_length,
+    int buffer_length = -1,
     cimgui.ImGuiInputTextFlags flags=0,
     object callback = None,
     user_data = None
 ):
     """Display text input widget.
 
-    ``buffer_length`` is the maximum allowed length of the content.
+    The ``buffer_length`` is the maximum allowed length of the content. It is the size in bytes, which may not correspond to the number of characters.
+    If set to -1, the internal buffer will have an adaptive size, which is equivalent to using the ``imgui.INPUT_TEXT_CALLBACK_RESIZE`` flag.
+    When a callback is provided, it is called after the internal buffer has been resized.
 
     .. visual-example::
         :auto_layout:
@@ -7518,11 +7593,7 @@ def input_text(
 
         text_val = 'Please, type the coefficient here.'
         imgui.begin("Example: text input")
-        changed, text_val = imgui.input_text(
-            'Amount:',
-            text_val,
-            256
-        )
+        changed, text_val = imgui.input_text('Coefficient:', text_val)
         imgui.text('You wrote:')
         imgui.same_line()
         imgui.text(text_val)
@@ -7554,6 +7625,14 @@ def input_text(
         )
     """
 
+    _value_bytes = _bytes(value)
+    cdef int _buffer_length = buffer_length+1
+    if buffer_length < 0:
+        _buffer_length = len(_value_bytes)+1
+        flags = flags | enums.ImGuiInputTextFlags_CallbackResize
+    _input_text_shared_buffer.reserve_memory(_buffer_length)
+    strncpy(_input_text_shared_buffer.buffer, _value_bytes, _buffer_length)
+
     cdef _callback_user_info _user_info = _callback_user_info()
     cdef cimgui.ImGuiInputTextCallback _callback = NULL
     cdef void *_user_data = NULL
@@ -7561,25 +7640,23 @@ def input_text(
         _callback = _ImGuiInputTextCallback
         _user_info.populate(callback, user_data)
         _user_data = <void*>_user_info
-
-    # todo: pymalloc
-    cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
-    # todo: take special care of terminating char
-    strncpy(inout_text, _bytes(value), buffer_length)
+    elif flags & enums.ImGuiInputTextFlags_CallbackResize:
+        _callback = _ImGuiInputTextOnlyResizeCallback
+        _user_data = <void*>_user_info
 
     changed = cimgui.InputText(
-        _bytes(label), inout_text, buffer_length, flags, _callback, _user_data
+        _bytes(label), _input_text_shared_buffer.buffer, _buffer_length, flags, _callback, _user_data
     )
-    output = _from_bytes(inout_text)
+    _buffer_length = _input_text_shared_buffer.size
+    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length-1])
 
-    free(inout_text)
     return changed, output
 
 
 def input_text_multiline(
     str label,
     str value,
-    int buffer_length,
+    int buffer_length = -1,
     float width=0,
     float height=0,
     cimgui.ImGuiInputTextFlags flags=0,
@@ -7588,7 +7665,9 @@ def input_text_multiline(
 ):
     """Display multiline text input widget.
 
-    ``buffer_length`` is the maximum allowed length of the content.
+    The ``buffer_length`` is the maximum allowed length of the content. It is the size in bytes, which may not correspond to the number of characters.
+    If set to -1, the internal buffer will have an adaptive size, which is equivalent to using the ``imgui.INPUT_TEXT_CALLBACK_RESIZE`` flag.
+    When a callback is provided, it is called after the internal buffer has been resized.
 
     .. visual-example::
         :auto_layout:
@@ -7636,6 +7715,14 @@ def input_text_multiline(
         )
     """
 
+    _value_bytes = _bytes(value)
+    cdef int _buffer_length = buffer_length+1
+    if buffer_length < 0:
+        _buffer_length = len(_value_bytes)+1
+        flags = flags | enums.ImGuiInputTextFlags_CallbackResize
+    _input_text_shared_buffer.reserve_memory(_buffer_length)
+    strncpy(_input_text_shared_buffer.buffer, _value_bytes, _buffer_length)
+
     cdef _callback_user_info _user_info = _callback_user_info()
     cdef cimgui.ImGuiInputTextCallback _callback = NULL
     cdef void *_user_data = NULL
@@ -7643,31 +7730,35 @@ def input_text_multiline(
         _callback = _ImGuiInputTextCallback
         _user_info.populate(callback, user_data)
         _user_data = <void*>_user_info
-
-    cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
-    # todo: take special care of terminating char
-    strncpy(inout_text, _bytes(value), buffer_length)
+    elif flags & enums.ImGuiInputTextFlags_CallbackResize:
+        _callback = _ImGuiInputTextOnlyResizeCallback
+        _user_data = <void*>_user_info
 
     changed = cimgui.InputTextMultiline(
-        _bytes(label), inout_text, buffer_length,
+        _bytes(label), _input_text_shared_buffer.buffer, _buffer_length,
         _cast_args_ImVec2(width, height), flags,
         _callback, _user_data
     )
-    output = _from_bytes(inout_text)
+    _buffer_length = _input_text_shared_buffer.size
+    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length-1])
 
-    free(inout_text)
     return changed, output
+
+    
 
 def input_text_with_hint(
     str label,
     str hint,
     str value,
-    int buffer_length,
+    int buffer_length = -1,
     cimgui.ImGuiInputTextFlags flags = 0,
     object callback = None,
     user_data = None):
     """Display a text box, if the text is empty a hint on how to fill the box is given.
-    ``buffer_length`` is the maximum allowed length of the content.
+
+    The ``buffer_length`` is the maximum allowed length of the content. It is the size in bytes, which may not correspond to the number of characters.
+    If set to -1, the internal buffer will have an adaptive size, which is equivalent to using the ``imgui.INPUT_TEXT_CALLBACK_RESIZE`` flag.
+    When a callback is provided, it is called after the internal buffer has been resized.
 
     Args:
         label (str): Widget label
@@ -7709,6 +7800,14 @@ def input_text_with_hint(
         )
     """
 
+    _value_bytes = _bytes(value)
+    cdef int _buffer_length = buffer_length+1
+    if buffer_length < 0:
+        _buffer_length = len(_value_bytes)+1
+        flags = flags | enums.ImGuiInputTextFlags_CallbackResize
+    _input_text_shared_buffer.reserve_memory(_buffer_length)
+    strncpy(_input_text_shared_buffer.buffer, _value_bytes, _buffer_length)
+
     cdef _callback_user_info _user_info = _callback_user_info()
     cdef cimgui.ImGuiInputTextCallback _callback = NULL
     cdef void *_user_data = NULL
@@ -7716,20 +7815,18 @@ def input_text_with_hint(
         _callback = _ImGuiInputTextCallback
         _user_info.populate(callback, user_data)
         _user_data = <void*>_user_info
-
-    cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
-    strncpy(inout_text, _bytes(value), buffer_length)
+    elif flags & enums.ImGuiInputTextFlags_CallbackResize:
+        _callback = _ImGuiInputTextOnlyResizeCallback
+        _user_data = <void*>_user_info
 
     changed = cimgui.InputTextWithHint(
-        _bytes(label), _bytes(hint), inout_text, buffer_length,
+        _bytes(label), _bytes(hint), _input_text_shared_buffer.buffer, _buffer_length,
         flags, _callback, _user_data
     )
+    _buffer_length = _input_text_shared_buffer.size
+    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length-1])
 
-    output = _from_bytes(inout_text)
-
-    free(inout_text)
     return changed, output
-
 
 def input_float(
     str label,
