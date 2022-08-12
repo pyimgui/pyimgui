@@ -23,7 +23,7 @@ except ImportError:
 from libc.stdlib cimport malloc, realloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
-from libc.string cimport strncpy
+from libc.string cimport strncpy, strlen
 from libc.float  cimport FLT_MIN
 from libc.float  cimport FLT_MAX
 from libcpp cimport bool
@@ -7647,8 +7647,8 @@ def input_text(
     changed = cimgui.InputText(
         _bytes(label), _input_text_shared_buffer.buffer, _buffer_length, flags, _callback, _user_data
     )
-    _buffer_length = _input_text_shared_buffer.size
-    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length-1])
+    _buffer_length = strlen(_input_text_shared_buffer.buffer)
+    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length])
 
     return changed, output
 
@@ -7739,8 +7739,8 @@ def input_text_multiline(
         _cast_args_ImVec2(width, height), flags,
         _callback, _user_data
     )
-    _buffer_length = _input_text_shared_buffer.size
-    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length-1])
+    _buffer_length = strlen(_input_text_shared_buffer.buffer)
+    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length])
 
     return changed, output
 
@@ -7823,8 +7823,8 @@ def input_text_with_hint(
         _bytes(label), _bytes(hint), _input_text_shared_buffer.buffer, _buffer_length,
         flags, _callback, _user_data
     )
-    _buffer_length = _input_text_shared_buffer.size
-    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length-1])
+    _buffer_length = strlen(_input_text_shared_buffer.buffer)
+    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length])
 
     return changed, output
 
