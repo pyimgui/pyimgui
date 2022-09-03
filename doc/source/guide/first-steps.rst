@@ -110,6 +110,10 @@ and libraries:
   windowing library through
   `glfw Python package <https://pypi.python.org/pypi/glfw>`_
   .
+* :mod:`imgui.integrations.cyglfw3` integrates **pyimgui** with GLFW_ OpenGL
+  windowing library through the Cython GLFW wrapper
+  `cyglfw3 Python package <https://pypi.python.org/pypi/cyglfw3>`_
+  .
 * :mod:`imgui.integrations.pygame` integrates **pyimgui** with pygame_ game
   engine.
 * :mod:`imgui.integrations.sdl2` integrates **pyimgui** with SDL2_ library

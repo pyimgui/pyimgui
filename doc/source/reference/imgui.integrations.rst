@@ -19,6 +19,13 @@ imgui.integrations.glfw module
     :undoc-members:
     :members:
 
+imgui.integrations.cyglfw3 module
+------------------------------
+
+.. automodule:: imgui.integrations.cyglfw3
+    :undoc-members:
+    :members:
+
 imgui.integrations.opengl module
 --------------------------------
 
