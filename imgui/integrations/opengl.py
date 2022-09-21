@@ -171,6 +171,7 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         gl.glDisable(gl.GL_DEPTH_TEST)
         gl.glEnable(gl.GL_SCISSOR_TEST)
         gl.glActiveTexture(gl.GL_TEXTURE0)
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
 
         gl.glViewport(0, 0, int(fb_width), int(fb_height))
 
