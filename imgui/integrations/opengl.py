@@ -281,6 +281,7 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
         gl.glDisable(gl.GL_CULL_FACE)
         gl.glDisable(gl.GL_DEPTH_TEST)
         gl.glEnable(gl.GL_SCISSOR_TEST)
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
 
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY)
