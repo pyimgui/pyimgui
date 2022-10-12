@@ -1,6 +1,8 @@
 Cython>=0.24,<0.30
 click
 wheel
+glfw
+PyOpenGL
 
 # note: Sphinx and docutils are for collecting tests
 # note: Newer Sphinx versions won't work on Python 2.7 and Python 3.3

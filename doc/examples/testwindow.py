@@ -2517,7 +2517,7 @@ def show_test_window():
             # imgui.drag_float("float##2", &f);
             # imgui.pop_item_width();
 
-            # imgui.text("PushItemWidth(GetContentRegionAvailWidth() * 0.5f)");
+            # imgui.text("PushItemWidth(ImGui::GetContentRegionAvail().x * 0.5f)");
             # imgui.same_line();
             # ShowHelpMarker("Half of available width.\n(~ right-cursor_pos)\n(works within a column set)");
             # imgui.push_item_width(imgui.get_content_region_avail_width() * 0.5f);

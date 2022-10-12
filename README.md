@@ -1,4 +1,4 @@
-[![completion](https://img.shields.io/badge/completion-66%25%20%28518%20of%20782%29-blue.svg)](https://github.com/pyimgui/pyimgui)
+[![completion](https://img.shields.io/badge/completion-66%25%20%28517%20of%20781%29-blue.svg)](https://github.com/pyimgui/pyimgui)
 [![Coverage Status](https://coveralls.io/repos/github/pyimgui/pyimgui/badge.svg?branch=docking)](https://coveralls.io/github/swistakm/pyimgui?branch=docking)
 [![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=latest)](https://pyimgui.readthedocs.io/en/latest/?badge=latest)
 [![Build status](https://ci.appveyor.com/api/projects/status/mr97t941p6k4c261/branch/docking?svg=true)](https://ci.appveyor.com/project/KinoxKlark/pyimgui/branch/docking)

@@ -56,6 +56,7 @@ else:  # OS X and Linux
     os_specific_flags = ['-includeconfig-cpp/py_imconfig.h']
     os_specific_macros = []
 
+common_flags = ['-std=c++11']
 
 if _CYTHONIZE_WITH_COVERAGE:
     compiler_directives = {
@@ -120,7 +121,7 @@ EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
 EXTENSIONS = [
     Extension(
         "imgui.core", extension_sources("imgui/core"),
-        extra_compile_args=os_specific_flags,
+        extra_compile_args=os_specific_flags + common_flags,
         define_macros=[
             # note: for raising custom exceptions directly in ImGui code
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
@@ -129,7 +130,7 @@ EXTENSIONS = [
     ),
     Extension(
         "imgui.internal", extension_sources("imgui/internal"),
-        extra_compile_args=os_specific_flags,
+        extra_compile_args=os_specific_flags + common_flags,
         define_macros=[
             # note: for raising custom exceptions directly in ImGui code
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
