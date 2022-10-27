@@ -4,7 +4,11 @@ import imgui
 
 @pytest.fixture
 def context():
-    return imgui.create_context()
+    ctx = imgui.get_current_context()
+    if ctx is not None:
+        imgui.destroy_context(ctx)
+    ctx = imgui.create_context()
+    return ctx
 
 @pytest.fixture
 def io():

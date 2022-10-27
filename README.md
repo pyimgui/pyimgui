@@ -86,7 +86,7 @@ commands:
 We have tried hard to make the process of bootstrapping this project as simple
 as possible.
 
-In order to build and install project locally ,ake sure you have created and
+In order to build and install project locally, make sure you have created and
 activated virtual environment using `virtualenv` or `python -m venv` (for newer
 Python releases). Then you can just run:
 

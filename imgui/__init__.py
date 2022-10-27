@@ -864,7 +864,7 @@ CONFIG_NO_MOUSE_CURSOR_CHANGE = core.CONFIG_NO_MOUSE_CURSOR_CHANGE
 #: Docking enable flags.
 CONFIG_DOCKING_ENABLE = core.CONFIG_DOCKING_ENABLE
 #: Viewport enable flags (require both ImGuiBackendFlags_PlatformHasViewports + ImGuiBackendFlags_RendererHasViewports set by the respective backends)
-CONFIG_VIEWEPORTS_ENABLE = core.CONFIG_VIEWEPORTS_ENABLE
+CONFIG_VIEWPORTS_ENABLE = core.CONFIG_VIEWPORTS_ENABLE
 #: [BETA: Don't use] FIXME-DPI: Reposition and resize imgui windows when the DpiScale of a viewport changed (mostly useful for the main viewport hosting other window). Note that resizing the main window itself is up to your application.
 CONFIG_DPI_ENABLE_SCALE_VIEWPORTS = core.CONFIG_DPI_ENABLE_SCALE_VIEWPORTS
 #: [BETA: Don't use] FIXME-DPI: Request bitmap-scaled fonts to match DpiScale. This is a very low-quality workaround. The correct way to handle DPI is _currently_ to replace the atlas and/or fonts in the Platform_OnChangedViewport callback, but this is all early work in progress.
