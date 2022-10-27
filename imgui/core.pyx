@@ -1932,6 +1932,10 @@ cdef class GuiStyle(object):
         """
         self._check_ptr()
         return self._colors
+    
+    def scale_all_sizes(self, float scale_factor):
+        self._require_pointer()
+        self._ptr.ScaleAllSizes(scale_factor)
 
 cdef class _ImGuiTableColumnSortSpecs(object):
     cdef cimgui.ImGuiTableColumnSortSpecs* _ptr
@@ -2116,7 +2120,26 @@ cdef class _ImGuiViewport(object):
         return instance
     
     @property
+    def id(self):
+        """Unique identifier for the viewport"""
+        self._require_pointer()
+        return self._ptr.ID
+
+    @property
+    def parent_viewport_id(self):
+        """(Advanced) 0: no parent. Instruct the platform backend to setup a parent/child relationship between platform windows."""
+        self._require_pointer()
+        return self._ptr.ParentViewportId
+    
+    @property
+    def dpi_scale(self):
+        """1.0f = 96 DPI = No extra scale."""
+        self._require_pointer()
+        return self._ptr.DpiScale
+
+    @property
     def flags(self):
+        """See ImGuiViewportFlags_"""
         self._require_pointer()
         return self._ptr.Flags
     
@@ -2143,7 +2166,37 @@ cdef class _ImGuiViewport(object):
         """Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)"""
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.WorkSize)
-        
+            
+    @property
+    def draw_data(self):
+        """The ImDrawData corresponding to this viewport. Valid after Render() and until the next call to NewFrame()."""
+        self._require_pointer()
+        return _DrawData.from_ptr(self._ptr.DrawData)
+    
+    @property
+    def pos(self):
+        """Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)"""
+        self._require_pointer()
+        return _cast_ImVec2_tuple(self._ptr.Pos)
+
+    @property
+    def platform_request_resize(self):
+        """Platform window requested resize (e.g. window was resized by the OS / host window manager, authoritative size will be OS window size)"""
+        self._require_pointer()
+        return self._ptr.PlatformRequestResize
+
+    @property
+    def platform_request_move(self):
+        """Platform window requested move (e.g. window was moved by the OS / host window manager, authoritative position will be OS window position) """
+        self._require_pointer()
+        return self._ptr.PlatformRequestMove
+
+    @property
+    def platform_request_close(self):
+        """Platform window requested closure (e.g. window was moved by the OS / host window manager, e.g. pressing ALT-F4) """
+        self._require_pointer()
+        return self._ptr.PlatformRequestClose
+
     def get_center(self):
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.GetCenter())
@@ -2151,6 +2204,86 @@ cdef class _ImGuiViewport(object):
     def get_work_center(self):
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.GetWorkCenter())
+
+
+cdef class ImGuiWindowClass(object):
+    """
+    // [ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.
+    // Important: the content of this class is still highly WIP and likely to change and be refactored
+    // before we stabilize Docking features. Please be mindful if using this.
+    // Provide hints:
+    // - To the platform backend via altered viewport flags (enable/disable OS decoration, OS task bar icons, etc.)
+    // - To the platform backend for OS level parent/child relationships of viewport.
+    // - To the docking system for various options and filtering.
+    """
+    
+    cdef cimgui.ImGuiWindowClass* _ptr
+
+    def __init__(self):
+        pass
+
+    def _require_pointer(self):
+        if self._ptr == NULL:
+            raise RuntimeError(
+                "%s improperly initialized" % self.__class__.__name__
+            )
+
+    @staticmethod
+    cdef from_ptr(cimgui.ImGuiWindowClass* ptr):
+        if ptr == NULL:
+            return None
+
+        instance = ImGuiWindowClass()
+        instance._ptr = ptr
+        return instance
+    
+    @property
+    def class_id(self):
+        self._require_pointer()
+        return self._ptr.ClassId
+
+    @property
+    def parent_viewport_id(self):
+        self._require_pointer()
+        return self._ptr.ParentViewportId
+    
+    @property
+    def viewport_flags_override_set(self):
+        self._require_pointer()
+        return self._ptr.ViewportFlagsOverrideSet
+
+    @property
+    def viewport_flags_override_clear(self):
+        self._require_pointer()
+        return self._ptr.ViewportFlagsOverrideClear
+
+    @property
+    def tab_item_flags_override_set(self):
+        self._require_pointer()
+        return self._ptr.TabItemFlagsOverrideSet
+    
+    @property
+    def docknode_flags_override_set(self):
+        self._require_pointer()
+        return self._ptr.DockNodeFlagsOverrideSet
+    
+    @property
+    def docking_always_tab_bar(self):
+        self._require_pointer()
+        return self._ptr.DockingAlwaysTabBar
+    
+    @property
+    def docking_allow_unclassed(self):
+        self._require_pointer()
+        return self._ptr.DockingAllowUnclassed
+    
+    """
+    error C7624 on MSVC 14.27.29110
+    def imgui_window_class(self):
+        self._require_pointer()
+        self._ptr.ImGuiWindowClass()
+    """
+
 
 cdef class _DrawData(object):
     cdef cimgui.ImDrawData* _ptr
@@ -2223,6 +2356,11 @@ cdef class _DrawData(object):
             # perf: short-wiring instead of using property
             for idx in xrange(self._ptr.CmdListsCount)
         ]
+    
+    @property
+    def owner_viewport(self):
+        self._require_pointer()
+        return _ImGuiViewport.from_ptr(self._ptr.OwnerViewport)
 
 
 cdef class _StaticGlyphRanges(object):
@@ -2510,7 +2648,7 @@ cdef class _IO(object):
             _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()] = {'_get_clipboard_text_fn': None,
                                                                     '_set_clipboard_text_fn': None}
 
-    # ... maping of input properties ...
+    # ... mapping of input properties ...
     @property
     def config_flags(self):
         return self._ptr.ConfigFlags
@@ -2928,7 +3066,44 @@ cdef class _IO(object):
     @property
     def mouse_delta(self):
         return _cast_ImVec2_tuple(self._ptr.MouseDelta)
-        
+    
+    @property
+    def config_docking_no_split(self):
+        return self._ptr.ConfigDockingNoSplit
+    
+    @property
+    def config_docking_with_shift(self):
+        return self._ptr.ConfigDockingWithShift
+    
+    @property
+    def config_docking_always_tab_bar(self):
+        return self._ptr.ConfigDockingAlwaysTabBar
+    
+    @property
+    def config_docking_transparent_payload(self):
+        return self._ptr.ConfigDockingTransparentPayload
+    
+    @property
+    def config_viewports_no_auto_merge(self):
+        return self._ptr.ConfigViewportsNoAutoMerge
+    
+    @property
+    def config_viewports_no_task_bar_icon(self):
+        return self._ptr.ConfigViewportsNoTaskBarIcon
+    
+    @property
+    def config_viewports_no_decoration(self):
+        return self._ptr.ConfigViewportsNoDecoration
+    
+    @property
+    def config_viewports_no_default_parent(self):
+        return self._ptr.ConfigViewportsNoDefaultParent
+    
+    @property
+    def mouse_hovered_viewport(self):
+        return self._ptr.MouseHoveredViewport
+
+    
 cdef class _callback_user_info(object):
     
     cdef object callback_fn
@@ -4030,6 +4205,13 @@ def get_window_position():
     """
     return _cast_ImVec2_tuple(cimgui.GetWindowPos())
 
+def get_window_dpi_scale():
+    """Get current window dpi scale.
+
+    .. wraps::
+        float GetWindowDpiScale()
+    """
+    return cimgui.GetWindowDpiScale()
 
 def get_window_size():
     """Get current window size.
@@ -4212,6 +4394,10 @@ def set_next_window_content_size(float width, float height):
         )
     """
     cimgui.SetNextWindowContentSize(_cast_args_ImVec2(width, height))
+
+def set_next_window_viewport(cimgui.ImGuiID viewport_id):
+    
+    cimgui.SetNextWindowViewport(viewport_id)
 
 def set_window_position(float x, float y, cimgui.ImGuiCond condition = ALWAYS):
     """Set the size of the current window
@@ -9540,6 +9726,17 @@ def get_main_viewport():
     """
     return _ImGuiViewport.from_ptr(cimgui.GetMainViewport())
 
+
+def get_window_viewport():
+    """ Get viewport currently associated to the current window.
+    Returns:
+        _ImGuiViewport: Viewport
+    
+    .. wraps::
+        ImGuiViewport* GetWindowViewport()
+    """
+    return _ImGuiViewport.from_ptr(cimgui.GetMainViewport())
+
 def is_window_hovered(
         cimgui.ImGuiHoveredFlags flags=0
     ):
@@ -11153,6 +11350,12 @@ def dockspace(cimgui.ImGuiID id, tuple size=(0, 0), cimgui.ImGuiDockNodeFlags fl
     """
     return cimgui.DockSpace(id, _cast_tuple_ImVec2(size), flags, NULL)
 
+def get_window_dock_id():
+    return cimgui.GetWindowDockID()
+
+def is_window_docked():
+    return cimgui.IsWindowDocked()
+
 cdef class _BeginEndDragDropSource(object):
     """
     Return value of :func:`begin_drag_drop_source` exposing ``dragging`` boolean attribute.
@@ -11351,6 +11554,55 @@ def begin_drag_drop_target():
     )
 
 
+cdef class _ImGuiPayload(object):
+    """
+    Data payload for Drag and Drop operations: AcceptDragDropPayload(), GetDragDropPayload()
+    """
+    
+    cdef const cimgui.ImGuiPayload* _ptr
+
+    def __init__(self):
+        pass
+
+    def _require_pointer(self):
+        if self._ptr == NULL:
+            raise RuntimeError(
+                "%s improperly initialized" % self.__class__.__name__
+            )
+
+    @staticmethod
+    cdef from_ptr(const cimgui.ImGuiPayload* ptr):
+        if ptr == NULL:
+            return None
+
+        instance = _ImGuiPayload()
+        instance._ptr = ptr
+        return instance
+    
+    @property
+    def data(self):
+        """ Data (copied and owned by dear imgui)"""
+        self._require_pointer()
+        return <bytes>(self._ptr.Data)
+    
+    @property
+    def data_size(self):
+        """Data size"""
+        self._require_pointer()
+        return self._ptr.DataSize
+    
+    def is_preview(self):
+        self._require_pointer()
+        return self.ptr_.IsPreview()
+    
+    def is_delivery(self):
+        self._require_pointer()
+        return self.ptr_.IsDelivery()
+    
+    def is_data_type(self, str type):
+        self._require_pointer()
+        return self.ptr_.IsDataType(type)
+
 def accept_drag_drop_payload(str type, cimgui.ImGuiDragDropFlags flags=0):
     """Get the drag and drop payload. Only call after :func:`begin_drag_drop_target`
     returns True.
@@ -11369,11 +11621,12 @@ def accept_drag_drop_payload(str type, cimgui.ImGuiDragDropFlags flags=0):
     .. wraps::
         const ImGuiPayload* AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags = 0)
     """
-    cdef const cimgui.ImGuiPayload* payload = cimgui.AcceptDragDropPayload(_bytes(type), flags)
-    if payload == NULL:
+    cdef payload = _ImGuiPayload.from_ptr(cimgui.AcceptDragDropPayload(_bytes(type), flags))
+    if payload is None:
         return None
-    cdef const char* data = <const char *>payload.Data
-    return <bytes>data[:payload.DataSize]
+
+    cdef const char* data = <const char *>payload.data
+    return <bytes>data[:payload.data_size]
 
 
 def end_drag_drop_target():
@@ -11399,9 +11652,10 @@ def get_drag_drop_payload():
     .. wraps::
         const ImGuiPayload* GetDragDropPayload()
     """
-    cdef const cimgui.ImGuiPayload* payload = cimgui.GetDragDropPayload()
-    if payload == NULL:
+    cdef payload = _ImGuiPayload.from_ptr(cimgui.GetDragDropPayload())
+    if payload is None:
         return None
+    
     cdef const char* data = <const char *>payload.Data
     return <bytes>data[:payload.DataSize]
 
@@ -11952,3 +12206,18 @@ def _py_vertex_buffer_vertex_size():
 
 def _py_index_buffer_index_size():
     return sizeof(cimgui.ImDrawIdx)
+
+def update_platform_windows():
+    return cimgui.UpdatePlatformWindows()
+
+def destroy_platform_windows():
+    return cimgui.DestroyPlatformWindows()
+
+cdef void render_platform_windows_default(void* platform_render_arg = NULL, void* renderer_render_arg = NULL):
+    cimgui.RenderPlatformWindowsDefault(platform_render_arg, renderer_render_arg)
+
+cdef find_viewport_by_platform_handle(void* platform_handle):
+    return _ImGuiViewport.from_ptr(cimgui.FindViewportByPlatformHandle(platform_handle))
+
+def find_viewport_by_id(cimgui.ImGuiID id):
+    return _ImGuiViewport.from_ptr(cimgui.FindViewportByID(id))
