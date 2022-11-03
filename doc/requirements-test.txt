@@ -8,7 +8,7 @@ wheel
 
 Sphinx==1.6.7; python_version < '3.7.0'
 # note: But older versions wont collect tests on Python 3.7
-Sphinx==5.3.0; python_version >= '3.7.0'
+Sphinx==1.8.1; python_version >= '3.7.0'
 #markupsafe==0.23; python_version >= '3.7.0'
 
 jija2==3.1.2
