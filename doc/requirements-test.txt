@@ -18,12 +18,6 @@ colorama<0.4; sys.platform == 'win32'
 docutils<0.13.1
 mock
 
-# note: we still build wheels for Python2.7. pytest 5.x dropped support for
-#       Python2.7 but API for discovering your own tests was relatively
-#       backwards-compatible. Unfortunately 6.x isn't backwards compatible so
-#       it's better set version constraint until we drop old Python versions
-#       rather then add some more compat shims
-# future: remove once we obsolete Python3.7
-pytest<6.0.0
+pytest==6.2.5
 
 coveralls
