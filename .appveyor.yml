@@ -328,17 +328,17 @@
 #      APPVEYOR_JOB_NAME: "python37-x64-macos-mojave-cp39"
 #
 
-image:
-  - Ubuntu
-  - Visual Studio 2015
-  - macos-catalina
-
 environment:
   matrix:
     - CIBW_BUILD: "cp39-*"
     - CIBW_BUILD: "cp38-*"
     - CIBW_BUILD: "cp37-*"
     - CIBW_BUILD: "cp36-*"
+
+image:
+  - Ubuntu
+  - Visual Studio 2015
+  - macos-catalina
 
 stack: python 3.7
 
