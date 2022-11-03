@@ -370,23 +370,3 @@ artifacts:
 
 matrix:
   fast_finish: true
-
-for:
-  - 
-    matrix:
-      only:
-        - image: Ubuntu
-    environement:
-      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-  - 
-    matrix:
-      only:
-        - image: Visual Studio 2015
-    environement:
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  - 
-    matrix:
-      only:
-        - image: macos-catalina
-    environement:
-      APPVEYOR_BUILD_WORKER_IMAGE: macos-catalina
