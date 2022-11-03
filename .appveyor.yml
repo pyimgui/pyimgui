@@ -286,59 +286,59 @@
 #  - path: dist\*
 #
 
-environment:
-  matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      CIBW_BUILD: "cp36-*"
-      APPVEYOR_JOB_NAME: "python37-x64-ubuntu-cp36"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      CIBW_BUILD: "cp37-*"
-      APPVEYOR_JOB_NAME: "python37-x64-ubuntu-cp37"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      CIBW_BUILD: "cp38-*"
-      APPVEYOR_JOB_NAME: "python37-x64-ubuntu-cp38"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      CIBW_BUILD: "cp39-*"
-      APPVEYOR_JOB_NAME: "python37-x64-ubuntu-cp39"
-
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      CIBW_BUILD: "cp36-*"
-      APPVEYOR_JOB_NAME: "python37-x64-vs2015-cp36"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      CIBW_BUILD: "cp37-*"
-      APPVEYOR_JOB_NAME: "python37-x64-vs2015-cp37"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      CIBW_BUILD: "cp38-*"
-      APPVEYOR_JOB_NAME: "python37-x64-vs2015-cp38"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      CIBW_BUILD: "cp39-*"
-      APPVEYOR_JOB_NAME: "python37-x64-vs2015-cp39"
-
-    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
-      CIBW_BUILD: "cp36-*"
-      APPVEYOR_JOB_NAME: "python37-x64-macos-mojave-cp36"
-    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
-      CIBW_BUILD: "cp37-*"
-      APPVEYOR_JOB_NAME: "python37-x64-macos-mojave-cp37"
-    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
-      CIBW_BUILD: "cp38-*"
-      APPVEYOR_JOB_NAME: "python37-x64-macos-mojave-cp38"
-    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
-      CIBW_BUILD: "cp39-*"
-      APPVEYOR_JOB_NAME: "python37-x64-macos-mojave-cp39"
-
-
-#image:
-#  - Ubuntu
-#  - Visual Studio 2015
-#  - macos-mojav
-#
 #environment:
 #  matrix:
-#    - CIBW_BUILD: "cp36-*"
-#    - CIBW_BUILD: "cp37-*"
-#    - CIBW_BUILD: "cp38-*"
-#    - CIBW_BUILD: "cp39-*"
+#    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+#      CIBW_BUILD: "cp36-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-ubuntu-cp36"
+#    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+#      CIBW_BUILD: "cp37-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-ubuntu-cp37"
+#    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+#      CIBW_BUILD: "cp38-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-ubuntu-cp38"
+#    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+#      CIBW_BUILD: "cp39-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-ubuntu-cp39"
+#
+#    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#      CIBW_BUILD: "cp36-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-vs2015-cp36"
+#    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#      CIBW_BUILD: "cp37-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-vs2015-cp37"
+#    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#      CIBW_BUILD: "cp38-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-vs2015-cp38"
+#    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#      CIBW_BUILD: "cp39-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-vs2015-cp39"
+#
+#    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+#      CIBW_BUILD: "cp36-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-macos-mojave-cp36"
+#    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+#      CIBW_BUILD: "cp37-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-macos-mojave-cp37"
+#    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+#      CIBW_BUILD: "cp38-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-macos-mojave-cp38"
+#    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+#      CIBW_BUILD: "cp39-*"
+#      APPVEYOR_JOB_NAME: "python37-x64-macos-mojave-cp39"
+#
+
+image:
+  - Ubuntu
+  - Visual Studio 2015
+  - macos-catalina
+
+environment:
+  matrix:
+    - CIBW_BUILD: "cp39-*"
+    - CIBW_BUILD: "cp38-*"
+    - CIBW_BUILD: "cp37-*"
+    - CIBW_BUILD: "cp36-*"
 
 stack: python 3.7
 
@@ -370,3 +370,23 @@ artifacts:
 
 matrix:
   fast_finish: true
+
+for:
+  - 
+    matrix:
+      only:
+        - image: Ubuntu
+    environement:
+      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+  - 
+    matrix:
+      only:
+        - image: Visual Studio 2015
+    environement:
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - 
+    matrix:
+      only:
+        - image: macos-catalina
+    environement:
+      APPVEYOR_BUILD_WORKER_IMAGE: macos-catalina
