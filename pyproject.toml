@@ -1,7 +1,5 @@
 [tool.cibuildwheel]
 
-skip = "cp310-*"
-
 build-verbosity = 1
 
 test-command = [
