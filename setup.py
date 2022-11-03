@@ -48,6 +48,7 @@ if sys.platform in ('cygwin', 'win32') and not sysconfig.get_platform().startswi
     # note: `/FI` means forced include in VC++/VC
     # note: may be obsoleted in future if ImGui gets patched
     os_specific_flags = ['/FIpy_imconfig.h']
+    os_specific_libraries = []
     # placeholder for future
     os_specific_macros = []
 else:  # OS X, Linux and Windows under MinGW (uses gcc)
@@ -55,6 +56,10 @@ else:  # OS X, Linux and Windows under MinGW (uses gcc)
     # note: may be obsoleted in future if ImGui gets patched
     # placeholder for future
     os_specific_flags = ['-includeconfig-cpp/py_imconfig.h']
+    if sysconfig.get_platform().startswith('mingw'):
+        os_specific_libraries = ["imm32"]
+    else:
+        os_specific_libraries = []
     os_specific_macros = []
 
 
@@ -122,6 +127,7 @@ EXTENSIONS = [
     Extension(
         "imgui.core", extension_sources("imgui/core"),
         extra_compile_args=os_specific_flags,
+        libraries=os_specific_libraries,
         define_macros=[
             # note: for raising custom exceptions directly in ImGui code
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
@@ -131,6 +137,7 @@ EXTENSIONS = [
     Extension(
         "imgui.internal", extension_sources("imgui/internal"),
         extra_compile_args=os_specific_flags,
+        libraries=os_specific_libraries,
         define_macros=[
             # note: for raising custom exceptions directly in ImGui code
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
