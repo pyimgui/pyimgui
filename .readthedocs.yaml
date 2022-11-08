@@ -5,6 +5,11 @@
 # Required
 version: 2
 
+# Git submodules
+submodules:
+  include: all
+  recursive: true
+
 # Set the version of Python and other tools you might need
 build:
   os: ubuntu-20.04
