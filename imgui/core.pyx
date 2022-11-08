@@ -2250,7 +2250,6 @@ cdef class _DrawData(object):
             for idx in xrange(self._ptr.CmdListsCount)
         ]
 
-
 cdef class _StaticGlyphRanges(object):
     cdef const cimgui.ImWchar* ranges_ptr
 
@@ -11946,6 +11945,7 @@ def _ansifeed_text_ansi_colored(str text, float r, float g, float b, float a=1.)
 # === Extra utilities ====
 
 @contextmanager
+@cython.binding(True)
 def _py_font(_Font font):
     """Use specified font in given context.
 
@@ -11978,6 +11978,7 @@ def _py_font(_Font font):
 
 
 @contextmanager
+@cython.binding(True)
 def _py_styled(cimgui.ImGuiStyleVar variable, value):
     # note: we treat bool value as integer to guess if we are required to pop
     #       anything because IMGUI may simply skip pushing
@@ -11987,6 +11988,7 @@ def _py_styled(cimgui.ImGuiStyleVar variable, value):
 
 
 @contextmanager
+@cython.binding(True)
 def _py_colored(
     cimgui.ImGuiCol variable,
     float r,
@@ -12002,6 +12004,7 @@ def _py_colored(
 
 
 @contextmanager
+@cython.binding(True)
 def _py_istyled(*variables_and_values):
     # todo: rename to nstyled?
     count = 0
@@ -12030,6 +12033,7 @@ def _py_istyled(*variables_and_values):
 
 
 @contextmanager
+@cython.binding(True)
 def _py_scoped(str str_id):
     """Use scoped ID within a block of code.
 
