@@ -1,6 +1,6 @@
-[![completion](https://img.shields.io/badge/completion-70%25%20%28518%20of%20735%29-blue.svg)](https://github.com/pyimgui/pyimgui)
+[![completion](https://img.shields.io/badge/completion-70%25%20%28520%20of%20735%29-blue.svg)](https://github.com/pyimgui/pyimgui)
 [![Coverage Status](https://coveralls.io/repos/github/pyimgui/pyimgui/badge.svg?branch=master)](https://coveralls.io/github/swistakm/pyimgui?branch=master)
-[![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=latest)](https://pyimgui.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=dev-version-2.0)](https://pyimgui.readthedocs.io/en/latest/?badge=dev-version-2.0)
 [![Build status](https://ci.appveyor.com/api/projects/status/mr97t941p6k4c261/branch/dev/version-2.0?svg=true)](https://ci.appveyor.com/project/KinoxKlark/pyimgui/branch/dev/version-2.0)
 
 # pyimgui
@@ -54,14 +54,13 @@ Right now we are ready to shipping the built wheels for these three systems
 (even for Linux using `manylinux1` wheels). The build pipeline covers multiple
 Python versions:
 
-* py27
-* py33 (macOS wheel not available on PyPI)
-* py34
-* py35
 * py36
-* py37
-* py38
-* py39
+* py37, pp37
+* py38, pp38
+* py39, pp39
+
+__Note:__ We dropped support for py27, py33, py34, and py35 since release 2.0.
+Those were supported until release [1.4.0](https://github.com/pyimgui/pyimgui/releases/tag/1.4.0). Pypy is only supported since release 2.0.
 
 **pyimgui** provides documentation with multiple visual examples.
 Thanks to custom Sphinx extensions we are able to render GUI examples off
