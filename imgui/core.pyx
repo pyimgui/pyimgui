@@ -2250,7 +2250,6 @@ cdef class _DrawData(object):
             for idx in xrange(self._ptr.CmdListsCount)
         ]
 
-
 cdef class _StaticGlyphRanges(object):
     cdef const cimgui.ImWchar* ranges_ptr
 
@@ -3934,7 +3933,8 @@ def set_window_size_named(str label, float width, float height, cimgui.ImGuiCond
             const char* name,
             const ImVec2& size,
              ImGuiCond cond
-    )
+        )
+    
     """
     cimgui.SetWindowSize(
         _bytes(label),
@@ -4391,7 +4391,8 @@ def set_window_position_labeled(str label, float x, float y, cimgui.ImGuiCond co
             const char* name,
             const ImVec2& pos,
             ImGuiCond cond
-    )
+        )
+    
     """
     cimgui.SetWindowPos(
         _bytes(label),
@@ -4954,24 +4955,14 @@ def begin_tooltip():
                     imgui.text("This button has full window tooltip.")
                     texture_id = imgui.get_io().fonts.texture_id
                     imgui.image(texture_id, 512, 64, border_color=(1, 0, 0, 1))
-
-    Example::
-        imgui.begin("Example: tooltip")
-        imgui.button("Click me!")
-        if imgui.is_item_hovered():
-            imgui.begin_tooltip()
-            imgui.text("This button is clickable.")
-            imgui.text("This button has full window tooltip.")
-            texture_id = imgui.get_io().fonts.texture_id
-            imgui.image(texture_id, 512, 64, border_color=(1, 0, 0, 1))
-            imgui.end_tooltip()
-        imgui.end()
-
+    
+    .. wraps::
+        void BeginTooltip()
+    
     Returns:
         _BeginEndTooltip: Use with ``with`` to automatically call :func:`end_tooltip` when the block ends.
 
-    .. wraps::
-        void BeginTooltip()
+    
     """
     cimgui.BeginTooltip()
     return _BeginEndTooltip.__new__(_BeginEndTooltip)
@@ -8460,6 +8451,7 @@ def slider_float2(
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
+    
     Args:
         label (str): widget label.
         value0, value1 (float): slider values.
@@ -8485,6 +8477,7 @@ def slider_float2(
             const char* format = "%.3f",
             ImGuiSliderFlags flags = 0
         )
+    
     """
     assert (power == 1), "power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead"
     cdef float[2] inout_values = [value0, value1]
@@ -10096,9 +10089,9 @@ def set_scroll_here_x(float center_x_ratio = 0.5):
 
     Adjust scrolling amount to make current cursor position visible.
     center_x_ratio =
-        0.0: left,
-        0.5: center,
-        1.0: right.
+    0.0: left,
+    0.5: center,
+    1.0: right.
 
     When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
 
@@ -10115,9 +10108,9 @@ def set_scroll_here_y(float center_y_ratio = 0.5):
 
     Adjust scrolling amount to make current cursor position visible.
     center_y_ratio =
-        0.0: top,
-        0.5: center,
-        1.0: bottom.
+    0.0: top,
+    0.5: center,
+    1.0: bottom.
 
     When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
 
@@ -10542,8 +10535,8 @@ cpdef set_next_item_width(float item_width):
     """Set width of the _next_ common large "item+label" widget. 
     * ``>0.0`` - width in pixels
     * ``<0.0`` - align xx pixels to the right of window
-      (so -FLOAT_MIN always align width to the right side)
-      
+    (so -FLOAT_MIN always align width to the right side)
+    
     Helper to avoid using ``push_item_width()``/``pop_item_width()`` for single items.
     
     Args:
@@ -11780,7 +11773,7 @@ def get_frame_height():
 
     .. wraps::
         float GetFrameHeight()
-    float GetFrameHeightWithSpacing() except +
+        float GetFrameHeightWithSpacing() except +
     """
     return cimgui.GetFrameHeight()
 
@@ -11952,6 +11945,7 @@ def _ansifeed_text_ansi_colored(str text, float r, float g, float b, float a=1.)
 # === Extra utilities ====
 
 @contextmanager
+@cython.binding(True)
 def _py_font(_Font font):
     """Use specified font in given context.
 
@@ -11984,6 +11978,7 @@ def _py_font(_Font font):
 
 
 @contextmanager
+@cython.binding(True)
 def _py_styled(cimgui.ImGuiStyleVar variable, value):
     # note: we treat bool value as integer to guess if we are required to pop
     #       anything because IMGUI may simply skip pushing
@@ -11993,6 +11988,7 @@ def _py_styled(cimgui.ImGuiStyleVar variable, value):
 
 
 @contextmanager
+@cython.binding(True)
 def _py_colored(
     cimgui.ImGuiCol variable,
     float r,
@@ -12008,6 +12004,7 @@ def _py_colored(
 
 
 @contextmanager
+@cython.binding(True)
 def _py_istyled(*variables_and_values):
     # todo: rename to nstyled?
     count = 0
@@ -12036,6 +12033,7 @@ def _py_istyled(*variables_and_values):
 
 
 @contextmanager
+@cython.binding(True)
 def _py_scoped(str str_id):
     """Use scoped ID within a block of code.
 
