@@ -38,6 +38,9 @@ var/
 *.egg
 completion.svg
 
+# Documentation
+doc/source/_build/
+
 # Visual Studio stuff
 .vs/
 

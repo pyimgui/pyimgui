@@ -24,6 +24,7 @@ text_ansi_colored = core._ansifeed_text_ansi_colored
 
 font = core._py_font
 styled = core._py_styled
+#: istyled
 istyled = core._py_istyled
 colored = core._py_colored
 scoped = core._py_scoped

@@ -1,9 +1,10 @@
 Cython>=0.24,<0.30
-Sphinx==1.4.8
+Sphinx==1.8.6
 docutils<0.13.1
 PyOpenGL
 glfw
 pypandoc==1.4
 git-lfs
 mock
+Pillow
 -e.

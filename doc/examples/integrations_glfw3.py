@@ -10,7 +10,9 @@ def main():
     imgui.create_context()
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
-
+    
+    show_custom_window = True
+    
     while not glfw.window_should_close(window):
         glfw.poll_events()
         impl.process_inputs()
@@ -31,12 +33,14 @@ def main():
             imgui.end_main_menu_bar()
 
 
-        imgui.begin("Custom window", True)
-        imgui.text("Bar")
-        imgui.text_ansi("B\033[31marA\033[mnsi ")
-        imgui.text_ansi_colored("Eg\033[31mgAn\033[msi ", 0.2, 1., 0.)
-        imgui.extra.text_ansi_colored("Eggs", 0.2, 1., 0.)
-        imgui.end()
+        if show_custom_window:
+            is_expand, show_custom_window = imgui.begin("Custom window", True)
+            if is_expand:
+                imgui.text("Bar")
+                imgui.text_ansi("B\033[31marA\033[mnsi ")
+                imgui.text_ansi_colored("Eg\033[31mgAn\033[msi ", 0.2, 1., 0.)
+                imgui.extra.text_ansi_colored("Eggs", 0.2, 1., 0.)
+            imgui.end()
 
         show_test_window()
         #imgui.show_test_window()

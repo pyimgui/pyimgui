@@ -5,7 +5,6 @@ some additional utilities that do not belong to `core`.
 """
 cimport cimgui
 
-
 cdef class _Font(object):
     cdef cimgui.ImFont* _ptr
 
