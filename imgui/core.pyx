@@ -599,7 +599,7 @@ cdef class _ImGuiContext(object):
 
     # TODO(Sam): Change this temporary name...
     @staticmethod
-    def _from_int_ptr(long int ptr_val):
+    def _from_int_ptr(ptr_val):
         cdef void* ptr
         ptr = PyLong_AsVoidPtr(ptr_val)
         return _ImGuiContext.from_ptr(<cimgui.ImGuiContext*>ptr)
