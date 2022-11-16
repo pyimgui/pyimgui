@@ -355,7 +355,7 @@ def get_common_gl_state():
     last_blend_dst = gl.glGetIntegerv(gl.GL_BLEND_DST)
     last_blend_equation_rgb = gl. glGetIntegerv(gl.GL_BLEND_EQUATION_RGB)
     last_blend_equation_alpha = gl.glGetIntegerv(gl.GL_BLEND_EQUATION_ALPHA)
-    last_front_polygon_mode, last_back_polygon_mode = gl.glGetIntegerv(gl.GL_POLYGON_MODE)
+    last_front_and_back_polygon_mode, _ = gl.glGetIntegerv(gl.GL_POLYGON_MODE)
     return (
         last_texture,
         last_viewport,
@@ -368,7 +368,7 @@ def get_common_gl_state():
         last_blend_dst,
         last_blend_equation_rgb,
         last_blend_equation_alpha,
-        last_front_polygon_mode, last_back_polygon_mode,
+        last_front_and_back_polygon_mode,
     )
 
 def restore_common_gl_state(common_gl_state_tuple):
@@ -388,15 +388,14 @@ def restore_common_gl_state(common_gl_state_tuple):
         last_blend_dst,
         last_blend_equation_rgb,
         last_blend_equation_alpha,
-        last_front_polygon_mode, last_back_polygon_mode,
+        last_front_and_back_polygon_mode,
     ) = common_gl_state_tuple
 
     gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
     gl.glBlendEquationSeparate(last_blend_equation_rgb, last_blend_equation_alpha)
     gl.glBlendFunc(last_blend_src, last_blend_dst)
 
-    gl.glPolygonMode(gl.GL_FRONT, last_front_polygon_mode)
-    gl.glPolygonMode(gl.GL_BACK, last_back_polygon_mode)
+    gl.glPolygonMode(gl.GL_FRONT_AND_BACK, last_front_and_back_polygon_mode)
 
     if last_enable_blend:
         gl.glEnable(gl.GL_BLEND)
