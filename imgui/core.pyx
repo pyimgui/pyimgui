@@ -573,6 +573,9 @@ VIEWPORT_FLAGS_OWNED_BY_APP = enums.ImGuiViewportFlags_OwnedByApp               
 
 include "imgui/common.pyx"
 
+cdef extern from "Python.h":
+    void* PyLong_AsVoidPtr(object)
+
 _contexts = {}
 cdef class _ImGuiContext(object):
     cdef cimgui.ImGuiContext* _ptr
@@ -592,6 +595,15 @@ cdef class _ImGuiContext(object):
             _contexts[<uintptr_t>ptr] = instance
 
         return _contexts[<uintptr_t>ptr]
+
+    # TODO(Sam): Change this temporary name...
+    @staticmethod
+    def _from_int_ptr(int ptr_val):
+        cdef void* ptr
+        ptr = PyLong_AsVoidPtr(ptr_val)
+        return _ImGuiContext.from_ptr(<cimgui.ImGuiContext*>ptr)
+    def _to_int_ptr(_ImGuiContext self):
+        return <int>self._ptr
 
     def __eq__(_ImGuiContext self, _ImGuiContext other):
         return other._ptr == self._ptr
@@ -11811,7 +11823,6 @@ def create_context(_FontAtlas shared_font_atlas = None):
     internal.UpdateImGuiContext(_ptr)
 
     return _ImGuiContext.from_ptr(_ptr)
-
 
 def destroy_context(_ImGuiContext ctx = None):
     """DestroyContext
