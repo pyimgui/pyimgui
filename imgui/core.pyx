@@ -598,12 +598,12 @@ cdef class _ImGuiContext(object):
 
     # TODO(Sam): Change this temporary name...
     @staticmethod
-    def _from_int_ptr(int ptr_val):
+    def _from_int_ptr(long int ptr_val):
         cdef void* ptr
         ptr = PyLong_AsVoidPtr(ptr_val)
         return _ImGuiContext.from_ptr(<cimgui.ImGuiContext*>ptr)
     def _to_int_ptr(_ImGuiContext self):
-        return <int>self._ptr
+        return <long int>self._ptr
 
     def __eq__(_ImGuiContext self, _ImGuiContext other):
         return other._ptr == self._ptr
