@@ -575,6 +575,7 @@ include "imgui/common.pyx"
 
 cdef extern from "Python.h":
     void* PyLong_AsVoidPtr(object)
+    object PyLong_FromVoidPtr(void *p)
 
 _contexts = {}
 cdef class _ImGuiContext(object):
@@ -602,9 +603,11 @@ cdef class _ImGuiContext(object):
     def _from_int_ptr(ptr_val):
         cdef void* ptr
         ptr = PyLong_AsVoidPtr(ptr_val)
-        return _ImGuiContext.from_ptr(<cimgui.ImGuiContext*>ptr)
+        ctx = _ImGuiContext.from_ptr(<cimgui.ImGuiContext*>ptr)
+        set_current_context(ctx)
+        return ctx
     def _to_int_ptr(_ImGuiContext self):
-        return <long int>self._ptr
+        return PyLong_FromVoidPtr(self._ptr)
 
     def __eq__(_ImGuiContext self, _ImGuiContext other):
         return other._ptr == self._ptr
