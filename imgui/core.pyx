@@ -590,6 +590,7 @@ cdef class _ImGuiContext(object):
             return None
 
         if (<uintptr_t>ptr) not in _contexts:
+            print('[DEBUG] Add a new context...')
             instance = _ImGuiContext()
             instance._ptr = ptr
             _contexts[<uintptr_t>ptr] = instance
