@@ -974,7 +974,7 @@ cdef class _DrawList(object):
                     const ImVec2& p3,
                     const ImVec2& p4,
                     ImU32 col,
-                    float thickness
+                    float thickness = 1.0
                 )
         """
         self._ptr.AddQuad(
@@ -1073,7 +1073,7 @@ cdef class _DrawList(object):
                     const ImVec2& p2,
                     const ImVec2& p3,
                     ImU32 col,
-                    float thickness
+                    float thickness = 1.0
                 )
         """
         self._ptr.AddTriangle(
