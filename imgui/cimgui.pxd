@@ -384,7 +384,7 @@ cdef extern from "imgui.h":
             ImU32 col_bot_left
         ) except +
         
-        void AddQuad( # ✗
+        void AddQuad( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 
