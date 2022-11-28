@@ -402,7 +402,7 @@ cdef extern from "imgui.h":
             ImU32 col
         ) except +
         
-        void AddTriangle( # ✗
+        void AddTriangle( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 
@@ -411,7 +411,7 @@ cdef extern from "imgui.h":
             float thickness         # = 1.0f
         ) except +
         
-        void AddTriangleFilled( # ✗
+        void AddTriangleFilled( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 

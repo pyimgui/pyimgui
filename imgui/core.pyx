@@ -1035,6 +1035,99 @@ cdef class _DrawList(object):
             col
         )
 
+    def add_triangle(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            float point3_x, float point3_y,
+            cimgui.ImU32 col,
+            # note: optional
+            float thickness = 1.0
+        ):
+        """Add a triangle to the list.
+
+            .. visual-example::
+                :auto_layout:
+                :width: 200
+                :height: 100
+
+                imgui.begin("Triangle example")
+                draw_list = imgui.get_window_draw_list()
+                draw_list.add_triangle(20, 35, 90, 35, 55, 80, imgui.get_color_u32_rgba(1,1,0,1))
+                draw_list.add_triangle(110, 35, 180, 35, 145, 80, imgui.get_color_u32_rgba(1,0,0,1), 5)
+                imgui.end()
+
+            Args:
+                point1_x (float): X coordinate of first corner
+                point1_y (float): Y coordinate of first corner
+                point2_x (float): X coordinate of second corner
+                point2_y (float): Y coordinate of second corner
+                point3_x (float): X coordinate of third corner
+                point3_y (float): Y coordinate of third corner
+                col (ImU32): RGBA color specification
+                thickness (float): Line thickness
+
+            .. wraps::
+                void ImDrawList::AddTriangle(
+                    const ImVec2& p1,
+                    const ImVec2& p2,
+                    const ImVec2& p3,
+                    ImU32 col,
+                    float thickness
+                )
+        """
+        self._ptr.AddTriangle(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            _cast_args_ImVec2(point3_x, point3_y),
+            col,
+            thickness
+        )
+
+    def add_triangle_filled(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            float point3_x, float point3_y,
+            cimgui.ImU32 col,
+        ):
+        """Add a filled triangle to the list.
+
+            .. visual-example::
+                :auto_layout:
+                :width: 200
+                :height: 100
+
+                imgui.begin("Filled triangle example")
+                draw_list = imgui.get_window_draw_list()
+                draw_list.add_triangle_filled(20, 35, 90, 35, 55, 80, imgui.get_color_u32_rgba(1,1,0,1))
+                draw_list.add_triangle_filled(110, 35, 180, 35, 145, 80, imgui.get_color_u32_rgba(1,0,0,1))
+                imgui.end()
+
+            Args:
+                point1_x (float): X coordinate of first corner
+                point1_y (float): Y coordinate of first corner
+                point2_x (float): X coordinate of second corner
+                point2_y (float): Y coordinate of second corner
+                point3_x (float): X coordinate of third corner
+                point3_y (float): Y coordinate of third corner
+                col (ImU32): RGBA color specification
+
+            .. wraps::
+                void ImDrawList::AddTriangleFilled(
+                    const ImVec2& p1,
+                    const ImVec2& p2,
+                    const ImVec2& p3,
+                    ImU32 col
+                )
+        """
+        self._ptr.AddTriangleFilled(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            _cast_args_ImVec2(point3_x, point3_y),
+            col
+        )
+
     def add_circle(
             self,
             float centre_x, float centre_y,
