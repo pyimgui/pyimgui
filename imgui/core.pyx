@@ -877,7 +877,59 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(lower_right_x, lower_right_y),
             col,
             rounding,
-            flags,
+            flags
+        )
+
+    def add_rect_filled_multicolor(
+            self,
+            float upper_left_x, float upper_left_y,
+            float lower_right_x, float lower_right_y,
+            cimgui.ImU32 col_upr_left,
+            cimgui.ImU32 col_upr_right,
+            cimgui.ImU32 col_bot_right,
+            cimgui.ImU32 col_bot_left
+        ):
+        """Add a multicolor filled rectangle to the draw list.
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Multicolored filled rect example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_rect_filled_multicolor(20, 35, 190, 80, imgui.get_color_u32_rgba(1,0,0,1),
+                imgui.get_color_u32_rgba(0,1,0,1), imgui.get_color_u32_rgba(0,0,1,1),
+                imgui.get_color_u32_rgba(1,1,1,1))
+            imgui.end()
+
+        Args:
+            upper_left_x (float): X coordinate of top-left corner
+            upper_left_y (float): Y coordinate of top-left corner
+            lower_right_x (float): X coordinate of lower-right corner
+            lower_right_y (float): Y coordinate of lower-right corner
+            col_upr_left (ImU32): RGBA color for the top left corner
+            col_upr_right (ImU32): RGBA color for the top right corner
+            col_bot_right (ImU32): RGBA color for the bottom right corner
+            col_bot_left (ImU32): RGBA color for the bottom left corner
+
+        .. wraps::
+            void ImDrawList::AddRectFilledMultiColor(
+                const ImVec2& a,
+                const ImVec2& b,
+                ImU32 col_upr_left,
+                ImU32 col_upr_right,
+                ImU32 col_bot_right,
+                ImU32 col_bot_left
+            )
+        """
+        self._ptr.AddRectFilledMultiColor(
+            _cast_args_ImVec2(upper_left_x, upper_left_y),
+            _cast_args_ImVec2(lower_right_x, lower_right_y),
+            col_upr_left,
+            col_upr_right,
+            col_bot_right,
+            col_bot_left
         )
 
     def add_circle(

@@ -375,7 +375,7 @@ cdef extern from "imgui.h":
             ImDrawFlags flags           # = 0
         ) except + 
         
-        void AddRectFilledMultiColor( # ✗
+        void AddRectFilledMultiColor( # ✓
             const ImVec2& p_min, 
             const ImVec2& p_max, 
             ImU32 col_upr_left, 
