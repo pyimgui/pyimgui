@@ -810,7 +810,8 @@ cdef class _DrawList(object):
             lower_right_y (float): Y coordinate of lower-right corner
             col (ImU32): RGBA color specification
             rounding (float): Degree of rounding, defaults to 0.0
-            flags (ImDrawFlags): Draw flags, defaults to 0
+            flags (ImDrawFlags): Draw flags, defaults to 0. See:
+                :ref:`list of available flags <draw-flag-options>`.
             thickness (float): Line thickness, defaults to 1.0
 
         .. wraps::
@@ -861,7 +862,8 @@ cdef class _DrawList(object):
             lower_right_y (float): Y coordinate of lower-right corner
             col (ImU32): RGBA color specification
             rounding (float): Degree of rounding, defaults to 0.0
-            flags (ImDrawFlags): Draw flags, defaults to 0
+            flags (ImDrawFlags): Draw flags, defaults to 0. See:
+                :ref:`list of available flags <draw-flag-options>`.
 
         .. wraps::
             void ImDrawList::AddRectFilled(
@@ -1524,7 +1526,8 @@ cdef class _DrawList(object):
             uv_b (tuple): UV coordinates of the bottom-right corner, defaults to (1, 1)
             col (ImU32): tint color, defaults to 0xffffffff (no tint)
             rounding (float): degree of rounding, defaults to 0.0
-            flags (ImDrawFlags): draw flags, defaults to 0
+            flags (ImDrawFlags): draw flags, defaults to 0. See:
+                :ref:`list of available flags <draw-flag-options>`.
 
         .. wraps::
             void ImDrawList::AddImageRounded(
@@ -1573,7 +1576,8 @@ cdef class _DrawList(object):
         Args:
             points (list): list of points
             col (float): RGBA color specification
-            flags (ImDrawFlags): Drawing flags
+            flags (ImDrawFlags): Drawing flags. See:
+                :ref:`list of available flags <draw-flag-options>`.
             thickness (float): line thickness
 
         .. wraps::
@@ -1773,7 +1777,8 @@ cdef class _DrawList(object):
             point2_x (float): point2 x coordinate
             point2_y (float): point2 y coordinate
             rounding (flaot): Degree of rounding, defaults to 0.0
-            flags (ImDrawFlags):Draw flags, defaults to 0
+            flags (ImDrawFlags):Draw flags, defaults to 0. See:
+                :ref:`list of available flags <draw-flag-options>`.
 
         .. wraps::
             void ImDrawList::PathRect(
@@ -1832,7 +1837,8 @@ cdef class _DrawList(object):
         """
         Args:
             col (ImU32): color to fill the path shape with
-            flags (ImDrawFlags): draw flags, defaults to 0
+            flags (ImDrawFlags): draw flags, defaults to 0. See:
+                :ref:`list of available flags <draw-flag-options>`.
             thickness (float): Line thickness in pixels
 
         .. visual-example::
