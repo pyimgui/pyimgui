@@ -394,7 +394,7 @@ cdef extern from "imgui.h":
             float thickness         # = 1.0f
         ) except +
         
-        void AddQuadFilled( # ✗
+        void AddQuadFilled( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 

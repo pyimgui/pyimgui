@@ -986,6 +986,55 @@ cdef class _DrawList(object):
             thickness
         )
 
+    def add_quad_filled(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            float point3_x, float point3_y,
+            float point4_x, float point4_y,
+            cimgui.ImU32 col,
+        ):
+        """Add a filled quad to the list.
+
+            .. visual-example::
+                :auto_layout:
+                :width: 200
+                :height: 100
+
+                imgui.begin("Filled Quad example")
+                draw_list = imgui.get_window_draw_list()
+                draw_list.add_quad_filled(20, 35, 85, 30, 90, 80, 17, 76, imgui.get_color_u32_rgba(1,1,0,1))
+                draw_list.add_quad_filled(110, 35, 177, 33, 180, 80, 112, 79, imgui.get_color_u32_rgba(1,0,0,1))
+                imgui.end()
+
+            Args:
+                point1_x (float): X coordinate of first corner
+                point1_y (float): Y coordinate of first corner
+                point2_x (float): X coordinate of second corner
+                point2_y (float): Y coordinate of second corner
+                point3_x (float): X coordinate of third corner
+                point3_y (float): Y coordinate of third corner
+                point4_x (float): X coordinate of fourth corner
+                point4_y (float): Y coordinate of fourth corner
+                col (ImU32): RGBA color specification
+
+            .. wraps::
+                void ImDrawList::AddQuadFilled(
+                    const ImVec2& p1,
+                    const ImVec2& p2,
+                    const ImVec2& p3,
+                    const ImVec2& p4,
+                    ImU32 col
+                )
+        """
+        self._ptr.AddQuadFilled(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            _cast_args_ImVec2(point3_x, point3_y),
+            _cast_args_ImVec2(point4_x, point4_y),
+            col
+        )
+
     def add_circle(
             self,
             float centre_x, float centre_y,
