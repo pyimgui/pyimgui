@@ -1128,6 +1128,115 @@ cdef class _DrawList(object):
             col
         )
 
+    def add_bezier_cubic(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            float point3_x, float point3_y,
+            float point4_x, float point4_y,
+            cimgui.ImU32 col,
+            float thickness,
+            # note: optional
+            int num_segments = 0
+        ):
+        """Add a cubic bezier curve to the list.
+
+            .. visual-example::
+                :auto_layout:
+                :width: 200
+                :height: 100
+
+                imgui.begin("Cubic bezier example")
+                draw_list = imgui.get_window_draw_list()
+                draw_list.add_bezier_cubic(20, 35, 90, 80, 110, 180, 145, 35, imgui.get_color_u32_rgba(1,1,0,1), 2)
+                imgui.end()
+
+            Args:
+                point1_x (float): X coordinate of first point
+                point1_y (float): Y coordinate of first point
+                point2_x (float): X coordinate of second point
+                point2_y (float): Y coordinate of second point
+                point3_x (float): X coordinate of third point
+                point3_y (float): Y coordinate of third point
+                point4_x (float): X coordinate of fourth point
+                point4_y (float): Y coordinate of fourth point
+                col (ImU32): RGBA color specification
+                thickness (float): Line thickness
+                num_segments (ImU32): Number of segments, defaults to 0 meaning auto-tesselation
+
+            .. wraps::
+                void ImDrawList::AddBezierCubic(
+                    const ImVec2& p1,
+                    const ImVec2& p2,
+                    const ImVec2& p3,
+                    const ImVec2& p4,
+                    ImU32 col,
+                    float thickness,
+                    int num_segments = 0
+                )
+        """
+        self._ptr.AddBezierCubic(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            _cast_args_ImVec2(point3_x, point3_y),
+            _cast_args_ImVec2(point4_x, point4_y),
+            col,
+            thickness,
+            num_segments
+        )
+
+    def add_bezier_quadratic(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            float point3_x, float point3_y,
+            cimgui.ImU32 col,
+            float thickness,
+            # note: optional
+            int num_segments = 0
+        ):
+        """Add a quadratic bezier curve to the list.
+
+            .. visual-example::
+                :auto_layout:
+                :width: 200
+                :height: 100
+
+                imgui.begin("Quadratic bezier example")
+                draw_list = imgui.get_window_draw_list()
+                draw_list.add_bezier_quadratic(20, 35, 90, 80, 145, 35, imgui.get_color_u32_rgba(1,1,0,1), 2)
+                imgui.end()
+
+            Args:
+                point1_x (float): X coordinate of first point
+                point1_y (float): Y coordinate of first point
+                point2_x (float): X coordinate of second point
+                point2_y (float): Y coordinate of second point
+                point3_x (float): X coordinate of third point
+                point3_y (float): Y coordinate of third point
+                col (ImU32): RGBA color specification
+                thickness (float): Line thickness
+                num_segments (ImU32): Number of segments, defaults to 0 meaning auto-tesselation
+
+            .. wraps::
+                void ImDrawList::AddBezierCubic(
+                    const ImVec2& p1,
+                    const ImVec2& p2,
+                    const ImVec2& p3,
+                    ImU32 col,
+                    float thickness,
+                    int num_segments = 0
+                )
+        """
+        self._ptr.AddBezierQuadratic(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            _cast_args_ImVec2(point3_x, point3_y),
+            col,
+            thickness,
+            num_segments
+        )
+
     def add_circle(
             self,
             float centre_x, float centre_y,

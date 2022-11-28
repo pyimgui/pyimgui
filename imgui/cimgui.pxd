@@ -486,7 +486,7 @@ cdef extern from "imgui.h":
             ImU32 col
         ) except +
         
-        void AddBezierCubic( # ✗
+        void AddBezierCubic( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 
@@ -497,7 +497,7 @@ cdef extern from "imgui.h":
             int num_segments        # = 0
         ) except +
         
-        void  AddBezierQuadratic( # ✗
+        void  AddBezierQuadratic( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 
