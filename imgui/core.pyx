@@ -1599,6 +1599,269 @@ cdef class _DrawList(object):
         )
         free(pts)
 
+    # Path related functions
+
+    def path_clear(self):
+        """
+        Clear the current list of path point
+
+        .. wraps::
+            void ImDrawList::PathClear()
+        """
+        self._ptr.PathClear()
+
+    def path_line_to(self, float x, float y):
+        """
+        Add a point to the path list
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path line to example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_line_to(20, 35)
+            draw_list.path_line_to(180, 80)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,1,0,1), flags=0, thickness=3)
+            draw_list.path_clear()
+            draw_list.path_line_to(180, 35)
+            draw_list.path_line_to(20, 80)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,0,0,1), flags=0, thickness=3)
+            imgui.end()
+
+        Args:
+            x (float): path point x coordinate
+            y (float): path point y coordinate
+
+        .. wraps::
+            void ImDrawList::PathLineTo(
+                const ImVec2& pos,
+            )
+        """
+        self._ptr.PathLineTo(
+            _cast_args_ImVec2(x, y)
+        )
+
+    def path_arc_to(
+            self,
+            float center_x, float center_y,
+            float radius,
+            float a_min, float a_max,
+            # note: optional
+            cimgui.ImU32 num_segments = 0
+        ):
+        """
+        Add an arc to the path list
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path arc to example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_arc_to(55, 60, 30, 1, 5)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,1,0,1), flags=0, thickness=3)
+            draw_list.path_clear()
+            draw_list.path_arc_to(155, 60, 30, -2, 2)
+            draw_list.path_fill_convex(imgui.get_color_u32_rgba(1,0,0,1))
+            imgui.end()
+
+        Args:
+            center_x (float): arc center x coordinate
+            center_y (float): arc center y coordinate
+            radius (flaot): radius of the arc
+            a_min (float): minimum angle of the arc (in radian)
+            a_max (float): maximum angle of the arc (in radian)
+            num_segments (ImU32): Number of segments, defaults to 0 meaning auto-tesselation
+
+        .. wraps::
+            void ImDrawList::PathArcTo(
+                const ImVec2& center,
+                float radius,
+                float a_min,
+                float a_max,
+                int num_segments = 0
+            )
+        """
+        self._ptr.PathArcTo(
+            _cast_args_ImVec2(center_x, center_y),
+            radius,
+            a_min, a_max,
+            num_segments
+        )
+
+    def path_arc_to_fast(
+            self,
+            float center_x, float center_y,
+            float radius,
+            cimgui.ImU32 a_min_of_12,
+            cimgui.ImU32 a_max_of_12,
+        ):
+        """
+        Add an arc to the path list
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path arc to fast example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_arc_to_fast(55, 60, 30, 0, 6)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,1,0,1), flags=0, thickness=3)
+            draw_list.path_clear()
+            draw_list.path_arc_to_fast(155, 60, 30, 3, 9)
+            draw_list.path_fill_convex(imgui.get_color_u32_rgba(1,0,0,1))
+            imgui.end()
+
+        Args:
+            center_x (float): arc center x coordinate
+            center_y (float): arc center y coordinate
+            radius (flaot): radius of the arc
+            a_min_of_12 (ImU32): minimum angle of the arc
+            a_max_of_12 (ImU32): maximum angle of the arc
+
+        .. wraps::
+            void ImDrawList::PathArcToFast(
+                const ImVec2& center,
+                float radius,
+                int a_min_of_12,
+                int a_max_of_12
+            )
+        """
+        self._ptr.PathArcToFast(
+            _cast_args_ImVec2(center_x, center_y),
+            radius,
+            a_min_of_12,
+            a_max_of_12,
+        )
+
+    def path_rect(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            # note: optional
+            float rounding = 0.0,
+            cimgui.ImDrawFlags flags = 0
+        ):
+        """
+        Add a rect to the path list
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path arc to fast example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_rect(20, 35, 90, 80)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,1,0,1), flags=0, thickness=3)
+            draw_list.path_clear()
+            draw_list.path_rect(110, 35, 180, 80, 5)
+            draw_list.path_fill_convex(imgui.get_color_u32_rgba(1,0,0,1))
+            imgui.end()
+
+        Args:
+            point1_x (float): point1 x coordinate
+            point1_y (float): point1 y coordinate
+            point2_x (float): point2 x coordinate
+            point2_y (float): point2 y coordinate
+            rounding (flaot): Degree of rounding, defaults to 0.0
+            flags (ImDrawFlags):Draw flags, defaults to 0
+
+        .. wraps::
+            void ImDrawList::PathRect(
+                const ImVec2& p1,
+                const ImVec2& p2,
+                float rounding = 0.0,
+                ImDrawFlags flags = 0
+            )
+        """
+        self._ptr.PathRect(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            rounding,
+            flags
+        )
+
+    # Path rendering functions
+
+    def path_fill_convex(self, cimgui.ImU32 col):
+        """
+
+        Note: Filled shapes must always use clockwise winding order.
+        The anti-aliasing fringe depends on it. Counter-clockwise shapes
+        will have "inward" anti-aliasing.
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path fill convex example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_line_to(100, 60)
+            draw_list.path_arc_to(100, 60, 30, 0.5, 5.5)
+            draw_list.path_fill_convex(imgui.get_color_u32_rgba(1,1,0,1))
+            imgui.end()
+
+        Args:
+            col (ImU32): color to fill the path shape with
+
+        .. wraps::
+            void ImDrawList::PathFillConvex(
+                ImU32   col
+            );
+        """
+        self._ptr.PathFillConvex(col)
+
+    def path_stroke(
+            self,
+            cimgui.ImU32 col,
+            # note: optional
+            cimgui.ImDrawFlags flags = 0,
+            float thickness = 1.0
+        ):
+        """
+        Args:
+            col (ImU32): color to fill the path shape with
+            flags (ImDrawFlags): draw flags, defaults to 0
+            thickness (float): Line thickness in pixels
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path stroke example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_line_to(100, 60)
+            draw_list.path_arc_to(100, 60, 30, 0.5, 5.5)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,1,0,1), flags=imgui.DRAW_CLOSED, thickness=3)
+            imgui.end()
+
+
+        .. wraps::
+            void ImDrawList::PathStroke(
+                ImU32 col,
+                ImDrawFlags flags = 0,
+                float thickness = 1.0
+            );
+        """
+        self._ptr.PathStroke(
+            col,
+            flags,
+            thickness
+        )
+
     # channels
 
     def channels_split(self, int channels_count):

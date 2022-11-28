@@ -545,17 +545,17 @@ cdef extern from "imgui.h":
         ) except +
 
         # Stateful path API, add points then finish with PathFillConvex() or PathStroke()
-        void PathClear() except + # ✗
-        void PathLineTo(const ImVec2& pos) except + # ✗
+        void PathClear() except + # ✓
+        void PathLineTo(const ImVec2& pos) except + # ✓
         void PathLineToMergeDuplicate(const ImVec2& pos) except + # ✗
-        void PathFillConvex(ImU32 col) except + # ✗
-        void PathStroke( # ✗
+        void PathFillConvex(ImU32 col) except + # ✓
+        void PathStroke( # ✓
             ImU32 col, 
             # note: optional
             ImDrawFlags flags,      # = 0
             float thickness         # = 1.0f
         ) except +
-        void PathArcTo( # ✗
+        void PathArcTo( # ✓
             const ImVec2& center, 
             float radius, 
             float a_min, 
@@ -563,7 +563,7 @@ cdef extern from "imgui.h":
             # note: optional
             int num_segments        # = 0
         ) except +
-        void PathArcToFast( # ✗
+        void PathArcToFast( # ✓
             const ImVec2& center, 
             float radius, 
             int a_min_of_12, 
@@ -582,7 +582,7 @@ cdef extern from "imgui.h":
             # note: optional
             int num_segments        # = 0
         ) except +    
-        void PathRect( # ✗ 
+        void PathRect( # ✓
             const ImVec2& rect_min, 
             const ImVec2& rect_max, 
             # note: optional
