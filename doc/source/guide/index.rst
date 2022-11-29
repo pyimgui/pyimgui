@@ -16,4 +16,5 @@ Usage guide
    inputtext-flags
    slider-flags
    tabbar-flags
+   draw-flags
 

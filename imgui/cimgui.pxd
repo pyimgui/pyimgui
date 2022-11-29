@@ -375,7 +375,7 @@ cdef extern from "imgui.h":
             ImDrawFlags flags           # = 0
         ) except + 
         
-        void AddRectFilledMultiColor( # ✗
+        void AddRectFilledMultiColor( # ✓
             const ImVec2& p_min, 
             const ImVec2& p_max, 
             ImU32 col_upr_left, 
@@ -384,7 +384,7 @@ cdef extern from "imgui.h":
             ImU32 col_bot_left
         ) except +
         
-        void AddQuad( # ✗
+        void AddQuad( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 
@@ -394,7 +394,7 @@ cdef extern from "imgui.h":
             float thickness         # = 1.0f
         ) except +
         
-        void AddQuadFilled( # ✗
+        void AddQuadFilled( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 
@@ -402,7 +402,7 @@ cdef extern from "imgui.h":
             ImU32 col
         ) except +
         
-        void AddTriangle( # ✗
+        void AddTriangle( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 
@@ -411,7 +411,7 @@ cdef extern from "imgui.h":
             float thickness         # = 1.0f
         ) except +
         
-        void AddTriangleFilled( # ✗
+        void AddTriangleFilled( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 
@@ -486,7 +486,7 @@ cdef extern from "imgui.h":
             ImU32 col
         ) except +
         
-        void AddBezierCubic( # ✗
+        void AddBezierCubic( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 
@@ -497,7 +497,7 @@ cdef extern from "imgui.h":
             int num_segments        # = 0
         ) except +
         
-        void  AddBezierQuadratic( # ✗
+        void  AddBezierQuadratic( # ✓
             const ImVec2& p1, 
             const ImVec2& p2, 
             const ImVec2& p3, 
@@ -545,17 +545,17 @@ cdef extern from "imgui.h":
         ) except +
 
         # Stateful path API, add points then finish with PathFillConvex() or PathStroke()
-        void PathClear() except + # ✗
-        void PathLineTo(const ImVec2& pos) except + # ✗
+        void PathClear() except + # ✓
+        void PathLineTo(const ImVec2& pos) except + # ✓
         void PathLineToMergeDuplicate(const ImVec2& pos) except + # ✗
-        void PathFillConvex(ImU32 col) except + # ✗
-        void PathStroke( # ✗
+        void PathFillConvex(ImU32 col) except + # ✓
+        void PathStroke( # ✓
             ImU32 col, 
             # note: optional
             ImDrawFlags flags,      # = 0
             float thickness         # = 1.0f
         ) except +
-        void PathArcTo( # ✗
+        void PathArcTo( # ✓
             const ImVec2& center, 
             float radius, 
             float a_min, 
@@ -563,7 +563,7 @@ cdef extern from "imgui.h":
             # note: optional
             int num_segments        # = 0
         ) except +
-        void PathArcToFast( # ✗
+        void PathArcToFast( # ✓
             const ImVec2& center, 
             float radius, 
             int a_min_of_12, 
@@ -582,7 +582,7 @@ cdef extern from "imgui.h":
             # note: optional
             int num_segments        # = 0
         ) except +    
-        void PathRect( # ✗ 
+        void PathRect( # ✓
             const ImVec2& rect_min, 
             const ImVec2& rect_max, 
             # note: optional
