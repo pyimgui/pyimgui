@@ -1,11 +1,13 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import imgui
-import sys
-import math
-import os
-import itertools
+
 from array import array
 import colorsys
+import imgui
+import itertools
+import math
+import os
+import sys
 
 # Examples Apps (accessible from the "Examples" menu)
 show_app_main_menu_bar = False
@@ -228,7 +230,8 @@ borders_v_borders = True
 
 collapsing_headers_closable_group = True
 
-filtering_filter = None # Todo - bind this in cimgui.pxd
+filtering_filter = None  # Todo - bind this in cimgui.pxd
+
 
 def show_help_marker(desc):
 
@@ -574,7 +577,7 @@ def show_test_window():
     if not imgui.begin(label="ImGui Demo", closable=no_close, flags=window_flags):
         # Early out if the window is collapsed, as an optimization.
         imgui.end()
-        sys.exit(1)
+        sys.exit(0)
 
     imgui.text("dear imgui says hello. (" + str(imgui.get_version()) + ")")
 
@@ -715,7 +718,7 @@ def show_test_window():
                     imgui.same_line()
                     imgui.text("<<PRESS SPACE TO DISABLE>>")
                 if imgui.is_key_pressed(imgui.get_key_index(imgui.KEY_SPACE)):
-                    io.config_flags &= ~ imgui.CONFIG_NO_MOUSE
+                    io.config_flags &= ~imgui.CONFIG_NO_MOUSE
                 #     clicked, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", io.config_flags, imgui.CONFIG_NO_MOUSE_CURSOR_CHANGE)
 
             imgui.same_line()
@@ -1699,9 +1702,7 @@ def show_test_window():
             )
 
             misc_flags = (
-                (imgui.COLOR_EDIT_HDR
-                if color_picker_hdr
-                else 0)
+                (imgui.COLOR_EDIT_HDR if color_picker_hdr else 0)
                 | (0 if color_picker_drag_and_drop else imgui.COLOR_EDIT_NO_DRAG_DROP)
                 | (
                     imgui.COLOR_EDIT_ALPHA_PREVIEW_HALF
@@ -1728,10 +1729,14 @@ def show_test_window():
             )
 
             imgui.text("Color widget HSV with Alpha:")
-            changed, color_picker_color = imgui.color_edit4("MyColor##2", *color_picker_color, imgui.COLOR_EDIT_HSV  | misc_flags)
+            changed, color_picker_color = imgui.color_edit4(
+                "MyColor##2", *color_picker_color, imgui.COLOR_EDIT_HSV | misc_flags
+            )
 
-            imgui.text("Color widget with Float Display:");
-            changed, color_picker_color = imgui.color_edit4("MyColor##2f", *color_picker_color, imgui.COLOR_EDIT_FLOAT | misc_flags)
+            imgui.text("Color widget with Float Display:")
+            changed, color_picker_color = imgui.color_edit4(
+                "MyColor##2f", *color_picker_color, imgui.COLOR_EDIT_FLOAT | misc_flags
+            )
 
             # imgui.text("Color button with Picker:");
             # imgui.same_line();
@@ -3281,7 +3286,9 @@ def show_test_window():
         imgui.text("WantCaptureKeyboard: " + str(io.want_capture_keyboard))
         imgui.text("WantTextInput: " + str(io.want_text_input))
         imgui.text("WantSetMousePos: " + str(io.want_set_mouse_pos))
-        imgui.text("NavActive: " + str(io.nav_active) +  "NavVisible: " + str(io.nav_visible))
+        imgui.text(
+            "NavActive: " + str(io.nav_active) + "NavVisible: " + str(io.nav_visible)
+        )
 
         #     if imgui.tree_node("Keyboard, Mouse & Navigation State"):
         #     {
