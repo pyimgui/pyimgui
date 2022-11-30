@@ -15,5 +15,6 @@ Usage guide
    selectable-flag
    inputtext-flags
    slider-flags
+   combo-flags
    tabbar-flags
 

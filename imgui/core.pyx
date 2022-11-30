@@ -6674,9 +6674,7 @@ cdef class _BeginEndCombo(object):
         return self.opened is other
 
 
-def begin_combo(
-    str label, str preview_value, cimgui.ImGuiComboFlags flags = 0
-):
+def begin_combo(str label, str preview_value, cimgui.ImGuiComboFlags flags = 0):
     """Begin a combo box with control over how items are displayed.
 
     .. visual-example::
@@ -6686,7 +6684,9 @@ def begin_combo(
 
         selected = 0
         items = ["AAAA", "BBBB", "CCCC", "DDDD"]
-        ...
+        
+        # ...
+        
         with imgui.begin("Example: begin combo"):
             with imgui.begin_combo("combo", items[selected]) as combo:
                 if combo.opened:
@@ -6698,22 +6698,25 @@ def begin_combo(
                         # Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
                         if is_selected:
                             imgui.set_item_default_focus()
-
+    
     Example::
+    
         selected = 0
         items = ["AAAA", "BBBB", "CCCC", "DDDD"]
-        ...
-        imgui.begin("Example: begin combo")
+        
+        # ...
 
+        imgui.begin("Example: begin combo")
         if imgui.begin_combo("combo", items[selected]):
             for i, item in enumerate(items):
                 is_selected = (i == selected)
                 if imgui.selectable(item, is_selected)[0]:
                     selected = i
-
-                # Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                    
+                # Set the initial focus when opening the combo (scrolling + keyboard navigation focus)                    
                 if is_selected:
                     imgui.set_item_default_focus()
+
             imgui.end_combo()
 
         imgui.end()
@@ -6725,8 +6728,7 @@ def begin_combo(
             :ref:`list of available flags <combo-flag-options>`.
 
     Returns:
-        _BeginEndCombo: Struct with ``opened`` bool attribute. Use with ``with``
-        to automatically call :func:`end_combo` when the block ends.`
+        _BeginEndCombo: Struct with ``opened`` bool attribute. Use with ``with`` to automatically call :func:`end_combo` when the block ends.`
 
     .. wraps::
         bool BeginCombo(
@@ -6734,6 +6736,7 @@ def begin_combo(
             const char* preview_value,
             ImGuiComboFlags flags = 0
         )
+    
     """
     return _BeginEndCombo.__new__(
         _BeginEndCombo,
@@ -6776,8 +6779,7 @@ def combo(str label, int current, list items, int height_in_items=-1):
             (autosized).
 
     Returns:
-        tuple: a ``(changed, current)`` tuple indicating change of selection
-        and current index of selected item.
+        tuple: a ``(changed, current)`` tuple indicating change of selection and current index of selected item.
 
     .. wraps::
         bool Combo(
