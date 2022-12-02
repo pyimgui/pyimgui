@@ -7260,6 +7260,126 @@ def radio_button(str label, cimgui.bool active):
     return cimgui.RadioButton(_bytes(label), active)
 
 
+cdef class _BeginEndCombo(object):
+    """
+    Return value of :func:`begin_combo` exposing ``opened`` boolean attribute.
+    See :func:`begin_combo` for an explanation and examples.
+
+    Can be used as a context manager (in a ``with`` statement) to automatically
+    call :func:`end_combo` to end the combo created with :func:`begin_combo`
+    when the block ends, even if an exception is raised.
+
+    This class is not intended to be instantiated by the user (thus the `_` name prefix).
+    It should be obtained as the return value of the :func:`begin_combo` function.
+    """
+
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndCombo()
+
+    def __bool__(self):
+        """For legacy support, returns ``opened``."""
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.opened is other.opened
+        return self.opened is other
+
+
+def begin_combo(str label, str preview_value, cimgui.ImGuiComboFlags flags = 0):
+    """Begin a combo box with control over how items are displayed.
+
+    .. visual-example::
+        :width: 200
+        :height: 200
+        :auto_layout:
+
+        selected = 0
+        items = ["AAAA", "BBBB", "CCCC", "DDDD"]
+        
+        # ...
+        
+        with imgui.begin("Example: begin combo"):
+            with imgui.begin_combo("combo", items[selected]) as combo:
+                if combo.opened:
+                    for i, item in enumerate(items):
+                        is_selected = (i == selected)
+                        if imgui.selectable(item, is_selected)[0]:
+                            selected = i
+
+                        # Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                        if is_selected:
+                            imgui.set_item_default_focus()
+    
+    Example::
+    
+        selected = 0
+        items = ["AAAA", "BBBB", "CCCC", "DDDD"]
+        
+        # ...
+
+        imgui.begin("Example: begin combo")
+        if imgui.begin_combo("combo", items[selected]):
+            for i, item in enumerate(items):
+                is_selected = (i == selected)
+                if imgui.selectable(item, is_selected)[0]:
+                    selected = i
+                    
+                # Set the initial focus when opening the combo (scrolling + keyboard navigation focus)                    
+                if is_selected:
+                    imgui.set_item_default_focus()
+
+            imgui.end_combo()
+
+        imgui.end()
+
+    Args:
+        label (str): Identifier for the combo box.
+        preview_value (str): String preview for currently selected item.
+        flags: Combo flags. See:
+            :ref:`list of available flags <combo-flag-options>`.
+
+    Returns:
+        _BeginEndCombo: Struct with ``opened`` bool attribute. Use with ``with`` to automatically call :func:`end_combo` when the block ends.`
+
+    .. wraps::
+        bool BeginCombo(
+            const char* label,
+            const char* preview_value,
+            ImGuiComboFlags flags = 0
+        )
+    
+    """
+    return _BeginEndCombo.__new__(
+        _BeginEndCombo,
+        cimgui.BeginCombo(
+            _bytes(label), _bytes(preview_value), flags
+        )
+    )
+def end_combo():
+    """End combo box.
+    Only call if ``begin_combo().opened`` is True.
+
+    .. wraps::
+        void EndCombo()
+    """
+    cimgui.EndCombo()
+
+
 def combo(str label, int current, list items, int height_in_items=-1):
     """Display combo widget.
 
@@ -7285,8 +7405,7 @@ def combo(str label, int current, list items, int height_in_items=-1):
             (autosized).
 
     Returns:
-        tuple: a ``(changed, current)`` tuple indicating change of selection
-        and current index of selected item.
+        tuple: a ``(changed, current)`` tuple indicating change of selection and current index of selected item.
 
     .. wraps::
         bool Combo(
