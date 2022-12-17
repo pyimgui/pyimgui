@@ -12,8 +12,6 @@ import cython
 from cython.view cimport array as cvarray
 from cython.operator cimport dereference as deref
 
-include "imgui/_skipwith.pyx"
-
 from collections import namedtuple
 import warnings
 from contextlib import contextmanager
@@ -572,6 +570,21 @@ VIEWPORT_FLAGS_NONE = enums.ImGuiViewportFlags_None                     #
 VIEWPORT_FLAGS_IS_PLATFORM_WINDOW = enums.ImGuiViewportFlags_IsPlatformWindow         # Represent a Platform Window
 VIEWPORT_FLAGS_IS_PLATFORM_MONITOR = enums.ImGuiViewportFlags_IsPlatformMonitor        # Represent a Platform Monitor (unused yet)
 VIEWPORT_FLAGS_OWNED_BY_APP = enums.ImGuiViewportFlags_OwnedByApp               # Platform Window: is created/managed by the application (rather than a dear imgui backend)
+
+# Internal exception used for the "only_if_x()" methods.
+# The intended usage is throwing this exception from a "only_if_x()"
+# method of a _BeginEndX class below, which would then catch it in its
+# __exit__ method. This allows the user to skip the content of "with" blocks/statements:
+# with imgui.begin_popup("Example") as popup, popup.only_if_open():
+#     imgui.text("This will be skipped if the popup isn't open!")
+# Or also:
+# with imgui.begin_popup("Example") as popup:
+#     popup.only_if_open()
+#     imgui.text("This will be skipped if the popup isn't open!")
+from cpython.exc cimport PyErr_NewException
+cdef public _ImGuiOnlyIf "_ImGuiOnlyIf" = PyErr_NewException(
+    "imgui.core._ImGuiOnlyIf", Exception, {}
+)
 
 include "imgui/common.pyx"
 
@@ -5385,16 +5398,17 @@ cdef class _BeginEndListBox(object):
         self.opened = opened
 
     def __enter__(self):
-        if not self.opened:
-            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndListBox()
         else:
-            _skip_with_cleanup()
-            return exc_type is _SkipWithStatement
+            return exc_type is _ImGuiOnlyIf
+
+    def only_if_open(self):
+        if not self.opened:
+            raise _ImGuiOnlyIf
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -5631,16 +5645,17 @@ cdef class _BeginEndMainMenuBar(object):
         self.opened = opened
 
     def __enter__(self):
-        if not self.opened:
-            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndMainMenuBar()
         else:
-            _skip_with_cleanup()
-            return exc_type is _SkipWithStatement
+            return exc_type is _ImGuiOnlyIf
+
+    def only_if_open(self):
+        if not self.opened:
+            raise _ImGuiOnlyIf
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -5746,16 +5761,17 @@ cdef class _BeginEndMenuBar(object):
         self.opened = opened
 
     def __enter__(self):
-        if not self.opened:
-            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndMenuBar()
         else:
-            _skip_with_cleanup()
-            return exc_type is _SkipWithStatement
+            return exc_type is _ImGuiOnlyIf
+
+    def only_if_open(self):
+        if not self.opened:
+            raise _ImGuiOnlyIf
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -5859,16 +5875,17 @@ cdef class _BeginEndMenu(object):
         self.opened = opened
 
     def __enter__(self):
-        if not self.opened:
-            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndMenu()
         else:
-            _skip_with_cleanup()
-            return exc_type is _SkipWithStatement
+            return exc_type is _ImGuiOnlyIf
+
+    def only_if_open(self):
+        if not self.opened:
+            raise _ImGuiOnlyIf
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -6055,16 +6072,17 @@ cdef class _BeginEndPopup(object):
         self.opened = opened
 
     def __enter__(self):
-        if not self.opened:
-            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndPopup()
         else:
-            _skip_with_cleanup()
-            return exc_type is _SkipWithStatement
+            return exc_type is _ImGuiOnlyIf
+
+    def only_if_open(self):
+        if not self.opened:
+            raise _ImGuiOnlyIf
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -6171,16 +6189,17 @@ cdef class _BeginEndPopupModal(object):
         self.visible = visible
 
     def __enter__(self):
-        if not self.opened:
-            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndPopup()
         else:
-            _skip_with_cleanup()
-            return exc_type is _SkipWithStatement
+            return exc_type is _ImGuiOnlyIf
+
+    def only_if_open(self):
+        if not self.opened:
+            raise _ImGuiOnlyIf
 
     def __getitem__(self, item):
         """For legacy support, returns ``(opened, visible)[item]``."""
@@ -6483,16 +6502,17 @@ cdef class _BeginEndTable(object):
         self.opened = opened
 
     def __enter__(self):
-        if not self.opened:
-            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndTable()
         else:
-            _skip_with_cleanup()
-            return exc_type is _SkipWithStatement
+            return exc_type is _ImGuiOnlyIf
+
+    def only_if_open(self):
+        if not self.opened:
+            raise _ImGuiOnlyIf
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -11795,16 +11815,17 @@ cdef class _BeginEndTabBar(object):
         self.opened = opened
 
     def __enter__(self):
-        if not self.opened:
-            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.opened:
             cimgui.EndTabBar()
         else:
-            _skip_with_cleanup()
-            return exc_type is _SkipWithStatement
+            return exc_type is _ImGuiOnlyIf
+
+    def only_if_open(self):
+        if not self.opened:
+            raise _ImGuiOnlyIf
 
     def __bool__(self):
         """For legacy support, returns ``opened``."""
@@ -11874,16 +11895,17 @@ cdef class _BeginEndTabItem(object):
         self.opened = opened
 
     def __enter__(self):
-        if not self.selected:
-            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.selected:
             cimgui.EndTabItem()
         else:
-            _skip_with_cleanup()
-            return exc_type is _SkipWithStatement
+            return exc_type is _ImGuiOnlyIf
+
+    def only_if_selected(self):
+        if not self.selected:
+            raise _ImGuiOnlyIf
 
     def __getitem__(self, item):
         """For legacy support, returns ``(selected, opened)[item]``."""
@@ -12083,16 +12105,17 @@ cdef class _BeginEndDragDropSource(object):
         self.dragging = dragging
 
     def __enter__(self):
-        if not self.dragging:
-            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.dragging:
             cimgui.EndDragDropSource()
         else:
-            _skip_with_cleanup()
-            return exc_type is _SkipWithStatement
+            return exc_type is _ImGuiOnlyIf
+
+    def only_if_dragging(self):
+        if not self.dragging:
+            raise _ImGuiOnlyIf
 
     def __bool__(self):
         """For legacy support, returns ``dragging``."""
@@ -12224,16 +12247,17 @@ cdef class _BeginEndDragDropTarget(object):
         self.hovered = hovered
 
     def __enter__(self):
-        if not self.hovered:
-            _skip_with_init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.hovered:
             cimgui.EndDragDropTarget()
         else:
-            _skip_with_cleanup()
-            return exc_type is _SkipWithStatement
+            return exc_type is _ImGuiOnlyIf
+
+    def only_if_hovered(self):
+        if not self.hovered:
+            raise _ImGuiOnlyIf
 
     def __bool__(self):
         """For legacy support, returns ``hovered``."""
