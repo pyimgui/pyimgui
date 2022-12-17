@@ -5,17 +5,17 @@ imgui.integrations subpackage
     :undoc-members:
     :members:
 
-imgui.integrations.cocos2d module
----------------------------------
-
-.. automodule:: imgui.integrations.cocos2d
-    :undoc-members:
-    :members:
-
 imgui.integrations.glfw module
 ------------------------------
 
 .. automodule:: imgui.integrations.glfw
+    :undoc-members:
+    :members:
+
+imgui.integrations.cocos2d module
+---------------------------------
+
+.. automodule:: imgui.integrations.cocos2d
     :undoc-members:
     :members:
 

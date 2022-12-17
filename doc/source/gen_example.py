@@ -58,7 +58,7 @@ def find_fonts(source):
 
     font_path = os.path.join(
         os.path.dirname(__file__),
-        '..', '..', 'imgui-cpp', 'misc', 'fonts', font_name
+        '../../imgui-cpp/misc/fonts', font_name
     )
     return source.replace(font_name, font_path)
 

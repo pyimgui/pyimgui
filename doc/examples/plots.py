@@ -1,15 +1,18 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from array import array
+from imgui.integrations.glfw import GlfwRenderer
 from math import sin, pi
 from random import random
-
-import glfw
-import OpenGL.GL as gl
-import imgui
-from imgui.integrations.glfw import GlfwRenderer
 from time import time
+import OpenGL.GL as gl
+import glfw
+import imgui
+import sys
 
 
-C = .01
+C = 0.01
 L = int(pi * 2 * 100)
 
 
@@ -18,8 +21,8 @@ def main():
     imgui.create_context()
     impl = GlfwRenderer(window)
 
-    plot_values = array('f', [sin(x * C) for x in range(L)])
-    histogram_values = array('f', [random() for _ in range(20)])
+    plot_values = array("f", [sin(x * C) for x in range(L)])
+    histogram_values = array("f", [random() for _ in range(20)])
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
@@ -48,10 +51,9 @@ def main():
             graph_size=(0, 50),
         )
 
-
         imgui.end()
 
-        gl.glClearColor(1., 1., 1., 1)
+        gl.glClearColor(1.0, 1.0, 1.0, 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         imgui.render()
@@ -68,7 +70,7 @@ def impl_glfw_init():
 
     if not glfw.init():
         print("Could not initialize OpenGL context")
-        exit(1)
+        sys.exit(1)
 
     # OS X supports only forward-compatible core profiles from 3.2
     glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
@@ -78,15 +80,13 @@ def impl_glfw_init():
     glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
 
     # Create a windowed mode window and its OpenGL context
-    window = glfw.create_window(
-        int(width), int(height), window_name, None, None
-    )
+    window = glfw.create_window(int(width), int(height), window_name, None, None)
     glfw.make_context_current(window)
 
     if not window:
         glfw.terminate()
         print("Could not initialize Window")
-        exit(1)
+        sys.exit(1)
 
     return window
 

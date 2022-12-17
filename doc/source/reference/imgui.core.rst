@@ -17,7 +17,7 @@ imgui.core module
     :undoc-members:
 
 
-.. autoclass:: _StaticGlyphRanges
+.. autoclass:: imgui.core._StaticGlyphRanges
     :members:
     :undoc-members:
 

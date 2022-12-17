@@ -1,6 +1,4 @@
 
-.. include:: readme.rst
-
 
 Contents
 ========
