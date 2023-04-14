@@ -1552,7 +1552,8 @@ cdef class _IO(object):
             if isinstance(value, bytes):
                 value_c = value
             elif isinstance(value, str):
-                value_c = value.encode('utf-8')
+                value = value.encode('utf-8')
+                value_c = value
             else:
                 raise TypeError("Expected bytes or str, got %s" % type(value))
         self._keep_ini_alive = value_c
