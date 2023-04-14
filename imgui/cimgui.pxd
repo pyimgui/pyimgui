@@ -1286,13 +1286,13 @@ cdef extern from "imgui.h" namespace "ImGui":
 
     # ====
     # Widgets: Combo Box
-    bool BeginCombo( # ✗
+    bool BeginCombo( # ✓
             const char* label, 
             const char* preview_value, 
             # note: optional
             ImGuiComboFlags flags       # = 0
     ) except + 
-    bool EndCombo() except + # ✗
+    bool EndCombo() except + # ✓
     bool Combo(  # ✓
             const char* label, 
             int* current_item,
