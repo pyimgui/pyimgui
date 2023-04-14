@@ -1479,7 +1479,7 @@ cdef class _IO(object):
     cdef object _keep_logfile_alive
 
     def __init__(self):
-        
+
         self._ptr = &cimgui.GetIO()
         self._fonts = _FontAtlas.from_ptr(self._ptr.Fonts)
 
@@ -1555,8 +1555,8 @@ cdef class _IO(object):
                 value_c = value.encode('utf-8')
             else:
                 raise TypeError("Expected bytes or str, got %s" % type(value))
-        self._keep_ini_alive = value
-        self._ptr.IniFilename = value
+        self._keep_ini_alive = value_c
+        self._ptr.IniFilename = value_c
 
     @property
     def mouse_double_click_time(self):
