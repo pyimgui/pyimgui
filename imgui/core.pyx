@@ -1545,7 +1545,16 @@ cdef class _IO(object):
         return self._ptr.IniFilename
 
     @ini_file_name.setter
-    def ini_file_name(self, char* value):
+    def ini_file_name(self, value):
+        # if value is None, convert to NULL, elif value is bytes or str, convert to char*
+        cdef char* value_c = NULL
+        if value is not None:
+            if isinstance(value, bytes):
+                value_c = value
+            elif isinstance(value, str):
+                value_c = value.encode('utf-8')
+            else:
+                raise TypeError("Expected bytes or str, got %s" % type(value))
         self._keep_ini_alive = value
         self._ptr.IniFilename = value
 
