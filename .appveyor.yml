@@ -6,8 +6,8 @@ image:
 
 environment:
   matrix:
-    - CIBW_BUILD: "cp311-*"
     - CIBW_BUILD: "cp310-*"
+    - CIBW_BUILD: "cp311-*"
     - CIBW_BUILD: "cp39-*"
     - CIBW_BUILD: "cp38-*"
     - CIBW_BUILD: "cp37-*"
@@ -25,7 +25,7 @@ init:
 install:  |
   python --version
   git submodule update --init --recursive
-  python -m pip install cibuildwheel==2.11.2
+  python -m pip install cibuildwheel==2.12.1
 
 build_script: python -m cibuildwheel --output-dir dist
 
