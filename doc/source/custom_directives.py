@@ -211,11 +211,19 @@ class VisualBuilder(Builder):
         ) and 'visualnodetype' in node
 
     def collect_doc(self, docname, doctree):
-        return [
-            (node.source, node.astext())
-            for node in doctree.traverse(self.traverse_condition)
-        ]
-
+        # Note(Sam): From Sphinx 6 we have to use doctree.findall() instead of doctree.traverse()
+        # however sphinx 6 requires at least pyhton 3.8. This check will be removable once
+        # we fully drop python 3.7 support
+        if(callable(getattr(doctree,'findall',None))):
+            return [
+                (node.source, node.astext())
+                for node in doctree.findall(self.traverse_condition)
+            ]
+        else:
+            return [
+                (node.source, node.astext())
+                for node in doctree.traverse(self.traverse_condition)
+            ]
 
 def setup(app):
     app.add_config_value('render_examples', False, 'html')
