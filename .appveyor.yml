@@ -7,24 +7,15 @@ image:
 environment:
   matrix:
     - CIBW_BUILD: "cp310-*"
-      CIBW_SKIP: ""
     - CIBW_BUILD: "cp311-*"
-      CIBW_SKIP: ""
     - CIBW_BUILD: "cp39-*"
-      CIBW_SKIP: ""
     - CIBW_BUILD: "cp38-*"
-      CIBW_SKIP: ""
     - CIBW_BUILD: "cp37-*"
-      CIBW_SKIP: ""
     - CIBW_BUILD: "cp36-*"
-      CIBW_SKIP: ""
 
     - CIBW_BUILD: "pp39-*"
-      CIBW_SKIP: ""
     - CIBW_BUILD: "pp38-*"
-      CIBW_SKIP: ""
     - CIBW_BUILD: "pp37-*"
-      CIBW_SKIP: ""
 
 stack: python 3.7
 
