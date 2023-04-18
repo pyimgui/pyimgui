@@ -29,7 +29,7 @@ clean:
 .PHONY: build
 build: bootstrap
 	_CYTHONIZE_WITH_COVERAGE=1 ${PYTHON} -m pip install -e . -v
-	${PYTHON} ci/completion.py -o README.md with-pxd imgui/cimgui.pxd
+	${PYTHON} ci/completion.py -o README.md with-pxd imgui/cimgui.pxd imgui/internal.pxd
 
 
 .PHONY: rebuild

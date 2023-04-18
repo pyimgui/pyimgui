@@ -9,6 +9,9 @@ from inspect import currentframe, getframeinfo
 from _pytest.outcomes import Skipped
 from sphinx.application import Sphinx
 
+from pathlib import Path
+import inspect
+
 PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 sphinx = None
 
@@ -35,7 +38,10 @@ def _ns(locals_, globals_):
     return ns
 
 class SphinxDoc(pytest.File):
-    def __init__(self, path, parent):
+    @classmethod
+    def from_parent(cls, parent, *, fspath):
+        path = Path(fspath)
+
         # yuck!
         global sphinx
         if sphinx is None:
@@ -49,22 +55,32 @@ class SphinxDoc(pytest.File):
                 buildername='vistest',
             )
 
-        super(SphinxDoc, self).__init__(path, parent)
+        # Check the signature of the from_parent method
+        # Note(Sam): This hack won't be needed once we drop p3.7 support
+        # it is required because Sphinx6 requires p3.8
+        sig = inspect.signature(super().from_parent)
+        if 'path' in sig.parameters:
+            # Sphinx version >= 6, use path
+            return super().from_parent(parent, path=path)
+        else:
+            # Sphinx version < 6, use fspath
+            return super().from_parent(parent, fspath=fspath)
 
     def collect(self):
         # build only specified file
         sphinx.build(filenames=[self.fspath.relto(project_path())])
 
         return [
-            DocItem(name or "anonymous", self, code)
+            DocItem.from_parent(self, name=name or "anonymous", code=code)
             for (name, code) in sphinx.builder.snippets
         ]
 
-
 class DocItem(pytest.Item):
-    def __init__(self, name, parent, code):
-        super(DocItem, self).__init__(name, parent)
+    @classmethod
+    def from_parent(cls, parent, *, name, code):
+        self = super().from_parent(parent, name=name)
         self.code = code
+        return self
 
     def runtest(self):
         self.exec_snippet(self.code)
@@ -148,8 +164,6 @@ class DocItem(pytest.Item):
 class ExecException(Exception):
     pass
 
-
 def pytest_collect_file(parent, path):
-
     if path.ext == '.rst' and 'source' in path.dirname:
-        return SphinxDoc(path, parent)
+        return SphinxDoc.from_parent(parent, fspath=path)

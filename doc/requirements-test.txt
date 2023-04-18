@@ -8,13 +8,16 @@ wheel
 
 Sphinx==1.6.7; python_version < '3.7.0'
 # note: But older versions wont collect tests on Python 3.7
-Sphinx==1.8.1; python_version >= '3.7.0'
+Sphinx==1.8.1; python_version >= '3.7.0' and python_version < '3.8'
+Sphinx==6.1.3; python_version >= '3.8.0'
+
+markupsafe==0.23; python_version >= '3.7.0' and python_version < '3.8'
 
 
 # note: Colorama is dependency of Sphinx but latest version will fail to
 #       install on Python 3.3
-colorama<0.4; sys.platform == 'win32'
-docutils<0.13.1
+colorama<0.4; sys.platform == 'win32' and python_version < '3.8'
+docutils<0.13.1; python_version < '3.8'
 mock
 
 # note: we still build wheels for Python2.7. pytest 5.x dropped support for
@@ -23,6 +26,8 @@ mock
 #       it's better set version constraint until we drop old Python versions
 #       rather then add some more compat shims
 # future: remove once we obsolete Python3.7
-pytest<6.0.0
+pytest<6.0.0;  python_version < '3.8'
+pytest<=7.3.0; python_version >= '3.8'
 
 coveralls
+#Pillow

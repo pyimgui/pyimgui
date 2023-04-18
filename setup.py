@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import sysconfig
 from itertools import chain
 
 from setuptools import setup, Extension, find_packages
@@ -43,17 +44,22 @@ VERSION = get_version(eval(version_line.split('=')[-1]))
 README = os.path.join(os.path.dirname(__file__), 'README.md')
 
 
-if sys.platform in ('cygwin', 'win32'):  # windows
+if sys.platform in ('cygwin', 'win32') and not sysconfig.get_platform().startswith('mingw'):  # Windows if not under MinGW
     # note: `/FI` means forced include in VC++/VC
     # note: may be obsoleted in future if ImGui gets patched
     os_specific_flags = ['/FIpy_imconfig.h']
+    os_specific_libraries = []
     # placeholder for future
     os_specific_macros = []
-else:  # OS X and Linux
+else:  # OS X, Linux and Windows under MinGW (uses gcc)
     # note: `-include` means forced include in GCC/clang
     # note: may be obsoleted in future if ImGui gets patched
     # placeholder for future
     os_specific_flags = ['-includeconfig-cpp/py_imconfig.h']
+    if sysconfig.get_platform().startswith('mingw'):
+        os_specific_libraries = ["imm32"]
+    else:
+        os_specific_libraries = []
     os_specific_macros = []
 
 
@@ -73,7 +79,7 @@ else:
 
 def extension_sources(path):
     sources = ["{0}{1}".format(path, '.pyx' if USE_CYTHON else '.cpp')]
-
+    
     if not USE_CYTHON:
         # note: Cython will pick these files automatically but when building
         #       a plain C++ sdist without Cython we need to explicitly mark
@@ -83,6 +89,7 @@ def extension_sources(path):
             'imgui-cpp/imgui_draw.cpp',
             'imgui-cpp/imgui_demo.cpp',
             'imgui-cpp/imgui_widgets.cpp',
+            'imgui-cpp/imgui_tables.cpp',
             'config-cpp/py_imconfig.cpp'
         ]
 
@@ -95,7 +102,6 @@ def backend_extras(*requirements):
     All built-in backends depend on PyOpenGL so add it as default requirement.
     """
     return ["PyOpenGL"] + list(requirements)
-
 
 EXTRAS_REQUIRE = {
     'Cython':  ['Cython>=0.24,<0.30'],
@@ -121,6 +127,17 @@ EXTENSIONS = [
     Extension(
         "imgui.core", extension_sources("imgui/core"),
         extra_compile_args=os_specific_flags,
+        libraries=os_specific_libraries,
+        define_macros=[
+            # note: for raising custom exceptions directly in ImGui code
+            ('PYIMGUI_CUSTOM_EXCEPTION', None)
+        ] + os_specific_macros + general_macros,
+        include_dirs=['imgui', 'config-cpp', 'imgui-cpp', 'ansifeed-cpp'],
+    ),
+    Extension(
+        "imgui.internal", extension_sources("imgui/internal"),
+        extra_compile_args=os_specific_flags,
+        libraries=os_specific_libraries,
         define_macros=[
             # note: for raising custom exceptions directly in ImGui code
             ('PYIMGUI_CUSTOM_EXCEPTION', None)
@@ -142,7 +159,7 @@ setup(
     long_description=read(README),
     long_description_content_type="text/markdown",
 
-    url="https://github.com/swistakm/pyimgui",
+    url="https://github.com/pyimgui/pyimgui",
 
     ext_modules=cythonize(
         EXTENSIONS,
@@ -157,14 +174,12 @@ setup(
         'License :: OSI Approved :: BSD License',
 
         'Programming Language :: Cython',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
 
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Cython',

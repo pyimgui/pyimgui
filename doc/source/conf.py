@@ -32,37 +32,44 @@ sys.path.insert(0, DOC_SOURCES_DIR)
 # because of that. Am I right?
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd:
-    from convert_readme import convert_md
-    convert_md()
+    #from convert_readme import convert_md
+    #convert_md()
+    #
+    #render_examples = False
+    #
+    ## hack for lacking git-lfs support on rtd
+    #import git_lfs
+    #try:
+    #    from urllib.error import HTTPError
+    #except ImportError:
+    #    from urllib2 import HTTPError
+    #
+    #_fetch_urls = git_lfs.fetch_urls
+    #
+    #def _patched_fetch_urls(lfs_url, oid_list):
+    #    """Hack git_lfs library that sometimes makes too big requests"""
+    #    objects = []
+    #
+    #    try:
+    #        objects.extend(_fetch_urls(lfs_url, oid_list))
+    #    except HTTPError as err:
+    #        if err.code != 413:
+    #            raise
+    #        logger.error("LFS: request entity too large, splitting in half")
+    #        objects.extend(_patched_fetch_urls(lfs_url, oid_list[:len(oid_list) // 2]))
+    #        objects.extend(_patched_fetch_urls(lfs_url, oid_list[len(oid_list) // 2:]))
+    #
+    #    return objects
+    #
+    #git_lfs.fetch_urls = _patched_fetch_urls
+    #git_lfs.fetch(PROJECT_ROOT_DIR)
 
-    render_examples = False
-
-    # hack for lacking git-lfs support on rtd
-    import git_lfs
-    try:
-        from urllib.error import HTTPError
-    except ImportError:
-        from urllib2 import HTTPError
-
-    _fetch_urls = git_lfs.fetch_urls
-
-    def _patched_fetch_urls(lfs_url, oid_list):
-        """Hack git_lfs library that sometimes makes too big requests"""
-        objects = []
-
-        try:
-            objects.extend(_fetch_urls(lfs_url, oid_list))
-        except HTTPError as err:
-            if err.code != 413:
-                raise
-            logger.error("LFS: request entity too large, splitting in half")
-            objects.extend(_patched_fetch_urls(lfs_url, oid_list[:len(oid_list) // 2]))
-            objects.extend(_patched_fetch_urls(lfs_url, oid_list[len(oid_list) // 2:]))
-
-        return objects
-
-    git_lfs.fetch_urls = _patched_fetch_urls
-    git_lfs.fetch(PROJECT_ROOT_DIR)
+    if not os.path.exists('./git-lfs'):
+        os.system('wget https://github.com/git-lfs/git-lfs/releases/download/v2.7.1/git-lfs-linux-amd64-v2.7.1.tar.gz')
+        os.system('tar xvfz git-lfs-linux-amd64-v2.7.1.tar.gz')
+        os.system('./git-lfs install')  # make lfs available in current repository
+        os.system('./git-lfs fetch')  # download content from remote
+        os.system('./git-lfs checkout')  # make local files to have the real content on them
 
 else:
     render_examples = True
@@ -135,7 +142,7 @@ release = VERSION
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:

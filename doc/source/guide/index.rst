@@ -14,4 +14,8 @@ Usage guide
    treenode-flags
    selectable-flag
    inputtext-flags
+   slider-flags
+   combo-flags
+   tabbar-flags
+   draw-flags
 
