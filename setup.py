@@ -159,7 +159,7 @@ setup(
     long_description=read(README),
     long_description_content_type="text/markdown",
 
-    url="https://github.com/swistakm/pyimgui",
+    url="https://github.com/pyimgui/pyimgui",
 
     ext_modules=cythonize(
         EXTENSIONS,

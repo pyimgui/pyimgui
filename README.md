@@ -1,7 +1,6 @@
 [![completion](https://img.shields.io/badge/completion-72%25%20%28536%20of%20735%29-blue.svg)](https://github.com/pyimgui/pyimgui)
-[![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=dev-version-2.0)](https://pyimgui.readthedocs.io/en/latest/?badge=dev-version-2.0)
-[![Build status](https://ci.appveyor.com/api/projects/status/mr97t941p6k4c261/branch/dev/version-2.0?svg=true)](https://ci.appveyor.com/project/KinoxKlark/pyimgui/branch/dev/version-2.0)
-<!--[![Coverage Status](https://coveralls.io/repos/github/pyimgui/pyimgui/badge.svg?branch=master)](https://coveralls.io/github/swistakm/pyimgui?branch=master)-->
+[![Documentation Status](https://readthedocs.org/projects/pyimgui/badge/?version=latest)](https://pyimgui.readthedocs.io/en/latest/?badge=latest)
+[![Build status](https://ci.appveyor.com/api/projects/status/mr97t941p6k4c261/branch/master?svg=true)](https://ci.appveyor.com/project/KinoxKlark/pyimgui/branch/master)
 
 # pyimgui
 
@@ -9,7 +8,7 @@ Python bindings for the amazing
 [dear imgui](https://github.com/ocornut/imgui) C++ library - a Bloat-free
 Immediate Mode Graphical User Interface.
 
-Documentation: [pyimgui.readthedocs.io](https://pyimgui.readthedocs.io/en/latest/index.html)
+Documentation: [pyimgui.readthedocs.io](https://pyimgui.readthedocs.io/en/latest/)
 
 # Installation
 
@@ -36,7 +35,7 @@ section of this documentation page.
 
 # Project status
 
-The `imgui` package provides support for the majority of core ImGui widgets and
+The `imgui` package provides support for the majority of core DearImGui 1.82 widgets and
 functionalities. Some low-level API elements and complex widgets (like plots)
 may be missing. We are working hard to provide 100% feature mapping of the core
 ImGui library. The *completion badge* shows up-to-date status of that goal.
@@ -58,8 +57,12 @@ Python versions:
 * py37, pp37
 * py38, pp38
 * py39, pp39
+* py310
+* py311
 
-__Note:__ We dropped support for py27, py33, py34, and py35 starting from release 2.0. Those were supported until release [1.4.0](https://github.com/pyimgui/pyimgui/releases/tag/1.4.0). Pypy is only supported since release 2.0.
+__Note:__ We dropped support for py27, py33, py34, and py35 starting from release 2.0. 
+Those were supported until release [1.4.0](https://github.com/pyimgui/pyimgui/releases/tag/1.4.0). 
+Pypy is only supported since release 2.0.
 
 If none of these wheels work in your environment you can install the `imgui`
 package by compiling it directly from sdist distribution using one of following
@@ -72,11 +75,13 @@ commands:
     pip install imgui --no-binary imgui
 
 **pyimgui** provides documentation with multiple visual examples.
-Thanks to custom Sphinx extensions, we are able to render GUI examples off-screen directly from docstring snippets. These examples work also as automated functional tests. Documentation is hosted on
+Thanks to custom Sphinx extensions, we are able to render GUI examples off-screen directly from docstring 
+snippets. These examples work also as automated functional tests. Documentation is hosted on
 [pyimgui.readthedocs.io](https://pyimgui.readthedocs.io/en/latest/index.html).
 
 # Contributing
-Contributions are welcomed. If you want to help us by fixing bugs, mapping functions, or adding new features, please feel free to do so and propose a pull request.
+Contributions are welcomed. If you want to help us by fixing bugs, mapping functions, or adding new features, 
+please feel free to do so and propose a pull request.
 
 Development tips and information for developers are given in [HACKING.md](HACKING.md).
 
