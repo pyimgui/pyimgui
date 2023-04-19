@@ -11,7 +11,7 @@ from .opengl import ProgrammablePipelineRenderer
 
 
 class GlfwRenderer(ProgrammablePipelineRenderer):
-    def __init__(self, window, attach_callbacks=True):
+    def __init__(self, window, attach_callbacks: bool = True):
         super(GlfwRenderer, self).__init__()
         self.window = window
 
@@ -49,10 +49,13 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         key_map[imgui.KEY_PAGE_DOWN] = glfw.KEY_PAGE_DOWN
         key_map[imgui.KEY_HOME] = glfw.KEY_HOME
         key_map[imgui.KEY_END] = glfw.KEY_END
+        key_map[imgui.KEY_INSERT] = glfw.KEY_INSERT
         key_map[imgui.KEY_DELETE] = glfw.KEY_DELETE
         key_map[imgui.KEY_BACKSPACE] = glfw.KEY_BACKSPACE
+        key_map[imgui.KEY_SPACE] = glfw.KEY_SPACE
         key_map[imgui.KEY_ENTER] = glfw.KEY_ENTER
         key_map[imgui.KEY_ESCAPE] = glfw.KEY_ESCAPE
+        key_map[imgui.KEY_PAD_ENTER] = glfw.KEY_KP_ENTER
         key_map[imgui.KEY_A] = glfw.KEY_A
         key_map[imgui.KEY_C] = glfw.KEY_C
         key_map[imgui.KEY_V] = glfw.KEY_V
@@ -70,23 +73,23 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             io.keys_down[key] = False
 
         io.key_ctrl = (
-            io.keys_down[glfw.KEY_LEFT_CONTROL] or
-            io.keys_down[glfw.KEY_RIGHT_CONTROL]
+                io.keys_down[glfw.KEY_LEFT_CONTROL] or
+                io.keys_down[glfw.KEY_RIGHT_CONTROL]
         )
 
         io.key_alt = (
-            io.keys_down[glfw.KEY_LEFT_ALT] or
-            io.keys_down[glfw.KEY_RIGHT_ALT]
+                io.keys_down[glfw.KEY_LEFT_ALT] or
+                io.keys_down[glfw.KEY_RIGHT_ALT]
         )
 
         io.key_shift = (
-            io.keys_down[glfw.KEY_LEFT_SHIFT] or
-            io.keys_down[glfw.KEY_RIGHT_SHIFT]
+                io.keys_down[glfw.KEY_LEFT_SHIFT] or
+                io.keys_down[glfw.KEY_RIGHT_SHIFT]
         )
 
         io.key_super = (
-            io.keys_down[glfw.KEY_LEFT_SUPER] or
-            io.keys_down[glfw.KEY_RIGHT_SUPER]
+                io.keys_down[glfw.KEY_LEFT_SUPER] or
+                io.keys_down[glfw.KEY_RIGHT_SUPER]
         )
 
     def char_callback(self, window, char):
@@ -120,7 +123,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
 
         io.display_size = window_size
         io.display_fb_scale = compute_fb_scale(window_size, fb_size)
-        io.delta_time = 1.0/60
+        io.delta_time = 1.0 / 60
 
         if glfw.get_window_attrib(self.window, glfw.FOCUSED):
             io.mouse_pos = glfw.get_cursor_pos(self.window)
@@ -137,5 +140,6 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             self.io.delta_time = current_time - self._gui_time
         else:
             self.io.delta_time = 1. / 60.
+        if (io.delta_time <= 0.0): io.delta_time = 1. / 1000.
 
         self._gui_time = current_time
