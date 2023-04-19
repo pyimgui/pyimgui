@@ -1,23 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+import queue
+
 import glfw
 import imgui
 
 from . import compute_fb_scale
 from .opengl import ProgrammablePipelineRenderer
 
+
 class GlfwRenderer(ProgrammablePipelineRenderer):
-    def __init__(self, window, attach_callbacks:bool=True):
+    def __init__(self, window, attach_callbacks=True):
         super(GlfwRenderer, self).__init__()
         self.window = window
 
         if attach_callbacks:
-            glfw.set_key_callback(self.window, self.keyboard_callback)
-            glfw.set_cursor_pos_callback(self.window, self.mouse_callback)
-            glfw.set_window_size_callback(self.window, self.resize_callback)
-            glfw.set_char_callback(self.window, self.char_callback)
-            glfw.set_scroll_callback(self.window, self.scroll_callback)
+            glfw.set_key_callback(self.window, lambda *a: self.queue.put((self.keyboard_callback, a)))
+            glfw.set_cursor_pos_callback(self.window, lambda *a: self.queue.put((self.mouse_callback, a)))
+            glfw.set_window_size_callback(self.window, lambda *a: self.queue.put((self.resize_callback, a)))
+            glfw.set_char_callback(self.window, lambda *a: self.queue.put((self.char_callback, a)))
+            glfw.set_scroll_callback(self.window, lambda *a: self.queue.put((self.scroll_callback, a)))
 
         self.io.display_size = glfw.get_framebuffer_size(self.window)
         self.io.get_clipboard_text_fn = self._get_clipboard_text
@@ -25,6 +28,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
 
         self._map_keys()
         self._gui_time = None
+
+        self.queue = queue.Queue()
 
     def _get_clipboard_text(self):
         return glfw.get_clipboard_string(self.window)
@@ -44,13 +49,10 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         key_map[imgui.KEY_PAGE_DOWN] = glfw.KEY_PAGE_DOWN
         key_map[imgui.KEY_HOME] = glfw.KEY_HOME
         key_map[imgui.KEY_END] = glfw.KEY_END
-        key_map[imgui.KEY_INSERT] = glfw.KEY_INSERT
         key_map[imgui.KEY_DELETE] = glfw.KEY_DELETE
         key_map[imgui.KEY_BACKSPACE] = glfw.KEY_BACKSPACE
-        key_map[imgui.KEY_SPACE] = glfw.KEY_SPACE
         key_map[imgui.KEY_ENTER] = glfw.KEY_ENTER
         key_map[imgui.KEY_ESCAPE] = glfw.KEY_ESCAPE
-        key_map[imgui.KEY_PAD_ENTER] = glfw.KEY_KP_ENTER
         key_map[imgui.KEY_A] = glfw.KEY_A
         key_map[imgui.KEY_C] = glfw.KEY_C
         key_map[imgui.KEY_V] = glfw.KEY_V
@@ -104,6 +106,13 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         self.io.mouse_wheel = y_offset
 
     def process_inputs(self):
+        try:
+            while True:
+                callback, args = self.queue.get_nowait()
+                callback(*args)
+        except queue.Empty:
+            pass
+
         io = imgui.get_io()
 
         window_size = glfw.get_window_size(self.window)
@@ -128,6 +137,5 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             self.io.delta_time = current_time - self._gui_time
         else:
             self.io.delta_time = 1. / 60.
-        if(io.delta_time <= 0.0): io.delta_time = 1./ 1000.
 
         self._gui_time = current_time
