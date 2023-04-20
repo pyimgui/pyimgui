@@ -45,6 +45,6 @@ artifacts:
   - path: "dist\\*.whl"
     name: Wheels
 
-# TODO: tmp - set this back to true
 matrix:
-  fast_finish: false
+  fast_finish: true
+
