@@ -23,7 +23,7 @@ bootstrap: .bootstrapped ;
 
 .PHONY: clean
 clean:
-	rm -rf imgui/*.cpp imgui/*.c imgui/*.h imgui/*.so build/*
+	rm -rf imgui/*.cpp imgui/*.c imgui/*.h imgui/*.so build/* imgui/dll
 
 
 .PHONY: build
