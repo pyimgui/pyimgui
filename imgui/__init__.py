@@ -870,7 +870,7 @@ BACKEND_HAS_SET_MOUSE_POS = core.BACKEND_HAS_SET_MOUSE_POS
 BACKEND_RENDERER_HAS_VTX_OFFSET = core.BACKEND_RENDERER_HAS_VTX_OFFSET
 #: Backend Platform supports multiple viewports.
 BACKEND_PLATFORM_HAS_VIEWPORTS = core.BACKEND_PLATFORM_HAS_VIEWPORTS
-#: Backend Platform supports setting io.MouseHoveredViewport to the viewport directly under the mouse _IGNORING_ viewports with the ImGuiViewportFlags_NoInputs flag and _REGARDLESS_ of whether another viewport is focused and may be capturing the mouse. This information is _NOT EASY_ to provide correctly with most high-level engines! Don't set this without studying _carefully_ how the backends handle ImGuiViewportFlags_NoInputs!
+#: Backend Platform supports setting io.MouseHoveredViewport to the viewport directly under the mouse *IGNORING* viewports with the ImGuiViewportFlags_NoInputs flag and *REGARDLESS* of whether another viewport is focused and may be capturing the mouse. This information is *NOT EASY* to provide correctly with most high-level engines! Don't set this without studying *carefully* how the backends handle ImGuiViewportFlags_NoInputs!
 BACKEND_HAS_MOUSE_HOVERED_VIEWPORT = core.BACKEND_HAS_MOUSE_HOVERED_VIEWPORT
 #: Backend Renderer supports multiple viewports.
 BACKEND_RENDERER_HAS_VIEWPORTS = core.BACKEND_RENDERER_HAS_VIEWPORTS
