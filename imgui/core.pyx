@@ -40,7 +40,7 @@ cimport internal
 from cpython.version cimport PY_MAJOR_VERSION
 
 # todo: find a way to cimport this directly from imgui.h
-DEF TARGET_IMGUI_VERSION = (1, 79)
+DEF TARGET_IMGUI_VERSION = (1, 82)
 
 cdef unsigned int* _LATIN_ALL = [0x0020, 0x024F , 0]
 
