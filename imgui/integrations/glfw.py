@@ -15,6 +15,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         super(GlfwRenderer, self).__init__()
         self.window = window
 
+        self.queue = queue.Queue()
+
         if attach_callbacks:
             glfw.set_key_callback(self.window, lambda *a: self.queue.put((self.keyboard_callback, a)))
             glfw.set_cursor_pos_callback(self.window, lambda *a: self.queue.put((self.mouse_callback, a)))
@@ -28,8 +30,6 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
 
         self._map_keys()
         self._gui_time = None
-
-        self.queue = queue.Queue()
 
     def _get_clipboard_text(self):
         return glfw.get_clipboard_string(self.window)
