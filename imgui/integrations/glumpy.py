@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+import queue
 
 import ctypes
 from ctypes import *
@@ -58,12 +59,14 @@ class GlumpyRenderer(BaseOpenGLRenderer):
     
         self.window = window
 
+        self.queue = queue.Queue()
+
         if attach_callbacks:
-            glfw.set_key_callback(self.window, self.keyboard_callback)
-            glfw.set_cursor_pos_callback(self.window, self.mouse_callback)
-            glfw.set_window_size_callback(self.window, self.resize_callback)
-            glfw.set_char_callback(self.window, self.char_callback)
-            glfw.set_scroll_callback(self.window, self.scroll_callback)
+            glfw.set_key_callback(self.window, lambda *a: self.queue((self.keyboard_callback,a)))
+            glfw.set_cursor_pos_callback(self.window, lambda *a: self.queue((self.mouse_callback,a)))
+            glfw.set_window_size_callback(self.window, lambda *a: self.queue((self.resize_callback,a)))
+            glfw.set_char_callback(self.window, lambda *a: self.queue((self.char_callback,a)))
+            glfw.set_scroll_callback(self.window, lambda *a: self.queue((self.scroll_callback,a)))
 
         self.io.display_size = glfw.get_framebuffer_size(self.window)
         #self.io.get_clipboard_text_fn = self._get_clipboard_text
@@ -151,6 +154,13 @@ class GlumpyRenderer(BaseOpenGLRenderer):
 
     def process_inputs(self):
         io = imgui.get_io()
+
+        try:
+            while True:
+                callback, args = self.queue.get_nowait()
+                callback(*args)
+        except queue.Empty:
+            pass
 
         window_size = glfw.get_window_size(self.window)
         fb_size = glfw.get_framebuffer_size(self.window)
