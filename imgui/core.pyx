@@ -20,10 +20,10 @@ try:
 except ImportError:
     from itertools import zip_longest as izip_longest
 
-from libc.stdlib cimport malloc, free
+from libc.stdlib cimport malloc, realloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
-from libc.string cimport strncpy
+from libc.string cimport strncpy, strlen
 from libc.float  cimport FLT_MIN
 from libc.float  cimport FLT_MAX
 from libcpp cimport bool
@@ -40,7 +40,7 @@ cimport internal
 from cpython.version cimport PY_MAJOR_VERSION
 
 # todo: find a way to cimport this directly from imgui.h
-DEF TARGET_IMGUI_VERSION = (1, 79)
+DEF TARGET_IMGUI_VERSION = (1, 82)
 
 cdef unsigned int* _LATIN_ALL = [0x0020, 0x024F , 0]
 
@@ -840,7 +840,8 @@ cdef class _DrawList(object):
             lower_right_y (float): Y coordinate of lower-right corner
             col (ImU32): RGBA color specification
             rounding (float): Degree of rounding, defaults to 0.0
-            flags (ImDrawFlags): Draw flags, defaults to 0
+            flags (ImDrawFlags): Draw flags, defaults to 0. See:
+                :ref:`list of available flags <draw-flag-options>`.
             thickness (float): Line thickness, defaults to 1.0
 
         .. wraps::
@@ -891,7 +892,8 @@ cdef class _DrawList(object):
             lower_right_y (float): Y coordinate of lower-right corner
             col (ImU32): RGBA color specification
             rounding (float): Degree of rounding, defaults to 0.0
-            flags (ImDrawFlags): Draw flags, defaults to 0
+            flags (ImDrawFlags): Draw flags, defaults to 0. See:
+                :ref:`list of available flags <draw-flag-options>`.
 
         .. wraps::
             void ImDrawList::AddRectFilled(
@@ -907,7 +909,364 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(lower_right_x, lower_right_y),
             col,
             rounding,
-            flags,
+            flags
+        )
+
+    def add_rect_filled_multicolor(
+            self,
+            float upper_left_x, float upper_left_y,
+            float lower_right_x, float lower_right_y,
+            cimgui.ImU32 col_upr_left,
+            cimgui.ImU32 col_upr_right,
+            cimgui.ImU32 col_bot_right,
+            cimgui.ImU32 col_bot_left
+        ):
+        """Add a multicolor filled rectangle to the draw list.
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Multicolored filled rect example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_rect_filled_multicolor(20, 35, 190, 80, imgui.get_color_u32_rgba(1,0,0,1),
+                imgui.get_color_u32_rgba(0,1,0,1), imgui.get_color_u32_rgba(0,0,1,1),
+                imgui.get_color_u32_rgba(1,1,1,1))
+            imgui.end()
+
+        Args:
+            upper_left_x (float): X coordinate of top-left corner
+            upper_left_y (float): Y coordinate of top-left corner
+            lower_right_x (float): X coordinate of lower-right corner
+            lower_right_y (float): Y coordinate of lower-right corner
+            col_upr_left (ImU32): RGBA color for the top left corner
+            col_upr_right (ImU32): RGBA color for the top right corner
+            col_bot_right (ImU32): RGBA color for the bottom right corner
+            col_bot_left (ImU32): RGBA color for the bottom left corner
+
+        .. wraps::
+            void ImDrawList::AddRectFilledMultiColor(
+                const ImVec2& a,
+                const ImVec2& b,
+                ImU32 col_upr_left,
+                ImU32 col_upr_right,
+                ImU32 col_bot_right,
+                ImU32 col_bot_left
+            )
+        """
+        self._ptr.AddRectFilledMultiColor(
+            _cast_args_ImVec2(upper_left_x, upper_left_y),
+            _cast_args_ImVec2(lower_right_x, lower_right_y),
+            col_upr_left,
+            col_upr_right,
+            col_bot_right,
+            col_bot_left
+        )
+
+    def add_quad(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            float point3_x, float point3_y,
+            float point4_x, float point4_y,
+            cimgui.ImU32 col,
+            # note: optional
+            float thickness = 1.0
+        ):
+        """Add a quad to the list.
+
+            .. visual-example::
+                :auto_layout:
+                :width: 200
+                :height: 100
+
+                imgui.begin("Quad example")
+                draw_list = imgui.get_window_draw_list()
+                draw_list.add_quad(20, 35, 85, 30, 90, 80, 17, 76, imgui.get_color_u32_rgba(1,1,0,1))
+                draw_list.add_quad(110, 35, 177, 33, 180, 80, 112, 79, imgui.get_color_u32_rgba(1,0,0,1), 5)
+                imgui.end()
+
+            Args:
+                point1_x (float): X coordinate of first corner
+                point1_y (float): Y coordinate of first corner
+                point2_x (float): X coordinate of second corner
+                point2_y (float): Y coordinate of second corner
+                point3_x (float): X coordinate of third corner
+                point3_y (float): Y coordinate of third corner
+                point4_x (float): X coordinate of fourth corner
+                point4_y (float): Y coordinate of fourth corner
+                col (ImU32): RGBA color specification
+                thickness (float): Line thickness
+
+            .. wraps::
+                void ImDrawList::AddQuad(
+                    const ImVec2& p1,
+                    const ImVec2& p2,
+                    const ImVec2& p3,
+                    const ImVec2& p4,
+                    ImU32 col,
+                    float thickness = 1.0
+                )
+        """
+        self._ptr.AddQuad(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            _cast_args_ImVec2(point3_x, point3_y),
+            _cast_args_ImVec2(point4_x, point4_y),
+            col,
+            thickness
+        )
+
+    def add_quad_filled(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            float point3_x, float point3_y,
+            float point4_x, float point4_y,
+            cimgui.ImU32 col,
+        ):
+        """Add a filled quad to the list.
+
+            .. visual-example::
+                :auto_layout:
+                :width: 200
+                :height: 100
+
+                imgui.begin("Filled Quad example")
+                draw_list = imgui.get_window_draw_list()
+                draw_list.add_quad_filled(20, 35, 85, 30, 90, 80, 17, 76, imgui.get_color_u32_rgba(1,1,0,1))
+                draw_list.add_quad_filled(110, 35, 177, 33, 180, 80, 112, 79, imgui.get_color_u32_rgba(1,0,0,1))
+                imgui.end()
+
+            Args:
+                point1_x (float): X coordinate of first corner
+                point1_y (float): Y coordinate of first corner
+                point2_x (float): X coordinate of second corner
+                point2_y (float): Y coordinate of second corner
+                point3_x (float): X coordinate of third corner
+                point3_y (float): Y coordinate of third corner
+                point4_x (float): X coordinate of fourth corner
+                point4_y (float): Y coordinate of fourth corner
+                col (ImU32): RGBA color specification
+
+            .. wraps::
+                void ImDrawList::AddQuadFilled(
+                    const ImVec2& p1,
+                    const ImVec2& p2,
+                    const ImVec2& p3,
+                    const ImVec2& p4,
+                    ImU32 col
+                )
+        """
+        self._ptr.AddQuadFilled(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            _cast_args_ImVec2(point3_x, point3_y),
+            _cast_args_ImVec2(point4_x, point4_y),
+            col
+        )
+
+    def add_triangle(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            float point3_x, float point3_y,
+            cimgui.ImU32 col,
+            # note: optional
+            float thickness = 1.0
+        ):
+        """Add a triangle to the list.
+
+            .. visual-example::
+                :auto_layout:
+                :width: 200
+                :height: 100
+
+                imgui.begin("Triangle example")
+                draw_list = imgui.get_window_draw_list()
+                draw_list.add_triangle(20, 35, 90, 35, 55, 80, imgui.get_color_u32_rgba(1,1,0,1))
+                draw_list.add_triangle(110, 35, 180, 35, 145, 80, imgui.get_color_u32_rgba(1,0,0,1), 5)
+                imgui.end()
+
+            Args:
+                point1_x (float): X coordinate of first corner
+                point1_y (float): Y coordinate of first corner
+                point2_x (float): X coordinate of second corner
+                point2_y (float): Y coordinate of second corner
+                point3_x (float): X coordinate of third corner
+                point3_y (float): Y coordinate of third corner
+                col (ImU32): RGBA color specification
+                thickness (float): Line thickness
+
+            .. wraps::
+                void ImDrawList::AddTriangle(
+                    const ImVec2& p1,
+                    const ImVec2& p2,
+                    const ImVec2& p3,
+                    ImU32 col,
+                    float thickness = 1.0
+                )
+        """
+        self._ptr.AddTriangle(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            _cast_args_ImVec2(point3_x, point3_y),
+            col,
+            thickness
+        )
+
+    def add_triangle_filled(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            float point3_x, float point3_y,
+            cimgui.ImU32 col,
+        ):
+        """Add a filled triangle to the list.
+
+            .. visual-example::
+                :auto_layout:
+                :width: 200
+                :height: 100
+
+                imgui.begin("Filled triangle example")
+                draw_list = imgui.get_window_draw_list()
+                draw_list.add_triangle_filled(20, 35, 90, 35, 55, 80, imgui.get_color_u32_rgba(1,1,0,1))
+                draw_list.add_triangle_filled(110, 35, 180, 35, 145, 80, imgui.get_color_u32_rgba(1,0,0,1))
+                imgui.end()
+
+            Args:
+                point1_x (float): X coordinate of first corner
+                point1_y (float): Y coordinate of first corner
+                point2_x (float): X coordinate of second corner
+                point2_y (float): Y coordinate of second corner
+                point3_x (float): X coordinate of third corner
+                point3_y (float): Y coordinate of third corner
+                col (ImU32): RGBA color specification
+
+            .. wraps::
+                void ImDrawList::AddTriangleFilled(
+                    const ImVec2& p1,
+                    const ImVec2& p2,
+                    const ImVec2& p3,
+                    ImU32 col
+                )
+        """
+        self._ptr.AddTriangleFilled(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            _cast_args_ImVec2(point3_x, point3_y),
+            col
+        )
+
+    def add_bezier_cubic(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            float point3_x, float point3_y,
+            float point4_x, float point4_y,
+            cimgui.ImU32 col,
+            float thickness,
+            # note: optional
+            int num_segments = 0
+        ):
+        """Add a cubic bezier curve to the list.
+
+            .. visual-example::
+                :auto_layout:
+                :width: 200
+                :height: 100
+
+                imgui.begin("Cubic bezier example")
+                draw_list = imgui.get_window_draw_list()
+                draw_list.add_bezier_cubic(20, 35, 90, 80, 110, 180, 145, 35, imgui.get_color_u32_rgba(1,1,0,1), 2)
+                imgui.end()
+
+            Args:
+                point1_x (float): X coordinate of first point
+                point1_y (float): Y coordinate of first point
+                point2_x (float): X coordinate of second point
+                point2_y (float): Y coordinate of second point
+                point3_x (float): X coordinate of third point
+                point3_y (float): Y coordinate of third point
+                point4_x (float): X coordinate of fourth point
+                point4_y (float): Y coordinate of fourth point
+                col (ImU32): RGBA color specification
+                thickness (float): Line thickness
+                num_segments (ImU32): Number of segments, defaults to 0 meaning auto-tesselation
+
+            .. wraps::
+                void ImDrawList::AddBezierCubic(
+                    const ImVec2& p1,
+                    const ImVec2& p2,
+                    const ImVec2& p3,
+                    const ImVec2& p4,
+                    ImU32 col,
+                    float thickness,
+                    int num_segments = 0
+                )
+        """
+        self._ptr.AddBezierCubic(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            _cast_args_ImVec2(point3_x, point3_y),
+            _cast_args_ImVec2(point4_x, point4_y),
+            col,
+            thickness,
+            num_segments
+        )
+
+    def add_bezier_quadratic(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            float point3_x, float point3_y,
+            cimgui.ImU32 col,
+            float thickness,
+            # note: optional
+            int num_segments = 0
+        ):
+        """Add a quadratic bezier curve to the list.
+
+            .. visual-example::
+                :auto_layout:
+                :width: 200
+                :height: 100
+
+                imgui.begin("Quadratic bezier example")
+                draw_list = imgui.get_window_draw_list()
+                draw_list.add_bezier_quadratic(20, 35, 90, 80, 145, 35, imgui.get_color_u32_rgba(1,1,0,1), 2)
+                imgui.end()
+
+            Args:
+                point1_x (float): X coordinate of first point
+                point1_y (float): Y coordinate of first point
+                point2_x (float): X coordinate of second point
+                point2_y (float): Y coordinate of second point
+                point3_x (float): X coordinate of third point
+                point3_y (float): Y coordinate of third point
+                col (ImU32): RGBA color specification
+                thickness (float): Line thickness
+                num_segments (ImU32): Number of segments, defaults to 0 meaning auto-tesselation
+
+            .. wraps::
+                void ImDrawList::AddBezierCubic(
+                    const ImVec2& p1,
+                    const ImVec2& p2,
+                    const ImVec2& p3,
+                    ImU32 col,
+                    float thickness,
+                    int num_segments = 0
+                )
+        """
+        self._ptr.AddBezierQuadratic(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            _cast_args_ImVec2(point3_x, point3_y),
+            col,
+            thickness,
+            num_segments
         )
 
     def add_circle(
@@ -1167,6 +1526,63 @@ cdef class _DrawList(object):
             col
         )
 
+    def add_image_rounded(self,
+        texture_id,
+        tuple a,
+        tuple b,
+        tuple uv_a=(0,0),
+        tuple uv_b=(1,1),
+        cimgui.ImU32 col=0xffffffff,
+        float rounding = 0.0,
+        cimgui.ImDrawFlags flags = 0):
+        """Add rounded image to the draw list. Aspect ratio is not preserved.
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Image example")
+            texture_id = imgui.get_io().fonts.texture_id
+            draw_list = imgui.get_window_draw_list()
+            draw_list.add_image_rounded(texture_id, (20, 35), (180, 80), col=imgui.get_color_u32_rgba(0.5,0.5,1,1), rounding=10)
+            imgui.end()
+
+        Args:
+            texture_id (object): ID of the texture to draw
+            a (tuple): top-left image corner coordinates,
+            b (tuple): bottom-right image corner coordinates,
+            uv_a (tuple): UV coordinates of the top-left corner, defaults to (0, 0)
+            uv_b (tuple): UV coordinates of the bottom-right corner, defaults to (1, 1)
+            col (ImU32): tint color, defaults to 0xffffffff (no tint)
+            rounding (float): degree of rounding, defaults to 0.0
+            flags (ImDrawFlags): draw flags, defaults to 0. See:
+                :ref:`list of available flags <draw-flag-options>`.
+
+        .. wraps::
+            void ImDrawList::AddImageRounded(
+                ImTextureID user_texture_id,
+                const ImVec2& a,
+                const ImVec2& b,
+                const ImVec2& uv_a = ImVec2(0,0),
+                const ImVec2& uv_b = ImVec2(1,1),
+                ImU32 col = 0xFFFFFFFF,
+                float rounding = 0.0f,
+                ImDrawFlags flags = 0
+            )
+        """
+        get_current_context()._keepalive_cache.append(texture_id)
+        self._ptr.AddImageRounded(
+            <void*>texture_id,
+            _cast_tuple_ImVec2(a),
+            _cast_tuple_ImVec2(b),
+            _cast_tuple_ImVec2(uv_a),
+            _cast_tuple_ImVec2(uv_b),
+            col,
+            rounding,
+            flags
+        )
+
     def add_polyline(
             self,
             list points,
@@ -1190,7 +1606,8 @@ cdef class _DrawList(object):
         Args:
             points (list): list of points
             col (float): RGBA color specification
-            flags (ImDrawFlags): Drawing flags
+            flags (ImDrawFlags): Drawing flags. See:
+                :ref:`list of available flags <draw-flag-options>`.
             thickness (float): line thickness
 
         .. wraps::
@@ -1215,6 +1632,271 @@ cdef class _DrawList(object):
             thickness
         )
         free(pts)
+
+    # Path related functions
+
+    def path_clear(self):
+        """
+        Clear the current list of path point
+
+        .. wraps::
+            void ImDrawList::PathClear()
+        """
+        self._ptr.PathClear()
+
+    def path_line_to(self, float x, float y):
+        """
+        Add a point to the path list
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path line to example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_line_to(20, 35)
+            draw_list.path_line_to(180, 80)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,1,0,1), flags=0, thickness=3)
+            draw_list.path_clear()
+            draw_list.path_line_to(180, 35)
+            draw_list.path_line_to(20, 80)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,0,0,1), flags=0, thickness=3)
+            imgui.end()
+
+        Args:
+            x (float): path point x coordinate
+            y (float): path point y coordinate
+
+        .. wraps::
+            void ImDrawList::PathLineTo(
+                const ImVec2& pos,
+            )
+        """
+        self._ptr.PathLineTo(
+            _cast_args_ImVec2(x, y)
+        )
+
+    def path_arc_to(
+            self,
+            float center_x, float center_y,
+            float radius,
+            float a_min, float a_max,
+            # note: optional
+            cimgui.ImU32 num_segments = 0
+        ):
+        """
+        Add an arc to the path list
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path arc to example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_arc_to(55, 60, 30, 1, 5)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,1,0,1), flags=0, thickness=3)
+            draw_list.path_clear()
+            draw_list.path_arc_to(155, 60, 30, -2, 2)
+            draw_list.path_fill_convex(imgui.get_color_u32_rgba(1,0,0,1))
+            imgui.end()
+
+        Args:
+            center_x (float): arc center x coordinate
+            center_y (float): arc center y coordinate
+            radius (flaot): radius of the arc
+            a_min (float): minimum angle of the arc (in radian)
+            a_max (float): maximum angle of the arc (in radian)
+            num_segments (ImU32): Number of segments, defaults to 0 meaning auto-tesselation
+
+        .. wraps::
+            void ImDrawList::PathArcTo(
+                const ImVec2& center,
+                float radius,
+                float a_min,
+                float a_max,
+                int num_segments = 0
+            )
+        """
+        self._ptr.PathArcTo(
+            _cast_args_ImVec2(center_x, center_y),
+            radius,
+            a_min, a_max,
+            num_segments
+        )
+
+    def path_arc_to_fast(
+            self,
+            float center_x, float center_y,
+            float radius,
+            cimgui.ImU32 a_min_of_12,
+            cimgui.ImU32 a_max_of_12,
+        ):
+        """
+        Add an arc to the path list
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path arc to fast example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_arc_to_fast(55, 60, 30, 0, 6)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,1,0,1), flags=0, thickness=3)
+            draw_list.path_clear()
+            draw_list.path_arc_to_fast(155, 60, 30, 3, 9)
+            draw_list.path_fill_convex(imgui.get_color_u32_rgba(1,0,0,1))
+            imgui.end()
+
+        Args:
+            center_x (float): arc center x coordinate
+            center_y (float): arc center y coordinate
+            radius (flaot): radius of the arc
+            a_min_of_12 (ImU32): minimum angle of the arc
+            a_max_of_12 (ImU32): maximum angle of the arc
+
+        .. wraps::
+            void ImDrawList::PathArcToFast(
+                const ImVec2& center,
+                float radius,
+                int a_min_of_12,
+                int a_max_of_12
+            )
+        """
+        self._ptr.PathArcToFast(
+            _cast_args_ImVec2(center_x, center_y),
+            radius,
+            a_min_of_12,
+            a_max_of_12,
+        )
+
+    def path_rect(
+            self,
+            float point1_x, float point1_y,
+            float point2_x, float point2_y,
+            # note: optional
+            float rounding = 0.0,
+            cimgui.ImDrawFlags flags = 0
+        ):
+        """
+        Add a rect to the path list
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path arc to fast example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_rect(20, 35, 90, 80)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,1,0,1), flags=0, thickness=3)
+            draw_list.path_clear()
+            draw_list.path_rect(110, 35, 180, 80, 5)
+            draw_list.path_fill_convex(imgui.get_color_u32_rgba(1,0,0,1))
+            imgui.end()
+
+        Args:
+            point1_x (float): point1 x coordinate
+            point1_y (float): point1 y coordinate
+            point2_x (float): point2 x coordinate
+            point2_y (float): point2 y coordinate
+            rounding (flaot): Degree of rounding, defaults to 0.0
+            flags (ImDrawFlags):Draw flags, defaults to 0. See:
+                :ref:`list of available flags <draw-flag-options>`.
+
+        .. wraps::
+            void ImDrawList::PathRect(
+                const ImVec2& p1,
+                const ImVec2& p2,
+                float rounding = 0.0,
+                ImDrawFlags flags = 0
+            )
+        """
+        self._ptr.PathRect(
+            _cast_args_ImVec2(point1_x, point1_y),
+            _cast_args_ImVec2(point2_x, point2_y),
+            rounding,
+            flags
+        )
+
+    # Path rendering functions
+
+    def path_fill_convex(self, cimgui.ImU32 col):
+        """
+
+        Note: Filled shapes must always use clockwise winding order.
+        The anti-aliasing fringe depends on it. Counter-clockwise shapes
+        will have "inward" anti-aliasing.
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path fill convex example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_line_to(100, 60)
+            draw_list.path_arc_to(100, 60, 30, 0.5, 5.5)
+            draw_list.path_fill_convex(imgui.get_color_u32_rgba(1,1,0,1))
+            imgui.end()
+
+        Args:
+            col (ImU32): color to fill the path shape with
+
+        .. wraps::
+            void ImDrawList::PathFillConvex(
+                ImU32   col
+            );
+        """
+        self._ptr.PathFillConvex(col)
+
+    def path_stroke(
+            self,
+            cimgui.ImU32 col,
+            # note: optional
+            cimgui.ImDrawFlags flags = 0,
+            float thickness = 1.0
+        ):
+        """
+        Args:
+            col (ImU32): color to fill the path shape with
+            flags (ImDrawFlags): draw flags, defaults to 0. See:
+                :ref:`list of available flags <draw-flag-options>`.
+            thickness (float): Line thickness in pixels
+
+        .. visual-example::
+            :auto_layout:
+            :width: 200
+            :height: 100
+
+            imgui.begin("Path stroke example")
+            draw_list = imgui.get_window_draw_list()
+            draw_list.path_clear()
+            draw_list.path_line_to(100, 60)
+            draw_list.path_arc_to(100, 60, 30, 0.5, 5.5)
+            draw_list.path_stroke(imgui.get_color_u32_rgba(1,1,0,1), flags=imgui.DRAW_CLOSED, thickness=3)
+            imgui.end()
+
+
+        .. wraps::
+            void ImDrawList::PathStroke(
+                ImU32 col,
+                ImDrawFlags flags = 0,
+                float thickness = 1.0
+            );
+        """
+        self._ptr.PathStroke(
+            col,
+            flags,
+            thickness
+        )
 
     # channels
 
@@ -2362,7 +3044,6 @@ cdef class _DrawData(object):
         self._require_pointer()
         return _ImGuiViewport.from_ptr(self._ptr.OwnerViewport)
 
-
 cdef class _StaticGlyphRanges(object):
     cdef const cimgui.ImWchar* ranges_ptr
 
@@ -2611,6 +3292,14 @@ cdef class _FontAtlas(object):
     def texture_height(self):
         return <int>self._ptr.TexHeight
 
+    @property
+    def texture_desired_width(self):
+        return <int>self._ptr.TexDesiredWidth
+
+    @texture_desired_width.setter
+    def texture_desired_width(self, int value):
+        self._ptr.TexDesiredWidth = value
+
 
     @texture_id.setter
     def texture_id(self, value):
@@ -2691,21 +3380,33 @@ cdef class _IO(object):
 
     @property
     def log_file_name(self):
-        return self._ptr.LogFilename
+        return _from_bytes(self._ptr.LogFilename)
 
     @log_file_name.setter
-    def log_file_name(self, char* value):
-        self._keep_logfile_alive = value
-        self._ptr.LogFilename = value
+    def log_file_name(self, value):
+        assert (value is None or isinstance(value, str) or isinstance(value, bytes)), "`log_file_name` must be a string or None"
+        value_bytes = None
+        if value is None: value_bytes = b''
+        elif isinstance(value, str): value_bytes = _bytes(value)
+        else: value_bytes = value
+
+        self._keep_logfile_alive = value_bytes
+        self._ptr.LogFilename = value_bytes
 
     @property
     def ini_file_name(self):
-        return self._ptr.IniFilename
+        return _from_bytes(self._ptr.IniFilename)
 
     @ini_file_name.setter
-    def ini_file_name(self, char* value):
-        self._keep_ini_alive = value
-        self._ptr.IniFilename = value
+    def ini_file_name(self, value):
+        assert (value is None or isinstance(value, str) or isinstance(value, bytes)), "`ini_file_name` must be a string or None"
+        value_bytes = None
+        if value is None: value_bytes = b''
+        elif isinstance(value, str): value_bytes = _bytes(value)
+        else: value_bytes = value
+
+        self._keep_ini_alive = value_bytes
+        self._ptr.IniFilename = value_bytes
 
     @property
     def mouse_double_click_time(self):
@@ -3108,9 +3809,13 @@ cdef class _callback_user_info(object):
     
     cdef object callback_fn
     cdef user_data
-    
+
     def __init__(self):
         pass
+    
+    def __cinit__(self):
+        text_input_buffer = NULL
+        text_input_buffer_size = 0
     
     def populate(self, callback_fn, user_data):
         if callable(callback_fn):
@@ -3119,11 +3824,67 @@ cdef class _callback_user_info(object):
         else:
             raise ValueError("callback_fn is not a callable: %s" % str(callback_fn))
     
+    cdef set_text_input_buffer(self, char* text_input_buffer, int text_input_buffer_size):
+        self.text_input_buffer = text_input_buffer
+        self.text_input_buffer_size = text_input_buffer_size
+
+cdef class _InputTextSharedBuffer(object):
+
+    cdef char* buffer
+    cdef int size
+    cdef int capacity
+
+    def __cinit__(self):
+        self.buffer = NULL
+        self.size = 0
+        self.capacity = 0
+    
+    cdef reserve_memory(self, int buffer_size):
+        if self.buffer is NULL:
+            self.buffer = <char*>malloc(buffer_size*sizeof(char))
+            self.size = buffer_size
+            self.capacity = buffer_size
+        elif buffer_size > self.capacity:
+            while self.capacity < buffer_size:
+                self.capacity = self.capacity * 2
+            self.buffer = <char*>realloc(self.buffer, self.capacity*sizeof(char))
+            self.size = buffer_size
+        else:
+            self.size = buffer_size
+    
+    cdef free_memory(self):
+        if self.buffer != NULL:
+            free(self.buffer)
+            self.buffer = NULL
+            self.size = 0
+            self.capacity = 0
+
+    def __dealloc__(self):
+        self.free_memory()
+
+cdef _InputTextSharedBuffer _input_text_shared_buffer = _InputTextSharedBuffer() 
+    
 cdef int _ImGuiInputTextCallback(cimgui.ImGuiInputTextCallbackData* data):
     cdef _ImGuiInputTextCallbackData callback_data = _ImGuiInputTextCallbackData.from_ptr(data)
     callback_data._require_pointer()
+    
+    if data.EventFlag == enums.ImGuiInputTextFlags_CallbackResize:
+        if data.BufSize != _input_text_shared_buffer.size:
+            _input_text_shared_buffer.reserve_memory(data.BufSize)
+            data.Buf = _input_text_shared_buffer.buffer
+
     cdef ret = (<_callback_user_info>callback_data._ptr.UserData).callback_fn(callback_data)
     return ret if ret is not None else 0
+
+cdef int _ImGuiInputTextOnlyResizeCallback(cimgui.ImGuiInputTextCallbackData* data):
+    # This callback is used internally if user asks for buffer resizing but does not provide any python callback function.
+
+    if data.EventFlag == enums.ImGuiInputTextFlags_CallbackResize:
+        if data.BufSize != _input_text_shared_buffer.size:
+            _input_text_shared_buffer.reserve_memory(data.BufSize)
+            data.Buf = _input_text_shared_buffer.buffer
+
+    return 0
     
 cdef class _ImGuiInputTextCallbackData(object):
     
@@ -3183,7 +3944,20 @@ cdef class _ImGuiInputTextCallbackData(object):
     def buffer(self):
         self._require_pointer()
         return _from_bytes(self._ptr.Buf)
-        
+    
+    @buffer.setter
+    def buffer(self, str buffer):
+        self._require_pointer()
+        _buffer = _bytes(buffer)
+        _buffer_length = len(_buffer)
+        if _buffer_length < self._ptr.BufSize:
+            # Note: When copying several characters at once, there is this
+            #       one frame where _ptr.BufSize is not yet updated (bug?).
+            #       thus we skip it here.
+            strncpy(self._ptr.Buf, _buffer, _buffer_length)
+            self._ptr.BufTextLen = _buffer_length
+            self._ptr.BufDirty = True
+
     @property
     def buffer_text_length(self):
         self._require_pointer()
@@ -3990,7 +4764,8 @@ def set_window_size_named(str label, float width, float height, cimgui.ImGuiCond
             const char* name,
             const ImVec2& size,
              ImGuiCond cond
-    )
+        )
+    
     """
     cimgui.SetWindowSize(
         _bytes(label),
@@ -4458,7 +5233,8 @@ def set_window_position_labeled(str label, float x, float y, cimgui.ImGuiCond co
             const char* name,
             const ImVec2& pos,
             ImGuiCond cond
-    )
+        )
+    
     """
     cimgui.SetWindowPos(
         _bytes(label),
@@ -5021,24 +5797,14 @@ def begin_tooltip():
                     imgui.text("This button has full window tooltip.")
                     texture_id = imgui.get_io().fonts.texture_id
                     imgui.image(texture_id, 512, 64, border_color=(1, 0, 0, 1))
-
-    Example::
-        imgui.begin("Example: tooltip")
-        imgui.button("Click me!")
-        if imgui.is_item_hovered():
-            imgui.begin_tooltip()
-            imgui.text("This button is clickable.")
-            imgui.text("This button has full window tooltip.")
-            texture_id = imgui.get_io().fonts.texture_id
-            imgui.image(texture_id, 512, 64, border_color=(1, 0, 0, 1))
-            imgui.end_tooltip()
-        imgui.end()
-
+    
+    .. wraps::
+        void BeginTooltip()
+    
     Returns:
         _BeginEndTooltip: Use with ``with`` to automatically call :func:`end_tooltip` when the block ends.
 
-    .. wraps::
-        void BeginTooltip()
+    
     """
     cimgui.BeginTooltip()
     return _BeginEndTooltip.__new__(_BeginEndTooltip)
@@ -6710,6 +7476,126 @@ def radio_button(str label, cimgui.bool active):
     return cimgui.RadioButton(_bytes(label), active)
 
 
+cdef class _BeginEndCombo(object):
+    """
+    Return value of :func:`begin_combo` exposing ``opened`` boolean attribute.
+    See :func:`begin_combo` for an explanation and examples.
+
+    Can be used as a context manager (in a ``with`` statement) to automatically
+    call :func:`end_combo` to end the combo created with :func:`begin_combo`
+    when the block ends, even if an exception is raised.
+
+    This class is not intended to be instantiated by the user (thus the `_` name prefix).
+    It should be obtained as the return value of the :func:`begin_combo` function.
+    """
+
+    cdef readonly bool opened
+
+    def __cinit__(self, bool opened):
+        self.opened = opened
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.opened:
+            cimgui.EndCombo()
+
+    def __bool__(self):
+        """For legacy support, returns ``opened``."""
+        return self.opened
+
+    def __repr__(self):
+        return "{}(opened={})".format(
+            self.__class__.__name__, self.opened
+        )
+
+    def __eq__(self, other):
+        if other.__class__ is self.__class__:
+            return self.opened is other.opened
+        return self.opened is other
+
+
+def begin_combo(str label, str preview_value, cimgui.ImGuiComboFlags flags = 0):
+    """Begin a combo box with control over how items are displayed.
+
+    .. visual-example::
+        :width: 200
+        :height: 200
+        :auto_layout:
+
+        selected = 0
+        items = ["AAAA", "BBBB", "CCCC", "DDDD"]
+        
+        # ...
+        
+        with imgui.begin("Example: begin combo"):
+            with imgui.begin_combo("combo", items[selected]) as combo:
+                if combo.opened:
+                    for i, item in enumerate(items):
+                        is_selected = (i == selected)
+                        if imgui.selectable(item, is_selected)[0]:
+                            selected = i
+
+                        # Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                        if is_selected:
+                            imgui.set_item_default_focus()
+    
+    Example::
+    
+        selected = 0
+        items = ["AAAA", "BBBB", "CCCC", "DDDD"]
+        
+        # ...
+
+        imgui.begin("Example: begin combo")
+        if imgui.begin_combo("combo", items[selected]):
+            for i, item in enumerate(items):
+                is_selected = (i == selected)
+                if imgui.selectable(item, is_selected)[0]:
+                    selected = i
+                    
+                # Set the initial focus when opening the combo (scrolling + keyboard navigation focus)                    
+                if is_selected:
+                    imgui.set_item_default_focus()
+
+            imgui.end_combo()
+
+        imgui.end()
+
+    Args:
+        label (str): Identifier for the combo box.
+        preview_value (str): String preview for currently selected item.
+        flags: Combo flags. See:
+            :ref:`list of available flags <combo-flag-options>`.
+
+    Returns:
+        _BeginEndCombo: Struct with ``opened`` bool attribute. Use with ``with`` to automatically call :func:`end_combo` when the block ends.`
+
+    .. wraps::
+        bool BeginCombo(
+            const char* label,
+            const char* preview_value,
+            ImGuiComboFlags flags = 0
+        )
+    
+    """
+    return _BeginEndCombo.__new__(
+        _BeginEndCombo,
+        cimgui.BeginCombo(
+            _bytes(label), _bytes(preview_value), flags
+        )
+    )
+def end_combo():
+    """End combo box.
+    Only call if ``begin_combo().opened`` is True.
+
+    .. wraps::
+        void EndCombo()
+    """
+    cimgui.EndCombo()
+
+
 def combo(str label, int current, list items, int height_in_items=-1):
     """Display combo widget.
 
@@ -6735,8 +7621,7 @@ def combo(str label, int current, list items, int height_in_items=-1):
             (autosized).
 
     Returns:
-        tuple: a ``(changed, current)`` tuple indicating change of selection
-        and current index of selected item.
+        tuple: a ``(changed, current)`` tuple indicating change of selection and current index of selected item.
 
     .. wraps::
         bool Combo(
@@ -7642,14 +8527,16 @@ def drag_scalar_N(
 def input_text(
     str label,
     str value,
-    int buffer_length,
+    int buffer_length = -1,
     cimgui.ImGuiInputTextFlags flags=0,
     object callback = None,
     user_data = None
 ):
     """Display text input widget.
 
-    ``buffer_length`` is the maximum allowed length of the content.
+    The ``buffer_length`` is the maximum allowed length of the content. It is the size in bytes, which may not correspond to the number of characters.
+    If set to -1, the internal buffer will have an adaptive size, which is equivalent to using the ``imgui.INPUT_TEXT_CALLBACK_RESIZE`` flag.
+    When a callback is provided, it is called after the internal buffer has been resized.
 
     .. visual-example::
         :auto_layout:
@@ -7658,11 +8545,7 @@ def input_text(
 
         text_val = 'Please, type the coefficient here.'
         imgui.begin("Example: text input")
-        changed, text_val = imgui.input_text(
-            'Amount:',
-            text_val,
-            256
-        )
+        changed, text_val = imgui.input_text('Coefficient:', text_val)
         imgui.text('You wrote:')
         imgui.same_line()
         imgui.text(text_val)
@@ -7694,6 +8577,14 @@ def input_text(
         )
     """
 
+    _value_bytes = _bytes(value)
+    cdef int _buffer_length = buffer_length+1
+    if buffer_length < 0:
+        _buffer_length = len(_value_bytes)+1
+        flags = flags | enums.ImGuiInputTextFlags_CallbackResize
+    _input_text_shared_buffer.reserve_memory(_buffer_length)
+    strncpy(_input_text_shared_buffer.buffer, _value_bytes, _buffer_length)
+
     cdef _callback_user_info _user_info = _callback_user_info()
     cdef cimgui.ImGuiInputTextCallback _callback = NULL
     cdef void *_user_data = NULL
@@ -7701,25 +8592,23 @@ def input_text(
         _callback = _ImGuiInputTextCallback
         _user_info.populate(callback, user_data)
         _user_data = <void*>_user_info
-
-    # todo: pymalloc
-    cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
-    # todo: take special care of terminating char
-    strncpy(inout_text, _bytes(value), buffer_length)
+    elif flags & enums.ImGuiInputTextFlags_CallbackResize:
+        _callback = _ImGuiInputTextOnlyResizeCallback
+        _user_data = <void*>_user_info
 
     changed = cimgui.InputText(
-        _bytes(label), inout_text, buffer_length, flags, _callback, _user_data
+        _bytes(label), _input_text_shared_buffer.buffer, _buffer_length, flags, _callback, _user_data
     )
-    output = _from_bytes(inout_text)
+    _buffer_length = strlen(_input_text_shared_buffer.buffer)
+    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length])
 
-    free(inout_text)
     return changed, output
 
 
 def input_text_multiline(
     str label,
     str value,
-    int buffer_length,
+    int buffer_length = -1,
     float width=0,
     float height=0,
     cimgui.ImGuiInputTextFlags flags=0,
@@ -7728,7 +8617,9 @@ def input_text_multiline(
 ):
     """Display multiline text input widget.
 
-    ``buffer_length`` is the maximum allowed length of the content.
+    The ``buffer_length`` is the maximum allowed length of the content. It is the size in bytes, which may not correspond to the number of characters.
+    If set to -1, the internal buffer will have an adaptive size, which is equivalent to using the ``imgui.INPUT_TEXT_CALLBACK_RESIZE`` flag.
+    When a callback is provided, it is called after the internal buffer has been resized.
 
     .. visual-example::
         :auto_layout:
@@ -7776,6 +8667,14 @@ def input_text_multiline(
         )
     """
 
+    _value_bytes = _bytes(value)
+    cdef int _buffer_length = buffer_length+1
+    if buffer_length < 0:
+        _buffer_length = len(_value_bytes)+1
+        flags = flags | enums.ImGuiInputTextFlags_CallbackResize
+    _input_text_shared_buffer.reserve_memory(_buffer_length)
+    strncpy(_input_text_shared_buffer.buffer, _value_bytes, _buffer_length)
+
     cdef _callback_user_info _user_info = _callback_user_info()
     cdef cimgui.ImGuiInputTextCallback _callback = NULL
     cdef void *_user_data = NULL
@@ -7783,31 +8682,35 @@ def input_text_multiline(
         _callback = _ImGuiInputTextCallback
         _user_info.populate(callback, user_data)
         _user_data = <void*>_user_info
-
-    cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
-    # todo: take special care of terminating char
-    strncpy(inout_text, _bytes(value), buffer_length)
+    elif flags & enums.ImGuiInputTextFlags_CallbackResize:
+        _callback = _ImGuiInputTextOnlyResizeCallback
+        _user_data = <void*>_user_info
 
     changed = cimgui.InputTextMultiline(
-        _bytes(label), inout_text, buffer_length,
+        _bytes(label), _input_text_shared_buffer.buffer, _buffer_length,
         _cast_args_ImVec2(width, height), flags,
         _callback, _user_data
     )
-    output = _from_bytes(inout_text)
+    _buffer_length = strlen(_input_text_shared_buffer.buffer)
+    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length])
 
-    free(inout_text)
     return changed, output
+
+    
 
 def input_text_with_hint(
     str label,
     str hint,
     str value,
-    int buffer_length,
+    int buffer_length = -1,
     cimgui.ImGuiInputTextFlags flags = 0,
     object callback = None,
     user_data = None):
     """Display a text box, if the text is empty a hint on how to fill the box is given.
-    ``buffer_length`` is the maximum allowed length of the content.
+
+    The ``buffer_length`` is the maximum allowed length of the content. It is the size in bytes, which may not correspond to the number of characters.
+    If set to -1, the internal buffer will have an adaptive size, which is equivalent to using the ``imgui.INPUT_TEXT_CALLBACK_RESIZE`` flag.
+    When a callback is provided, it is called after the internal buffer has been resized.
 
     Args:
         label (str): Widget label
@@ -7849,6 +8752,14 @@ def input_text_with_hint(
         )
     """
 
+    _value_bytes = _bytes(value)
+    cdef int _buffer_length = buffer_length+1
+    if buffer_length < 0:
+        _buffer_length = len(_value_bytes)+1
+        flags = flags | enums.ImGuiInputTextFlags_CallbackResize
+    _input_text_shared_buffer.reserve_memory(_buffer_length)
+    strncpy(_input_text_shared_buffer.buffer, _value_bytes, _buffer_length)
+
     cdef _callback_user_info _user_info = _callback_user_info()
     cdef cimgui.ImGuiInputTextCallback _callback = NULL
     cdef void *_user_data = NULL
@@ -7856,20 +8767,18 @@ def input_text_with_hint(
         _callback = _ImGuiInputTextCallback
         _user_info.populate(callback, user_data)
         _user_data = <void*>_user_info
-
-    cdef char* inout_text = <char*>malloc(buffer_length * sizeof(char))
-    strncpy(inout_text, _bytes(value), buffer_length)
+    elif flags & enums.ImGuiInputTextFlags_CallbackResize:
+        _callback = _ImGuiInputTextOnlyResizeCallback
+        _user_data = <void*>_user_info
 
     changed = cimgui.InputTextWithHint(
-        _bytes(label), _bytes(hint), inout_text, buffer_length,
+        _bytes(label), _bytes(hint), _input_text_shared_buffer.buffer, _buffer_length,
         flags, _callback, _user_data
     )
+    _buffer_length = strlen(_input_text_shared_buffer.buffer)
+    output = _from_bytes(_input_text_shared_buffer.buffer[:_buffer_length])
 
-    output = _from_bytes(inout_text)
-
-    free(inout_text)
     return changed, output
-
 
 def input_float(
     str label,
@@ -8503,6 +9412,7 @@ def slider_float2(
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
+    
     Args:
         label (str): widget label.
         value0, value1 (float): slider values.
@@ -8528,6 +9438,7 @@ def slider_float2(
             const char* format = "%.3f",
             ImGuiSliderFlags flags = 0
         )
+    
     """
     assert (power == 1), "power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead"
     cdef float[2] inout_values = [value0, value1]
@@ -9606,7 +10517,7 @@ def is_item_deactivated():
     .. wraps:
         bool IsItemDeactivated()
     """
-    return cimgui.IsItemDeactivated
+    return cimgui.IsItemDeactivated()
 
 def is_item_deactivated_after_edit():
     """Was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved).
@@ -10150,9 +11061,9 @@ def set_scroll_here_x(float center_x_ratio = 0.5):
 
     Adjust scrolling amount to make current cursor position visible.
     center_x_ratio =
-        0.0: left,
-        0.5: center,
-        1.0: right.
+    0.0: left,
+    0.5: center,
+    1.0: right.
 
     When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
 
@@ -10169,9 +11080,9 @@ def set_scroll_here_y(float center_y_ratio = 0.5):
 
     Adjust scrolling amount to make current cursor position visible.
     center_y_ratio =
-        0.0: top,
-        0.5: center,
-        1.0: bottom.
+    0.0: top,
+    0.5: center,
+    1.0: bottom.
 
     When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
 
@@ -10596,8 +11507,8 @@ cpdef set_next_item_width(float item_width):
     """Set width of the _next_ common large "item+label" widget. 
     * ``>0.0`` - width in pixels
     * ``<0.0`` - align xx pixels to the right of window
-      (so -FLOAT_MIN always align width to the right side)
-      
+    (so -FLOAT_MIN always align width to the right side)
+    
     Helper to avoid using ``push_item_width()``/``pop_item_width()`` for single items.
     
     Args:
@@ -11907,7 +12818,7 @@ def get_frame_height():
 
     .. wraps::
         float GetFrameHeight()
-    float GetFrameHeightWithSpacing() except +
+        float GetFrameHeightWithSpacing() except +
     """
     return cimgui.GetFrameHeight()
 
@@ -12091,6 +13002,7 @@ def _ansifeed_text_ansi_colored(str text, float r, float g, float b, float a=1.)
 # === Extra utilities ====
 
 @contextmanager
+@cython.binding(True)
 def _py_font(_Font font):
     """Use specified font in given context.
 
@@ -12123,6 +13035,7 @@ def _py_font(_Font font):
 
 
 @contextmanager
+@cython.binding(True)
 def _py_styled(cimgui.ImGuiStyleVar variable, value):
     # note: we treat bool value as integer to guess if we are required to pop
     #       anything because IMGUI may simply skip pushing
@@ -12132,6 +13045,7 @@ def _py_styled(cimgui.ImGuiStyleVar variable, value):
 
 
 @contextmanager
+@cython.binding(True)
 def _py_colored(
     cimgui.ImGuiCol variable,
     float r,
@@ -12147,6 +13061,7 @@ def _py_colored(
 
 
 @contextmanager
+@cython.binding(True)
 def _py_istyled(*variables_and_values):
     # todo: rename to nstyled?
     count = 0
@@ -12175,6 +13090,7 @@ def _py_istyled(*variables_and_values):
 
 
 @contextmanager
+@cython.binding(True)
 def _py_scoped(str str_id):
     """Use scoped ID within a block of code.
 

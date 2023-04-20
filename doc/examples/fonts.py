@@ -1,19 +1,20 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+from glob import glob
+from imgui.integrations.glfw import GlfwRenderer
+import OpenGL.GL as gl
+import glfw
+import imgui
 import os
 import random
-from glob import glob
-
-import glfw
-import OpenGL.GL as gl
-import imgui
-from imgui.integrations.glfw import GlfwRenderer
+import sys
 
 
 # use fonts bundled with imgui core project repository
 FONTS_DIR = glob(
     os.path.join(
-        os.path.dirname(__file__),
-        '..', '..', 'imgui-cpp', 'misc', 'fonts', "*.ttf"
+        os.path.dirname(__file__), "..", "..", "imgui-cpp", "misc", "fonts", "*.ttf"
     )
 )
 
@@ -41,7 +42,7 @@ def main():
     io.fonts.clear()
 
     # set global font scaling
-    io.font_global_scale = 1. / font_scaling_factor
+    io.font_global_scale = 1.0 / font_scaling_factor
 
     # dictionary of font objects from our font directory
     null_font_config = None
@@ -83,7 +84,7 @@ def main():
             imgui.text("This window uses same custom font for all widgets")
             imgui.end()
 
-        gl.glClearColor(1., 1., 1., 1)
+        gl.glClearColor(1.0, 1.0, 1.0, 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         imgui.render()
@@ -100,7 +101,7 @@ def impl_glfw_init():
 
     if not glfw.init():
         print("Could not initialize OpenGL context")
-        exit(1)
+        sys.exit(1)
 
     # OS X supports only forward-compatible core profiles from 3.2
     glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
@@ -110,15 +111,13 @@ def impl_glfw_init():
     glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
 
     # Create a windowed mode window and its OpenGL context
-    window = glfw.create_window(
-        int(width), int(height), window_name, None, None
-    )
+    window = glfw.create_window(int(width), int(height), window_name, None, None)
     glfw.make_context_current(window)
 
     if not window:
         glfw.terminate()
         print("Could not initialize Window")
-        exit(1)
+        sys.exit(1)
 
     return window
 

@@ -8,6 +8,7 @@ Tab Bar functions accept various flags to manage their behaviour.
 List of all available tab bar flags (click to see documentation):
 
 .. _tabbar-flag-options:
+
 * :py:data:`imgui.TAB_BAR_NONE`
 * :py:data:`imgui.TAB_BAR_REORDERABLE`
 * :py:data:`imgui.TAB_BAR_AUTO_SELECT_NEW_TABS`
@@ -23,6 +24,7 @@ List of all available tab bar flags (click to see documentation):
 List of all available tab item flags (click to see documentation):
 
 .. _tabitem-flag-options:
+
 * :py:data:`imgui.TAB_ITEM_NONE`
 * :py:data:`imgui.TAB_ITEM_UNSAVED_DOCUMENT`
 * :py:data:`imgui.TAB_ITEM_SET_SELECTED`

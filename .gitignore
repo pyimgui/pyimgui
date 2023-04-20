@@ -38,6 +38,9 @@ var/
 *.egg
 completion.svg
 
+# Documentation
+doc/source/_build/
+
 # Visual Studio stuff
 .vs/
 
@@ -115,6 +118,10 @@ ENV/
 
 # Visual Studio Code project settings
 .vscode/
+
+# Emacs files
+\#*
+.\#*
 
 # Bootstrap marker
 .bootstrapped

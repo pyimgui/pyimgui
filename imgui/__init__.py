@@ -61,7 +61,6 @@ KEY_SPACE = core.KEY_SPACE
 KEY_ENTER = core.KEY_ENTER
 #: for text edit
 KEY_ESCAPE = core.KEY_ESCAPE
-#: 
 KEY_PAD_ENTER = core.KEY_PAD_ENTER
 #: for text edit CTRL+A: select all
 KEY_A = core.KEY_A
@@ -87,19 +86,13 @@ NAV_INPUT_INPUT = core.NAV_INPUT_INPUT
 NAV_INPUT_MENU = core.NAV_INPUT_MENU
 #: move / tweak / resize window (w/ PadMenu)     e.g. D-pad Left/Right/Up/Down (Gamepads), Arrow keys (Keyboard)
 NAV_INPUT_DPAD_LEFT = core.NAV_INPUT_DPAD_LEFT
-#:
 NAV_INPUT_DPAD_RIGHT = core.NAV_INPUT_DPAD_RIGHT
-#:
 NAV_INPUT_DPAD_UP = core.NAV_INPUT_DPAD_UP
-#:
 NAV_INPUT_DPAD_DOWN = core.NAV_INPUT_DPAD_DOWN
 #: scroll / move window (w/ PadMenu)             e.g. Left Analog Stick Left/Right/Up/Down
 NAV_INPUT_L_STICK_LEFT = core.NAV_INPUT_L_STICK_LEFT
-#:
 NAV_INPUT_L_STICK_RIGHT = core.NAV_INPUT_L_STICK_RIGHT 
-#:
 NAV_INPUT_L_STICK_UP = core.NAV_INPUT_L_STICK_UP
-#:
 NAV_INPUT_L_STICK_DOWN = core.NAV_INPUT_L_STICK_DOWN
 #: next window (w/ PadMenu)                      e.g. L1 or L2 (PS4), LB or LT (Xbox), L or ZL (Switch)
 NAV_INPUT_FOCUS_PREV = core.NAV_INPUT_FOCUS_PREV
@@ -178,7 +171,6 @@ BUTTON_MOUSE_BUTTON_RIGHT = core.BUTTON_MOUSE_BUTTON_RIGHT
 BUTTON_MOUSE_BUTTON_MIDDLE = core.BUTTON_MOUSE_BUTTON_MIDDLE
 
 # === Window flag constants (redefines for autodoc)
-#:
 WINDOW_NONE = core.WINDOW_NONE
 #: Disable title-bar.
 WINDOW_NO_TITLE_BAR = core.WINDOW_NO_TITLE_BAR
@@ -230,7 +222,6 @@ WINDOW_NO_DECORATION = core.WINDOW_NO_DECORATION
 WINDOW_NO_INPUTS = core.WINDOW_NO_INPUTS
 
 # === Color Edit Flags (redefines for autodoc)
-#:
 COLOR_EDIT_NONE = core.COLOR_EDIT_NONE
 #: ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will only read 3 components from the input pointer).
 COLOR_EDIT_NO_ALPHA = core.COLOR_EDIT_NO_ALPHA
@@ -284,7 +275,6 @@ COLOR_EDIT_INPUT_HSV = core.COLOR_EDIT_INPUT_HSV
 COLOR_EDIT_DEFAULT_OPTIONS = core.COLOR_EDIT_DEFAULT_OPTIONS
 
 # === Tree node flag constants (redefines for autodoc)
-#:
 TREE_NODE_NONE = core.TREE_NODE_NONE
 #: Draw as selected
 TREE_NODE_SELECTED = core.TREE_NODE_SELECTED
@@ -451,8 +441,8 @@ TAB_BAR_REORDERABLE = core.TAB_BAR_REORDERABLE
 TAB_BAR_AUTO_SELECT_NEW_TABS = core.TAB_BAR_AUTO_SELECT_NEW_TABS
 #: Disable buttons to open the tab list popup
 TAB_BAR_TAB_LIST_POPUP_BUTTON = core.TAB_BAR_TAB_LIST_POPUP_BUTTON
-#: Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You can still repro this behavior on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
-TAB_BAR_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = core.TAB_BAR_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON
+#: Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. 
+TAB_BAR_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = core.TAB_BAR_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON #You can still repro this behavior on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
 #: Disable scrolling buttons (apply when fitting policy is ImGuiTabBarFlags_FittingPolicyScroll)
 TAB_BAR_NO_TAB_LIST_SCROLLING_BUTTONS = core.TAB_BAR_NO_TAB_LIST_SCROLLING_BUTTONS
 #: Disable tooltips when hovering a tab
@@ -472,8 +462,8 @@ TAB_ITEM_NONE = core.TAB_ITEM_NONE
 TAB_ITEM_UNSAVED_DOCUMENT = core.TAB_ITEM_UNSAVED_DOCUMENT
 #: Trigger flag to programmatically make the tab selected when calling BeginTabItem()
 TAB_ITEM_SET_SELECTED = core.TAB_ITEM_SET_SELECTED
-#: Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You can still repro this behavior on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
-TAB_ITEM_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = core.TAB_ITEM_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON
+#: Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. 
+TAB_ITEM_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = core.TAB_ITEM_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON # You can still repro this behavior on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
 #: Don't call PushID(tab->ID)/PopID() on BeginTabItem()/EndTabItem()
 TAB_ITEM_NO_PUSH_ID = core.TAB_ITEM_NO_PUSH_ID
 #: Disable tooltip for the given tab

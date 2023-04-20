@@ -146,22 +146,12 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
 
         # backup GL state
         # todo: provide cleaner version of this backup-restore code
+        common_gl_state_tuple = get_common_gl_state()
         last_program = gl.glGetIntegerv(gl.GL_CURRENT_PROGRAM)
-        last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
         last_active_texture = gl.glGetIntegerv(gl.GL_ACTIVE_TEXTURE)
         last_array_buffer = gl.glGetIntegerv(gl.GL_ARRAY_BUFFER_BINDING)
         last_element_array_buffer = gl.glGetIntegerv(gl.GL_ELEMENT_ARRAY_BUFFER_BINDING)
         last_vertex_array = gl.glGetIntegerv(gl.GL_VERTEX_ARRAY_BINDING)
-        last_blend_src = gl.glGetIntegerv(gl.GL_BLEND_SRC)
-        last_blend_dst = gl.glGetIntegerv(gl.GL_BLEND_DST)
-        last_blend_equation_rgb = gl. glGetIntegerv(gl.GL_BLEND_EQUATION_RGB)
-        last_blend_equation_alpha = gl.glGetIntegerv(gl.GL_BLEND_EQUATION_ALPHA)
-        last_viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
-        last_scissor_box = gl.glGetIntegerv(gl.GL_SCISSOR_BOX)
-        last_enable_blend = gl.glIsEnabled(gl.GL_BLEND)
-        last_enable_cull_face = gl.glIsEnabled(gl.GL_CULL_FACE)
-        last_enable_depth_test = gl.glIsEnabled(gl.GL_DEPTH_TEST)
-        last_enable_scissor_test = gl.glIsEnabled(gl.GL_SCISSOR_TEST)
 
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendEquation(gl.GL_FUNC_ADD)
@@ -170,6 +160,7 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         gl.glDisable(gl.GL_DEPTH_TEST)
         gl.glEnable(gl.GL_SCISSOR_TEST)
         gl.glActiveTexture(gl.GL_TEXTURE0)
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
 
         gl.glViewport(0, 0, int(fb_width), int(fb_height))
 
@@ -214,37 +205,13 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
                 idx_buffer_offset += command.elem_count * imgui.INDEX_SIZE
 
         # restore modified GL state
+        restore_common_gl_state(common_gl_state_tuple)
+
         gl.glUseProgram(last_program)
         gl.glActiveTexture(last_active_texture)
-        gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
         gl.glBindVertexArray(last_vertex_array)
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, last_array_buffer)
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, last_element_array_buffer)
-        gl.glBlendEquationSeparate(last_blend_equation_rgb, last_blend_equation_alpha)
-        gl.glBlendFunc(last_blend_src, last_blend_dst)
-
-        if last_enable_blend:
-            gl.glEnable(gl.GL_BLEND)
-        else:
-            gl.glDisable(gl.GL_BLEND)
-
-        if last_enable_cull_face:
-            gl.glEnable(gl.GL_CULL_FACE)
-        else:
-            gl.glDisable(gl.GL_CULL_FACE)
-
-        if last_enable_depth_test:
-            gl.glEnable(gl.GL_DEPTH_TEST)
-        else:
-            gl.glDisable(gl.GL_DEPTH_TEST)
-
-        if last_enable_scissor_test:
-            gl.glEnable(gl.GL_SCISSOR_TEST)
-        else:
-            gl.glDisable(gl.GL_SCISSOR_TEST)
-
-        gl.glViewport(last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3])
-        gl.glScissor(last_scissor_box[0], last_scissor_box[1], last_scissor_box[2], last_scissor_box[3])
 
     def _invalidate_device_objects(self):
         if self._vao_handle > -1:
@@ -306,17 +273,7 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
         # note: we are using fixed pipeline for cocos2d/pyglet
         # todo: consider porting to programmable pipeline
         # backup gl state
-        last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
-        last_viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
-        last_enable_blend = gl.glIsEnabled(gl.GL_BLEND)
-        last_enable_cull_face = gl.glIsEnabled(gl.GL_CULL_FACE)
-        last_enable_depth_test = gl.glIsEnabled(gl.GL_DEPTH_TEST)
-        last_enable_scissor_test = gl.glIsEnabled(gl.GL_SCISSOR_TEST)
-        last_scissor_box = gl.glGetIntegerv(gl.GL_SCISSOR_BOX)
-        last_blend_src = gl.glGetIntegerv(gl.GL_BLEND_SRC)
-        last_blend_dst = gl.glGetIntegerv(gl.GL_BLEND_DST)
-        last_blend_equation_rgb = gl. glGetIntegerv(gl.GL_BLEND_EQUATION_RGB)
-        last_blend_equation_alpha = gl.glGetIntegerv(gl.GL_BLEND_EQUATION_ALPHA)
+        common_gl_state_tuple = get_common_gl_state()
 
         gl.glPushAttrib(gl.GL_ENABLE_BIT | gl.GL_COLOR_BUFFER_BIT | gl.GL_TRANSFORM_BIT)
         gl.glEnable(gl.GL_BLEND)
@@ -324,6 +281,7 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
         gl.glDisable(gl.GL_CULL_FACE)
         gl.glDisable(gl.GL_DEPTH_TEST)
         gl.glEnable(gl.GL_SCISSOR_TEST)
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
 
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY)
@@ -361,37 +319,11 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
 
                 idx_buffer += (command.elem_count * imgui.INDEX_SIZE)
 
-        gl.glBlendEquationSeparate(last_blend_equation_rgb, last_blend_equation_alpha)
-        gl.glBlendFunc(last_blend_src, last_blend_dst)
-
-        if last_enable_blend:
-            gl.glEnable(gl.GL_BLEND)
-        else:
-            gl.glDisable(gl.GL_BLEND)
-
-        if last_enable_cull_face:
-            gl.glEnable(gl.GL_CULL_FACE)
-        else:
-            gl.glDisable(gl.GL_CULL_FACE)
-
-        if last_enable_depth_test:
-            gl.glEnable(gl.GL_DEPTH_TEST)
-        else:
-            gl.glDisable(gl.GL_DEPTH_TEST)
-
-        if last_enable_scissor_test:
-            gl.glEnable(gl.GL_SCISSOR_TEST)
-        else:
-            gl.glDisable(gl.GL_SCISSOR_TEST)
-
-        gl.glScissor(last_scissor_box[0], last_scissor_box[1], last_scissor_box[2], last_scissor_box[3])
+        restore_common_gl_state(common_gl_state_tuple)
 
         gl.glDisableClientState(gl.GL_COLOR_ARRAY)
         gl.glDisableClientState(gl.GL_TEXTURE_COORD_ARRAY)
         gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
-
-        if last_texture:
-            gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
 
         gl.glMatrixMode(gl.GL_MODELVIEW)
         gl.glPopMatrix()
@@ -399,10 +331,92 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
         gl.glPopMatrix()
         gl.glPopAttrib()
 
-        gl.glViewport(last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3])
-
     def _invalidate_device_objects(self):
         if self._font_texture > -1:
             gl.glDeleteTextures([self._font_texture])
         self.io.fonts.texture_id = 0
         self._font_texture = 0
+
+def get_common_gl_state():
+    """
+    Backups the current OpenGL state
+    Returns a tuple of results for glGet / glIsEnabled calls
+    NOTE: when adding more backuped state in the future,
+    make sure to update function `restore_common_gl_state`
+    """
+    last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
+    last_viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
+    last_enable_blend = gl.glIsEnabled(gl.GL_BLEND)
+    last_enable_cull_face = gl.glIsEnabled(gl.GL_CULL_FACE)
+    last_enable_depth_test = gl.glIsEnabled(gl.GL_DEPTH_TEST)
+    last_enable_scissor_test = gl.glIsEnabled(gl.GL_SCISSOR_TEST)
+    last_scissor_box = gl.glGetIntegerv(gl.GL_SCISSOR_BOX)
+    last_blend_src = gl.glGetIntegerv(gl.GL_BLEND_SRC)
+    last_blend_dst = gl.glGetIntegerv(gl.GL_BLEND_DST)
+    last_blend_equation_rgb = gl. glGetIntegerv(gl.GL_BLEND_EQUATION_RGB)
+    last_blend_equation_alpha = gl.glGetIntegerv(gl.GL_BLEND_EQUATION_ALPHA)
+    last_front_and_back_polygon_mode, _ = gl.glGetIntegerv(gl.GL_POLYGON_MODE)
+    return (
+        last_texture,
+        last_viewport,
+        last_enable_blend,
+        last_enable_cull_face,
+        last_enable_depth_test,
+        last_enable_scissor_test,
+        last_scissor_box,
+        last_blend_src,
+        last_blend_dst,
+        last_blend_equation_rgb,
+        last_blend_equation_alpha,
+        last_front_and_back_polygon_mode,
+    )
+
+def restore_common_gl_state(common_gl_state_tuple):
+    """
+    Takes a tuple after calling function `get_common_gl_state`,
+    to set the given OpenGL state back as it was before rendering the UI
+    """
+    (
+        last_texture,
+        last_viewport,
+        last_enable_blend,
+        last_enable_cull_face,
+        last_enable_depth_test,
+        last_enable_scissor_test,
+        last_scissor_box,
+        last_blend_src,
+        last_blend_dst,
+        last_blend_equation_rgb,
+        last_blend_equation_alpha,
+        last_front_and_back_polygon_mode,
+    ) = common_gl_state_tuple
+
+    gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
+    gl.glBlendEquationSeparate(last_blend_equation_rgb, last_blend_equation_alpha)
+    gl.glBlendFunc(last_blend_src, last_blend_dst)
+
+    gl.glPolygonMode(gl.GL_FRONT_AND_BACK, last_front_and_back_polygon_mode)
+
+    if last_enable_blend:
+        gl.glEnable(gl.GL_BLEND)
+    else:
+        gl.glDisable(gl.GL_BLEND)
+
+    if last_enable_cull_face:
+        gl.glEnable(gl.GL_CULL_FACE)
+    else:
+        gl.glDisable(gl.GL_CULL_FACE)
+
+    if last_enable_depth_test:
+        gl.glEnable(gl.GL_DEPTH_TEST)
+    else:
+        gl.glDisable(gl.GL_DEPTH_TEST)
+
+    if last_enable_scissor_test:
+        gl.glEnable(gl.GL_SCISSOR_TEST)
+    else:
+        gl.glDisable(gl.GL_SCISSOR_TEST)
+
+
+    gl.glScissor(last_scissor_box[0], last_scissor_box[1], last_scissor_box[2], last_scissor_box[3])
+    gl.glViewport(last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3])
