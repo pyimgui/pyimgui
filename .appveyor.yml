@@ -55,9 +55,9 @@ only_commits:
     - pyproject.toml
     - conftest.py
     - .appveyor.yml
-    - tests/*
-    - imgui-cpp/*
-    - imgui/*
-    - config-cpp/*
-    - ci/*
-    - ansifeed-cpp/*
+    - tests/**/*
+    - imgui-cpp/**/*
+    - imgui/**/*
+    - config-cpp/**/*
+    - ci/**/*
+    - ansifeed-cpp/**/*
