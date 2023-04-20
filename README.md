@@ -83,5 +83,5 @@ snippets. These examples work also as automated functional tests. Documentation 
 Contributions are welcomed. If you want to help us by fixing bugs, mapping functions, or adding new features, 
 please feel free to do so and propose a pull request.
 
-Development tips and information for developers are given in [HACKING.md](HACKING.md).
+Development tips and information for developers are given in [HACKING.md](https://github.com/pyimgui/pyimgui/blob/master/HACKING.md).
 
