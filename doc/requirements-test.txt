@@ -31,3 +31,5 @@ pytest<=7.3.0; python_version >= '3.8'
 
 coveralls
 #Pillow
+
+pytest-rerunfailures
