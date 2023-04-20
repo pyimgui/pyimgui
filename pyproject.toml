@@ -23,26 +23,3 @@ requires = [
     "setuptools",
 ]
 build-backend = "setuptools.build_meta"
-[project]
-name = "pyimgui-wheels"
-version = "2.0.0"
-authors = [
-  { name="Mauro Sciancalepore", email="mascit.info@gmail.com" },
-]
-description = "Development wheels for pyimgui."
-readme = "README.md"
-license = { file="LICENSE" }
-requires-python = ">=3.7"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
-
-[project.urls]
-"Homepage" = "https://github.com/pyimgui/pyimgui"
-"Bug Tracker" = "https://github.com/pyimgui/pyimgui"
-
-[tool.cibuildwheel.macos]
-environment = { LC_ALL="en_US.UTF-8", LANG="en_US.UTF-8" }
-
