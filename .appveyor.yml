@@ -48,3 +48,16 @@ artifacts:
 matrix:
   fast_finish: true
 
+only_commits:
+  files:
+    - setup.py
+    - setup.cfg
+    - pyproject.toml
+    - conftest.py
+    - .appveyor.yml
+    - tests/*
+    - imgui-cpp/*
+    - imgui/*
+    - config-cpp/*
+    - ci/*
+    - ansifeed-cpp/*
