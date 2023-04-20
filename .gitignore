@@ -119,6 +119,10 @@ ENV/
 # Visual Studio Code project settings
 .vscode/
 
+# Emacs files
+\#*
+.\#*
+
 # Bootstrap marker
 .bootstrapped
 
