@@ -10,6 +10,10 @@ Immediate Mode Graphical User Interface.
 
 Documentation: [pyimgui.readthedocs.io](https://pyimgui.readthedocs.io/en/latest/)
 
+> **Notes for contributions:**
+> - We have a [`fixes`](https://github.com/pyimgui/pyimgui/tree/fixes) branch
+> - Please, read the last section of this file
+
 # Installation
 
 **pyimgui** is available on PyPI so you can easily install it with `pip`:
