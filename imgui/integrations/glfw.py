@@ -1,23 +1,28 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+import queue
+
 import glfw
 import imgui
 
 from . import compute_fb_scale
 from .opengl import ProgrammablePipelineRenderer
 
+
 class GlfwRenderer(ProgrammablePipelineRenderer):
-    def __init__(self, window, attach_callbacks:bool=True):
+    def __init__(self, window, attach_callbacks: bool = True):
         super(GlfwRenderer, self).__init__()
         self.window = window
 
+        self.queue = queue.Queue()
+
         if attach_callbacks:
-            glfw.set_key_callback(self.window, self.keyboard_callback)
-            glfw.set_cursor_pos_callback(self.window, self.mouse_callback)
-            glfw.set_window_size_callback(self.window, self.resize_callback)
-            glfw.set_char_callback(self.window, self.char_callback)
-            glfw.set_scroll_callback(self.window, self.scroll_callback)
+            glfw.set_key_callback(self.window, lambda *a: self.queue.put((self.keyboard_callback, a)))
+            glfw.set_cursor_pos_callback(self.window, lambda *a: self.queue.put((self.mouse_callback, a)))
+            glfw.set_window_size_callback(self.window, lambda *a: self.queue.put((self.resize_callback, a)))
+            glfw.set_char_callback(self.window, lambda *a: self.queue.put((self.char_callback, a)))
+            glfw.set_scroll_callback(self.window, lambda *a: self.queue.put((self.scroll_callback, a)))
 
         self.io.display_size = glfw.get_framebuffer_size(self.window)
         self.io.get_clipboard_text_fn = self._get_clipboard_text
@@ -68,23 +73,23 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             io.keys_down[key] = False
 
         io.key_ctrl = (
-            io.keys_down[glfw.KEY_LEFT_CONTROL] or
-            io.keys_down[glfw.KEY_RIGHT_CONTROL]
+                io.keys_down[glfw.KEY_LEFT_CONTROL] or
+                io.keys_down[glfw.KEY_RIGHT_CONTROL]
         )
 
         io.key_alt = (
-            io.keys_down[glfw.KEY_LEFT_ALT] or
-            io.keys_down[glfw.KEY_RIGHT_ALT]
+                io.keys_down[glfw.KEY_LEFT_ALT] or
+                io.keys_down[glfw.KEY_RIGHT_ALT]
         )
 
         io.key_shift = (
-            io.keys_down[glfw.KEY_LEFT_SHIFT] or
-            io.keys_down[glfw.KEY_RIGHT_SHIFT]
+                io.keys_down[glfw.KEY_LEFT_SHIFT] or
+                io.keys_down[glfw.KEY_RIGHT_SHIFT]
         )
 
         io.key_super = (
-            io.keys_down[glfw.KEY_LEFT_SUPER] or
-            io.keys_down[glfw.KEY_RIGHT_SUPER]
+                io.keys_down[glfw.KEY_LEFT_SUPER] or
+                io.keys_down[glfw.KEY_RIGHT_SUPER]
         )
 
     def char_callback(self, window, char):
@@ -104,6 +109,13 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         self.io.mouse_wheel = y_offset
 
     def process_inputs(self):
+        try:
+            while True:
+                callback, args = self.queue.get_nowait()
+                callback(*args)
+        except queue.Empty:
+            pass
+
         io = imgui.get_io()
 
         window_size = glfw.get_window_size(self.window)
@@ -111,7 +123,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
 
         io.display_size = window_size
         io.display_fb_scale = compute_fb_scale(window_size, fb_size)
-        io.delta_time = 1.0/60
+        io.delta_time = 1.0 / 60
 
         if glfw.get_window_attrib(self.window, glfw.FOCUSED):
             io.mouse_pos = glfw.get_cursor_pos(self.window)
@@ -128,6 +140,6 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             self.io.delta_time = current_time - self._gui_time
         else:
             self.io.delta_time = 1. / 60.
-        if(io.delta_time <= 0.0): io.delta_time = 1./ 1000.
+        if (io.delta_time <= 0.0): io.delta_time = 1. / 1000.
 
         self._gui_time = current_time
