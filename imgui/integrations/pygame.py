@@ -132,6 +132,7 @@ class PygameRenderer(FixedPipelineRenderer):
             del surface
             
             return True
+        
     def process_inputs(self):
         io = imgui.get_io()
         

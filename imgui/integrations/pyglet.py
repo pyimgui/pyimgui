@@ -55,6 +55,7 @@ class PygletMixin(object):
         super(PygletMixin, self).__init__()
         self._cursor = -2
         self._window = None
+        self.io = imgui.get_io()
         # Let Dear imgui know we have mouse cursor support
         self.io.backend_flags |= imgui.BACKEND_HAS_MOUSE_CURSORS
 
