@@ -4,19 +4,29 @@
 # cython: embedsignature=True
 # cython: linetrace=True
 
+from cpython.bytes cimport PyBytes_AS_STRING, PyBytes_Check
 from collections import namedtuple
 
 Vec2 = namedtuple("Vec2", ['x', 'y'])
 Vec4 = namedtuple("Vec4", ['x', 'y', 'z', 'w'])
 
+# Important note concerning bytes and char*
+# - If one needs to store a char* (e.g. IO.IniFileName), it
+#   has to convert from 'bytes' to 'char*' and keep a reference
+#   to the 'bytes' object. Otherwise it might be garbage collected
+#   making the associated 'char*' invalid.
 
 cdef bytes _bytes(str text):
     return <bytes>(text if PY_MAJOR_VERSION < 3 else text.encode('utf-8'))
 
+cdef char* _charptr(bytes b):
+    if PyBytes_Check(b):
+        return PyBytes_AS_STRING(b)
+    else:
+        raise TypeError("Input must be a bytes instance")
 
 cdef str _from_bytes(bytes text):
     return <str>(text if PY_MAJOR_VERSION < 3 else text.decode('utf-8', errors='ignore'))
-
 
 cdef _cast_ImVec2_tuple(cimgui.ImVec2 vec):  # noqa
     return Vec2(vec.x, vec.y)

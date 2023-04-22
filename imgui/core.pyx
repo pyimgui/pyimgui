@@ -3154,16 +3154,13 @@ cdef class _IO(object):
 
     cdef cimgui.ImGuiIO* _ptr
     cdef object _fonts
-    cdef object _keep_ini_alive
-    cdef object _keep_logfile_alive
+    cdef bytes _keep_ini_alive
+    cdef bytes _keep_logfile_alive
 
     def __init__(self):
         
         self._ptr = &cimgui.GetIO()
         self._fonts = _FontAtlas.from_ptr(self._ptr.Fonts)
-
-        self._keep_ini_alive = None
-        self._keep_logfile_alive = None
 
         if <uintptr_t>cimgui.GetCurrentContext() not in _io_clipboard:
             _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()] = {'_get_clipboard_text_fn': None,
@@ -3212,33 +3209,55 @@ cdef class _IO(object):
 
     @property
     def log_file_name(self):
-        return _from_bytes(self._ptr.LogFilename)
+        if(self._ptr.LogFilename == NULL): return None
+        else: return _from_bytes(self._ptr.LogFilename)
 
     @log_file_name.setter
     def log_file_name(self, value):
         assert (value is None or isinstance(value, str) or isinstance(value, bytes)), "`log_file_name` must be a string or None"
-        value_bytes = None
-        if value is None: value_bytes = b''
-        elif isinstance(value, str): value_bytes = _bytes(value)
-        else: value_bytes = value
 
-        self._keep_logfile_alive = value_bytes
-        self._ptr.LogFilename = value_bytes
+        cdef char* value_c = NULL
+        cdef bytes value_bytes = None
+        cdef str value_str
+
+        if value is None:
+            pass
+        elif isinstance(value, str):
+            value_str = value
+            value_bytes = _bytes(value_str)
+            value_c = _charptr(value_bytes)
+        elif isinstance(value, bytes):
+            value_bytes = value
+            value_c = _charptr(value_bytes)
+
+        self._keep_logfile_alive = value_bytes  # Keep the bytes object alive
+        self._ptr.LogFilename = value_c
 
     @property
     def ini_file_name(self):
-        return _from_bytes(self._ptr.IniFilename)
+        if(self._ptr.IniFilename == NULL): return None
+        else: return _from_bytes(self._ptr.IniFilename)
 
     @ini_file_name.setter
     def ini_file_name(self, value):
         assert (value is None or isinstance(value, str) or isinstance(value, bytes)), "`ini_file_name` must be a string or None"
-        value_bytes = None
-        if value is None: value_bytes = b''
-        elif isinstance(value, str): value_bytes = _bytes(value)
-        else: value_bytes = value
 
-        self._keep_ini_alive = value_bytes
-        self._ptr.IniFilename = value_bytes
+        cdef char* value_c = NULL
+        cdef bytes value_bytes = None
+        cdef str value_str
+
+        if value is None:
+            pass
+        elif isinstance(value, str):
+            value_str = value
+            value_bytes = _bytes(value_str)
+            value_c = _charptr(value_bytes)
+        elif isinstance(value, bytes):
+            value_bytes = value
+            value_c = _charptr(value_bytes)
+
+        self._keep_ini_alive = value_bytes  # Keep the bytes object alive
+        self._ptr.IniFilename = value_c
 
     @property
     def mouse_double_click_time(self):
