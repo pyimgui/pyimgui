@@ -48,7 +48,7 @@ include "imgui/enums.pyx"
 include "imgui/utilities.pyx"
 
 include "imgui/common.pyx"
-include "imgui/core/main.pyx"
+include "imgui/core/base.pyx"
 include "imgui/core/draw.pyx"
 include "imgui/core/tables.pyx"
 include "imgui/core/widgets.pyx"
