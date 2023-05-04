@@ -2,30 +2,7 @@
 import pytest
 import imgui
 
-@pytest.fixture
-def context():
-    ctx = imgui.get_current_context()
-    if ctx is not None:
-        imgui.destroy_context(ctx)
-    ctx = imgui.create_context()
-    return ctx
-
-@pytest.fixture
-def io():
-    # setup io
-    io = imgui.get_io()
-    io.delta_time = 1.0 / 60.0
-    io.display_size = 300, 300
-
-    # setup default font
-    io.fonts.get_tex_data_as_rgba32()
-    io.fonts.add_font_default()
-    io.fonts.texture_id = 42  # set any texture ID to avoid segfaults
-
-    return io
-
 def test_texture_id_int_reference(context, io):
-
     # See issue #248 (https://github.com/pyimgui/pyimgui/issues/248)
 
     texture_id = 0
@@ -49,9 +26,9 @@ def test_texture_id_int_reference(context, io):
             for command in commands.commands:
                 assert type(command.texture_id) is int
 
-def test_texture_id_keep_type(context, io):
 
-    texture_id = { 'dummy':42 }
+def test_texture_id_keep_type(context, io):
+    texture_id = {'dummy': 42}
 
     imgui.new_frame()
     imgui.image(texture_id, 640, 480)
@@ -64,4 +41,4 @@ def test_texture_id_keep_type(context, io):
             if command.texture_id == io.fonts.texture_id:
                 continue
 
-            assert type(command.texture_id) == type(texture_id)    
+            assert type(command.texture_id) == type(texture_id)
