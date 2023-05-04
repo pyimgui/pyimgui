@@ -4,21 +4,10 @@ import pytest
 
 import imgui
 
-
 IMGUI_DATA_DESCRIPTORS = [
     attribute_name for attribute_name in dir(imgui.GuiStyle)
     if inspect.isdatadescriptor(getattr(imgui.GuiStyle, attribute_name))
 ]
-
-
-@pytest.fixture
-def context():
-    ctx = imgui.get_current_context()
-    if ctx is not None:
-        imgui.destroy_context(ctx)
-    ctx = imgui.create_context()
-    return ctx
-
 
 
 @pytest.fixture(params=IMGUI_DATA_DESCRIPTORS)
