@@ -4,16 +4,10 @@ import pytest
 
 import imgui
 
-
 IMGUI_DATA_DESCRIPTORS = [
     attribute_name for attribute_name in dir(imgui.GuiStyle)
     if inspect.isdatadescriptor(getattr(imgui.GuiStyle, attribute_name))
 ]
-
-
-@pytest.fixture
-def context():
-    return imgui.create_context()
 
 
 @pytest.fixture(params=IMGUI_DATA_DESCRIPTORS)
