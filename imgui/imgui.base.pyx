@@ -3012,6 +3012,17 @@ def pop_id():
     """
     cimgui.PopID()
 
+def get_id(str str_id):
+    """Calculate unique ID (hash of whole ID stack + given parameter).
+    e.g. if you want to query into ImGuiStorage yourself
+    Args:
+        str_id (str): String Id
+
+    wraps::
+        GetID(const char* str_id)
+    """
+    return cimgui.GetID(_bytes(str_id))
+
 def is_rect_visible(float size_width, float size_height):
     """Test if a rectangle of the given size, starting from the cursor
     position is visible (not clipped).

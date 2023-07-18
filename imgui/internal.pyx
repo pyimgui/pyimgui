@@ -202,6 +202,18 @@ TAB_ITEM_BUTTON = enums_internal.ImGuiTabItemFlags_Button
 def push_item_flag(internal.ImGuiItemFlags option, bool enabled):
     # TODO: document
     internal.PushItemFlag(option, enabled)
-    
+
 def pop_item_flag():
     internal.PopItemFlag()
+
+def get_item_id():
+    """Gets the id of the last item.
+
+    Note:
+        Not all items have unique item ids. Non-interactive items
+        such as text will return 0.
+
+    wraps::
+        GetItemID()
+    """
+    return internal.GetItemID()

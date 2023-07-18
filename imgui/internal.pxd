@@ -245,7 +245,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # ====
     # Basic Accessors
     # ====
-    ImGuiID GetItemID() except + # ?
+    ImGuiID GetItemID() except + # ✓
     ImGuiItemStatusFlags GetItemStatusFlags() except + # ?
     ImGuiID GetActiveID() except + # ?
     ImGuiID GetFocusID() except + # ?

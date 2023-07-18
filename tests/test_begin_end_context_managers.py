@@ -1,43 +1,10 @@
-import logging
-import sys
-
 import pytest
+
 import imgui
-from imgui import ImGuiError
 
 
 class _TestException(Exception):
     pass
-
-
-@pytest.fixture
-def context():
-    ctx = imgui.get_current_context()
-    if ctx is not None:
-        imgui.destroy_context(ctx)
-    ctx = imgui.create_context()
-    io = imgui.get_io()
-    io.delta_time = 1.0 / 60.0
-    io.display_size = 300, 300
-
-    # setup default font
-    io.fonts.get_tex_data_as_rgba32()
-    io.fonts.add_font_default()
-    io.fonts.texture_id = 0  # set any texture ID to avoid segfaults
-    return ctx
-
-
-@pytest.fixture
-def frame(context):
-    imgui.new_frame()
-    yield
-    try:
-        imgui.render()
-    except ImGuiError:
-        try:
-            imgui.end_frame()
-        except ImGuiError:
-            pass
 
 
 # ------- BEGIN/END ----------
@@ -71,6 +38,7 @@ def test_begin_equality(frame):
     assert window == window
     assert window == tuple(window)
     imgui.end()
+
 
 # ------- BEGIN_CHILD/END_CHILD ----------
 def test_child_okay(frame):

@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from .opengl import FixedPipelineRenderer
+from .opengl import ProgrammablePipelineRenderer
 
 import pygame
 import pygame.event
@@ -9,7 +9,7 @@ import pygame.time
 import imgui
 
 
-class PygameRenderer(FixedPipelineRenderer):
+class PygameRenderer(ProgrammablePipelineRenderer):
     def __init__(self):
         super(PygameRenderer, self).__init__()
 
