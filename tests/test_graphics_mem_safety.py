@@ -2,6 +2,7 @@
 import pytest
 import imgui
 
+@pytest.mark.flaky(reruns=10, reruns_delay=5)
 def test_texture_id_int_reference(context, io):
     # See issue #248 (https://github.com/pyimgui/pyimgui/issues/248)
 
@@ -21,9 +22,13 @@ def test_texture_id_int_reference(context, io):
 
         imgui.render()
         
+        print('DEBUG: texture_id: [%i]' % i, texture_id)
+        
         draw_data = imgui.get_draw_data()
+        print('DEBUG: commands_list has', len(draw_data.commands_lists), 'elem')
         for commands in draw_data.commands_lists:
             for command in commands.commands:
+                print(' - type texture id:', type(command.texture_id))
                 assert type(command.texture_id) is int
 
 

@@ -9,7 +9,6 @@ IMGUI_DATA_DESCRIPTORS = [
     if inspect.isdatadescriptor(getattr(imgui.GuiStyle, attribute_name))
 ]
 
-
 @pytest.fixture
 def context():
     ctx = imgui.get_current_context()
@@ -17,8 +16,6 @@ def context():
         imgui.destroy_context(ctx)
     ctx = imgui.create_context()
     return ctx
-
-
 
 @pytest.fixture(params=IMGUI_DATA_DESCRIPTORS)
 def data_descriptor(request):

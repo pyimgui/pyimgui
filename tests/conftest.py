@@ -20,8 +20,8 @@ def io():
     io.display_size = 300, 300
 
     # setup default font
-    io.fonts.get_tex_data_as_rgba32()
     io.fonts.add_font_default()
+    io.fonts.get_tex_data_as_rgba32()
     io.fonts.texture_id = 42  # set any texture ID to avoid segfaults
 
     return io

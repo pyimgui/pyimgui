@@ -3,6 +3,8 @@ from __future__ import absolute_import
 import warnings
 from distutils.version import LooseVersion
 
+import queue
+
 from pyglet.window import key, mouse, Window
 import pyglet
 import pyglet.clock
@@ -55,6 +57,8 @@ class PygletMixin(object):
         super(PygletMixin, self).__init__()
         self._cursor = -2
         self._window = None
+        self.io = imgui.get_io()
+        self.queue = queue.Queue()
         # Let Dear imgui know we have mouse cursor support
         self.io.backend_flags |= imgui.BACKEND_HAS_MOUSE_CURSORS
 
@@ -78,15 +82,15 @@ class PygletMixin(object):
     def _attach_callbacks(self, window):
         self._window = window
         window.push_handlers(
-            self.on_mouse_motion,
-            self.on_key_press,
-            self.on_key_release,
-            self.on_text,
-            self.on_mouse_drag,
-            self.on_mouse_press,
-            self.on_mouse_release,
-            self.on_mouse_scroll,
-            self.on_resize,
+            on_mouse_motion = lambda *a: self.queue.put((self.on_mouse_motion, a)),
+            on_key_press = lambda *a: self.queue.put((self.on_key_press, a)),
+            on_key_release = lambda *a: self.queue.put((self.on_key_release, a)),
+            on_text = lambda *a: self.queue.put((self.on_text, a)),
+            on_mouse_drag = lambda *a: self.queue.put((self.on_mouse_drag, a)),
+            on_mouse_press = lambda *a: self.queue.put((self.on_mouse_press, a)),
+            on_mouse_release = lambda *a: self.queue.put((self.on_mouse_release, a)),
+            on_mouse_scroll = lambda *a: self.queue.put((self.on_mouse_scroll, a)),
+            on_resize = lambda *a: self.queue.put((self.on_resize, a)),
         )
 
 
@@ -184,6 +188,13 @@ class PygletMixin(object):
         self.io.display_size = width, height
     
     def process_inputs(self):
+        try:
+            while True:
+                callback, args = self.queue.get_nowait()
+                callback(*args)
+        except queue.Empty:
+            pass
+
         io = imgui.get_io()
         
         current_time = pyglet.clock.tick()

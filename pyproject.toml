@@ -4,7 +4,7 @@ build-verbosity = 1
 
 test-command = [
     "cd {package}", 
-    "py.test -v --color=yes"
+    "py.test -v -s --color=yes"
 ]
 before-test = "python -m pip install -r doc/requirements-test.txt"
 

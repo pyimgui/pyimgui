@@ -7,7 +7,7 @@ import imgui
 import sys
 
 
-backend = "pygame"
+backend = None
 if "sdl2" in sys.argv:
     backend = "sdl2"
 elif "pygame" in sys.argv:
@@ -16,7 +16,18 @@ elif "glfw" in sys.argv:
     backend = "glfw"
 elif "cocos2d" in sys.argv:
     backend = "cocos2d"
-sys.stderr.write("%s backend selected\n" % backend)
+
+if backend:
+    sys.stderr.write("%s backend selected\n" % backend)
+else:
+    sys.stderr.write("error: missing 1 positional argument\n")
+    sys.stderr.write("usage: python integrations_all_in_one.py [backend]\n")
+    sys.stderr.write("backends:\n")
+    sys.stderr.write("  cocos2d\n")
+    sys.stderr.write("  glfw\n")
+    sys.stderr.write("  pygame\n")
+    sys.stderr.write("  sdl2\n")
+    sys.exit(0)
 
 if backend == "sdl2":
     from sdl2 import *
@@ -101,6 +112,12 @@ def main_sdl2():
 
 def main_pygame():
     pygame.init()
+
+    pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MAJOR_VERSION, 3)
+    pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MINOR_VERSION, 3)
+    pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
+    pygame.display.gl_set_attribute(pygame.GL_CONTEXT_FLAGS, pygame.GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) 
+
     size = 800, 600
     pygame.display.set_mode(size, pygame.DOUBLEBUF | pygame.OPENGL | pygame.RESIZABLE)
 
