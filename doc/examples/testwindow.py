@@ -1730,7 +1730,7 @@ def show_test_window():
 
             imgui.text("Color widget HSV with Alpha:")
             changed, color_picker_color = imgui.color_edit4(
-                "MyColor##2", *color_picker_color, imgui.COLOR_EDIT_HSV | misc_flags
+                "MyColor##2", *color_picker_color, imgui.COLOR_EDIT_DISPLAY_HSV | misc_flags
             )
 
             imgui.text("Color widget with Float Display:")
