@@ -19,16 +19,16 @@ cdef UpdateImGuiContext(cimgui.ImGuiContext* _ptr):
 # === Enums ===
 
 # Item Flags
-ITEM_NONE = enums_internal.ImGuiItemFlags_None                     
-ITEM_NO_TAB_STOP = enums_internal.ImGuiItemFlags_NoTabStop                
-ITEM_BUTTON_REPEAT = enums_internal.ImGuiItemFlags_ButtonRepeat             
-ITEM_DISABLED = enums_internal.ImGuiItemFlags_Disabled                 
-ITEM_NO_NAV = enums_internal.ImGuiItemFlags_NoNav                    
-ITEM_NO_NAV_DEFAULT_FOCUS = enums_internal.ImGuiItemFlags_NoNavDefaultFocus        
-ITEM_SELECTABLE_DONT_CLOSE_POPUP = enums_internal.ImGuiItemFlags_SelectableDontClosePopup 
-ITEM_MIXED_VALUE = enums_internal.ImGuiItemFlags_MixedValue               
-ITEM_READ_ONLY = enums_internal.ImGuiItemFlags_ReadOnly                 
-ITEM_DEFAULT = enums_internal.ImGuiItemFlags_Default_                 
+ITEM_NONE = enums_internal.ImGuiItemFlags_None
+ITEM_NO_TAB_STOP = enums_internal.ImGuiItemFlags_NoTabStop
+ITEM_BUTTON_REPEAT = enums_internal.ImGuiItemFlags_ButtonRepeat
+ITEM_DISABLED = enums_internal.ImGuiItemFlags_Disabled
+ITEM_NO_NAV = enums_internal.ImGuiItemFlags_NoNav
+ITEM_NO_NAV_DEFAULT_FOCUS = enums_internal.ImGuiItemFlags_NoNavDefaultFocus
+ITEM_SELECTABLE_DONT_CLOSE_POPUP = enums_internal.ImGuiItemFlags_SelectableDontClosePopup
+ITEM_MIXED_VALUE = enums_internal.ImGuiItemFlags_MixedValue
+ITEM_READ_ONLY = enums_internal.ImGuiItemFlags_ReadOnly
+# ITEM_DEFAULT = enums_internal.ImGuiItemFlags_Default_ # remove in v 1.83
 
 # Item Status Flags
 ITEM_STATUS_NONE = enums_internal.ImGuiItemStatusFlags_None
@@ -49,9 +49,9 @@ BUTTON_PRESSED_ON_DOUBLE_CLICK = enums_internal.ImGuiButtonFlags_PressedOnDouble
 BUTTON_PRESSED_ON_DRAG_DROP_HOLD = enums_internal.ImGuiButtonFlags_PressedOnDragDropHold
 BUTTON_REPEAT = enums_internal.ImGuiButtonFlags_Repeat
 BUTTON_FLATTEN_CHILDREN = enums_internal.ImGuiButtonFlags_FlattenChildren
-BUTTON_ALLOW_ITEM_OVERLAP = enums_internal.ImGuiButtonFlags_AllowItemOverlap
+BUTTON_ALLOW_ITEM_OVERLAP = BUTTON_ALLOW_OVERLAP = enums_internal.ImGuiButtonFlags_AllowOverlap # rename at v1.89.9, keep old name for compatibility
 BUTTON_DONT_CLOSE_POPUPS = enums_internal.ImGuiButtonFlags_DontClosePopups
-BUTTON_DISABLED = enums_internal.ImGuiButtonFlags_Disabled
+# BUTTON_DISABLED = enums_internal.ImGuiButtonFlags_Disabled # disable in v1.84
 BUTTON_ALIGN_TEXT_BASE_LINE = enums_internal.ImGuiButtonFlags_AlignTextBaseLine
 BUTTON_NO_KEY_MODIFIERS = enums_internal.ImGuiButtonFlags_NoKeyModifiers
 BUTTON_NO_HOLDING_ACTIVE_ID = enums_internal.ImGuiButtonFlags_NoHoldingActiveId
@@ -59,23 +59,23 @@ BUTTON_NO_NAV_FOCUS = enums_internal.ImGuiButtonFlags_NoNavFocus
 BUTTON_NO_HOVERED_ON_FOCUS = enums_internal.ImGuiButtonFlags_NoHoveredOnFocus
 BUTTON_PRESSED_ON_MASK = enums_internal.ImGuiButtonFlags_PressedOnMask_
 BUTTON_PRESSED_ON_DEFAULT = enums_internal.ImGuiButtonFlags_PressedOnDefault_
-    
+
 # Slider Flags Private
 SLIDER_VERTICAL = enums_internal.ImGuiSliderFlags_Vertical
 SLIDER_READ_ONLY = enums_internal.ImGuiSliderFlags_ReadOnly
-        
+
 # Selectable Flags Private
 SELECTABLE_NO_HOLDING_ACTIVE_ID = enums_internal.ImGuiSelectableFlags_NoHoldingActiveID
 SELECTABLE_SELECT_ON_CLICK = enums_internal.ImGuiSelectableFlags_SelectOnClick
 SELECTABLE_SELECT_ON_RELEASE = enums_internal.ImGuiSelectableFlags_SelectOnRelease
 SELECTABLE_SPAN_AVAILABLE_WIDTH = enums_internal.ImGuiSelectableFlags_SpanAvailWidth
-SELECTABLE_DRAW_HOVERED_WHEN_HELD = enums_internal.ImGuiSelectableFlags_DrawHoveredWhenHeld
+# SELECTABLE_DRAW_HOVERED_WHEN_HELD = enums_internal.ImGuiSelectableFlags_DrawHoveredWhenHeld
 SELECTABLE_SET_NAV_ID_ON_HOVER = enums_internal.ImGuiSelectableFlags_SetNavIdOnHover
 SELECTABLE_NO_PAD_WIDHT_HALF_SPACING = enums_internal.ImGuiSelectableFlags_NoPadWithHalfSpacing
 
 # Tree Node Flags Private
 TREE_NODE_CLIP_LABEL_FOR_TRAILING_BUTTON = enums_internal.ImGuiTreeNodeFlags_ClipLabelForTrailingButton
-    
+
 # Separator Flags
 SEPARATOR_NONE = enums_internal.ImGuiSeparatorFlags_None
 SEPARATOR_HORIZONTAL = enums_internal.ImGuiSeparatorFlags_Horizontal
@@ -88,7 +88,7 @@ TEXT_NO_WIDTH_FRO_LARGE_CLIPPED_TEXT = enums_internal.ImGuiTextFlags_NoWidthForL
 
 # Tooltip Flags
 TOOLTIP_NONE = enums_internal.ImGuiTooltipFlags_None
-TOOLTIP_OVERRIDE_PREVIOUS_TOOLTIP = enums_internal.ImGuiTooltipFlags_OverridePreviousTooltip
+TOOLTIP_OVERRIDE_PREVIOUS_TOOLTIP = TOOLTIP_OVERRIDE_PREVIOUS = enums_internal.ImGuiTooltipFlags_OverridePrevious # rename at v1.89.9, keep old name for compatibility
 
 # Layout Type
 LAYOUT_TYPE_HORIZONTAL = enums_internal.ImGuiLayoutType_Horizontal
@@ -115,29 +115,29 @@ INPUT_SOURCE_NONE = enums_internal.ImGuiInputSource_None
 INPUT_SOURCE_MOUSE = enums_internal.ImGuiInputSource_Mouse
 INPUT_SOURCE_KEYBOARD = enums_internal.ImGuiInputSource_Keyboard
 INPUT_SOURCE_GAMEPAD = enums_internal.ImGuiInputSource_Gamepad
-INPUT_SOURCE_NAV = enums_internal.ImGuiInputSource_Nav
+# INPUT_SOURCE_NAV = enums_internal.ImGuiInputSource_Nav  # remove in v1.89.9
 INPUT_SOURCE_COUNT = enums_internal.ImGuiInputSource_COUNT
 
-# Input Read Mode
-INPUT_READ_MODE_DOWN = enums_internal.ImGuiInputReadMode_Down
-INPUT_READ_MODE_PRESSED = enums_internal.ImGuiInputReadMode_Pressed
-INPUT_READ_MODE_RELEASED = enums_internal.ImGuiInputReadMode_Released
-INPUT_READ_MODE_REPEAT = enums_internal.ImGuiInputReadMode_Repeat
-INPUT_READ_MODE_REPEAT_SLOW = enums_internal.ImGuiInputReadMode_RepeatSlow
-INPUT_READ_MODE_REPEAT_FAST = enums_internal.ImGuiInputReadMode_RepeatFast
+# # Nav Read Mode # renamed from `ImGuiInputReadMode` in v1.87, keep old name for compatibility, removed in v1.89
+# INPUT_READ_MODE_DOWN = NAV_READ_MODE_DOWN = enums_internal.ImGuiNavReadMode_Down
+# INPUT_READ_MODE_PRESSED = NAV_READ_MODE_PRESSED = enums_internal.ImGuiNavReadMode_Pressed
+# INPUT_READ_MODE_RELEASED = NAV_READ_MODE_RELEASED = enums_internal.ImGuiNavReadMode_Released
+# INPUT_READ_MODE_REPEAT = NAV_READ_MODE_REPEAT = enums_internal.ImGuiNavReadMode_Repeat
+# INPUT_READ_MODE_REPEAT_SLOW = NAV_READ_MODE_REPEAT_SLOW = enums_internal.ImGuiNavReadMode_RepeatSlow
+# INPUT_READ_MODE_REPEAT_FAST = NAV_READ_MODE_REPEAT_FAST = enums_internal.ImGuiNavReadMode_RepeatFast
 
 # Nav Highlight Flags
-NAV_HIGHLIGHT_NONE = enums_internal.ImGuiNavHighlightFlags_None         
-NAV_HIGHLIGHT_TYPE_DEFAULT = enums_internal.ImGuiNavHighlightFlags_TypeDefault  
-NAV_HIGHLIGHT_TYPE_THIN = enums_internal.ImGuiNavHighlightFlags_TypeThin     
+NAV_HIGHLIGHT_NONE = enums_internal.ImGuiNavHighlightFlags_None
+NAV_HIGHLIGHT_TYPE_DEFAULT = enums_internal.ImGuiNavHighlightFlags_TypeDefault
+NAV_HIGHLIGHT_TYPE_THIN = enums_internal.ImGuiNavHighlightFlags_TypeThin
 NAV_HIGHLIGHT_ALWAYS_DRAW = enums_internal.ImGuiNavHighlightFlags_AlwaysDraw
-NAV_HIGHLIGHT_NO_ROUNDING = enums_internal.ImGuiNavHighlightFlags_NoRounding   
+NAV_HIGHLIGHT_NO_ROUNDING = enums_internal.ImGuiNavHighlightFlags_NoRounding
 
-# Nav Dir Source Flags
-NAV_DIR_SOURCE_NONE = enums_internal.ImGuiNavDirSourceFlags_None      
-NAV_DIR_SOURCE_KEYBOARD = enums_internal.ImGuiNavDirSourceFlags_Keyboard  
-NAV_DIR_SOURCE_PAD_D_PAD = enums_internal.ImGuiNavDirSourceFlags_PadDPad   
-NAV_DIR_SOURCE_PAD_L_STICK = enums_internal.ImGuiNavDirSourceFlags_PadLStick 
+# # Nav Dir Source Flags # remove in v1.89
+# NAV_DIR_SOURCE_NONE = enums_internal.ImGuiNavDirSourceFlags_None
+# NAV_DIR_SOURCE_KEYBOARD = enums_internal.ImGuiNavDirSourceFlags_Keyboard
+# NAV_DIR_SOURCE_PAD_D_PAD = enums_internal.ImGuiNavDirSourceFlags_PadDPad
+# NAV_DIR_SOURCE_PAD_L_STICK = enums_internal.ImGuiNavDirSourceFlags_PadLStick
 
 # Nav Move Flags
 NAV_MOVE_NONE = enums_internal.ImGuiNavMoveFlags_None
@@ -147,12 +147,20 @@ NAV_MOVE_WRAP_X = enums_internal.ImGuiNavMoveFlags_WrapX
 NAV_MOVE_WRAP_Y = enums_internal.ImGuiNavMoveFlags_WrapY
 NAV_MOVE_ALLOW_CURRENT_NAV_ID = enums_internal.ImGuiNavMoveFlags_AllowCurrentNavId
 NAV_MOVE_ALSO_SCORE_VISIBLE_SET = enums_internal.ImGuiNavMoveFlags_AlsoScoreVisibleSet
-NAV_MOVE_SCROLL_TO_EDGE = enums_internal.ImGuiNavMoveFlags_ScrollToEdge
+NAV_MOVE_SCROLL_TO_EDGE = NAV_MOVE_SCROLL_TO_EDGE_Y = enums_internal.ImGuiNavMoveFlags_ScrollToEdgeY
+NAV_MOVE_FORWARD = enums_internal.ImGuiNavMoveFlags_Forwarded
+NAV_MOVE_DEBUG_NO_RESULT = enums_internal.ImGuiNavMoveFlags_DebugNoResult
+NAV_MOVE_FOCUS_API = enums_internal.ImGuiNavMoveFlags_FocusApi
+NAV_MOVE_IS_TABBING = enums_internal.ImGuiNavMoveFlags_IsTabbing
+NAV_MOVE_IS_PAGEMOVE = enums_internal.ImGuiNavMoveFlags_IsPageMove
+NAV_MOVE_ACTIVE = enums_internal.ImGuiNavMoveFlags_Activate
+NAV_NOSELECT = enums_internal.ImGuiNavMoveFlags_NoSelect
+NAV_MOVE_NO_SET_NAV_HIGHLIGHT = enums_internal.ImGuiNavMoveFlags_NoSetNavHighlight
 
-# Nav Forward
-NAV_FORWARD_NONE = enums_internal.ImGuiNavForward_None
-NAV_FORWARD_FORWARD_QUEUED = enums_internal.ImGuiNavForward_ForwardQueued
-NAV_FORWARD_FORWARD_ACTIVE = enums_internal.ImGuiNavForward_ForwardActive
+# # Nav Forward  # remove in v1.85
+# NAV_FORWARD_NONE = enums_internal.ImGuiNavForward_None
+# NAV_FORWARD_FORWARD_QUEUED = enums_internal.ImGuiNavForward_ForwardQueued
+# NAV_FORWARD_FORWARD_ACTIVE = enums_internal.ImGuiNavForward_ForwardActive
 
 # Nav Layer
 NAV_LAYER_MAIN = enums_internal.ImGuiNavLayer_Main
@@ -165,20 +173,20 @@ POPUP_POSITION_POLICY_COMBO_BOX = enums_internal.ImGuiPopupPositionPolicy_ComboB
 POPUP_POSITION_POLICY_TOOLTIP = enums_internal.ImGuiPopupPositionPolicy_Tooltip
 
 # Next Window Data Flags
-NEXT_WINDOW_DATA_NONE = enums_internal.ImGuiNextWindowDataFlags_None               
-NEXT_WINDOW_DATA_HAS_POS = enums_internal.ImGuiNextWindowDataFlags_HasPos             
-NEXT_WINDOW_DATA_HAS_SIZE = enums_internal.ImGuiNextWindowDataFlags_HasSize            
-NEXT_WINDOW_DATA_HAS_CONTENT_SIZE = enums_internal.ImGuiNextWindowDataFlags_HasContentSize     
-NEXT_WINDOW_DATA_HAS_COLLAPSED = enums_internal.ImGuiNextWindowDataFlags_HasCollapsed       
-NEXT_WINDOW_DATA_HAS_SIZE_CONSTRAINT = enums_internal.ImGuiNextWindowDataFlags_HasSizeConstraint  
-NEXT_WINDOW_DATA_HAS_FOCUS = enums_internal.ImGuiNextWindowDataFlags_HasFocus           
-NEXT_WINDOW_DATA_HAS_BACKGROUND_ALPHA = enums_internal.ImGuiNextWindowDataFlags_HasBgAlpha         
-NEXT_WINDOW_DATA_HAS_SCROLL = enums_internal.ImGuiNextWindowDataFlags_HasScroll          
+NEXT_WINDOW_DATA_NONE = enums_internal.ImGuiNextWindowDataFlags_None
+NEXT_WINDOW_DATA_HAS_POS = enums_internal.ImGuiNextWindowDataFlags_HasPos
+NEXT_WINDOW_DATA_HAS_SIZE = enums_internal.ImGuiNextWindowDataFlags_HasSize
+NEXT_WINDOW_DATA_HAS_CONTENT_SIZE = enums_internal.ImGuiNextWindowDataFlags_HasContentSize
+NEXT_WINDOW_DATA_HAS_COLLAPSED = enums_internal.ImGuiNextWindowDataFlags_HasCollapsed
+NEXT_WINDOW_DATA_HAS_SIZE_CONSTRAINT = enums_internal.ImGuiNextWindowDataFlags_HasSizeConstraint
+NEXT_WINDOW_DATA_HAS_FOCUS = enums_internal.ImGuiNextWindowDataFlags_HasFocus
+NEXT_WINDOW_DATA_HAS_BACKGROUND_ALPHA = enums_internal.ImGuiNextWindowDataFlags_HasBgAlpha
+NEXT_WINDOW_DATA_HAS_SCROLL = enums_internal.ImGuiNextWindowDataFlags_HasScroll
 
 # Next Item Data Flags
-NEXT_ITEM_DATA_NONE = enums_internal.ImGuiNextItemDataFlags_None     
-NEXT_ITEM_DATA_HAS_WIDTH = enums_internal.ImGuiNextItemDataFlags_HasWidth 
-NEXT_ITEM_DATA_HAS_OPEN = enums_internal.ImGuiNextItemDataFlags_HasOpen  
+NEXT_ITEM_DATA_NONE = enums_internal.ImGuiNextItemDataFlags_None
+NEXT_ITEM_DATA_HAS_WIDTH = enums_internal.ImGuiNextItemDataFlags_HasWidth
+NEXT_ITEM_DATA_HAS_OPEN = enums_internal.ImGuiNextItemDataFlags_HasOpen
 
 # Columns Flags
 OLD_COLUMNS_NONE = enums_internal.ImGuiOldColumnFlags_None
@@ -202,6 +210,6 @@ TAB_ITEM_BUTTON = enums_internal.ImGuiTabItemFlags_Button
 def push_item_flag(internal.ImGuiItemFlags option, bool enabled):
     # TODO: document
     internal.PushItemFlag(option, enabled)
-    
+
 def pop_item_flag():
     internal.PopItemFlag()
