@@ -9,7 +9,7 @@ Notes:
 """
 from libcpp cimport bool
 
-from enums cimport ImGuiKey_, ImGuiCol_, ImGuiSliderFlags_
+from enums cimport ImGuiKey, ImGuiCol_, ImGuiSliderFlags_
 
 cimport cimgui
 cimport enums_internal
@@ -17,7 +17,7 @@ cimport enums_internal
 cdef UpdateImGuiContext(cimgui.ImGuiContext* _ptr)
 
 cdef extern from "imgui_internal.h":
-    
+
     # ====
     # Forward declarations
     ctypedef struct ImBitVector
@@ -51,8 +51,8 @@ cdef extern from "imgui_internal.h":
     ctypedef struct ImGuiWindow
     ctypedef struct ImGuiWindowTempData
     ctypedef struct ImGuiWindowSettings
-    
-    
+
+
     # ====
     # Enums/Flags
     ctypedef int ImGuiLayoutType
@@ -79,7 +79,7 @@ cdef extern from "imgui_internal.h":
     ctypedef int ImGuiNavLayer
     ctypedef int ImGuiPopupPositionPolicy
     ctypedef void (*ImGuiErrorLogCallback)(void* user_data, const char* fmt, ...)
-    
+
     # ===
     # Various forward declarations
     ctypedef struct ImVec2
@@ -123,34 +123,34 @@ cdef extern from "imgui_internal.h":
     ctypedef int ImGuiTableRowFlags
     ctypedef int ImGuiTreeNodeFlags
     ctypedef int ImGuiWindowFlags
-    
+
     # ====
     # Various int typedefs and enumerations
     ctypedef void* ImTextureID
     ctypedef unsigned int ImGuiID
     ctypedef int (*ImGuiInputTextCallback)(ImGuiInputTextCallbackData *data);
     ctypedef void (*ImGuiSizeCallback)(ImGuiSizeCallbackData* data);
-    
+
     # ====
     # Basic scalar data types
-    ctypedef signed char         ImS8 
-    ctypedef unsigned char       ImU8 
+    ctypedef signed char         ImS8
+    ctypedef unsigned char       ImU8
     ctypedef signed short        ImS16
     ctypedef unsigned short      ImU16
     ctypedef signed int          ImS32
     ctypedef unsigned int        ImU32
     ctypedef signed   long long  ImS64
     ctypedef unsigned long long  ImU64
-    
+
     ctypedef struct ImGuiShrinkWidthItem:
         int         Index
         float       Width
-    
 
-    
+
+
 
 cdef extern from "imgui_internal.h" namespace "ImGui":
-    
+
     # ====
     # Windows
     # ====
@@ -165,20 +165,20 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     bool IsWindowNavFocusable(ImGuiWindow* window) except + # ?
     ImRect GetWindowAllowedExtentRect(ImGuiWindow* window) except + # ?
     void SetWindowPos( # ?
-        ImGuiWindow* window, 
-        const ImVec2& pos, 
+        ImGuiWindow* window,
+        const ImVec2& pos,
         # note: optional
         ImGuiCond cond          # = 0
     ) except +
     void SetWindowSize( # ?
-        ImGuiWindow* window, 
-        const ImVec2& size, 
+        ImGuiWindow* window,
+        const ImVec2& size,
         # note: conditional
         ImGuiCond cond          # = 0
     ) except +
     void SetWindowCollapsed( # ?
-        ImGuiWindow* window, 
-        bool collapsed, 
+        ImGuiWindow* window,
+        bool collapsed,
         # note: conditional
         ImGuiCond cond          # = 0
     ) except +
@@ -199,13 +199,13 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     void SetCurrentFont(ImFont* font) except + # ?
     ImFont* GetDefaultFont() except + # ?
     ImDrawList* GetForegroundDrawList(ImGuiWindow* window) except + # ?
-    
+
     # ====
     # Init
     # ====
     void Shutdown(ImGuiContext* context) except + # ?
     void Initialize(ImGuiContext* context) except + # ?
-    
+
     # ====
     # NewFrame
     # ====
@@ -213,14 +213,14 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     void StartMouseMovingWindow(ImGuiWindow* window) except + # ?
     void UpdateMouseMovingWindowNewFrame() except + # ?
     void UpdateMouseMovingWindowEndFrame() except + # ?
-    
+
     # ====
     # Generic context hooks
     # ====
     void AddContextHook(ImGuiContext* context, const ImGuiContextHook* hook) except + # ?
     void CallContextHooks(ImGuiContext* context, ImGuiContextHookType type) except + # ?
 
-    
+
     # ====
     # Settings
     # ====
@@ -264,23 +264,23 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # Basic Helpers for widget code
     # ====
     void ItemSize( # ?
-        const ImVec2& size, 
+        const ImVec2& size,
         # note: optional
         float text_baseline_y           # = -1.0f
     ) except +
     void ItemSize(# ?
-        const ImRect& bb, 
+        const ImRect& bb,
         # note: optional
         float text_baseline_y           # = -1.0f
     ) except +
     bool ItemAdd( # ?
-        const ImRect& bb, 
-        ImGuiID id, 
+        const ImRect& bb,
+        ImGuiID id,
         # note: optional
         const ImRect* nav_bb            # = NULL
     ) except +
     bool ItemHoverable(const ImRect& bb, ImGuiID id) except + # ?
-    bool IsClippedEx(const ImRect& bb, ImGuiID id, bool clip_even_when_logged) except + # ?
+    bool IsClippedEx(const ImRect& bb, ImGuiID id) except + # ? # remove `clip_even_when_logged` arg in v1.85
     void SetLastItemData(ImGuiWindow* window, ImGuiID item_id, ImGuiItemStatusFlags status_flags, const ImRect& item_rect) except + # ?
     bool FocusableItemRegister(ImGuiWindow* window, ImGuiID id) except + # ?
     void FocusableItemUnregister(ImGuiWindow* window) except + # ?
@@ -292,7 +292,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     bool IsItemToggledSelection() except + # ?
     ImVec2 GetContentRegionMaxAbs() except + # ?
     void ShrinkWidths(ImGuiShrinkWidthItem* items, int count, float width_excess) except + # ?
-    
+
     # ====
     # Logging/Capture
     # ====
@@ -307,10 +307,10 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # ====
     bool BeginChildEx(const char* name, ImGuiID id, const ImVec2& size_arg, bool border, ImGuiWindowFlags flags) except + # ?
     void OpenPopupEx( # ?
-        ImGuiID id, 
+        ImGuiID id,
         # note: optional
         ImGuiPopupFlags popup_flags     # = ImGuiPopupFlags_None
-    ) except + 
+    ) except +
     void ClosePopupToLevel(int remaining, bool restore_focus_to_window_under_popup) except + # ?
     void ClosePopupsOverWindow(ImGuiWindow* ref_window, bool restore_focus_to_window_under_popup) except + # ?
     bool IsPopupOpen(ImGuiID id, ImGuiPopupFlags popup_flags) except + # ?
@@ -330,16 +330,16 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     void NavMoveRequestTryWrapping(ImGuiWindow* window, ImGuiNavMoveFlags move_flags) except + # ?
     float GetNavInputAmount(ImGuiNavInput n, ImGuiInputReadMode mode) except + # ?
     ImVec2 GetNavInputAmount2d( # ?
-        ImGuiNavDirSourceFlags dir_sources, 
-        ImGuiInputReadMode mode, 
+        ImGuiNavDirSourceFlags dir_sources,
+        ImGuiInputReadMode mode,
         # note: optional
-        float slow_factor,                  # = 0.0f 
+        float slow_factor,                  # = 0.0f
         float fast_factor                   # = 0.0f
     ) except +
     int CalcTypematicRepeatAmount(float t0, float t1, float repeat_delay, float repeat_rate) except + # ?
     void ActivateItem(ImGuiID id) except + # ?
     void SetNavID(ImGuiID id, int nav_layer, ImGuiID focus_scope_id, const ImRect& rect_rel) except + # ?
-    
+
     # ====
     # Focus Scope (WIP)
     # ====
@@ -347,7 +347,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     void PopFocusScope() except + # ?
     ImGuiID GetFocusedFocusScope() except + # ?
     ImGuiID GetFocusScope() except + # ?
-    
+
     # ====
     # Inputs
     # ====
@@ -356,12 +356,12 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     bool IsActiveIdUsingNavInput(ImGuiNavInput input) except + # ?
     bool IsActiveIdUsingKey(ImGuiKey key) except + # ?
     bool IsMouseDragPastThreshold( # ?
-        ImGuiMouseButton button, 
+        ImGuiMouseButton button,
         # note: optional
         float lock_threshold                # = -1.0f
     ) except +
     bool IsKeyPressedMap( # ?
-        ImGuiKey key, 
+        ImGuiKey key,
         # note: optional
         bool repeat                         # = true
     ) except +
@@ -381,8 +381,8 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # ====
     void SetWindowClipRectBeforeSetChannel(ImGuiWindow* window, const ImRect& clip_rect) except + # ?
     void BeginColumns(  # ?
-        const char* str_id, 
-        int count, 
+        const char* str_id,
+        int count,
         # note: optional
         ImGuiOldColumnFlags flags             # = 0
     ) except +
@@ -414,7 +414,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     ImGuiTable* GetCurrentTable() except + # ?
     ImGuiTable* TableFindByID(ImGuiID id) except + # ?
     bool BeginTableEx( # ?
-        const char* name, ImGuiID id, int columns_count, 
+        const char* name, ImGuiID id, int columns_count,
         ImGuiTableFlags flags,      # = 0
         const ImVec2& outer_size,   # = ImVec2(0, 0)
         float inner_width           # = 0.0f
@@ -440,7 +440,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     ImRect TableGetCellBgRect(const ImGuiTable* table, int column_n) except + # ?
     const char* TableGetColumnName(const ImGuiTable* table, int column_n) except + # ?
     ImGuiID TableGetColumnResizeID( # ?
-        const ImGuiTable* table, int column_n, 
+        const ImGuiTable* table, int column_n,
         int instance_no                 # = 0
     ) except +
     float TableGetMaxColumnWidth(const ImGuiTable* table, int column_n) except + # ?
@@ -461,7 +461,7 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     ImGuiTableSettings* TableSettingsCreate(ImGuiID id, int columns_count) except + # ?
     ImGuiTableSettings* TableSettingsFindByID(ImGuiID id) except + # ?
 
-    # ==== 
+    # ====
     # Tab Bars
     # ====
     bool BeginTabBarEx(ImGuiTabBar* tab_bar, const ImRect& bb, ImGuiTabBarFlags flags) except + # ?
@@ -494,10 +494,10 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # Render helpers (those functions don't access any ImGui state!)
     # ====
     void RenderArrow( # ?
-        ImDrawList* draw_list, 
-        ImVec2 pos, 
-        ImU32 col, 
-        ImGuiDir dir, 
+        ImDrawList* draw_list,
+        ImVec2 pos,
+        ImU32 col,
+        ImGuiDir dir,
         # note: optional
         float scale                     # = 1.0f
     ) except +
@@ -512,13 +512,13 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # Widgets
     # ====
     void TextEx( # ?
-        const char* text, 
+        const char* text,
         # note: optional
         const char* text_end,           # = NULL
         ImGuiTextFlags flags            # = 0
     ) except +
     bool ButtonEx( # ?
-        const char* label, 
+        const char* label,
         # note: optional
         const ImVec2& size_arg,         # = ImVec2(0, 0)
         ImGuiButtonFlags flags          # = 0
@@ -526,9 +526,9 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     bool CloseButton(ImGuiID id, const ImVec2& pos) except + # ?
     bool CollapseButton(ImGuiID id, const ImVec2& pos) except + # ?
     bool ArrowButtonEx( # ?
-        const char* str_id, 
-        ImGuiDir dir, 
-        ImVec2 size_arg, 
+        const char* str_id,
+        ImGuiDir dir,
+        ImVec2 size_arg,
         # note: optional
         ImGuiButtonFlags flags          # = 0
     ) except +
@@ -542,40 +542,40 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     bool CheckboxFlags(const char* label, ImS64* flags, ImS64 flags_value) except + # ?
     bool CheckboxFlags(const char* label, ImU64* flags, ImU64 flags_value) except + # ?
 
-    # ==== 
+    # ====
     # Widgets low-level behaviors
     # ====
     bool ButtonBehavior( # ?
-        const ImRect& bb, 
-        ImGuiID id, 
-        bool* out_hovered, 
-        bool* out_held, 
+        const ImRect& bb,
+        ImGuiID id,
+        bool* out_hovered,
+        bool* out_held,
         # note: optional
         ImGuiButtonFlags flags          # = 0
     ) except +
     bool DragBehavior(ImGuiID id, ImGuiDataType data_type, void* p_v, float v_speed, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags) except + # ?
     bool SliderBehavior(const ImRect& bb, ImGuiID id, ImGuiDataType data_type, void* p_v, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags, ImRect* out_grab_bb) except + # ?
     bool SplitterBehavior( # ?
-        const ImRect& bb, 
-        ImGuiID id, 
-        ImGuiAxis axis, 
-        float* size1, 
-        float* size2, 
-        float min_size1, 
-        float min_size2, 
+        const ImRect& bb,
+        ImGuiID id,
+        ImGuiAxis axis,
+        float* size1,
+        float* size2,
+        float min_size1,
+        float min_size2,
         # note: optional
         float hover_extend,             # = 0.0f
         float hover_visibility_delay    # = 0.0f
     )except +
     bool TreeNodeBehavior( # ?
-        ImGuiID id, 
-        ImGuiTreeNodeFlags flags, 
-        const char* label, 
+        ImGuiID id,
+        ImGuiTreeNodeFlags flags,
+        const char* label,
         # note: optional
         const char* label_end           # = NULL
     ) except +
     bool TreeNodeBehaviorIsOpen( # ?
-        ImGuiID id, 
+        ImGuiID id,
         # note: optional
         ImGuiTreeNodeFlags flags        # = 0
     ) except +
@@ -607,24 +607,24 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     # InputText
     # ====
     bool InputTextEx( # ?
-        const char* label, 
-        const char* hint, 
-        char* buf, 
-        int buf_size, 
-        const ImVec2& size_arg, 
-        ImGuiInputTextFlags flags, 
+        const char* label,
+        const char* hint,
+        char* buf,
+        int buf_size,
+        const ImVec2& size_arg,
+        ImGuiInputTextFlags flags,
         # note: optional
         ImGuiInputTextCallback callback,        # = NULL
         void* user_data                         # = NULL
     ) except +
     bool TempInputText(const ImRect& bb, ImGuiID id, const char* label, char* buf, int buf_size, ImGuiInputTextFlags flags) except + # ?
     bool TempInputScalar( # ?
-        const ImRect& bb, 
-        ImGuiID id, 
-        const char* label, 
-        ImGuiDataType data_type, 
-        void* p_data, 
-        const char* format, 
+        const ImRect& bb,
+        ImGuiID id,
+        const char* label,
+        ImGuiDataType data_type,
+        void* p_data,
+        const char* format,
         # note: optional
         const void* p_clamp_min,                # = NULL
         const void* p_clamp_max                 # = NULL
@@ -657,30 +657,29 @@ cdef extern from "imgui_internal.h" namespace "ImGui":
     void GcCompactTransientWindowBuffers(ImGuiWindow* window) except + # ?
     void GcAwakeTransientWindowBuffers(ImGuiWindow* window) except + # ?
 
-   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

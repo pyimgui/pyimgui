@@ -1,5 +1,8 @@
+cdef extern from "pre.h":
+    ctypedef int _dumdumdummy
+
 cdef extern from "imgui.h":
-    ctypedef enum ImGuiKey_:
+    ctypedef enum ImGuiKey: # name changed in v1.89
         ImGuiKey_Tab,
         ImGuiKey_LeftArrow,
         ImGuiKey_RightArrow,
@@ -24,15 +27,25 @@ cdef extern from "imgui.h":
         ImGuiKey_Z,                 # for text edit CTRL+Z: undo
         ImGuiKey_COUNT
 
-    ctypedef enum ImGuiKeyModFlags_:
-        ImGuiKeyModFlags_None       
-        ImGuiKeyModFlags_Ctrl       
-        ImGuiKeyModFlags_Shift      
-        ImGuiKeyModFlags_Alt        
-        ImGuiKeyModFlags_Super      
+    ctypedef ImGuiKey ImGuiKey_ # for forward compatibility
 
+    # ctypedef enum ImGuiKeyModFlags_: # name changed in v1.89
+    #     ImGuiKeyModFlags_None
+    #     ImGuiKeyModFlags_Ctrl
+    #     ImGuiKeyModFlags_Shift
+    #     ImGuiKeyModFlags_Alt
+    #     ImGuiKeyModFlags_Super
 
-    ctypedef enum ImGuiNavInput_:       
+    ctypedef enum ImGuiModFlags_: # name changed in v1.89
+        ImGuiModFlags_None
+        ImGuiModFlags_Ctrl
+        ImGuiModFlags_Shift
+        ImGuiModFlags_Alt
+        ImGuiModFlags_Super
+
+    ctypedef ImGuiModFlags_ ImGuiKeyModFlags_ # for forward compatibility
+
+    ctypedef enum ImGuiNavInput: # name changed in v1.89
         # Gamepad Mapping
         ImGuiNavInput_Activate,      # activate / open / toggle / tweak value       # e.g. Cross  (PS4), A (Xbox), A (Switch), Space (Keyboard)
         ImGuiNavInput_Cancel,        # cancel / close / exit                        # e.g. Circle (PS4), B (Xbox), B (Switch), Escape (Keyboard)
@@ -52,6 +65,8 @@ cdef extern from "imgui.h":
         ImGuiNavInput_TweakFast,     # faster tweaks                                # e.g. R1 or R2 (PS4), RB or RT (Xbox), R or ZL (Switch)
         ImGuiNavInput_COUNT
 
+    ctypedef ImGuiNavInput ImGuiNavInput_ # for forward compatibility
+
     ctypedef enum ImGuiConfigFlags_:
         ImGuiConfigFlags_None                   #
         ImGuiConfigFlags_NavEnableKeyboard      # Master keyboard navigation enable flag. NewFrame() will automatically fill io.NavInputs[] based on io.KeysDown[].
@@ -65,7 +80,7 @@ cdef extern from "imgui.h":
         ImGuiConfigFlags_IsSRGB                 # Application is SRGB-aware.
         ImGuiConfigFlags_IsTouchScreen          # Application is using a touch screen instead of a mouse.
 
-    
+
     ctypedef enum ImGuiBackendFlags_:
         ImGuiBackendFlags_None                  #
         ImGuiBackendFlags_HasGamepad            # Backend Platform supports gamepad and currently has one connected.
@@ -171,7 +186,7 @@ cdef extern from "imgui.h":
         ImGuiStyleVar_ButtonTextAlign,     # ImVec2    ButtonTextAlign
         ImGuiStyleVar_SelectableTextAlign, # ImVec2    SelectableTextAlign
         ImGuiStyleVar_COUNT
-    
+
     ctypedef enum ImGuiButtonFlags_:
         ImGuiButtonFlags_None                   #
         ImGuiButtonFlags_MouseButtonLeft        # React on left mouse button (default)
@@ -186,7 +201,7 @@ cdef extern from "imgui.h":
         ImGuiCond_Appearing     # Set the variable if the object/window is appearing after being hidden/inactive (or the first time)
 
     ctypedef enum ImGuiWindowFlags_:
-        ImGuiWindowFlags_None                   
+        ImGuiWindowFlags_None
         ImGuiWindowFlags_NoTitleBar              # Disable title-bar
         ImGuiWindowFlags_NoResize                # Disable user resizing with the lower-right grip
         ImGuiWindowFlags_NoMove                  # Disable user moving the window
@@ -211,7 +226,7 @@ cdef extern from "imgui.h":
         ImGuiWindowFlags_NoDecoration           = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse,
         ImGuiWindowFlags_NoInputs               = ImGuiWindowFlags_NoMouseInputs | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoNavFocus,
 
-        
+
     ctypedef enum ImGuiColorEditFlags_:
         ImGuiColorEditFlags_None            #
         ImGuiColorEditFlags_NoAlpha         #              # ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will only read 3 components from the input pointer).
@@ -242,7 +257,8 @@ cdef extern from "imgui.h":
 
         # Defaults Options. You can set application defaults using SetColorEditOptions(). The intent is that you probably don't want to
         # override them in most of your calls. Let the user choose via the option menu and/or call SetColorEditOptions() once during startup.
-        ImGuiColorEditFlags__OptionsDefault = ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_PickerHueBar,
+        ImGuiColorEditFlags_DefaultOptions_ = ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_PickerHueBar,
+        ImGuiColorEditFlags__OptionsDefault = ImGuiColorEditFlags_DefaultOptions_, # change in v1.84
 
 
     ctypedef enum ImGuiSliderFlags_:
@@ -251,17 +267,17 @@ cdef extern from "imgui.h":
         ImGuiSliderFlags_Logarithmic            # Make the widget logarithmic (linear otherwise). Consider using ImGuiSliderFlags_NoRoundToFormat with this if using a format-string with small amount of digits.
         ImGuiSliderFlags_NoRoundToFormat        # Disable rounding underlying value to match precision of the display format string (e.g. %.3f values are rounded to those 3 digits)
         ImGuiSliderFlags_NoInput                # Disable CTRL+Click or Enter key allowing to input text directly into the widget
-        
-        
+
+
     ctypedef enum ImGuiMouseButton_:
-        ImGuiMouseButton_Left 
-        ImGuiMouseButton_Right 
+        ImGuiMouseButton_Left
+        ImGuiMouseButton_Right
         ImGuiMouseButton_Middle
-        ImGuiMouseButton_COUNT 
+        ImGuiMouseButton_COUNT
 
 
     ctypedef enum ImGuiTreeNodeFlags_:
-        ImGuiTreeNodeFlags_None                 
+        ImGuiTreeNodeFlags_None
         ImGuiTreeNodeFlags_Selected             # Draw as selected
         ImGuiTreeNodeFlags_Framed               # Draw frame with background (e.g. for CollapsingHeader)
         ImGuiTreeNodeFlags_AllowItemOverlap     # Hit testing to allow subsequent widgets to overlap this one
@@ -279,8 +295,8 @@ cdef extern from "imgui.h":
         # ImGuiTreeNodeFlags_NoScrollOnOpen     # FIXME: TODO: Disable automatic scroll on TreePop() if node got just open and contents is not visible
         ImGuiTreeNodeFlags_CollapsingHeader     = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_NoAutoOpenOnLog
 
-        
-    ctypedef enum ImGuiPopupFlags_:    
+
+    ctypedef enum ImGuiPopupFlags_:
         ImGuiPopupFlags_None                    #
         ImGuiPopupFlags_MouseButtonLeft         # For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as ImGuiMouseButton_Left)
         ImGuiPopupFlags_MouseButtonRight        # For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as ImGuiMouseButton_Right)
@@ -293,9 +309,9 @@ cdef extern from "imgui.h":
         ImGuiPopupFlags_AnyPopupLevel           # For IsPopupOpen(): search/test at any level of the popup stack (default test in the current level)
         ImGuiPopupFlags_AnyPopup                = ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel
 
-    
+
     ctypedef enum ImGuiSelectableFlags_:
-        ImGuiSelectableFlags_None               
+        ImGuiSelectableFlags_None
         ImGuiSelectableFlags_DontClosePopups    # Clicking this don't close parent popup window
         ImGuiSelectableFlags_SpanAllColumns     # Selectable frame can span all columns (text will still fit in current column)
         ImGuiSelectableFlags_AllowDoubleClick   # Generate press events on double clicks too
@@ -304,7 +320,7 @@ cdef extern from "imgui.h":
 
 
     ctypedef enum ImGuiComboFlags_:
-        ImGuiComboFlags_None                    
+        ImGuiComboFlags_None
         ImGuiComboFlags_PopupAlignLeft          # Align the popup toward the left by default
         ImGuiComboFlags_HeightSmall             # Max ~4 items visible. Tip: If you want your combo popup to be a specific size you can use SetNextWindowSizeConstraints() prior to calling BeginCombo()
         ImGuiComboFlags_HeightRegular           # Max ~8 items visible (default)
@@ -314,7 +330,7 @@ cdef extern from "imgui.h":
         ImGuiComboFlags_NoPreview               # Display only a square arrow button
         ImGuiComboFlags_HeightMask_             = ImGuiComboFlags_HeightSmall | ImGuiComboFlags_HeightRegular | ImGuiComboFlags_HeightLarge | ImGuiComboFlags_HeightLargest
 
-    
+
     ctypedef enum ImGuiTabBarFlags_:
         ImGuiTabBarFlags_None                           #
         ImGuiTabBarFlags_Reorderable                    # Allow manually dragging tabs to re-order them + New tabs are appended at the end of list
@@ -328,7 +344,7 @@ cdef extern from "imgui.h":
         ImGuiTabBarFlags_FittingPolicyMask_             = ImGuiTabBarFlags_FittingPolicyResizeDown | ImGuiTabBarFlags_FittingPolicyScroll
         ImGuiTabBarFlags_FittingPolicyDefault_          = ImGuiTabBarFlags_FittingPolicyResizeDown
 
-        
+
     ctypedef enum ImGuiTabItemFlags_:
         ImGuiTabItemFlags_None                          #
         ImGuiTabItemFlags_UnsavedDocument               # Append '*' to title without affecting the ID, as a convenience to avoid using the ### operator. Also: tab is selected on closure and closure is deferred by one frame to allow code to undo it without flicker.
@@ -339,7 +355,7 @@ cdef extern from "imgui.h":
         ImGuiTabItemFlags_NoReorder                     # Disable reordering this tab or having another tab cross over this tab
         ImGuiTabItemFlags_Leading                       # Enforce the tab position to the left of the tab bar (after the tab list popup button)
         ImGuiTabItemFlags_Trailing                      # Enforce the tab position to the right of the tab bar (before the scrolling buttons)
-    
+
     # [BETA API] API may evolve slightly!
     ctypedef enum ImGuiTableFlags_:
         # Features
@@ -385,7 +401,7 @@ cdef extern from "imgui.h":
         # Sorting
         ImGuiTableFlags_SortMulti                  # Hold shift when clicking headers to sort on multiple column. TableGetSortSpecs() may return specs where (SpecsCount > 1).
         ImGuiTableFlags_SortTristate               # Allow no sorting, disable default sorting. TableGetSortSpecs() may return specs where (SpecsCount == 0).
-    
+
     ctypedef enum ImGuiTableColumnFlags_:
         # Input configuration flags
         ImGuiTableColumnFlags_None                  #
@@ -411,18 +427,18 @@ cdef extern from "imgui.h":
         ImGuiTableColumnFlags_IsVisible             # Status: is visible == is enabled AND not clipped by scrolling.
         ImGuiTableColumnFlags_IsSorted              # Status: is currently part of the sort specs
         ImGuiTableColumnFlags_IsHovered             # Status: is hovered by mouse
-    
+
     ctypedef enum ImGuiTableRowFlags_:
         ImGuiTableRowFlags_None                         #
         ImGuiTableRowFlags_Headers                      # Identify header row (set default background color + width of its contents accounted different for auto column width)
-    
+
     ctypedef enum ImGuiTableBgTarget_:
         ImGuiTableBgTarget_None                         #
         ImGuiTableBgTarget_RowBg0                       # Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)
         ImGuiTableBgTarget_RowBg1                       # Set row background color 1 (generally used for selection marking)
         ImGuiTableBgTarget_CellBg                       # Set cell background color (top-most color)
 
-    
+
     ctypedef enum ImGuiFocusedFlags_:
         ImGuiFocusedFlags_None                          #
         ImGuiFocusedFlags_ChildWindows                  # IsWindowFocused(): Return true if any children of the window is focused
@@ -446,7 +462,7 @@ cdef extern from "imgui.h":
 
 
     ctypedef enum ImGuiDragDropFlags_:
-        ImGuiDragDropFlags_None                         
+        ImGuiDragDropFlags_None
         #  BeginDragDropSource() flags
         ImGuiDragDropFlags_SourceNoPreviewTooltip       # By default, a successful call to BeginDragDropSource opens a tooltip so you can display a preview or description of the source contents. This flag disable this behavior.
         ImGuiDragDropFlags_SourceNoDisableHover         # By default, when dragging we clear data so that IsItemHovered() will return false, to avoid subsequent user code submitting tooltips. This flag disable this behavior so you can still call IsItemHovered() on the source item.
@@ -454,28 +470,28 @@ cdef extern from "imgui.h":
         ImGuiDragDropFlags_SourceAllowNullID            # Allow items such as Text(), Image() that have no unique identifier to be used as drag source, by manufacturing a temporary identifier based on their window-relative position. This is extremely unusual within the dear imgui ecosystem and so we made it explicit.
         ImGuiDragDropFlags_SourceExtern                 # External source (from outside of dear imgui), won't attempt to read current item/window info. Will always return true. Only one Extern source can be active simultaneously.
         ImGuiDragDropFlags_SourceAutoExpirePayload      # Automatically expire the payload if the source cease to be submitted (otherwise payloads are persisting while being dragged)
-        #  AcceptDragDropPayload() flags                
+        #  AcceptDragDropPayload() flags
         ImGuiDragDropFlags_AcceptBeforeDelivery         # AcceptDragDropPayload() will returns true even before the mouse button is released. You can then call IsDelivery() to test if the payload needs to be delivered.
         ImGuiDragDropFlags_AcceptNoDrawDefaultRect      # Do not draw the default highlight rectangle when hovering over target.
         ImGuiDragDropFlags_AcceptNoPreviewTooltip       # Request hiding the BeginDragDropSource tooltip from the BeginDragDropTarget site.
         ImGuiDragDropFlags_AcceptPeekOnly               = ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect  # For peeking ahead and inspecting the payload before delivery.
-  
+
     ctypedef enum ImGuiDir_:
-        ImGuiDir_None   
-        ImGuiDir_Left   
-        ImGuiDir_Right  
-        ImGuiDir_Up     
-        ImGuiDir_Down   
+        ImGuiDir_None
+        ImGuiDir_Left
+        ImGuiDir_Right
+        ImGuiDir_Up
+        ImGuiDir_Down
         ImGuiDir_COUNT
-    
+
     ctypedef enum ImGuiSortDirection_:
         ImGuiSortDirection_None         #
         ImGuiSortDirection_Ascending    # Ascending = 0->9, A->Z etc.
         ImGuiSortDirection_Descending   # Descending = 9->0, Z->A etc.
 
     ctypedef enum ImGuiMouseCursor_:
-        ImGuiMouseCursor_None 
-        ImGuiMouseCursor_Arrow 
+        ImGuiMouseCursor_None
+        ImGuiMouseCursor_Arrow
         ImGuiMouseCursor_TextInput,         # When hovering over InputText, etc.
         ImGuiMouseCursor_ResizeAll,         # (Unused by Dear ImGui functions)
         ImGuiMouseCursor_ResizeNS,          # When hovering over an horizontal border
@@ -502,14 +518,14 @@ cdef extern from "imgui.h":
         ImGuiInputTextFlags_CtrlEnterForNewLine # In multi-line mode, unfocus with Enter, add new line with Ctrl+Enter (default is opposite: unfocus with Ctrl+Enter, add line with Enter).
         ImGuiInputTextFlags_NoHorizontalScroll  # Disable following the cursor horizontally
         ImGuiInputTextFlags_AlwaysOverwrite     # Overwrite mode
-        ImGuiInputTextFlags_AlwaysInsertMode    # OBSOLETED in 1.82
+        # ImGuiInputTextFlags_AlwaysInsertMode    # OBSOLETED in 1.82  # remove in v1.89.9
         ImGuiInputTextFlags_ReadOnly            # Read-only mode
         ImGuiInputTextFlags_Password            # Password mode, display all characters as '*'
         ImGuiInputTextFlags_NoUndoRedo          # Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call ClearActiveID().
         ImGuiInputTextFlags_CharsScientific     # Allow 0123456789.+-*/eE (Scientific notation input)
         ImGuiInputTextFlags_CallbackResize      # Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)
         ImGuiInputTextFlags_CallbackEdit        # Callback on any edit (note that InputText() already returns true on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)
-        
+
     # OBSOLETED in 1.82 (from Mars 2021) -> use ImDrawFlags_
     ctypedef enum ImDrawCornerFlags_:
         ImDrawCornerFlags_None      #
@@ -522,7 +538,7 @@ cdef extern from "imgui.h":
         ImDrawCornerFlags_Left      = ImDrawCornerFlags_TopLeft | ImDrawCornerFlags_BotLeft,    # 0x5
         ImDrawCornerFlags_Right     = ImDrawCornerFlags_TopRight | ImDrawCornerFlags_BotRight,  # 0xA
         ImDrawCornerFlags_All       # In your function calls you may use ~0 (= all bits sets) instead of ImDrawCornerFlags_All, as a convenience
-    
+
     ctypedef enum ImDrawFlags_:
         ImDrawFlags_None                        #
         ImDrawFlags_Closed                      # PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)
@@ -539,23 +555,22 @@ cdef extern from "imgui.h":
         ImDrawFlags_RoundCornersDefault_        = ImDrawFlags_RoundCornersAll, # Default to ALL corners if none of the _RoundCornersXX flags are specified.
         ImDrawFlags_RoundCornersMask_           = ImDrawFlags_RoundCornersAll | ImDrawFlags_RoundCornersNone
 
-    
+
     ctypedef enum ImDrawListFlags_:
         ImDrawListFlags_None                    #
         ImDrawListFlags_AntiAliasedLines        # Enable anti-aliased lines/borders (*2 the number of triangles for 1.0f wide line or lines thin enough to be drawn using textures, otherwise *3 the number of triangles)
         ImDrawListFlags_AntiAliasedLinesUseTex  # Enable anti-aliased lines/borders using textures when possible. Require backend to render with bilinear filtering.
         ImDrawListFlags_AntiAliasedFill         # Enable anti-aliased edge around filled shapes (rounded rectangles, circles).
         ImDrawListFlags_AllowVtxOffset          # Can emit 'VtxOffset > 0' to allow large meshes. Set when 'ImGuiBackendFlags_RendererHasVtxOffset' is enabled.
-    
+
     ctypedef enum ImFontAtlasFlags_:
         ImFontAtlasFlags_None               #
         ImFontAtlasFlags_NoPowerOfTwoHeight # Don't round the height to next power of two
         ImFontAtlasFlags_NoMouseCursors     # Don't build software mouse cursors into the atlas (save a little texture memory)
         ImFontAtlasFlags_NoBakedLines       # Don't build thick line textures into the atlas (save a little texture memory). The AntiAliasedLinesUseTex features uses them, otherwise they will be rendered using polygons (more expensive for CPU/GPU).
-    
+
     ctypedef enum ImGuiViewportFlags_:
         ImGuiViewportFlags_None                     #
         ImGuiViewportFlags_IsPlatformWindow         # Represent a Platform Window
         ImGuiViewportFlags_IsPlatformMonitor        # Represent a Platform Monitor (unused yet)
         ImGuiViewportFlags_OwnedByApp               # Platform Window: is created/managed by the application (rather than a dear imgui backend)
-        
