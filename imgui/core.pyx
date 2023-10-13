@@ -9417,7 +9417,7 @@ def slider_int(
     int value,
     int min_value,
     int max_value,
-    str format = "%.f",
+    str format = "%d", #  - 2022/10/12 (1.89)   - removed runtime patching of invalid "%f"/"%0.f" format strings for DragInt()/SliderInt()
     cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget
@@ -9475,7 +9475,7 @@ def slider_int2(
     int value0, int value1,
     int min_value,
     int max_value,
-    str format = "%.f",
+    str format = "%d", #  - 2022/10/12 (1.89)   - removed runtime patching of invalid "%f"/"%0.f" format strings for DragInt()/SliderInt()
     cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget with 2 values.
@@ -9533,7 +9533,7 @@ def slider_int3(
     int value0, int value1, int value2,
     int min_value,
     int max_value,
-    str format = "%.f",
+    str format = "%d", #  - 2022/10/12 (1.89)   - removed runtime patching of invalid "%f"/"%0.f" format strings for DragInt()/SliderInt()
     cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget with 3 values.
@@ -9591,7 +9591,7 @@ def slider_int4(
     int value0, int value1, int value2, int value3,
     int min_value,
     int max_value,
-    str format = "%.f",
+    str format = "%d", #  - 2022/10/12 (1.89)   - removed runtime patching of invalid "%f"/"%0.f" format strings for DragInt()/SliderInt()
     cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget with 4 values.
