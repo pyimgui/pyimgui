@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # pyimgui documentation build configuration file, created by
 # sphinx-quickstart on Mon Oct 31 22:03:15 2016.
 #

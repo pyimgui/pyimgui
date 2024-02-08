@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
 from imgui.integrations.glfw import GlfwRenderer
 from testwindow import show_test_window
@@ -24,7 +23,6 @@ def main():
 
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
-
                 clicked_quit, selected_quit = imgui.menu_item(
                     "Quit", "Cmd+Q", False, True
                 )
@@ -40,7 +38,9 @@ def main():
             if is_expand:
                 imgui.text("Bar")
                 imgui.text_ansi("B\033[31marA\033[mnsi ")
-                imgui.text_ansi_colored("Eg\033[31mgAn\033[msi ", 0.2, 1.0, 0.0)
+                imgui.text_ansi_colored(
+                    "Eg\033[31mgAn\033[msi ", 0.2, 1.0, 0.0
+                )
                 imgui.extra.text_ansi_colored("Eggs", 0.2, 1.0, 0.0)
             imgui.end()
 
@@ -74,7 +74,9 @@ def impl_glfw_init():
     glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
 
     # Create a windowed mode window and its OpenGL context
-    window = glfw.create_window(int(width), int(height), window_name, None, None)
+    window = glfw.create_window(
+        int(width), int(height), window_name, None, None
+    )
     glfw.make_context_current(window)
 
     if not window:

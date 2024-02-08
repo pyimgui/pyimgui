@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # distutils: language = c++
 # distutils: include_dirs = imgui-cpp
 """
@@ -2239,4 +2238,4 @@ cdef extern from "imgui.h" namespace "ImGui":
     void* MemAlloc(size_t size) except + # ✗
     void MemFree(void* ptr) except + # ✗
 
-    
+

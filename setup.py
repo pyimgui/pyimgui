@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 import sys
 import sysconfig
@@ -190,4 +189,5 @@ setup(
 
         'Topic :: Games/Entertainment',
     ],
+    python_requires="<3.12,>=3.6",
 )

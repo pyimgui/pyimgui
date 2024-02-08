@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
 from glob import glob
 from imgui.integrations.glfw import GlfwRenderer
@@ -14,7 +13,13 @@ import sys
 # use fonts bundled with imgui core project repository
 FONTS_DIR = glob(
     os.path.join(
-        os.path.dirname(__file__), "..", "..", "imgui-cpp", "misc", "fonts", "*.ttf"
+        os.path.dirname(__file__),
+        "..",
+        "..",
+        "imgui-cpp",
+        "misc",
+        "fonts",
+        "*.ttf",
     )
 )
 
@@ -108,7 +113,9 @@ def impl_glfw_init():
     glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
 
     # Create a windowed mode window and its OpenGL context
-    window = glfw.create_window(int(width), int(height), window_name, None, None)
+    window = glfw.create_window(
+        int(width), int(height), window_name, None, None
+    )
     glfw.make_context_current(window)
 
     if not window:
