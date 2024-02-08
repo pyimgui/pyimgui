@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import numpy as np
 
 import ctypes
@@ -366,4 +365,4 @@ class GlumpyRenderer(BaseOpenGLRenderer):
         
     def _invalidate_device_objects(self):
         pass
-    
+

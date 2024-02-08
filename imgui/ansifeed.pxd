@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # distutils: language = c++
 # distutils: sources = ansifeed-cpp/AnsiTextColored.cpp
 # distutils: include_dirs = imgui-cpp ansifeed-cpp

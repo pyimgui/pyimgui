@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
-from __future__ import absolute_import
 from pyglet import gl
 from testwindow import show_test_window
 import pyglet
@@ -16,7 +14,6 @@ from imgui.integrations.pyglet import create_renderer
 
 
 def main():
-
     window = pyglet.window.Window(width=1280, height=720, resizable=True)
     gl.glClearColor(1, 1, 1, 1)
     imgui.create_context()
@@ -30,7 +27,6 @@ def main():
         imgui.new_frame()
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
-
                 clicked_quit, selected_quit = imgui.menu_item(
                     "Quit", "Cmd+Q", False, True
                 )
@@ -52,7 +48,9 @@ def main():
                 imgui.text_colored("Eggs", 0.2, 1.0, 0.0)
 
                 imgui.text_ansi("B\033[31marA\033[mnsi ")
-                imgui.text_ansi_colored("Eg\033[31mgAn\033[msi ", 0.2, 1.0, 0.0)
+                imgui.text_ansi_colored(
+                    "Eg\033[31mgAn\033[msi ", 0.2, 1.0, 0.0
+                )
 
             imgui.end()
 
