@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Script for uploading securely built distributions (artifacts) to private
 Dropbox directory.

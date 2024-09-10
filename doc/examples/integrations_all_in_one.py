@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
-from __future__ import absolute_import
 import OpenGL.GL as gl
 import imgui
 import sys
@@ -39,7 +37,9 @@ def main_sdl2():
         width, height = 1280, 720
         window_name = "minimal ImGui/SDL2 example"
         if SDL_Init(SDL_INIT_EVERYTHING) < 0:
-            print("Error: SDL could not initialize! SDL Error: " + SDL_GetError())
+            print(
+                "Error: SDL could not initialize! SDL Error: " + SDL_GetError()
+            )
             sys.exit(1)
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
@@ -52,7 +52,9 @@ def main_sdl2():
         )
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4)
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1)
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE)
+        SDL_GL_SetAttribute(
+            SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE
+        )
         SDL_SetHint(SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK, b"1")
         SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, b"1")
         window = SDL_CreateWindow(
@@ -64,11 +66,17 @@ def main_sdl2():
             SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE,
         )
         if window is None:
-            print("Error: Window could not be created! SDL Error: " + SDL_GetError())
+            print(
+                "Error: Window could not be created! SDL Error: "
+                + SDL_GetError()
+            )
             sys.exit(1)
         gl_context = SDL_GL_CreateContext(window)
         if gl_context is None:
-            print("Error: Cannot create OpenGL Context! SDL Error: " + SDL_GetError())
+            print(
+                "Error: Cannot create OpenGL Context! SDL Error: "
+                + SDL_GetError()
+            )
             sys.exit(1)
         SDL_GL_MakeCurrent(window, gl_context)
         if SDL_GL_SetSwapInterval(1) < 0:
@@ -102,7 +110,9 @@ def main_sdl2():
 def main_pygame():
     pygame.init()
     size = 800, 600
-    pygame.display.set_mode(size, pygame.DOUBLEBUF | pygame.OPENGL | pygame.RESIZABLE)
+    pygame.display.set_mode(
+        size, pygame.DOUBLEBUF | pygame.OPENGL | pygame.RESIZABLE
+    )
 
     imgui.create_context()
     impl = PygameRenderer()
@@ -123,7 +133,6 @@ def main_pygame():
 
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
-
                 clicked_quit, selected_quit = imgui.menu_item(
                     "Quit", "Cmd+Q", False, True
                 )
@@ -165,7 +174,9 @@ def main_glfw():
         glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
         glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
         # Create a windowed mode window and its OpenGL context
-        window = glfw.create_window(int(width), int(height), window_name, None, None)
+        window = glfw.create_window(
+            int(width), int(height), window_name, None, None
+        )
         glfw.make_context_current(window)
         if not window:
             glfw.terminate()
@@ -215,7 +226,9 @@ def main_cocos2d():
 def on_frame():
     if imgui.begin_main_menu_bar():
         if imgui.begin_menu("File", True):
-            clicked_quit, selected_quit = imgui.menu_item("Quit", "Cmd+Q", False, True)
+            clicked_quit, selected_quit = imgui.menu_item(
+                "Quit", "Cmd+Q", False, True
+            )
             if clicked_quit:
                 sys.exit(0)
             imgui.end_menu()

@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
-from __future__ import absolute_import
 from cocos.director import director
 from imgui.integrations.cocos2d import ImguiLayer
 from pyglet import gl
@@ -24,7 +22,6 @@ class HelloWorld(ImguiLayer):
 
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
-
                 clicked_quit, selected_quit = imgui.menu_item(
                     "Quit", "Cmd+Q", False, True
                 )
@@ -38,7 +35,9 @@ class HelloWorld(ImguiLayer):
         imgui.show_test_window()
 
         if self.show_custom_window:
-            is_expand, self.show_custom_window = imgui.begin("Custom window", True)
+            is_expand, self.show_custom_window = imgui.begin(
+                "Custom window", True
+            )
             if is_expand:
                 imgui.text("Bar")
                 imgui.text_colored("Eggs", 0.2, 1.0, 0.0)

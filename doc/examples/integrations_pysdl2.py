@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
 from imgui.integrations.sdl2 import SDL2Renderer
 from testwindow import show_test_window
@@ -31,7 +30,6 @@ def main():
 
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
-
                 clicked_quit, selected_quit = imgui.menu_item(
                     "Quit", "Cmd+Q", False, True
                 )
@@ -82,10 +80,14 @@ def impl_pysdl2_init():
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1)
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1)
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8)
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG)
+    SDL_GL_SetAttribute(
+        SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG
+    )
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1)
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE)
+    SDL_GL_SetAttribute(
+        SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE
+    )
 
     SDL_SetHint(SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK, b"1")
     SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, b"1")
@@ -117,7 +119,8 @@ def impl_pysdl2_init():
     SDL_GL_MakeCurrent(window, gl_context)
     if SDL_GL_SetSwapInterval(1) < 0:
         print(
-            "Warning: Unable to set VSync! SDL Error: " + SDL_GetError().decode("utf-8")
+            "Warning: Unable to set VSync! SDL Error: "
+            + SDL_GetError().decode("utf-8")
         )
         sys.exit(1)
 
