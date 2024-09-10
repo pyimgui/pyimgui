@@ -96,32 +96,32 @@ namespace ImGui
             {
                 //Colors based on the WT Campbell theme: https://docs.microsoft.com/en-us/windows/terminal/customize-settings/color-schemes
                 switch (colorNum) {
-                case '0': *col = 0xff767676; break;//BOLD_BLACK	
-                case '1': *col = 0xff5648e7; break;//BOLD_RED	
-                case '2': *col = 0xff0cc616; break;//BOLD_GREEN	
-                case '3': *col = 0xffa5f1f9; break;//BOLD_YELLOW	
-                case '4': *col = 0xffff783b; break;//BOLD_BLUE	
+                case '0': *col = 0xff767676; break;//BOLD_BLACK
+                case '1': *col = 0xff5648e7; break;//BOLD_RED
+                case '2': *col = 0xff0cc616; break;//BOLD_GREEN
+                case '3': *col = 0xffa5f1f9; break;//BOLD_YELLOW
+                case '4': *col = 0xffff783b; break;//BOLD_BLUE
                 case '5': *col = 0xff9e00b4; break;//BOLD_MAGENTA
-                case '6': *col = 0xffd6d661; break;//BOLD_CYAN	
-                case '7': *col = 0xfff2f2f2; break;//BOLD_WHITE	
+                case '6': *col = 0xffd6d661; break;//BOLD_CYAN
+                case '7': *col = 0xfff2f2f2; break;//BOLD_WHITE
                 default: return false;
                 }
             }
             else //not bold
             {
                 switch (colorNum) {
-                case '0': *col = 0xff0c0c0c; break;//BLACK	
-                case '1': *col = 0xff1f0fc5; break;//RED	
-                case '2': *col = 0xff0ea113; break;//GREEN	
-                case '3': *col = 0xff009cc1; break;//YELLOW	
-                case '4': *col = 0xffda3700; break;//BLUE	
+                case '0': *col = 0xff0c0c0c; break;//BLACK
+                case '1': *col = 0xff1f0fc5; break;//RED
+                case '2': *col = 0xff0ea113; break;//GREEN
+                case '3': *col = 0xff009cc1; break;//YELLOW
+                case '4': *col = 0xffda3700; break;//BLUE
                 case '5': *col = 0xff981788; break;//MAGENTA
-                case '6': *col = 0xffdd963a; break;//CYAN	
-                case '7': *col = 0xffcccccc; break;//WHITE	
+                case '6': *col = 0xffdd963a; break;//CYAN
+                case '7': *col = 0xffcccccc; break;//WHITE
                 default: return false;
                 }
             }
-            
+
         }
 
         *skipChars = static_cast<int>(seqEnd - s + 1);
@@ -515,7 +515,7 @@ namespace ImGui
                 if (line < text_end) {
                     ImRect line_rect(pos, pos + ImVec2(FLT_MAX, line_height));
                     while (line < text_end) {
-                        if (IsClippedEx(line_rect, 0, false))
+                        if (IsClippedEx(line_rect, 0)) // remove `clip_even_when_logged` arg in v1.85
                             break;
 
                         const char* line_end = (const char*)memchr(line, '\n', text_end - line);
@@ -571,8 +571,22 @@ namespace ImGui
             return;
 
         ImGuiContext& g = *GImGui;
+        /*
+        // due to change in v1.87, ImGuiContext::TempBuffer change from char[] to ImVector<char>
         const char* text_end = g.TempBuffer + ImFormatStringV(g.TempBuffer, IM_ARRAYSIZE(g.TempBuffer), fmt, args);
         TextAnsiUnformatted(g.TempBuffer, text_end);
+        */
+        #ifdef IMGUI_USE_STB_SPRINTF
+            // should impl this, but not used in my case, so just ignore it
+            #error "IMGUI_USE_STB_SPRINTF in TextAnsiV is not impl"
+        #else
+            auto expectedSize = vsnprintf(NULL, 0, fmt, args);
+        #endif
+        expectedSize += expectedSize > 0x100? expectedSize: 0x100; // brutely enlarge the buffer, TODO: find a better way
+        g.TempBuffer.resize(expectedSize);
+        auto pData = g.TempBuffer.Data;
+        auto text_end = pData + ImFormatStringV(pData, expectedSize, fmt, args);
+        TextAnsiUnformatted(pData, text_end);
     }
 
     void TextAnsi(const char* fmt,  ...)
