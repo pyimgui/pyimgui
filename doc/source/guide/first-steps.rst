@@ -13,7 +13,7 @@ What is immediate mode GUI
 **pyimgui** is a Python wrapper around ImGui C++ library that allows you
 to easily define custom user interfaces no matter what game engine or graphic
 library you want to use. It is a immediate mode GUI library (opposed to
-retained mode). In short, retained mode means that there is no general GUI
+retained mode). In short, immediate mode means that there is no general GUI
 definition for your application but only direct calls that create new windows
 and widgets or query their state whenever they are needed and on every frame
 that is rendered.
