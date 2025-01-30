@@ -114,6 +114,8 @@ and libraries:
   engine.
 * :mod:`imgui.integrations.sdl2` integrates **pyimgui** with SDL2_ library
   through PySDL2_ Python package
+* :mod:`imgui.integrations.sdl3` integrates **pyimgui** with SDL3_ library
+  through PySDL3_ Python package
 * :mod:`imgui.integrations.pyglet` integrates **pyimgui** with pyglet_
   library, both stable (1.5.x) and development versions (2.x), switching
   between *fixed* and *programmable* as appropriate.
@@ -130,12 +132,12 @@ requirements using *setuptools extras* feature. Just specify your integration
 submodule name for backend of your choicse as an *extra tag* during **imgui**
 installation with ``pip install`` command e.g.::
 
-    $ pip install imgui[sdl2]
+    $ pip install imgui[sdl3]
     $ pip install imgui[pygame]
 
 If you want you can install **pyimgui** with multiple backends at once::
 
-    $ pip install imgui[glfw,cocos2d,pygame,sdl2,pyglet]
+    $ pip install imgui[glfw,cocos2d,pygame,sdl2,sdl3,pyglet]
 
 You can even request to install all requirements for every supported backend
 and every optional feature using single ``full`` extras option::
@@ -151,6 +153,8 @@ of the `project page on GitHub <https://github.com/swistakm/pyimgui>`_.
 .. _PyOpenGL: http://pyopengl.sourceforge.net
 .. _SDL2: https://www.libsdl.org
 .. _PySDL2: https://pysdl2.readthedocs.io
+.. _SDL3: https://www.libsdl.org
+.. _PySDL3: https://pysdl3.readthedocs.io
 .. _pyglet: https://pyglet.readthedocs.io
 .. _doc/examples: https://github.com/swistakm/pyimgui/tree/master/doc/examples
 
