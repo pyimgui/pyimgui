@@ -85,6 +85,8 @@ Python versions:
 * py39, pp39
 * py310
 * py311
+* py312
+* py313
 
 __Note:__ We dropped support for py27, py33, py34, and py35 starting from release 2.0. 
 Those were supported until release [1.4.0](https://github.com/pyimgui/pyimgui/releases/tag/1.4.0). 

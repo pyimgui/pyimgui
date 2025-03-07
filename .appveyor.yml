@@ -6,6 +6,8 @@ image:
 
 environment:
   matrix:
+    - CIBW_BUILD: "cp313-*"
+    - CIBW_BUILD: "cp312-*"
     - CIBW_BUILD: "cp311-*"
     - CIBW_BUILD: "cp310-*"
     - CIBW_BUILD: "cp39-*"
