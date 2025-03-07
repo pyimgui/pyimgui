@@ -12,17 +12,14 @@ environment:
     - CIBW_BUILD: "cp310-*"
     - CIBW_BUILD: "cp39-*"
     - CIBW_BUILD: "cp38-*"
-    - CIBW_BUILD: "cp37-*"
-    - CIBW_BUILD: "cp36-*"
 
     - CIBW_BUILD: "pp39-*"
     - CIBW_BUILD: "pp38-*"
-    - CIBW_BUILD: "pp37-*"
 
-stack: python 3.7
+stack: python 3.8
 
 init:
-- cmd: set PATH=C:\Python37;C:\Python37\Scripts;%PATH%
+- cmd: set PATH=C:\Python38;C:\Python38\Scripts;%PATH%
 
 install:  |
   python --version

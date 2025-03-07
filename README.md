@@ -79,8 +79,6 @@ Right now we are ready shipping the built wheels for these three systems
 (even for Linux using `manylinux1` wheels). The build pipeline covers multiple
 Python versions:
 
-* py36
-* py37, pp37
 * py38, pp38
 * py39, pp39
 * py310
