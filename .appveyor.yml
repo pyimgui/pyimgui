@@ -27,7 +27,7 @@ init:
 install:  |
   python --version
   git submodule update --init --recursive
-  python -m pip install cibuildwheel==2.12.1
+  python -m pip install cibuildwheel==2.23.0
 
 build_script: python -m cibuildwheel --output-dir dist
 
