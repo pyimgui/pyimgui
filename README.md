@@ -66,6 +66,10 @@ These bindings ensure closer alignment with the latest ImGui features without th
 - **[dear_bindings](https://github.com/dearimgui/dear_bindings)**:  
     A tool that generates metadata from Dear ImGui’s header, useful for developers looking to create bindings for languages for Python and other languages.
 
+- **[slimgui](https://nurpax.github.io/slimgui/)**:  
+    A modern set of Python bindings for Dear ImGui, designed with IDE-friendliness and Pythonic clarity in mind. `slimgui` closely follows the Dear ImGui API, while adapting idioms where appropriate without introducing new API concepts. It includes `.pyi` type hinting files to provide auto-completion, inline documentation, and type checking in modern Python editors. The current backend integration is built with `glfw` and `pyOpenGL`, but the architecture allows for other backends like SDL or Pygame to be added. The project is actively maintained and hosted at [github.com/nurpax/slimgui](https://github.com/nurpax/slimgui).
+
+
 # Project distribution
 
 This project has a working build pipeline on Appveyor. It builds
