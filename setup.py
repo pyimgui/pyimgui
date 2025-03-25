@@ -110,6 +110,7 @@ EXTRAS_REQUIRE = {
         "pyglet>=1.5.6; sys_platform == 'darwin'",
     ),
     'sdl2': backend_extras('PySDL2'),
+    'sdl3': backend_extras('PySDL3'),
     'glfw': backend_extras('glfw'),
     'pygame': backend_extras('pygame'),
     'opengl': backend_extras(),

@@ -28,6 +28,7 @@ want to install all additional dependencies you can always use bare
 * for pygame backend use `pip install imgui[pygame]`
 * for GLFW3 backend use `pip install imgui[glfw]`
 * for SDL2 backend use `pip install imgui[sdl2]`
+* for SDL3 backend use `pip install imgui[sdl3]`
 * for Cocos2d backend use `pip install imgui[cocos2d]`
 * for pyglet backend use `pip install imgui[pyglet]`
 

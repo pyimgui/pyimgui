@@ -39,3 +39,10 @@ imgui.integrations.sdl2 module
 .. automodule:: imgui.integrations.sdl2
     :undoc-members:
     :members:
+
+imgui.integrations.sdl3 module
+------------------------------
+
+.. automodule:: imgui.integrations.sdl3
+    :undoc-members:
+    :members:
