@@ -78,10 +78,10 @@ STYLE_BUTTON_TEXT_ALIGN = enums.ImGuiStyleVar_ButtonTextAlign # Vec2
 STYLE_SELECTABLE_TEXT_ALIGN = enums.ImGuiStyleVar_SelectableTextAlign # Vec2
 
 # ==== Button Flags ====
-BUTTON_NONE = enums.ImGuiButtonFlags_None                   
-BUTTON_MOUSE_BUTTON_LEFT = enums.ImGuiButtonFlags_MouseButtonLeft        
-BUTTON_MOUSE_BUTTON_RIGHT = enums.ImGuiButtonFlags_MouseButtonRight       
-BUTTON_MOUSE_BUTTON_MIDDLE = enums.ImGuiButtonFlags_MouseButtonMiddle      
+BUTTON_NONE = enums.ImGuiButtonFlags_None
+BUTTON_MOUSE_BUTTON_LEFT = enums.ImGuiButtonFlags_MouseButtonLeft
+BUTTON_MOUSE_BUTTON_RIGHT = enums.ImGuiButtonFlags_MouseButtonRight
+BUTTON_MOUSE_BUTTON_MIDDLE = enums.ImGuiButtonFlags_MouseButtonMiddle
 
 # ==== Key map enum redefines ====
 KEY_TAB = enums.ImGuiKey_Tab                 # for tabbing through fields
@@ -107,12 +107,12 @@ KEY_X = enums.ImGuiKey_X                     # for text edit CTRL+X: cut
 KEY_Y = enums.ImGuiKey_Y                     # for text edit CTRL+Y: redo
 KEY_Z = enums.ImGuiKey_Z                     # for text edit CTRL+Z: undo
 
-# ==== Key Mod Flags ====
-KEY_MOD_NONE = enums.ImGuiKeyModFlags_None       
-KEY_MOD_CTRL = enums.ImGuiKeyModFlags_Ctrl       
-KEY_MOD_SHIFT = enums.ImGuiKeyModFlags_Shift      
-KEY_MOD_ALT = enums.ImGuiKeyModFlags_Alt        
-KEY_MOD_SUPER = enums.ImGuiKeyModFlags_Super     
+# ==== Key Mod Flags ==== # rename from KEY_MOD_ to MOD_ at v1.89, keep old names for compatibility
+KEY_MOD_NONE = MOD_NONE = enums.ImGuiModFlags_None
+KEY_MOD_CTRL = MOD_CTRL = enums.ImGuiModFlags_Ctrl
+KEY_MOD_SHIFT = MOD_SHIFT = enums.ImGuiModFlags_Shift
+KEY_MOD_ALT = MOD_ALT = enums.ImGuiModFlags_Alt
+KEY_MOD_SUPER = MOD_SUPER = enums.ImGuiModFlags_Super
 
 # ==== Nav Input ====
 NAV_INPUT_ACTIVATE = enums.ImGuiNavInput_Activate
@@ -142,7 +142,7 @@ WINDOW_NO_SCROLLBAR = enums.ImGuiWindowFlags_NoScrollbar
 WINDOW_NO_SCROLL_WITH_MOUSE = enums.ImGuiWindowFlags_NoScrollWithMouse
 WINDOW_NO_COLLAPSE = enums.ImGuiWindowFlags_NoCollapse
 WINDOW_ALWAYS_AUTO_RESIZE = enums.ImGuiWindowFlags_AlwaysAutoResize
-WINDOW_NO_BACKGROUND = enums.ImGuiWindowFlags_NoBackground 
+WINDOW_NO_BACKGROUND = enums.ImGuiWindowFlags_NoBackground
 WINDOW_NO_SAVED_SETTINGS = enums.ImGuiWindowFlags_NoSavedSettings
 WINDOW_NO_MOUSE_INPUTS = enums.ImGuiWindowFlags_NoMouseInputs
 WINDOW_MENU_BAR = enums.ImGuiWindowFlags_MenuBar
@@ -160,33 +160,33 @@ WINDOW_NO_DECORATION = enums.ImGuiWindowFlags_NoDecoration
 WINDOW_NO_INPUTS = enums.ImGuiWindowFlags_NoInputs
 
 # ==== Color Edit Flags ====
-COLOR_EDIT_NONE = enums.ImGuiColorEditFlags_None            
-COLOR_EDIT_NO_ALPHA = enums.ImGuiColorEditFlags_NoAlpha         
-COLOR_EDIT_NO_PICKER = enums.ImGuiColorEditFlags_NoPicker        
-COLOR_EDIT_NO_OPTIONS = enums.ImGuiColorEditFlags_NoOptions       
-COLOR_EDIT_NO_SMALL_PREVIEW = enums.ImGuiColorEditFlags_NoSmallPreview  
-COLOR_EDIT_NO_INPUTS = enums.ImGuiColorEditFlags_NoInputs        
-COLOR_EDIT_NO_TOOLTIP = enums.ImGuiColorEditFlags_NoTooltip       
-COLOR_EDIT_NO_LABEL = enums.ImGuiColorEditFlags_NoLabel         
-COLOR_EDIT_NO_SIDE_PREVIEW = enums.ImGuiColorEditFlags_NoSidePreview   
-COLOR_EDIT_NO_DRAG_DROP = enums.ImGuiColorEditFlags_NoDragDrop      
-COLOR_EDIT_NO_BORDER = enums.ImGuiColorEditFlags_NoBorder        
+COLOR_EDIT_NONE = enums.ImGuiColorEditFlags_None
+COLOR_EDIT_NO_ALPHA = enums.ImGuiColorEditFlags_NoAlpha
+COLOR_EDIT_NO_PICKER = enums.ImGuiColorEditFlags_NoPicker
+COLOR_EDIT_NO_OPTIONS = enums.ImGuiColorEditFlags_NoOptions
+COLOR_EDIT_NO_SMALL_PREVIEW = enums.ImGuiColorEditFlags_NoSmallPreview
+COLOR_EDIT_NO_INPUTS = enums.ImGuiColorEditFlags_NoInputs
+COLOR_EDIT_NO_TOOLTIP = enums.ImGuiColorEditFlags_NoTooltip
+COLOR_EDIT_NO_LABEL = enums.ImGuiColorEditFlags_NoLabel
+COLOR_EDIT_NO_SIDE_PREVIEW = enums.ImGuiColorEditFlags_NoSidePreview
+COLOR_EDIT_NO_DRAG_DROP = enums.ImGuiColorEditFlags_NoDragDrop
+COLOR_EDIT_NO_BORDER = enums.ImGuiColorEditFlags_NoBorder
 
-COLOR_EDIT_ALPHA_BAR = enums.ImGuiColorEditFlags_AlphaBar        
-COLOR_EDIT_ALPHA_PREVIEW = enums.ImGuiColorEditFlags_AlphaPreview    
+COLOR_EDIT_ALPHA_BAR = enums.ImGuiColorEditFlags_AlphaBar
+COLOR_EDIT_ALPHA_PREVIEW = enums.ImGuiColorEditFlags_AlphaPreview
 COLOR_EDIT_ALPHA_PREVIEW_HALF = enums.ImGuiColorEditFlags_AlphaPreviewHalf
-COLOR_EDIT_HDR = enums.ImGuiColorEditFlags_HDR             
-COLOR_EDIT_DISPLAY_RGB = enums.ImGuiColorEditFlags_DisplayRGB      
-COLOR_EDIT_DISPLAY_HSV = enums.ImGuiColorEditFlags_DisplayHSV      
-COLOR_EDIT_DISPLAY_HEX = enums.ImGuiColorEditFlags_DisplayHex      
-COLOR_EDIT_UINT8 = enums.ImGuiColorEditFlags_Uint8           
-COLOR_EDIT_FLOAT = enums.ImGuiColorEditFlags_Float           
-COLOR_EDIT_PICKER_HUE_BAR = enums.ImGuiColorEditFlags_PickerHueBar    
-COLOR_EDIT_PICKER_HUE_WHEEL = enums.ImGuiColorEditFlags_PickerHueWheel  
-COLOR_EDIT_INPUT_RGB = enums.ImGuiColorEditFlags_InputRGB        
-COLOR_EDIT_INPUT_HSV = enums.ImGuiColorEditFlags_InputHSV        
+COLOR_EDIT_HDR = enums.ImGuiColorEditFlags_HDR
+COLOR_EDIT_DISPLAY_RGB = enums.ImGuiColorEditFlags_DisplayRGB
+COLOR_EDIT_DISPLAY_HSV = enums.ImGuiColorEditFlags_DisplayHSV
+COLOR_EDIT_DISPLAY_HEX = enums.ImGuiColorEditFlags_DisplayHex
+COLOR_EDIT_UINT8 = enums.ImGuiColorEditFlags_Uint8
+COLOR_EDIT_FLOAT = enums.ImGuiColorEditFlags_Float
+COLOR_EDIT_PICKER_HUE_BAR = enums.ImGuiColorEditFlags_PickerHueBar
+COLOR_EDIT_PICKER_HUE_WHEEL = enums.ImGuiColorEditFlags_PickerHueWheel
+COLOR_EDIT_INPUT_RGB = enums.ImGuiColorEditFlags_InputRGB
+COLOR_EDIT_INPUT_HSV = enums.ImGuiColorEditFlags_InputHSV
 
-COLOR_EDIT_DEFAULT_OPTIONS = enums.ImGuiColorEditFlags__OptionsDefault
+COLOR_EDIT_DEFAULT_OPTIONS = enums.ImGuiColorEditFlags_DefaultOptions_
 
 # ==== TreeNode flags enum redefines ====
 TREE_NODE_NONE = enums.ImGuiTreeNodeFlags_None
@@ -201,31 +201,31 @@ TREE_NODE_OPEN_ON_ARROW = enums.ImGuiTreeNodeFlags_OpenOnArrow
 TREE_NODE_LEAF = enums.ImGuiTreeNodeFlags_Leaf
 TREE_NODE_BULLET = enums.ImGuiTreeNodeFlags_Bullet
 TREE_NODE_FRAME_PADDING = enums.ImGuiTreeNodeFlags_FramePadding
-TREE_NODE_SPAN_AVAILABLE_WIDTH = enums.ImGuiTreeNodeFlags_SpanAvailWidth      
-TREE_NODE_SPAN_FULL_WIDTH = enums.ImGuiTreeNodeFlags_SpanFullWidth       
+TREE_NODE_SPAN_AVAILABLE_WIDTH = enums.ImGuiTreeNodeFlags_SpanAvailWidth
+TREE_NODE_SPAN_FULL_WIDTH = enums.ImGuiTreeNodeFlags_SpanFullWidth
 TREE_NODE_NAV_LEFT_JUPS_BACK_HERE = enums.ImGuiTreeNodeFlags_NavLeftJumpsBackHere
 TREE_NODE_COLLAPSING_HEADER = enums.ImGuiTreeNodeFlags_CollapsingHeader
 
 # ==== Popup Flags ====
-POPUP_NONE = enums.ImGuiPopupFlags_None                    
-POPUP_MOUSE_BUTTON_LEFT = enums.ImGuiPopupFlags_MouseButtonLeft         
-POPUP_MOUSE_BUTTON_RIGHT = enums.ImGuiPopupFlags_MouseButtonRight        
-POPUP_MOUSE_BUTTON_MIDDLE = enums.ImGuiPopupFlags_MouseButtonMiddle       
-POPUP_MOUSE_BUTTON_MASK = enums.ImGuiPopupFlags_MouseButtonMask_        
-POPUP_MOUSE_BUTTON_DEFAULT = enums.ImGuiPopupFlags_MouseButtonDefault_     
-POPUP_NO_OPEN_OVER_EXISTING_POPUP = enums.ImGuiPopupFlags_NoOpenOverExistingPopup 
-POPUP_NO_OPEN_OVER_ITEMS = enums.ImGuiPopupFlags_NoOpenOverItems         
-POPUP_ANY_POPUP_ID = enums.ImGuiPopupFlags_AnyPopupId              
-POPUP_ANY_POPUP_LEVEL = enums.ImGuiPopupFlags_AnyPopupLevel           
-POPUP_ANY_POPUP = enums.ImGuiPopupFlags_AnyPopup                
+POPUP_NONE = enums.ImGuiPopupFlags_None
+POPUP_MOUSE_BUTTON_LEFT = enums.ImGuiPopupFlags_MouseButtonLeft
+POPUP_MOUSE_BUTTON_RIGHT = enums.ImGuiPopupFlags_MouseButtonRight
+POPUP_MOUSE_BUTTON_MIDDLE = enums.ImGuiPopupFlags_MouseButtonMiddle
+POPUP_MOUSE_BUTTON_MASK = enums.ImGuiPopupFlags_MouseButtonMask_
+POPUP_MOUSE_BUTTON_DEFAULT = enums.ImGuiPopupFlags_MouseButtonDefault_
+POPUP_NO_OPEN_OVER_EXISTING_POPUP = enums.ImGuiPopupFlags_NoOpenOverExistingPopup
+POPUP_NO_OPEN_OVER_ITEMS = enums.ImGuiPopupFlags_NoOpenOverItems
+POPUP_ANY_POPUP_ID = enums.ImGuiPopupFlags_AnyPopupId
+POPUP_ANY_POPUP_LEVEL = enums.ImGuiPopupFlags_AnyPopupLevel
+POPUP_ANY_POPUP = enums.ImGuiPopupFlags_AnyPopup
 
 # ==== Selectable flags enum redefines ====
 SELECTABLE_NONE = enums.ImGuiSelectableFlags_None
 SELECTABLE_DONT_CLOSE_POPUPS = enums.ImGuiSelectableFlags_DontClosePopups
 SELECTABLE_SPAN_ALL_COLUMNS = enums.ImGuiSelectableFlags_SpanAllColumns
 SELECTABLE_ALLOW_DOUBLE_CLICK = enums.ImGuiSelectableFlags_AllowDoubleClick
-SELECTABLE_DISABLED = enums.ImGuiSelectableFlags_Disabled           
-SELECTABLE_ALLOW_ITEM_OVERLAP = enums.ImGuiSelectableFlags_AllowItemOverlap   
+SELECTABLE_DISABLED = enums.ImGuiSelectableFlags_Disabled
+SELECTABLE_ALLOW_ITEM_OVERLAP = enums.ImGuiSelectableFlags_AllowItemOverlap
 
 # ==== Combo flags enum redefines ====
 COMBO_NONE = enums.ImGuiComboFlags_None
@@ -239,28 +239,28 @@ COMBO_NO_PREVIEW = enums.ImGuiComboFlags_NoPreview
 COMBO_HEIGHT_MASK = enums.ImGuiComboFlags_HeightMask_
 
 # ==== Tab Bar Flags ====
-TAB_BAR_NONE = enums.ImGuiTabBarFlags_None                           
-TAB_BAR_REORDERABLE = enums.ImGuiTabBarFlags_Reorderable                    
-TAB_BAR_AUTO_SELECT_NEW_TABS = enums.ImGuiTabBarFlags_AutoSelectNewTabs              
-TAB_BAR_TAB_LIST_POPUP_BUTTON = enums.ImGuiTabBarFlags_TabListPopupButton             
-TAB_BAR_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = enums.ImGuiTabBarFlags_NoCloseWithMiddleMouseButton   
-TAB_BAR_NO_TAB_LIST_SCROLLING_BUTTONS = enums.ImGuiTabBarFlags_NoTabListScrollingButtons      
-TAB_BAR_NO_TOOLTIP = enums.ImGuiTabBarFlags_NoTooltip                      
-TAB_BAR_FITTING_POLICY_RESIZE_DOWN = enums.ImGuiTabBarFlags_FittingPolicyResizeDown        
-TAB_BAR_FITTING_POLICY_SCROLL = enums.ImGuiTabBarFlags_FittingPolicyScroll            
-TAB_BAR_FITTING_POLICY_MASK = enums.ImGuiTabBarFlags_FittingPolicyMask_             
-TAB_BAR_FITTING_POLICY_DEFAULT = enums.ImGuiTabBarFlags_FittingPolicyDefault_       
+TAB_BAR_NONE = enums.ImGuiTabBarFlags_None
+TAB_BAR_REORDERABLE = enums.ImGuiTabBarFlags_Reorderable
+TAB_BAR_AUTO_SELECT_NEW_TABS = enums.ImGuiTabBarFlags_AutoSelectNewTabs
+TAB_BAR_TAB_LIST_POPUP_BUTTON = enums.ImGuiTabBarFlags_TabListPopupButton
+TAB_BAR_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = enums.ImGuiTabBarFlags_NoCloseWithMiddleMouseButton
+TAB_BAR_NO_TAB_LIST_SCROLLING_BUTTONS = enums.ImGuiTabBarFlags_NoTabListScrollingButtons
+TAB_BAR_NO_TOOLTIP = enums.ImGuiTabBarFlags_NoTooltip
+TAB_BAR_FITTING_POLICY_RESIZE_DOWN = enums.ImGuiTabBarFlags_FittingPolicyResizeDown
+TAB_BAR_FITTING_POLICY_SCROLL = enums.ImGuiTabBarFlags_FittingPolicyScroll
+TAB_BAR_FITTING_POLICY_MASK = enums.ImGuiTabBarFlags_FittingPolicyMask_
+TAB_BAR_FITTING_POLICY_DEFAULT = enums.ImGuiTabBarFlags_FittingPolicyDefault_
 
 # ==== Tab Item Flags ====
-TAB_ITEM_NONE = enums.ImGuiTabItemFlags_None                          
-TAB_ITEM_UNSAVED_DOCUMENT = enums.ImGuiTabItemFlags_UnsavedDocument               
-TAB_ITEM_SET_SELECTED = enums.ImGuiTabItemFlags_SetSelected                   
-TAB_ITEM_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = enums.ImGuiTabItemFlags_NoCloseWithMiddleMouseButton  
-TAB_ITEM_NO_PUSH_ID = enums.ImGuiTabItemFlags_NoPushId                      
-TAB_ITEM_NO_TOOLTIP = enums.ImGuiTabItemFlags_NoTooltip                     
-TAB_ITEM_NO_REORDER = enums.ImGuiTabItemFlags_NoReorder                     
-TAB_ITEM_LEADING = enums.ImGuiTabItemFlags_Leading                       
-TAB_ITEM_TRAILING = enums.ImGuiTabItemFlags_Trailing        
+TAB_ITEM_NONE = enums.ImGuiTabItemFlags_None
+TAB_ITEM_UNSAVED_DOCUMENT = enums.ImGuiTabItemFlags_UnsavedDocument
+TAB_ITEM_SET_SELECTED = enums.ImGuiTabItemFlags_SetSelected
+TAB_ITEM_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = enums.ImGuiTabItemFlags_NoCloseWithMiddleMouseButton
+TAB_ITEM_NO_PUSH_ID = enums.ImGuiTabItemFlags_NoPushId
+TAB_ITEM_NO_TOOLTIP = enums.ImGuiTabItemFlags_NoTooltip
+TAB_ITEM_NO_REORDER = enums.ImGuiTabItemFlags_NoReorder
+TAB_ITEM_LEADING = enums.ImGuiTabItemFlags_Leading
+TAB_ITEM_TRAILING = enums.ImGuiTabItemFlags_Trailing
 
 # === Table Flags ===
 # Features
@@ -386,8 +386,8 @@ DIRECTION_UP = enums.ImGuiDir_Up
 DIRECTION_DOWN = enums.ImGuiDir_Down
 
 # === Sorting Direction ===
-SORT_DIRECTION_NONE = enums.ImGuiSortDirection_None      
-SORT_DIRECTION_ASCENDING = enums.ImGuiSortDirection_Ascending 
+SORT_DIRECTION_NONE = enums.ImGuiSortDirection_None
+SORT_DIRECTION_ASCENDING = enums.ImGuiSortDirection_Ascending
 SORT_DIRECTION_DESCENDING = enums.ImGuiSortDirection_Descending
 
 # ==== Mouse Cursors ====
@@ -459,16 +459,16 @@ COLOR_MODAL_WINDOW_DIM_BACKGROUND = enums.ImGuiCol_ModalWindowDimBg
 COLOR_COUNT = enums.ImGuiCol_COUNT
 
 # ==== Data Type ====
-DATA_TYPE_S8     = enums.ImGuiDataType_S8     
-DATA_TYPE_U8     = enums.ImGuiDataType_U8     
-DATA_TYPE_S16    = enums.ImGuiDataType_S16    
-DATA_TYPE_U16    = enums.ImGuiDataType_U16    
-DATA_TYPE_S32    = enums.ImGuiDataType_S32    
-DATA_TYPE_U32    = enums.ImGuiDataType_U32    
-DATA_TYPE_S64    = enums.ImGuiDataType_S64    
-DATA_TYPE_U64    = enums.ImGuiDataType_U64    
-DATA_TYPE_FLOAT  = enums.ImGuiDataType_Float  
-DATA_TYPE_DOUBLE = enums.ImGuiDataType_Double 
+DATA_TYPE_S8     = enums.ImGuiDataType_S8
+DATA_TYPE_U8     = enums.ImGuiDataType_U8
+DATA_TYPE_S16    = enums.ImGuiDataType_S16
+DATA_TYPE_U16    = enums.ImGuiDataType_U16
+DATA_TYPE_S32    = enums.ImGuiDataType_S32
+DATA_TYPE_U32    = enums.ImGuiDataType_U32
+DATA_TYPE_S64    = enums.ImGuiDataType_S64
+DATA_TYPE_U64    = enums.ImGuiDataType_U64
+DATA_TYPE_FLOAT  = enums.ImGuiDataType_Float
+DATA_TYPE_DOUBLE = enums.ImGuiDataType_Double
 
 # ==== Text input flags ====
 INPUT_TEXT_NONE = enums.ImGuiInputTextFlags_None
@@ -486,7 +486,7 @@ INPUT_TEXT_ALLOW_TAB_INPUT = enums.ImGuiInputTextFlags_AllowTabInput
 INPUT_TEXT_CTRL_ENTER_FOR_NEW_LINE = enums.ImGuiInputTextFlags_CtrlEnterForNewLine
 INPUT_TEXT_NO_HORIZONTAL_SCROLL = enums.ImGuiInputTextFlags_NoHorizontalScroll
 INPUT_TEXT_ALWAYS_OVERWRITE = enums.ImGuiInputTextFlags_AlwaysOverwrite
-INPUT_TEXT_ALWAYS_INSERT_MODE = enums.ImGuiInputTextFlags_AlwaysInsertMode # OBSOLETED in 1.82 (from Mars 2021)
+# INPUT_TEXT_ALWAYS_INSERT_MODE = enums.ImGuiInputTextFlags_AlwaysInsertMode # OBSOLETED in 1.82 (from Mars 2021)  # remove in v1.89.9
 INPUT_TEXT_READ_ONLY = enums.ImGuiInputTextFlags_ReadOnly
 INPUT_TEXT_PASSWORD = enums.ImGuiInputTextFlags_Password
 INPUT_TEXT_NO_UNDO_REDO = enums.ImGuiInputTextFlags_NoUndoRedo
@@ -496,16 +496,16 @@ INPUT_TEXT_CALLBACK_EDIT = enums.ImGuiInputTextFlags_CallbackEdit
 
 # ==== Draw Corner Flags ===
 # OBSOLETED in 1.82 (from Mars 2021), use ImDrawFlags_xxx
-DRAW_CORNER_NONE = enums.ImDrawCornerFlags_None      
-DRAW_CORNER_TOP_LEFT = enums.ImDrawCornerFlags_TopLeft   
-DRAW_CORNER_TOP_RIGHT = enums.ImDrawCornerFlags_TopRight  
-DRAW_CORNER_BOTTOM_LEFT = enums.ImDrawCornerFlags_BotLeft   
-DRAW_CORNER_BOTTOM_RIGHT = enums.ImDrawCornerFlags_BotRight  
-DRAW_CORNER_TOP = enums.ImDrawCornerFlags_Top       
-DRAW_CORNER_BOTTOM = enums.ImDrawCornerFlags_Bot       
-DRAW_CORNER_LEFT = enums.ImDrawCornerFlags_Left      
-DRAW_CORNER_RIGHT = enums.ImDrawCornerFlags_Right     
-DRAW_CORNER_ALL = enums.ImDrawCornerFlags_All       
+DRAW_CORNER_NONE = enums.ImDrawCornerFlags_None
+DRAW_CORNER_TOP_LEFT = enums.ImDrawCornerFlags_TopLeft
+DRAW_CORNER_TOP_RIGHT = enums.ImDrawCornerFlags_TopRight
+DRAW_CORNER_BOTTOM_LEFT = enums.ImDrawCornerFlags_BotLeft
+DRAW_CORNER_BOTTOM_RIGHT = enums.ImDrawCornerFlags_BotRight
+DRAW_CORNER_TOP = enums.ImDrawCornerFlags_Top
+DRAW_CORNER_BOTTOM = enums.ImDrawCornerFlags_Bot
+DRAW_CORNER_LEFT = enums.ImDrawCornerFlags_Left
+DRAW_CORNER_RIGHT = enums.ImDrawCornerFlags_Right
+DRAW_CORNER_ALL = enums.ImDrawCornerFlags_All
 
 
 # ==== Draw Flags ====
@@ -523,17 +523,17 @@ DRAW_ROUND_CORNERS_RIGHT = enums.ImDrawFlags_RoundCornersRight
 DRAW_ROUND_CORNERS_ALL = enums.ImDrawFlags_RoundCornersAll
 
 # ==== Draw List Flags ====
-DRAW_LIST_NONE = enums.ImDrawListFlags_None                    
-DRAW_LIST_ANTI_ALIASED_LINES = enums.ImDrawListFlags_AntiAliasedLines        
-DRAW_LIST_ANTI_ALIASED_LINES_USE_TEX = enums.ImDrawListFlags_AntiAliasedLinesUseTex  
-DRAW_LIST_ANTI_ALIASED_FILL = enums.ImDrawListFlags_AntiAliasedFill         
-DRAW_LIST_ALLOW_VTX_OFFSET = enums.ImDrawListFlags_AllowVtxOffset      
+DRAW_LIST_NONE = enums.ImDrawListFlags_None
+DRAW_LIST_ANTI_ALIASED_LINES = enums.ImDrawListFlags_AntiAliasedLines
+DRAW_LIST_ANTI_ALIASED_LINES_USE_TEX = enums.ImDrawListFlags_AntiAliasedLinesUseTex
+DRAW_LIST_ANTI_ALIASED_FILL = enums.ImDrawListFlags_AntiAliasedFill
+DRAW_LIST_ALLOW_VTX_OFFSET = enums.ImDrawListFlags_AllowVtxOffset
 
 # ==== Font Atlas Flags ====
-FONT_ATLAS_NONE = enums.ImFontAtlasFlags_None               
-FONT_ATLAS_NO_POWER_OF_TWO_HEIGHT = enums.ImFontAtlasFlags_NoPowerOfTwoHeight 
-FONT_ATLAS_NO_MOUSE_CURSOR = enums.ImFontAtlasFlags_NoMouseCursors     
-FONT_ATLAS_NO_BAKED_LINES = enums.ImFontAtlasFlags_NoBakedLines           
+FONT_ATLAS_NONE = enums.ImFontAtlasFlags_None
+FONT_ATLAS_NO_POWER_OF_TWO_HEIGHT = enums.ImFontAtlasFlags_NoPowerOfTwoHeight
+FONT_ATLAS_NO_MOUSE_CURSOR = enums.ImFontAtlasFlags_NoMouseCursors
+FONT_ATLAS_NO_BAKED_LINES = enums.ImFontAtlasFlags_NoBakedLines
 
 # ==== Config Flags ====
 CONFIG_NONE = enums.ImGuiConfigFlags_None
@@ -561,8 +561,8 @@ SLIDER_FLAGS_NO_ROUND_TO_FORMAT = enums.ImGuiSliderFlags_NoRoundToFormat
 SLIDER_FLAGS_NO_INPUT = enums.ImGuiSliderFlags_NoInput
 
 # ==== Mouse Button ====
-MOUSE_BUTTON_LEFT = enums.ImGuiMouseButton_Left 
-MOUSE_BUTTON_RIGHT = enums.ImGuiMouseButton_Right 
+MOUSE_BUTTON_LEFT = enums.ImGuiMouseButton_Left
+MOUSE_BUTTON_RIGHT = enums.ImGuiMouseButton_Right
 MOUSE_BUTTON_MIDDLE = enums.ImGuiMouseButton_Middle
 
 # ==== Viewport Flags ====
@@ -663,25 +663,25 @@ cdef class _DrawList(object):
     @property
     def idx_buffer_data(self):
         return <uintptr_t>self._ptr.IdxBuffer.Data
-    
+
     @property
     def flags(self):
         return self._ptr.Flags
-        
+
     @flags.setter
     def flags(self, cimgui.ImDrawListFlags flags):
         self._ptr.Flags = flags
-    
+
     def push_clip_rect(
         self,
         float clip_rect_min_x, float clip_rect_min_y,
         float clip_rect_max_x, float clip_rect_max_y,
         bool intersect_with_current_clip_rect = False
         ):
-        """Render-level scissoring. This is passed down to your render function 
-        but not used for CPU-side coarse clipping. Prefer using higher-level :func:`push_clip_rect()` 
+        """Render-level scissoring. This is passed down to your render function
+        but not used for CPU-side coarse clipping. Prefer using higher-level :func:`push_clip_rect()`
         to affect logic (hit-testing and widget culling)
-        
+
         .. wraps::
             void PushClipRect(ImVec2 clip_rect_min, ImVec2 clip_rect_max, bool intersect_with_current_clip_rect = false)
         """
@@ -690,22 +690,22 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(clip_rect_max_x, clip_rect_max_y),
             intersect_with_current_clip_rect
         )
-    
+
     def push_clip_rect_full_screen(self):
         """
         .. wraps::
             void PushClipRectFullScreen()
         """
         self._ptr.PushClipRectFullScreen()
-    
+
     def pop_clip_rect(self):
-        """Render-level scisoring. 
-        
+        """Render-level scisoring.
+
         .. wraps::
             void PopClipRect()
         """
         self._ptr.PopClipRect()
-    
+
     def push_texture_id(self, texture_id):
         """
         .. wraps::
@@ -713,29 +713,29 @@ cdef class _DrawList(object):
         """
         get_current_context()._keepalive_cache.append(texture_id)
         self._ptr.PushTextureID(<void*>texture_id)
-    
-    
+
+
     def pop_texture_id(self):
         """
         .. wraps::
             void PopTextureID()
         """
         self._ptr.PopTextureID()
-    
+
     def get_clip_rect_min(self):
         """
         .. wraps::
             ImVec2 GetClipRectMin()
         """
         return _cast_ImVec2_tuple(self._ptr.GetClipRectMin())
-    
+
     def get_clip_rect_max(self):
         """
         .. wraps::
             ImVec2 GetClipRectMax()
         """
         return _cast_ImVec2_tuple(self._ptr.GetClipRectMax())
-    
+
     def add_line(
             self,
             float start_x, float start_y,
@@ -1327,17 +1327,17 @@ cdef class _DrawList(object):
             col,
             num_segments
         )
-    
+
     def add_ngon(
         self,
         float centre_x, float centre_y,
-        float radius, 
-        cimgui.ImU32 col, 
-        int num_segments, 
+        float radius,
+        cimgui.ImU32 col,
+        int num_segments,
         float thickness = 1.0
     ):
         """Draw a regular Ngon
-        
+
         Args:
             centre_x (float): circle centre coordinates
             centre_y (float): circle centre coordinates
@@ -1355,13 +1355,13 @@ cdef class _DrawList(object):
             draw_list = imgui.get_window_draw_list()
             draw_list.add_ngon(100, 60, 30, imgui.get_color_u32_rgba(1,1,0,1), 5)
             imgui.end()
-        
+
         .. wraps::
             void  AddNgon(
-                const ImVec2& center, 
-                float radius, 
-                ImU32 col, 
-                int num_segments, 
+                const ImVec2& center,
+                float radius,
+                ImU32 col,
+                int num_segments,
                 float thickness = 1.0f
             )
         """
@@ -1369,16 +1369,16 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(centre_x, centre_y),
             radius, col, num_segments, thickness
         )
-    
+
     def add_ngon_filled(
         self,
         float centre_x, float centre_y,
-        float radius, 
-        cimgui.ImU32 col, 
+        float radius,
+        cimgui.ImU32 col,
         int num_segments
     ):
         """Draw a regular Ngon
-        
+
         Args:
             centre_x (float): circle centre coordinates
             centre_y (float): circle centre coordinates
@@ -1395,12 +1395,12 @@ cdef class _DrawList(object):
             draw_list = imgui.get_window_draw_list()
             draw_list.add_ngon_filled(100, 60, 30, imgui.get_color_u32_rgba(1,1,0,1), 5)
             imgui.end()
-        
+
         .. wraps::
             void  AddNgonFilled(
-                const ImVec2& center, 
-                float radius, 
-                ImU32 col, 
+                const ImVec2& center,
+                float radius,
+                ImU32 col,
                 int num_segments
             )
         """
@@ -1408,7 +1408,7 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(centre_x, centre_y),
             radius, col, num_segments
         )
-    
+
     def add_text(
             self,
             float pos_x, float pos_y,
@@ -1871,13 +1871,13 @@ cdef class _DrawList(object):
     # channels
 
     def channels_split(self, int channels_count):
-        """Use to split render into layers. 
+        """Use to split render into layers.
         By switching channels to can render out-of-order (e.g. submit FG primitives before BG primitives)
         Use to minimize draw calls (e.g. if going back-and-forth between multiple clipping rectangles, prefer to append into separate channels then merge at the end)
-        
+
         Prefer using your own persistent instance of ImDrawListSplitter as you can stack them.
         Using the ImDrawList::ChannelsXXXX you cannot stack a split over another.
-        
+
         Warning - be careful with using channels as "layers".
         Child windows are always drawn after their parent, so they will
         paint over its channels.
@@ -1893,47 +1893,47 @@ cdef class _DrawList(object):
     def channels_merge(self):
         # TODO: document
         self._ptr.ChannelsMerge()
-        
+
     def prim_reserve(self, int idx_count, int vtx_count):
         """Reserve space for a number of vertices and indices.
-        You must finish filling your reserved data before calling `prim_reserve()` again, as it may 
-        reallocate or submit the intermediate results. `prim_unreserve()` can be used to release 
+        You must finish filling your reserved data before calling `prim_reserve()` again, as it may
+        reallocate or submit the intermediate results. `prim_unreserve()` can be used to release
         unused allocations.
-        
+
         Drawing a quad is 6 idx (2 triangles) with 2 sharing vertices for a total of 4 vertices.
-        
+
         Args:
             idx_count (int): Number of indices to add to IdxBuffer
             vtx_count (int): Number of verticies to add to VtxBuffer
-        
+
         .. wraps::
             void PrimReserve(int idx_count, int vtx_count)
         """
         self._ptr.PrimReserve(idx_count, vtx_count)
-    
+
     def prim_unreserve(self, int idx_count, int vtx_count):
-        """Release the a number of reserved vertices/indices from the end of the 
+        """Release the a number of reserved vertices/indices from the end of the
         last reservation made with `prim_reserve()`.
-        
+
         Args:
             idx_count (int): Number of indices to remove from IdxBuffer
             vtx_count (int): Number of verticies to remove from VtxBuffer
-        
+
         .. wraps::
             void PrimUnreserve(int idx_count, int vtx_count)
         """
         self._ptr.PrimUnreserve(idx_count, vtx_count)
-    
+
     def prim_rect(self, float a_x, float a_y, float b_x, float b_y, cimgui.ImU32 color = 0xFFFFFFFF):
         """Axis aligned rectangle (2 triangles)
         Reserve primitive space with `prim_rect()` before calling `prim_quad_UV()`.
         Each call to `prim_rect()` is 6 idx and 4 vtx.
-        
+
         Args:
             a_x, a_y (float): First rectangle point coordinates
             b_x, b_y (float): Opposite rectangle point coordinates
             color (ImU32): Color
-        
+
         .. wraps::
             void PrimRect(const ImVec2& a, const ImVec2& b, ImU32 col)
         """
@@ -1942,10 +1942,10 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(b_x, b_y),
             color
         )
-    
+
     def prim_rect_UV(
-        self, 
-        float a_x, float a_y, 
+        self,
+        float a_x, float a_y,
         float b_x, float b_y,
         float uv_a_u, float uv_a_v,
         float uv_b_u, float uv_b_v,
@@ -1955,14 +1955,14 @@ cdef class _DrawList(object):
         Reserve primitive space with `prim_reserve()` before calling `prim_rect_UV()`.
         Each call to `prim_rect_UV()` is 6 idx and 4 vtx.
         Set the texture ID using `push_texture_id()`.
-        
+
         Args:
             a_x, a_y (float): First rectangle point coordinates
             b_x, b_y (float): Opposite rectangle point coordinates
             uv_a_u, uv_a_v (float): First rectangle point UV coordinates
             uv_b_u, uv_b_v (float): Opposite rectangle point UV coordinates
             color (ImU32): Color
-        
+
         .. wraps::
             void PrimRectUV(const ImVec2& a, const ImVec2& b, const ImVec2& uv_a, const ImVec2& uv_b, ImU32 col)
         """
@@ -1973,12 +1973,12 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(uv_b_u, uv_b_v),
             color
         )
-    
+
     def prim_quad_UV(
-        self, 
-        float a_x, float a_y, 
-        float b_x, float b_y, 
-        float c_x, float c_y, 
+        self,
+        float a_x, float a_y,
+        float b_x, float b_y,
+        float c_x, float c_y,
         float d_x, float d_y,
         float uv_a_u, float uv_a_v,
         float uv_b_u, float uv_b_v,
@@ -1990,7 +1990,7 @@ cdef class _DrawList(object):
         Reserve primitive space with `prim_reserve()` before calling `prim_quad_UV()`.
         Each call to `prim_quad_UV()` is 6 idx and 4 vtx.
         Set the texture ID using `push_texture_id()`.
-        
+
         Args:
             a_x, a_y (float): Point 1 coordinates
             b_x, b_y (float): Point 2 coordinates
@@ -2001,7 +2001,7 @@ cdef class _DrawList(object):
             uv_c_u, uv_c_v (float): Point 3 UV coordinates
             uv_d_u, uv_d_v (float): Point 4 UV coordinates
             color (ImU32): Color
-        
+
         .. wraps::
             void PrimQuadUV(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& d, const ImVec2& uv_a, const ImVec2& uv_b, const ImVec2& uv_c, const ImVec2& uv_d, ImU32 col)
         """
@@ -2016,15 +2016,15 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(uv_d_u, uv_d_v),
             color
         )
-    
+
     def prim_write_vtx(self, float pos_x, float pos_y, float u, float v, cimgui.ImU32 color = 0xFFFFFFFF):
         """Write a vertex
-        
+
         Args:
             pos_x, pos_y (float): Point coordinates
             u, v (float): Point UV coordinates
             color (ImU32): Color
-        
+
         .. wraps::
             void  PrimWriteVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)
         """
@@ -2033,26 +2033,26 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(u, v),
             color
         )
-    
+
     def prim_write_idx(self, cimgui.ImDrawIdx idx):
         """Write index
-        
+
         Args:
             idx (ImDrawIdx): index to write
-        
+
         .. wraps::
             void  PrimWriteIdx(ImDrawIdx idx)
         """
         self._ptr.PrimWriteIdx(idx)
-    
+
     def prim_vtx(self, float pos_x, float pos_y, float u, float v, cimgui.ImU32 color = 0xFFFFFFFF):
         """Write vertex with unique index
-        
+
         Args:
             pos_x, pos_y (float): Point coordinates
             u, v (float): Point UV coordinates
             color (ImU32): Color
-        
+
         .. wraps::
             void PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)
         """
@@ -2061,7 +2061,7 @@ cdef class _DrawList(object):
             _cast_args_ImVec2(u,v),
             color
         )
-    
+
     @property
     def commands(self):
         return [
@@ -2252,7 +2252,7 @@ cdef class GuiStyle(object):
     def window_title_align(self, value):
         self._check_ptr()
         self._ptr.WindowTitleAlign = _cast_tuple_ImVec2(value)
-        
+
     @property
     def window_menu_button_position(self):
         self._check_ptr()
@@ -2312,12 +2312,12 @@ cdef class GuiStyle(object):
     def item_inner_spacing(self, value):
         self._check_ptr()
         self._ptr.ItemInnerSpacing = _cast_tuple_ImVec2(value)
-    
+
     @property
     def cell_padding(self):
         self._check_ptr()
         return _cast_ImVec2_tuple(self._ptr.CellPadding)
-    
+
     @cell_padding.setter
     def cell_padding(self, value):
         self._check_ptr()
@@ -2392,7 +2392,7 @@ cdef class GuiStyle(object):
     def grab_rounding(self, float value):
         self._check_ptr()
         self._ptr.GrabRounding = value
-        
+
     @property
     def log_slider_deadzone(self):
         self._check_ptr()
@@ -2402,7 +2402,7 @@ cdef class GuiStyle(object):
     def log_slider_deadzone(self, float value):
         self._check_ptr()
         self._ptr.LogSliderDeadzone = value
-    
+
     @property
     def tab_rounding(self):
         self._check_ptr()
@@ -2412,7 +2412,7 @@ cdef class GuiStyle(object):
     def tab_rounding(self, float value):
         self._check_ptr()
         self._ptr.TabRounding = value
-    
+
     @property
     def tab_border_size(self):
         self._check_ptr()
@@ -2422,7 +2422,7 @@ cdef class GuiStyle(object):
     def tab_border_size(self, float value):
         self._check_ptr()
         self._ptr.TabBorderSize= value
-    
+
     @property
     def tab_min_width_for_close_button(self):
         self._check_ptr()
@@ -2432,7 +2432,7 @@ cdef class GuiStyle(object):
     def tab_min_width_for_close_button(self, float value):
         self._check_ptr()
         self._ptr.TabMinWidthForCloseButton = value
-        
+
     @property
     def color_button_position(self):
         self._check_ptr()
@@ -2452,7 +2452,7 @@ cdef class GuiStyle(object):
     def button_text_align(self, value):
         self._check_ptr()
         self._ptr.ButtonTextAlign = _cast_tuple_ImVec2(value)
-    
+
     @property
     def selectable_text_align(self):
         self._check_ptr()
@@ -2502,7 +2502,7 @@ cdef class GuiStyle(object):
     def anti_aliased_lines(self, cimgui.bool value):
         self._check_ptr()
         self._ptr.AntiAliasedLines = value
-        
+
     @property
     def anti_aliased_line_use_tex(self):
         self._check_ptr()
@@ -2532,24 +2532,24 @@ cdef class GuiStyle(object):
     def curve_tessellation_tolerance(self, float value):
         self._check_ptr()
         self._ptr.CurveTessellationTol = value
-    
+
     # OBSOLETED in 1.82 (from Mars 2021)
     @property
     def circle_segment_max_error(self):
         self._check_ptr()
         return self._ptr.CircleTessellationMaxError
-    
+
     # OBSOLETED in 1.82 (from Mars 2021)
     @circle_segment_max_error.setter
     def circle_segment_max_error(self, float value):
         self._check_ptr()
         self._ptr.CircleTessellationMaxError = value
-    
+
     @property
     def circle_tessellation_max_error(self):
         self._check_ptr()
         return self._ptr.CircleTessellationMaxError
-    
+
     @circle_tessellation_max_error.setter
     def circle_tessellation_max_error(self, float value):
         self._check_ptr()
@@ -2604,54 +2604,54 @@ cdef class _ImGuiTableColumnSortSpecs(object):
         instance = _ImGuiTableColumnSortSpecs()
         instance._ptr = ptr
         return instance
-    
+
     @property
     def column_user_id(self):
         self._require_pointer()
         return self._ptr.ColumnUserID
-    
+
     @column_user_id.setter
     def column_user_id(self, cimgui.ImGuiID column_user_id):
         self._require_pointer()
         self._ptr.ColumnUserID = column_user_id
-    
+
     @property
     def column_index(self):
         self._require_pointer()
         return self._ptr.ColumnIndex
-    
+
     @column_index.setter
     def column_index(self, cimgui.ImS16 column_index):
         self._require_pointer()
         self._ptr.ColumnIndex = column_index
-    
+
     @property
     def sort_order(self):
         self._require_pointer()
         return self._ptr.SortOrder
-    
+
     @sort_order.setter
     def sort_order(self, cimgui.ImS16 sort_order):
         self._require_pointer()
         self._ptr.SortOrder = sort_order
-    
+
     @property
     def sort_direction(self):
         self._require_pointer()
         return self._ptr.SortDirection
-    
+
     @sort_direction.setter
     def sort_direction(self, cimgui.ImGuiSortDirection sort_direction):
         self._require_pointer()
         self._ptr.SortDirection = sort_direction
 
 
-    
+
 cdef class _ImGuiTableColumnSortSpecs_array(object):
-    
+
     cdef cimgui.ImGuiTableSortSpecs* _ptr
     cdef size_t idx
-    
+
     def __init__(self):
         self.idx = 0
         pass
@@ -2669,7 +2669,7 @@ cdef class _ImGuiTableColumnSortSpecs_array(object):
         instance = _ImGuiTableColumnSortSpecs_array()
         instance._ptr = ptr
         return instance
-    
+
     cdef _get_item(self, size_t idx):
         self._require_pointer()
         if idx >= self._ptr.SpecsCount:
@@ -2677,14 +2677,14 @@ cdef class _ImGuiTableColumnSortSpecs_array(object):
         cdef size_t offset = idx*sizeof(cimgui.ImGuiTableColumnSortSpecs)
         cdef size_t pointer = <size_t>self._ptr.Specs + offset
         return _ImGuiTableColumnSortSpecs.from_ptr(<cimgui.ImGuiTableColumnSortSpecs *>pointer)
-    
+
     def __getitem__(self, idx):
         return self._get_item(idx)
-    
+
     def __iter__(self):
         self.idx = 0
         return self
-        
+
     def __next__(self):
         if self.idx < self._ptr.SpecsCount:
             item = self._get_item(self.idx)
@@ -2692,14 +2692,14 @@ cdef class _ImGuiTableColumnSortSpecs_array(object):
             return item
         else:
             raise StopIteration
-    
+
     #def __setitem__(self, idx):
     #    self._table_sort_specs._require_pointer()
 
 cdef class _ImGuiTableSortSpecs(object):
     cdef cimgui.ImGuiTableSortSpecs* _ptr
     cdef _ImGuiTableColumnSortSpecs_array specs
-    
+
     def __init__(self):
         #self.specs = _ImGuiTableColumnSortSpecs_array(self)
         pass
@@ -2718,21 +2718,21 @@ cdef class _ImGuiTableSortSpecs(object):
         instance._ptr = ptr
         instance.specs = _ImGuiTableColumnSortSpecs_array.from_ptr(ptr)
         return instance
-    
+
     @property
     def specs(self):
         return self.specs
-    
+
     @property
     def specs_count(self):
         self._require_pointer()
         return self._ptr.SpecsCount
-    
+
     @property
     def specs_dirty(self):
         self._require_pointer()
         return self._ptr.SpecsDirty
-    
+
     @specs_dirty.setter
     def specs_dirty(self, cimgui.bool specs_dirty):
         self._require_pointer()
@@ -2740,13 +2740,13 @@ cdef class _ImGuiTableSortSpecs(object):
 
 cdef class _ImGuiViewport(object):
     """Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.
-       
+
        About Main Area vs Work Area:
        - Main Area = entire viewport.
        - Work Area = entire viewport minus sections used by main menu bars (for platform windows), or by task bar (for platform monitor).
        - Windows are generally trying to stay within the Work Area of their host viewport.
     """
-    
+
     cdef cimgui.ImGuiViewport* _ptr
 
     def __init__(self):
@@ -2766,40 +2766,40 @@ cdef class _ImGuiViewport(object):
         instance = _ImGuiViewport()
         instance._ptr = ptr
         return instance
-    
+
     @property
     def flags(self):
         self._require_pointer()
         return self._ptr.Flags
-    
+
     @property
     def pos(self):
         """Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)"""
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.Pos)
-    
+
     @property
     def size(self):
         """Main Area: Size of the viewport."""
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.Size)
-    
+
     @property
     def work_pos(self):
         """Work Area: Position of the viewport minus task bars, menus bars, status bars (>= Pos)"""
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.WorkPos)
-    
+
     @property
     def work_size(self):
         """Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)"""
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.WorkSize)
-        
+
     def get_center(self):
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.GetCenter())
-    
+
     def get_work_center(self):
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.GetWorkCenter())
@@ -2847,17 +2847,17 @@ cdef class _DrawData(object):
     def total_vtx_count(self):
         self._require_pointer()
         return self._ptr.TotalVtxCount
-        
+
     @property
     def display_pos(self):
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.DisplayPos)
-        
+
     @property
     def display_size(self):
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.DisplaySize)
-        
+
     @property
     def frame_buffer_scale(self):
         self._require_pointer()
@@ -3072,10 +3072,10 @@ cdef class _FontAtlas(object):
 
     def get_glyph_ranges_cyrillic(self):
         return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesCyrillic())
-    
+
     def get_glyph_ranges_thai(self):
         return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesThai())
-    
+
     def get_glyph_ranges_vietnamese(self):
         return _StaticGlyphRanges.from_ptr(self._ptr.GetGlyphRangesVietnamese())
 
@@ -3158,7 +3158,7 @@ cdef class _IO(object):
     cdef object _keep_logfile_alive
 
     def __init__(self):
-        
+
         self._ptr = &cimgui.GetIO()
         self._fonts = _FontAtlas.from_ptr(self._ptr.Fonts)
 
@@ -3354,11 +3354,11 @@ cdef class _IO(object):
     @config_cursor_blink.setter
     def config_cursor_blink(self, cimgui.bool value):
         self._ptr.ConfigInputTextCursorBlink = value
-    
+
     @property
     def config_drag_click_to_input_text(self):
         return self._ptr.ConfigDragClickToInputText
-    
+
     @config_drag_click_to_input_text.setter
     def config_drag_click_to_input_text(self, cimgui.bool value):
         self._ptr.ConfigDragClickToInputText = value
@@ -3367,7 +3367,7 @@ cdef class _IO(object):
     @property
     def config_windows_resize_from_edges(self):
         return self._ptr.ConfigWindowsResizeFromEdges
-    
+
     # RENAMED from config_resize_windows_from_edges
     @config_windows_resize_from_edges.setter
     def config_windows_resize_from_edges(self, cimgui.bool value):
@@ -3376,7 +3376,7 @@ cdef class _IO(object):
     @property
     def config_windows_move_from_title_bar_only(self):
         return self._ptr.ConfigWindowsMoveFromTitleBarOnly
-    
+
     @config_windows_move_from_title_bar_only.setter
     def config_windows_move_from_title_bar_only(self, cimgui.bool value):
         self._ptr.ConfigWindowsMoveFromTitleBarOnly = value
@@ -3384,7 +3384,7 @@ cdef class _IO(object):
     @property
     def config_memory_compact_timer(self):
         return self._ptr.ConfigMemoryCompactTimer
-    
+
     @config_memory_compact_timer.setter
     def config_memory_compact_timer(self, float value):
         self._ptr.ConfigMemoryCompactTimer = value
@@ -3392,12 +3392,12 @@ cdef class _IO(object):
     @staticmethod
     cdef const char* _get_clipboard_text(void* user_data):
         text = _io_clipboard[<uintptr_t>cimgui.GetCurrentContext()]['_get_clipboard_text_fn']()
-        
+
         # get_clipboard_text_fn() may return None
         # (e.g. if the user copied non text data)
         if text is None:
             return ""
-        
+
         if type(text) is bytes:
             return text
         return _bytes(text)
@@ -3429,7 +3429,7 @@ cdef class _IO(object):
             self._ptr.SetClipboardTextFn = self._set_clipboard_text
         else:
             raise ValueError("func is not a callable: %s" % str(func))
-    
+
     @property
     def mouse_pos(self):
         return _cast_ImVec2_tuple(self._ptr.MousePos)
@@ -3519,7 +3519,7 @@ cdef class _IO(object):
         )
         keys_down.data = <char*>self._ptr.KeysDown
         return keys_down
-        
+
     @property
     def nav_inputs(self):
         cdef cvarray nav_inputs = cvarray(
@@ -3533,7 +3533,7 @@ cdef class _IO(object):
 
     def add_input_character(self, unsigned int c):
         self._ptr.AddInputCharacter(c)
-    
+
     def add_input_character_utf16(self, str utf16_chars):
         self._ptr.AddInputCharacterUTF16(_bytes(utf16_chars))
 
@@ -3599,26 +3599,26 @@ cdef class _IO(object):
     @property
     def mouse_delta(self):
         return _cast_ImVec2_tuple(self._ptr.MouseDelta)
-        
+
 cdef class _callback_user_info(object):
-    
+
     cdef object callback_fn
     cdef user_data
 
     def __init__(self):
         pass
-    
+
     def __cinit__(self):
         text_input_buffer = NULL
         text_input_buffer_size = 0
-    
+
     def populate(self, callback_fn, user_data):
         if callable(callback_fn):
             self.callback_fn = callback_fn
             self.user_data = user_data
         else:
             raise ValueError("callback_fn is not a callable: %s" % str(callback_fn))
-    
+
     cdef set_text_input_buffer(self, char* text_input_buffer, int text_input_buffer_size):
         self.text_input_buffer = text_input_buffer
         self.text_input_buffer_size = text_input_buffer_size
@@ -3633,7 +3633,7 @@ cdef class _InputTextSharedBuffer(object):
         self.buffer = NULL
         self.size = 0
         self.capacity = 0
-    
+
     cdef reserve_memory(self, int buffer_size):
         if self.buffer is NULL:
             self.buffer = <char*>malloc(buffer_size*sizeof(char))
@@ -3646,7 +3646,7 @@ cdef class _InputTextSharedBuffer(object):
             self.size = buffer_size
         else:
             self.size = buffer_size
-    
+
     cdef free_memory(self):
         if self.buffer != NULL:
             free(self.buffer)
@@ -3657,12 +3657,12 @@ cdef class _InputTextSharedBuffer(object):
     def __dealloc__(self):
         self.free_memory()
 
-cdef _InputTextSharedBuffer _input_text_shared_buffer = _InputTextSharedBuffer() 
-    
+cdef _InputTextSharedBuffer _input_text_shared_buffer = _InputTextSharedBuffer()
+
 cdef int _ImGuiInputTextCallback(cimgui.ImGuiInputTextCallbackData* data):
     cdef _ImGuiInputTextCallbackData callback_data = _ImGuiInputTextCallbackData.from_ptr(data)
     callback_data._require_pointer()
-    
+
     if data.EventFlag == enums.ImGuiInputTextFlags_CallbackResize:
         if data.BufSize != _input_text_shared_buffer.size:
             _input_text_shared_buffer.reserve_memory(data.BufSize)
@@ -3680,9 +3680,9 @@ cdef int _ImGuiInputTextOnlyResizeCallback(cimgui.ImGuiInputTextCallbackData* da
             data.Buf = _input_text_shared_buffer.buffer
 
     return 0
-    
+
 cdef class _ImGuiInputTextCallbackData(object):
-    
+
     cdef cimgui.ImGuiInputTextCallbackData* _ptr
 
     def __init__(self):
@@ -3704,42 +3704,42 @@ cdef class _ImGuiInputTextCallbackData(object):
             )
 
         return self._ptr != NULL
-        
+
     @property
     def event_flag(self):
         self._require_pointer()
         return self._ptr.EventFlag
-    
+
     @property
     def flags(self):
         self._require_pointer()
         return self._ptr.Flags
-        
+
     @property
     def user_data(self):
         self._require_pointer()
         return (<_callback_user_info>self._ptr.UserData).user_data
-    
+
     @property
     def event_char(self):
         self._require_pointer()
         return chr(self._ptr.EventChar)
-    
+
     @event_char.setter
     def event_char(self, str event_char):
         self._require_pointer()
         self._ptr.EventChar = ord(event_char)
-    
+
     @property
     def event_key(self):
         self._require_pointer()
         return self._ptr.EventKey
-    
+
     @property
     def buffer(self):
         self._require_pointer()
         return _from_bytes(self._ptr.Buf)
-    
+
     @buffer.setter
     def buffer(self, str buffer):
         self._require_pointer()
@@ -3757,82 +3757,82 @@ cdef class _ImGuiInputTextCallbackData(object):
     def buffer_text_length(self):
         self._require_pointer()
         return self._ptr.BufTextLen
-    
+
     @property
     def buffer_size(self):
         self._require_pointer()
         return self._ptr.BufSize
-    
+
     @property
     def buffer_dirty(self):
         self._require_pointer()
         return self._ptr.BufDirty
-        
+
     @buffer_dirty.setter
     def buffer_dirty(self, bool dirty):
         self._require_pointer()
         self._ptr.BufDirty = dirty
-    
+
     @property
     def cursor_pos(self):
         self._require_pointer()
         return self._ptr.CursorPos
-        
+
     @cursor_pos.setter
     def cursor_pos(self, int pos):
         self._require_pointer()
         self._ptr.CursorPos = pos
-    
+
     @property
     def selection_start(self):
         self._require_pointer()
         return self._ptr.SelectionStart
-        
+
     @selection_start.setter
     def selection_start(self, int start):
         self._require_pointer()
         self._ptr.SelectionStart = start
-    
+
     @property
     def selection_end(self):
         self._require_pointer()
         return self._ptr.SelectionEnd
-        
+
     @selection_end.setter
     def selection_end(self, int end):
         self._require_pointer()
         self._ptr.SelectionEnd = end
-    
+
     def delete_chars(self, int pos, int bytes_count):
         self._require_pointer()
         self._ptr.DeleteChars(pos, bytes_count)
-        
+
     def insert_chars(self, int pos, str text):
         self._require_pointer()
         self._ptr.InsertChars(pos, _bytes(text))
-    
+
     def select_all(self):
         self._require_pointer()
         self._ptr.SelectAll()
-    
+
     def clear_selection(self):
         self._require_pointer()
         self._ptr.ClearSelection()
-        
+
     def has_selection(self):
         self._require_pointer()
         return self._ptr.HasSelection()
-        
-        
+
+
 
 cdef void _ImGuiSizeCallback(cimgui.ImGuiSizeCallbackData* data):
     cdef _ImGuiSizeCallbackData callback_data = _ImGuiSizeCallbackData.from_ptr(data)
     callback_data._require_pointer()
     (<_callback_user_info>callback_data._ptr.UserData).callback_fn(callback_data)
     return
-    
+
 cdef class _ImGuiSizeCallbackData(object):
-    
+
     cdef cimgui.ImGuiSizeCallbackData* _ptr
 
     def __init__(self):
@@ -3854,32 +3854,32 @@ cdef class _ImGuiSizeCallbackData(object):
             )
 
         return self._ptr != NULL
-        
+
     @property
     def user_data(self):
         self._require_pointer()
         return (<_callback_user_info>self._ptr.UserData).user_data
-    
+
     @property
     def pos(self):
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.Pos)
-        
+
     @property
     def current_size(self):
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.CurrentSize)
-    
+
     @property
     def desired_size(self):
         self._require_pointer()
         return _cast_ImVec2_tuple(self._ptr.DesiredSize)
-    
+
     @desired_size.setter
     def desired_size(self, tuple size):
         self._require_pointer()
         self._ptr.DesiredSize = _cast_args_ImVec2(size[0], size[1])
-       
+
 _io_clipboard = {}
 def get_io():
     return _IO()
@@ -4049,27 +4049,27 @@ def show_demo_window(closable=False):
         cimgui.ShowDemoWindow()
 
     return opened
-    
+
 def show_about_window(closable=False):
-    """ Create About window. 
+    """ Create About window.
     Display Dear ImGui version, credits and build/system information.
-    
+
     Args:
         closable (bool): define if window is closable
-    
+
     Return:
         bool: True if window is not closed (False trigerred by close button).
-    
+
     .. wraps::
         void ShowAboutWindow(bool* p_open = NULL)
     """
     cdef cimgui.bool opened = True
-    
+
     if closable:
         cimgui.ShowAboutWindow(&opened)
     else:
         cimgui.ShowAboutWindow()
-    
+
     return opened
 
 
@@ -4404,7 +4404,7 @@ def get_content_region_available_width():
     .. wraps::
         float GetContentRegionAvailWidth()
     """
-    return cimgui.GetContentRegionAvailWidth()
+    return cimgui.GetContentRegionAvail().x
 
 
 def get_window_content_region_min():
@@ -4560,7 +4560,7 @@ def set_window_size_named(str label, float width, float height, cimgui.ImGuiCond
             const ImVec2& size,
              ImGuiCond cond
         )
-    
+
     """
     cimgui.SetWindowSize(
         _bytes(label),
@@ -4758,7 +4758,8 @@ def get_overlay_draw_list():
     .. wraps::
         ImDrawList* GetWindowDrawList()
     """
-    return _DrawList.from_ptr(cimgui.GetOverlayDrawList())
+    # return _DrawList.from_ptr(cimgui.GetOverlayDrawList())
+    return _DrawList.from_ptr(cimgui.GetForegroundDrawList()) # changes in v1.84
 
 
 def get_window_position():
@@ -5018,7 +5019,7 @@ def set_window_position_labeled(str label, float x, float y, cimgui.ImGuiCond co
             const ImVec2& pos,
             ImGuiCond cond
         )
-    
+
     """
     cimgui.SetWindowPos(
         _bytes(label),
@@ -5581,14 +5582,14 @@ def begin_tooltip():
                     imgui.text("This button has full window tooltip.")
                     texture_id = imgui.get_io().fonts.texture_id
                     imgui.image(texture_id, 512, 64, border_color=(1, 0, 0, 1))
-    
+
     .. wraps::
         void BeginTooltip()
-    
+
     Returns:
         _BeginEndTooltip: Use with ``with`` to automatically call :func:`end_tooltip` when the block ends.
 
-    
+
     """
     cimgui.BeginTooltip()
     return _BeginEndTooltip.__new__(_BeginEndTooltip)
@@ -7310,9 +7311,9 @@ def begin_combo(str label, str preview_value, cimgui.ImGuiComboFlags flags = 0):
 
         selected = 0
         items = ["AAAA", "BBBB", "CCCC", "DDDD"]
-        
+
         # ...
-        
+
         with imgui.begin("Example: begin combo"):
             with imgui.begin_combo("combo", items[selected]) as combo:
                 if combo.opened:
@@ -7324,12 +7325,12 @@ def begin_combo(str label, str preview_value, cimgui.ImGuiComboFlags flags = 0):
                         # Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
                         if is_selected:
                             imgui.set_item_default_focus()
-    
+
     Example::
-    
+
         selected = 0
         items = ["AAAA", "BBBB", "CCCC", "DDDD"]
-        
+
         # ...
 
         imgui.begin("Example: begin combo")
@@ -7338,8 +7339,8 @@ def begin_combo(str label, str preview_value, cimgui.ImGuiComboFlags flags = 0):
                 is_selected = (i == selected)
                 if imgui.selectable(item, is_selected)[0]:
                     selected = i
-                    
-                # Set the initial focus when opening the combo (scrolling + keyboard navigation focus)                    
+
+                # Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
                 if is_selected:
                     imgui.set_item_default_focus()
 
@@ -7362,7 +7363,7 @@ def begin_combo(str label, str preview_value, cimgui.ImGuiComboFlags flags = 0):
             const char* preview_value,
             ImGuiComboFlags flags = 0
         )
-    
+
     """
     return _BeginEndCombo.__new__(
         _BeginEndCombo,
@@ -8480,7 +8481,7 @@ def input_text_multiline(
 
     return changed, output
 
-    
+
 
 def input_text_with_hint(
     str label,
@@ -9196,7 +9197,7 @@ def slider_float2(
         )
         imgui.text("Changed: %s, Values: %s" % (changed, values))
         imgui.end()
-    
+
     Args:
         label (str): widget label.
         value0, value1 (float): slider values.
@@ -9222,7 +9223,7 @@ def slider_float2(
             const char* format = "%.3f",
             ImGuiSliderFlags flags = 0
         )
-    
+
     """
     assert (power == 1), "power parameter obsoleted in ImGui 1.78, use imgui.SLIDER_FLAGS_LOGARITHMIC instead"
     cdef float[2] inout_values = [value0, value1]
@@ -9416,7 +9417,7 @@ def slider_int(
     int value,
     int min_value,
     int max_value,
-    str format = "%.f",
+    str format = "%d", #  - 2022/10/12 (1.89)   - removed runtime patching of invalid "%f"/"%0.f" format strings for DragInt()/SliderInt()
     cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget
@@ -9474,7 +9475,7 @@ def slider_int2(
     int value0, int value1,
     int min_value,
     int max_value,
-    str format = "%.f",
+    str format = "%d", #  - 2022/10/12 (1.89)   - removed runtime patching of invalid "%f"/"%0.f" format strings for DragInt()/SliderInt()
     cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget with 2 values.
@@ -9532,7 +9533,7 @@ def slider_int3(
     int value0, int value1, int value2,
     int min_value,
     int max_value,
-    str format = "%.f",
+    str format = "%d", #  - 2022/10/12 (1.89)   - removed runtime patching of invalid "%f"/"%0.f" format strings for DragInt()/SliderInt()
     cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget with 3 values.
@@ -9590,7 +9591,7 @@ def slider_int4(
     int value0, int value1, int value2, int value3,
     int min_value,
     int max_value,
-    str format = "%.f",
+    str format = "%d", #  - 2022/10/12 (1.89)   - removed runtime patching of invalid "%f"/"%0.f" format strings for DragInt()/SliderInt()
     cimgui.ImGuiSliderFlags flags = 0
 ):
     """Display int slider widget with 4 values.
@@ -10524,7 +10525,7 @@ def get_key_index(int key):
     .. wraps::
         int GetKeyIndex(ImGuiKey imgui_key)
     """
-    return cimgui.GetKeyIndex(key)
+    return cimgui.GetKeyIndex(<enums.ImGuiKey>key)
 
 
 def is_key_pressed(int key_index, bool repeat = False):
@@ -10537,7 +10538,21 @@ def is_key_pressed(int key_index, bool repeat = False):
     .. wraps::
         bool IsKeyPressed(int user_key_index)
     """
-    return cimgui.IsKeyPressed(key_index, repeat)
+    return cimgui.IsKeyPressed(<enums.ImGuiKey>key_index, repeat)
+
+
+def is_key_released(int key_index):
+    """Was key released (went from Down to !Down)..
+       Usually implicitely used by user as an optional step.
+       See also io.KeyMap[].
+
+    Returns:
+        bool: True if specified key was released this frame
+
+    .. wraps::
+        bool IsKeyReleased(int user_key_index)
+    """
+    return cimgui.IsKeyReleased(<enums.ImGuiKey>key_index)
 
 
 def is_key_down(int key_index):
@@ -10552,7 +10567,7 @@ def is_key_down(int key_index):
     .. wraps::
         bool IsKeyDown(int user_key_index)
     """
-    return cimgui.IsKeyDown(key_index)
+    return cimgui.IsKeyDown(<enums.ImGuiKey>key_index)
 
 
 def is_mouse_hovering_rect(
@@ -12256,11 +12271,11 @@ def end_drag_drop_target():
 
 
 def get_drag_drop_payload():
-    """Peek directly into the current payload from anywhere. 
-    May return NULL. 
-    
+    """Peek directly into the current payload from anywhere.
+    May return NULL.
+
     .. todo:: Map ImGuiPayload::IsDataType() to test for the payload type.
-    
+
     .. wraps::
         const ImGuiPayload* GetDragDropPayload()
     """
@@ -12277,41 +12292,41 @@ def push_clip_rect(
         float clip_rect_max_y,
         bool intersect_with_current_clip_rect = False
     ):
-    """Push the clip region, i.e. the area of the screen to be rendered,on the stack. 
-    If ``intersect_with_current_clip_rect`` is ``True``, the intersection between pushed 
-    clip region and previous one is added on the stack. 
+    """Push the clip region, i.e. the area of the screen to be rendered,on the stack.
+    If ``intersect_with_current_clip_rect`` is ``True``, the intersection between pushed
+    clip region and previous one is added on the stack.
     See: :func:`pop_clip_rect()`
-    
+
     Args:
         clip_rect_min_x, clip_rect_min_y (float): Position of the minimum point of the rectangle
         clip_rect_max_x, clip_rect_max_y (float): Position of the maximum point of the rectangle
         intersect_with_current_clip_rect (bool): If True, intersection with current clip region is pushed on stack.
-    
+
     .. visual-example::
         :auto_layout:
         :width: 150
         :height: 150
 
         imgui.begin("Example Cliprect")
-        
+
         winpos = imgui.get_window_position()
         imgui.push_clip_rect(0+winpos.x,0+winpos.y,100+winpos.x,100+winpos.y)
         imgui.push_clip_rect(50+winpos.x,50+winpos.y,100+winpos.x,100+winpos.y, True)
-        
+
         imgui.text('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
         imgui.text('Vivamus mattis velit ac ex auctor gravida.')
         imgui.text('Quisque varius erat finibus porta interdum.')
         imgui.text('Nam neque magna, dapibus placerat urna eget, facilisis malesuada ipsum.')
-        
+
         imgui.pop_clip_rect()
         imgui.pop_clip_rect()
-        
+
         imgui.end()
-    
+
     .. wraps::
         void PushClipRect(
-            const ImVec2& clip_rect_min, 
-            const ImVec2& clip_rect_max, 
+            const ImVec2& clip_rect_min,
+            const ImVec2& clip_rect_max,
             bool intersect_with_current_clip_rect
         )
     """
@@ -12320,10 +12335,10 @@ def push_clip_rect(
         _cast_args_ImVec2(clip_rect_max_x, clip_rect_max_y),
         intersect_with_current_clip_rect
     )
-    
+
 def pop_clip_rect():
     """Pop the last clip region from the stack. See: :func:`push_clip_rect()`.
-    
+
     .. wraps::
         void PopClipRect()
     """
@@ -12571,7 +12586,7 @@ def destroy_context(_ImGuiContext ctx = None):
         del _contexts[<uintptr_t>ctx._ptr]
         cimgui.DestroyContext(ctx._ptr)
         ctx._ptr = NULL
-        
+
         # Update submodules:
         internal.UpdateImGuiContext(NULL)
 
@@ -12599,7 +12614,7 @@ def set_current_context(_ImGuiContext ctx):
                 ImGuiContext *ctx);
     """
     cimgui.SetCurrentContext(ctx._ptr)
-    
+
     # Update submodules:
     internal.UpdateImGuiContext(ctx._ptr)
 

@@ -91,7 +91,7 @@ NAV_INPUT_DPAD_UP = core.NAV_INPUT_DPAD_UP
 NAV_INPUT_DPAD_DOWN = core.NAV_INPUT_DPAD_DOWN
 #: scroll / move window (w/ PadMenu)             e.g. Left Analog Stick Left/Right/Up/Down
 NAV_INPUT_L_STICK_LEFT = core.NAV_INPUT_L_STICK_LEFT
-NAV_INPUT_L_STICK_RIGHT = core.NAV_INPUT_L_STICK_RIGHT 
+NAV_INPUT_L_STICK_RIGHT = core.NAV_INPUT_L_STICK_RIGHT
 NAV_INPUT_L_STICK_UP = core.NAV_INPUT_L_STICK_UP
 NAV_INPUT_L_STICK_DOWN = core.NAV_INPUT_L_STICK_DOWN
 #: next window (w/ PadMenu)                      e.g. L1 or L2 (PS4), LB or LT (Xbox), L or ZL (Switch)
@@ -360,10 +360,10 @@ COLOR_RESIZE_GRIP = core.COLOR_RESIZE_GRIP
 COLOR_RESIZE_GRIP_HOVERED = core.COLOR_RESIZE_GRIP_HOVERED
 COLOR_RESIZE_GRIP_ACTIVE = core.COLOR_RESIZE_GRIP_ACTIVE
 COLOR_TAB = COLOR_TAB
-COLOR_TAB_HOVERED = COLOR_TAB_HOVERED                           
-COLOR_TAB_ACTIVE = COLOR_TAB_ACTIVE                            
-COLOR_TAB_UNFOCUSED = COLOR_TAB_UNFOCUSED                         
-COLOR_TAB_UNFOCUSED_ACTIVE = COLOR_TAB_UNFOCUSED_ACTIVE                  
+COLOR_TAB_HOVERED = COLOR_TAB_HOVERED
+COLOR_TAB_ACTIVE = COLOR_TAB_ACTIVE
+COLOR_TAB_UNFOCUSED = COLOR_TAB_UNFOCUSED
+COLOR_TAB_UNFOCUSED_ACTIVE = COLOR_TAB_UNFOCUSED_ACTIVE
 COLOR_PLOT_LINES = core.COLOR_PLOT_LINES
 COLOR_PLOT_LINES_HOVERED = core.COLOR_PLOT_LINES_HOVERED
 COLOR_PLOT_HISTOGRAM = core.COLOR_PLOT_HISTOGRAM
@@ -382,15 +382,15 @@ COLOR_MODAL_WINDOW_DIM_BACKGROUND = core.COLOR_MODAL_WINDOW_DIM_BACKGROUND
 COLOR_COUNT = core.COLOR_COUNT
 
 # === Data Type (redefines for autodoc)
-DATA_TYPE_S8     = core.DATA_TYPE_S8    
-DATA_TYPE_U8     = core.DATA_TYPE_U8    
-DATA_TYPE_S16    = core.DATA_TYPE_S16   
-DATA_TYPE_U16    = core.DATA_TYPE_U16   
-DATA_TYPE_S32    = core.DATA_TYPE_S32   
-DATA_TYPE_U32    = core.DATA_TYPE_U32   
-DATA_TYPE_S64    = core.DATA_TYPE_S64   
-DATA_TYPE_U64    = core.DATA_TYPE_U64   
-DATA_TYPE_FLOAT  = core.DATA_TYPE_FLOAT 
+DATA_TYPE_S8     = core.DATA_TYPE_S8
+DATA_TYPE_U8     = core.DATA_TYPE_U8
+DATA_TYPE_S16    = core.DATA_TYPE_S16
+DATA_TYPE_U16    = core.DATA_TYPE_U16
+DATA_TYPE_S32    = core.DATA_TYPE_S32
+DATA_TYPE_U32    = core.DATA_TYPE_U32
+DATA_TYPE_S64    = core.DATA_TYPE_S64
+DATA_TYPE_U64    = core.DATA_TYPE_U64
+DATA_TYPE_FLOAT  = core.DATA_TYPE_FLOAT
 DATA_TYPE_DOUBLE = core.DATA_TYPE_DOUBLE
 
 
@@ -435,7 +435,7 @@ TAB_BAR_REORDERABLE = core.TAB_BAR_REORDERABLE
 TAB_BAR_AUTO_SELECT_NEW_TABS = core.TAB_BAR_AUTO_SELECT_NEW_TABS
 #: Disable buttons to open the tab list popup
 TAB_BAR_TAB_LIST_POPUP_BUTTON = core.TAB_BAR_TAB_LIST_POPUP_BUTTON
-#: Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. 
+#: Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button.
 TAB_BAR_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = core.TAB_BAR_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON #You can still repro this behavior on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
 #: Disable scrolling buttons (apply when fitting policy is ImGuiTabBarFlags_FittingPolicyScroll)
 TAB_BAR_NO_TAB_LIST_SCROLLING_BUTTONS = core.TAB_BAR_NO_TAB_LIST_SCROLLING_BUTTONS
@@ -456,7 +456,7 @@ TAB_ITEM_NONE = core.TAB_ITEM_NONE
 TAB_ITEM_UNSAVED_DOCUMENT = core.TAB_ITEM_UNSAVED_DOCUMENT
 #: Trigger flag to programmatically make the tab selected when calling BeginTabItem()
 TAB_ITEM_SET_SELECTED = core.TAB_ITEM_SET_SELECTED
-#: Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. 
+#: Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button.
 TAB_ITEM_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = core.TAB_ITEM_NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON # You can still repro this behavior on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
 #: Don't call PushID(tab->ID)/PopID() on BeginTabItem()/EndTabItem()
 TAB_ITEM_NO_PUSH_ID = core.TAB_ITEM_NO_PUSH_ID
@@ -541,7 +541,7 @@ TABLE_NO_PAD_OUTER_X    = core.TABLE_NO_PAD_OUTER_X
 TABLE_NO_PAD_INNER_X    = core.TABLE_NO_PAD_INNER_X
 #: # Scrolling
 #: Enable horizontal scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size. Changes default sizing policy. Because this create a child window, ScrollY is currently generally recommended when using ScrollX.
-TABLE_SCROLL_X = core.TABLE_SCROLL_X 
+TABLE_SCROLL_X = core.TABLE_SCROLL_X
 #: Enable vertical scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size.
 TABLE_SCROLL_Y = core.TABLE_SCROLL_Y
 #: # Sorting
@@ -697,7 +697,7 @@ DIRECTION_UP = core.DIRECTION_UP
 DIRECTION_DOWN = core.DIRECTION_DOWN
 
 # === Sorting direction
-SORT_DIRECTION_NONE  = core.SORT_DIRECTION_NONE 
+SORT_DIRECTION_NONE  = core.SORT_DIRECTION_NONE
 #: Ascending = 0->9, A->Z etc.
 SORT_DIRECTION_ASCENDING = core.SORT_DIRECTION_ASCENDING
 #: Descending = 9->0, Z->A etc.
@@ -757,7 +757,7 @@ INPUT_TEXT_NO_HORIZONTAL_SCROLL = core.INPUT_TEXT_NO_HORIZONTAL_SCROLL
 #: Overwrite mode
 INPUT_TEXT_ALWAYS_OVERWRITE = core.INPUT_TEXT_ALWAYS_OVERWRITE
 #: OBSOLETED in 1.82 (from Mars 2021)
-INPUT_TEXT_ALWAYS_INSERT_MODE = core.INPUT_TEXT_ALWAYS_INSERT_MODE
+# INPUT_TEXT_ALWAYS_INSERT_MODE = core.INPUT_TEXT_ALWAYS_INSERT_MODE
 #: Read-only mode
 INPUT_TEXT_READ_ONLY = core.INPUT_TEXT_READ_ONLY
 #: Password mode, display all characters as '*'
@@ -786,27 +786,27 @@ DRAW_CORNER_ALL = core.DRAW_CORNER_ALL
 #: None
 DRAW_NONE                        = core.DRAW_NONE
 #: path_stroke(), add_polyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)
-DRAW_CLOSED                      = core.DRAW_CLOSED                     
+DRAW_CLOSED                      = core.DRAW_CLOSED
 #: add_rect(), add_rect_filled(), path_rect(): enable rounding top-left corner only (when rounding > 0.0f, we default to all corners). Was 0x01.
-DRAW_ROUND_CORNERS_TOP_LEFT      = core.DRAW_ROUND_CORNERS_TOP_LEFT     
+DRAW_ROUND_CORNERS_TOP_LEFT      = core.DRAW_ROUND_CORNERS_TOP_LEFT
 #: add_rect(), add_rect_filled(), path_rect(): enable rounding top-right corner only (when rounding > 0.0f, we default to all corners). Was 0x02.
-DRAW_ROUND_CORNERS_TOP_RIGHT     = core.DRAW_ROUND_CORNERS_TOP_RIGHT    
+DRAW_ROUND_CORNERS_TOP_RIGHT     = core.DRAW_ROUND_CORNERS_TOP_RIGHT
 #: add_rect(), add_rect_filled(), path_rect(): enable rounding bottom-left corner only (when rounding > 0.0f, we default to all corners). Was 0x04.
-DRAW_ROUND_CORNERS_BOTTOM_LEFT   = core.DRAW_ROUND_CORNERS_BOTTOM_LEFT  
+DRAW_ROUND_CORNERS_BOTTOM_LEFT   = core.DRAW_ROUND_CORNERS_BOTTOM_LEFT
 #: add_rect(), add_rect_filled(), path_rect(): enable rounding bottom-right corner only (when rounding > 0.0f, we default to all corners). Wax 0x08.
-DRAW_ROUND_CORNERS_BOTTOM_RIGHT  = core.DRAW_ROUND_CORNERS_BOTTOM_RIGHT 
+DRAW_ROUND_CORNERS_BOTTOM_RIGHT  = core.DRAW_ROUND_CORNERS_BOTTOM_RIGHT
 #: add_rect(), add_rect_filled(), path_rect(): disable rounding on all corners (when rounding > 0.0f). This is NOT zero, NOT an implicit flag!
-DRAW_ROUND_CORNERS_NONE          = core.DRAW_ROUND_CORNERS_NONE         
+DRAW_ROUND_CORNERS_NONE          = core.DRAW_ROUND_CORNERS_NONE
 #: DRAW_ROUND_CORNERS_TOP_LEFT | DRAW_ROUND_CORNERS_TOP_RIGHT
-DRAW_ROUND_CORNERS_TOP           = core.DRAW_ROUND_CORNERS_TOP          
+DRAW_ROUND_CORNERS_TOP           = core.DRAW_ROUND_CORNERS_TOP
 #: DRAW_ROUND_CORNERS_BOTTOM_LEFT | DRAW_ROUND_CORNERS_BOTTOM_RIGHT
-DRAW_ROUND_CORNERS_BOTTOM        = core.DRAW_ROUND_CORNERS_BOTTOM       
+DRAW_ROUND_CORNERS_BOTTOM        = core.DRAW_ROUND_CORNERS_BOTTOM
 #: DRAW_ROUND_CORNERS_BOTTOM_LEFT | DRAW_ROUND_CORNERS_TOP_LEFT
-DRAW_ROUND_CORNERS_LEFT          = core.DRAW_ROUND_CORNERS_LEFT         
+DRAW_ROUND_CORNERS_LEFT          = core.DRAW_ROUND_CORNERS_LEFT
 #: DRAW_ROUND_CORNERS_BOTTOM_RIGHT | DRAW_ROUND_CORNERS_TOP_RIGHT
-DRAW_ROUND_CORNERS_RIGHT         = core.DRAW_ROUND_CORNERS_RIGHT        
+DRAW_ROUND_CORNERS_RIGHT         = core.DRAW_ROUND_CORNERS_RIGHT
 #: DRAW_ROUND_CORNERS_TOP_LEFT | DRAW_ROUND_CORNERS_TOP_RIGHT | DRAW_ROUND_CORNERS_BOTTOM_LEFT | DRAW_ROUND_CORNERS_BOTTOM_RIGHT
-DRAW_ROUND_CORNERS_ALL           = core.DRAW_ROUND_CORNERS_ALL          
+DRAW_ROUND_CORNERS_ALL           = core.DRAW_ROUND_CORNERS_ALL
 
 # === Draw List Flags (redefines for autodoc)
 DRAW_LIST_NONE = core.DRAW_LIST_NONE
@@ -842,18 +842,18 @@ BACKEND_RENDERER_HAS_VTX_OFFSET = core.BACKEND_RENDERER_HAS_VTX_OFFSET
 # === Slider flag (redefines for autodoc)
 SLIDER_FLAGS_NONE
 #: Clamp value to min/max bounds when input manually with CTRL+Click. By default CTRL+Click allows going out of bounds.
-SLIDER_FLAGS_ALWAYS_CLAMP 
+SLIDER_FLAGS_ALWAYS_CLAMP
 #: Make the widget logarithmic (linear otherwise). Consider using ImGuiSliderFlags_NoRoundToFormat with this if using a format-string with small amount of digits.
-SLIDER_FLAGS_LOGARITHMIC 
+SLIDER_FLAGS_LOGARITHMIC
 #: Disable rounding underlying value to match precision of the display format string (e.g. %.3f values are rounded to those 3 digits)
-SLIDER_FLAGS_NO_ROUND_TO_FORMAT 
+SLIDER_FLAGS_NO_ROUND_TO_FORMAT
 #: Disable CTRL+Click or Enter key allowing to input text directly into the widget
-SLIDER_FLAGS_NO_INPUT 
+SLIDER_FLAGS_NO_INPUT
 
 # === Mouse Button (redefines for autodoc)
 MOUSE_BUTTON_LEFT = core.MOUSE_BUTTON_LEFT
 MOUSE_BUTTON_RIGHT = core.MOUSE_BUTTON_RIGHT
-MOUSE_BUTTON_MIDDLE = core.MOUSE_BUTTON_MIDDLE 
+MOUSE_BUTTON_MIDDLE = core.MOUSE_BUTTON_MIDDLE
 
 # === Viewport Flags (redifines for autodoc)
 #: None
@@ -863,5 +863,5 @@ VIEWPORT_FLAGS_IS_PLATFORM_WINDOW  = core.VIEWPORT_FLAGS_IS_PLATFORM_WINDOW
 #: Represent a Platform Monitor (unused yet)
 VIEWPORT_FLAGS_IS_PLATFORM_MONITOR = core.VIEWPORT_FLAGS_IS_PLATFORM_MONITOR
 #: Platform Window: is created/managed by the application (rather than a dear imgui backend)
-VIEWPORT_FLAGS_OWNED_BY_APP        = core.VIEWPORT_FLAGS_OWNED_BY_APP         
+VIEWPORT_FLAGS_OWNED_BY_APP        = core.VIEWPORT_FLAGS_OWNED_BY_APP
 
