@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
-
-
 def compute_fb_scale(window_size, frame_buffer_size):
     win_width, win_height = window_size
     fb_width, fb_height = frame_buffer_size

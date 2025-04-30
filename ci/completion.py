@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import subprocess
 import sys
 import re
@@ -48,7 +47,7 @@ def with_pxd(ctx, pxd_files):
     lines = []
     for pxd_file in pxd_files:
         lines += pxd_file.readlines()
-    
+
     all_count = len(list(filter(ALL_RE.match, lines)))
     done_count = len(list(filter(DONE_RE.match, lines)))
 

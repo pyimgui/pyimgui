@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from .opengl import FixedPipelineRenderer
 
 import pygame
@@ -149,4 +147,4 @@ class PygameRenderer(FixedPipelineRenderer):
         
         
         
-        
+

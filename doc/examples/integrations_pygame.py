@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
-from __future__ import absolute_import
 from imgui.integrations.pygame import PygameRenderer
 import OpenGL.GL as gl
 import imgui
@@ -13,7 +11,9 @@ def main():
     pygame.init()
     size = 800, 600
 
-    pygame.display.set_mode(size, pygame.DOUBLEBUF | pygame.OPENGL | pygame.RESIZABLE)
+    pygame.display.set_mode(
+        size, pygame.DOUBLEBUF | pygame.OPENGL | pygame.RESIZABLE
+    )
 
     imgui.create_context()
     impl = PygameRenderer()
@@ -34,7 +34,6 @@ def main():
 
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
-
                 clicked_quit, selected_quit = imgui.menu_item(
                     "Quit", "Cmd+Q", False, True
                 )
