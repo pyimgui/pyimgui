@@ -2,12 +2,22 @@
 VERSION = (2, 0, 0)  # PEP 386
 __version__ = ".".join([str(x) for x in VERSION])
 
-from imgui.core import *  # noqa
-from imgui import core
-from imgui.extra import *  # noqa
-from imgui import extra
-from imgui import _compat
-from imgui import internal
+# # TODO: Gives the control to the user to specify another path for DLL
+# import os, sys, ctypes
+# dir = os.path.dirname(sys.modules["imgui"].__file__)
+# path = os.path.join(dir, "dll/imgui")
+# #if sys.platform in ('cygwin', 'win32'):
+# #    __lib = ctypes.WinDLL(path)
+# #else:
+# #    __lib = ctypes.cdll.LoadLibrary(path)
+# __lib = ctypes.cdll.LoadLibrary(path)
+
+from .core import *  # noqa
+from . import core
+from .extra import *  # noqa
+from . import extra
+from . import _compat
+from . import internal
 
 # TODO: Complete and correcte doc text for ImGui v1.79
 

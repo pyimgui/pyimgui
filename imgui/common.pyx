@@ -1,6 +1,3 @@
-# distutils: language = c++
-# distutils: sources = imgui-cpp/imgui.cpp imgui-cpp/imgui_draw.cpp imgui-cpp/imgui_demo.cpp imgui-cpp/imgui_widgets.cpp imgui-cpp/imgui_tables.cpp config-cpp/py_imconfig.cpp
-# distutils: include_dirs = imgui-cpp ansifeed-cpp
 # cython: embedsignature=True
 # cython: linetrace=True
 
@@ -65,11 +62,12 @@ cdef _cast_ImVec4_tuple(cimgui.ImVec4 vec):  # noqa
 
 
 
+# TODO: Can we remove this ?
 # === Python/C++ cross API for error handling ===
-from cpython.exc cimport PyErr_NewException
-
-cdef public _ImGuiError "ImGuiError" = PyErr_NewException(
-    "imgui.core.ImGuiError", Exception, {}
-)
-
-ImGuiError = _ImGuiError # make visible to Python
+#from cpython.exc cimport PyErr_NewException
+#
+#cdef public _ImGuiError "ImGuiError" = PyErr_NewException(
+#    "imgui.core.ImGuiError", Exception, {}
+#)
+#
+#ImGuiError = _ImGuiError # make visible to Python

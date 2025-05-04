@@ -1,5 +1,5 @@
 #include "py_imconfig.h"
-#include "core.h"
+//#include "core.h"
 
 // note: error type can be controlled during compilation
 #ifndef PYIMGUI_CUSTOM_EXCEPTION
@@ -8,6 +8,8 @@
 #define PYIMGUI_EXC_TYPE ImGuiError
 #endif
 
+// We need to manually define `ImGuiError` object to be able to compile it in the DLL
+PyObject *ImGuiError = PyErr_NewException(((char *)"imgui.core.ImGuiError"), ((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])), PyDict_New()); 
 
 // ImGui does not throw exceptions whenever error occurs. The only way to add
 // error handling is to provide custom IM_ASSERT definition. Here we can
@@ -25,3 +27,4 @@ void __py_assert(const char* msg) {
     //         void PopStyleVar(int) except +
     throw msg;
 }
+
