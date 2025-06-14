@@ -11,6 +11,7 @@ import imgui
 
 from . import compute_fb_scale
 from .opengl import FixedPipelineRenderer, ProgrammablePipelineRenderer
+from .openglES import FixedPipelineRenderer, ProgrammablePipelineRenderer
 
 
 class PygletMixin(object):

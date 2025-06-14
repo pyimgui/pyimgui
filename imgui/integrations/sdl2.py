@@ -7,6 +7,7 @@ import imgui
 import ctypes
 
 from .opengl import ProgrammablePipelineRenderer
+from .openglES import ProgrammablePipelineRenderer
 
 
 class SDL2Renderer(ProgrammablePipelineRenderer):

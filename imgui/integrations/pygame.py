@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 from .opengl import FixedPipelineRenderer
+from .openglES import FixedPipelineRenderer
 
 import pygame
 import pygame.event

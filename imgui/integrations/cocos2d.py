@@ -8,6 +8,7 @@ import imgui
 from .import compute_fb_scale
 from .pyglet import PygletMixin
 from .opengl import FixedPipelineRenderer
+from .openglES import FixedPipelineRenderer
 
 
 class ImguiLayer(PygletMixin, cocos.layer.Layer):
