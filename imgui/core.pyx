@@ -24,18 +24,19 @@ from libc.stdlib cimport malloc, realloc, free
 from libc.stdint cimport uintptr_t
 from libc.string cimport strdup
 from libc.string cimport strncpy, strlen
-from libc.float  cimport FLT_MIN
-from libc.float  cimport FLT_MAX
+from libc.float cimport FLT_MIN
+from libc.float cimport FLT_MAX
 from libcpp cimport bool
 
 FLOAT_MIN = FLT_MIN
 FLOAT_MAX = FLT_MAX
+FLOAT_SIZE = sizeof(float)
 
-cimport cimgui
-cimport core
-cimport enums
-cimport ansifeed
-cimport internal
+from . cimport cimgui
+from . cimport core
+from . cimport enums
+from . cimport ansifeed
+from . cimport internal
 
 from cpython.version cimport PY_MAJOR_VERSION
 
@@ -3525,7 +3526,7 @@ cdef class _IO(object):
         cdef cvarray nav_inputs = cvarray(
             shape=(enums.ImGuiNavInput_COUNT,),
             format='f',
-            itemsize=sizeof(float),
+            itemsize=FLOAT_SIZE,
             allocate_buffer=False
         )
         nav_inputs.data = <char*>self._ptr.NavInputs
@@ -3659,7 +3660,7 @@ cdef class _InputTextSharedBuffer(object):
 
 cdef _InputTextSharedBuffer _input_text_shared_buffer = _InputTextSharedBuffer() 
     
-cdef int _ImGuiInputTextCallback(cimgui.ImGuiInputTextCallbackData* data):
+cdef int _ImGuiInputTextCallback(cimgui.ImGuiInputTextCallbackData* data) noexcept:
     cdef _ImGuiInputTextCallbackData callback_data = _ImGuiInputTextCallbackData.from_ptr(data)
     callback_data._require_pointer()
     
@@ -3671,7 +3672,7 @@ cdef int _ImGuiInputTextCallback(cimgui.ImGuiInputTextCallbackData* data):
     cdef ret = (<_callback_user_info>callback_data._ptr.UserData).callback_fn(callback_data)
     return ret if ret is not None else 0
 
-cdef int _ImGuiInputTextOnlyResizeCallback(cimgui.ImGuiInputTextCallbackData* data):
+cdef int _ImGuiInputTextOnlyResizeCallback(cimgui.ImGuiInputTextCallbackData* data) noexcept:
     # This callback is used internally if user asks for buffer resizing but does not provide any python callback function.
 
     if data.EventFlag == enums.ImGuiInputTextFlags_CallbackResize:
@@ -3825,7 +3826,7 @@ cdef class _ImGuiInputTextCallbackData(object):
         
         
 
-cdef void _ImGuiSizeCallback(cimgui.ImGuiSizeCallbackData* data):
+cdef void _ImGuiSizeCallback(cimgui.ImGuiSizeCallbackData* data) noexcept:
     cdef _ImGuiSizeCallbackData callback_data = _ImGuiSizeCallbackData.from_ptr(data)
     callback_data._require_pointer()
     (<_callback_user_info>callback_data._ptr.UserData).callback_fn(callback_data)
@@ -9977,7 +9978,7 @@ def plot_lines(
         float scale_min = FLOAT_MAX,
         float scale_max = FLOAT_MAX,
         graph_size = (0, 0),
-        int stride = sizeof(float),
+        int stride = FLOAT_SIZE,
     ):
 
     """
@@ -10035,7 +10036,7 @@ def plot_lines(
                 float scale_min = FLT_MAX,
                 float scale_max = FLT_MAX,
                 ImVec2 graph_size = ImVec2(0,0),
-                int stride = sizeof(float)
+                int stride = FLOAT_SIZE
             )
     """
     if values_count == -1:
@@ -10069,7 +10070,7 @@ def plot_histogram(
         float scale_min = FLT_MAX,
         float scale_max = FLT_MAX,
         graph_size = (0, 0),
-        int stride = sizeof(float),
+        int stride = 32,
     ):
     """
     Plot a histogram of float values.

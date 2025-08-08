@@ -1,5 +1,6 @@
-Cython>=0.24,<0.30
+Cython>=3.0
 PyOpenGL
 glfw
 wheel
 click
+glibc

@@ -5,9 +5,9 @@
 
 import cython
 
-cimport cimgui
-cimport internal
-cimport enums_internal
+from . cimport cimgui
+from . cimport internal
+from . cimport enums_internal
 
 from cpython.version cimport PY_MAJOR_VERSION
 

@@ -79,7 +79,7 @@ succesfully for all major operating systems with different architectures:
 * Linux (32bit & 64bit)
 * OS X (universal build)
 
-Right now we are ready shipping the built wheels for these three systems
+Right now we are ready shipping the built wheels for these systems
 (even for Linux using `manylinux1` wheels). The build pipeline covers multiple
 Python versions:
 

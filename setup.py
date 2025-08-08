@@ -104,7 +104,7 @@ def backend_extras(*requirements):
     return ["PyOpenGL"] + list(requirements)
 
 EXTRAS_REQUIRE = {
-    'Cython':  ['Cython>=0.24,<0.30'],
+    'Cython':  ['Cython>=3.0'],
     'cocos2d': backend_extras(
         "cocos2d",
         "pyglet>=1.5.6; sys_platform == 'darwin'",
@@ -180,6 +180,8 @@ setup(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
 
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Cython',

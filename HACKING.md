@@ -58,6 +58,9 @@ We may have specific plans that you are not informed of.
 For running tests, you will need some additional
 requirements from `doc/requirements-test.txt`.
 
+You will additionally need to build extension in-place before running.
+`python setup.py build_ext --inplace`
+
 You can run tests with:
 
     py.test
